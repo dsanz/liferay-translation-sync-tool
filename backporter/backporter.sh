@@ -14,6 +14,8 @@ declare old_english="O";
 declare new_lang="n";
 # key prefix for old (target) language key names
 declare old_lang="o";
+# regexp for separating key/value pairs
+declare kv_rexp="^([^=]+)=(.*)"
 
 declare file_prefix="Language";
 declare file_ext="properties";
@@ -34,7 +36,7 @@ declare target_lang_path;
 # returns true if line is a translation line (as opposed to comments or blank lines), false otherwise
 # $1 is the line
 function is_key_line() {
-	[ $(echo $1 | grep = -c) -gt 0 ]
+	[[ "$1" == *=* ]]
 }
 # returns true if key exists in array T, false otherwise
 # $1 is the key prefix
@@ -49,14 +51,6 @@ function exists_key() {
 function value_changed() {
 	[[ ${T[$1,$3]} != ${T[$2,$3]} ]]
 }
-# returns the result of counting occurrences of a regexp in the T value given by provided keys
-# $1 is one key prefix
-# $2 is the key name
-# $3 is the regex which occurrences will be counted
-function grep_value() {
-	echo ${T[$1,$2]} | grep -E "$3" -c
-}
-
 #### Core API functions
 
 function english_value_changed() {
@@ -72,13 +66,16 @@ function exists_in_old() {
 	exists_key $old_english $1
 }
 function is_translated() {
-	[[ $(grep_value $1 $2 "(Automatic [^)]+?)") -eq 0 ]]
+	rexp='\(Automatic [^\)]+\)$'
+	! [[ "${T[$1,$2]}" =~ $rexp ]]
 }
 function is_automatic_copy() {
-	[[ $(grep_value $1 $2 "(Automatic Copy)") -gt 0 ]]
+	rexp='\(Automatic Copy\)$'
+	[[ "${T[$1,$2]}" =~ $rexp ]]
 }
 function is_automatic_translation() {
-	[[ $(grep_value $1 $2 "(Automatic Translation)") -gt 0 ]]
+	rexp='\(Automatic Translation\)$'
+	[[ "${T[$1,$2]}" =~ $rexp ]]
 }
 
 #### Top level functions
@@ -100,17 +97,15 @@ function set_lang_paths() {
 # $1 is the file name path
 # $2 is the key prefix where keys will be stored
 function read_locale_file() {
-	lines=$(cat $1 | wc -l)
+	lines=$(wc -l "$1" | cut -d' ' -f1)
 	echo -n "  Reading file $1        "
 	counter=0
 	while read line; do
-		perc=$(( 100 * (counter+1) / lines ))
 		printf "\b\b\b\b\b"
-		printf "%5s" "${perc}%"
+		printf "%5s" "$(( 100 * (counter+1) / lines ))%"
 		(( counter++ ))
 		if is_key_line "$line" ; then
-			key=$(echo $line | sed s/=.*//)
-			value=$(echo $line | sed -r s/^[^=]+=//)
+			[[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
 			T[$2,$key]=$value
 			if [[ $2 == $old_english ]]; then
 				K[${#K[@]}]=$key
@@ -123,16 +118,20 @@ function read_locale_file() {
 }
 
 function backport() {
+	now="$(date +%s%N)"
 	echo
-	echo "Backporting to $1"
+	echo "Backporting to '$1'"
 	clear_translations
 	read_lang_files $1
 	file="${target_lang_path}.backported"
 	file_hrr_improvements="${target_lang_path}.review.improvements"
 	file_hrr_changes="${target_lang_path}.review.changes"
-    declare -A result;
-	result_string="";
-	echo -n "  Writing into $file: "
+	declare -A result
+	backports=0
+	improvements=0
+	changes=0
+	deprecations=0
+	echo "  Writing into $file: "
 
 	rm -f $file $file_hrr_improvements $file_hrr_changes
 	while read line; do
@@ -141,17 +140,19 @@ function backport() {
 		result[$file_hrr_changes]="$line"
 		char="x"
 		if is_key_line "$line" ; then
-			key=$(echo $line | sed s/=.*//)						# Let process the key....
+			[[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}"	# Let process the key....
 			if exists_in_new $key; then							# key exists in newer version
 				if is_translated $new_lang $key; then			#	key is translated in the newer version :)
 					if is_translated $old_lang $key; then		#		key is also translated in the old version
 						if english_value_changed $key; then		#			english original changed amongst versions 	> there is a semantic change, human review required
 							result[$file_hrr_changes]="${key}=${T[$new_lang,$key]}"
 							char="r"
+							(( changes++ ))
 						else									#			english unchanged amongst versions
 							if lang_value_changed $key; then	#				translation changed amongst version		> there is a refinement, human review requirement
 								result[$file_hrr_improvements]="${key}=${T[$new_lang,$key]}"
 								char="R"
+								(( improvements++ ))
 							else								#				translation unchanged amongst version		> none to do
 								char="."
 							fi
@@ -160,9 +161,11 @@ function backport() {
 						if english_value_changed $key; then		#			english original changed amongst versions 	> there is a semantic change, human review required
 							result[$file_hrr_changes]="${key}=${T[$new_lang,$key]}"
 							char="r"
+							(( changes++ ))
 						else									#			english unchanged amongst versions 			> backport it!
 							result[$file]="${key}=${T[$new_lang,$key]}"
 							char="B"
+							(( backports++ ))
 						fi
 					fi
 				else											#	key is untranslated in the newer version			> almost none to do :(
@@ -170,43 +173,51 @@ function backport() {
 						if is_automatic_translation $new_lang $key; then #	new translation is automatic				> lets backport
 							result[$file]="${key}=${T[$new_lang,$key]}"
 							char="b"
+							(( backports++ ))
 						else
-							char="c"
+							char="c"							#			both newer and older translations are automatic copies
 						fi
 					else
-						char="t"
+						char="t"								#		untranslated in newer, automatic translated in older
 					fi
 				fi
 			else												# key doesn't exist in newer version
 				char="X"
+				(( deprecations++ ))
 			fi
 		else
 			char="#"
 		fi
 		echo ${result[$file]} >> $file
-		echo ${result[$file_hrr_improvements]} >> $file_hrr_improvements
-		echo ${result[$file_hrr_changes]} >> $file_hrr_changes
+		if [[ "$line" != "${result[$file_hrr_improvements]}" ]]; then
+			echo ${result[$file_hrr_improvements]} >> $file_hrr_improvements
+		fi
+		if [[ "$line" != "${result[$file_hrr_changes]}" ]]; then
+			echo ${result[$file_hrr_changes]} >> $file_hrr_changes
+		fi
 		echo -n $char
-		result_string=$result_string$char"\n"
 	done < $target_lang_path
 	echo;
 	echo "  Summary" # commented echoes will be displayed in verbose mode (future option)
-	echo "  - $(echo -e $result_string | grep B -c) keys backported"
-	#echo "  - $(echo -e $result_string | grep b -c) automatically translated keys backported "
-	echo "  - $(echo -e $result_string | grep X -c) deprecated keys which don't exist in $source_english_path"
-	#echo "  - $(echo -e $result_string | grep x -c) uncovered cases"
-	if [[ $(diff $target_lang_path $file_hrr_improvements | wc -l) -eq 0 ]]; then
-		rm  $file_hrr_improvements;
+	echo "  - $backports keys backported"
+	echo "  - $deprecations deprecated keys which don't exist in $source_english_path"
+	if [[ $improvements -eq 0 ]]; then
+		rm  -f $file_hrr_improvements;
 		#echo "  - No improvements over previous translations in $target_lang_path"
 	else
-		echo "  - $(echo -e $result_string | grep R -c) improvements over previous translations. Please review $file_hrr_improvements. You can diff it with $target_lang_path"
+		echo "  - $improvements improvements over previous translations. Please review $file_hrr_improvements. You can diff it with $target_lang_path"
 	fi
-	if [[ $(diff $target_lang_path $file_hrr_changes | wc -l) -eq 0 ]]; then
-		rm  $file_hrr_changes;
+	if [[ $changes -eq 0 ]]; then
+		rm  -f $file_hrr_changes;
 		#echo "  - No semantic changes in $target_lang_path"
 	else
-		echo "  - $(echo -e $result_string | grep r -c) semantic changes. Please review $file_hrr_changes. You can diff it with $target_lang_path"
+		echo "  - $changes semantic changes. Please review $file_hrr_changes. You can diff it with $target_lang_path"
 	fi
+	now="$(($(date +%s%N)-now))"
+	seconds="$((now/1000000000))"
+	milliseconds="$((now/1000000))"
+	printf "  - Backport took %02d.%03d seconds\n" "$((seconds))" "${milliseconds}"
+
 }
 
 function clear_translations() {
@@ -229,8 +240,6 @@ function echo_legend() {
 	echo "   R: No action, key translated in newer and older, translations are different but same english meaning. Human review required (refinement, echoed to $file_hrr_improvements)"
 	echo "   .: No action, key translated in newer and older, same english meaning and translation"
 	echo "   x: No action, uncovered case"
-	echo
-	echo "Done."
 }
 
 function read_english_files() {
@@ -258,12 +267,11 @@ function compute_locales() {
 function usage() {
 	echo "Usage: $0 <source dir> <target dir>"
 	echo "   <source dir> and <target dir> must contain language files (Language.properties et al)"
-	#echo "   <locale> is the locale where the backport is to be applied"
 	echo "   Translations will be backported from source to target. Only language files in target are backported"
 	exit 1
 }
 
-echo "Liferay language key backporter v0.3"
+echo "Liferay language key backporter v0.5"
 test $# -eq 2 || usage;
 source_dir=$1
 target_dir=$2
@@ -273,7 +281,8 @@ for locale in "${L[@]}"; do
 	backport $locale
 done
 echo_legend
-
+echo
+echo "Backport finished in $SECONDS s."
 
 #### test functions
 
