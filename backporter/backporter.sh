@@ -51,6 +51,7 @@ function exists_key() {
 function value_changed() {
 	[[ ${T[$1,$3]} != ${T[$2,$3]} ]]
 }
+
 #### Core API functions
 
 function english_value_changed() {
@@ -131,7 +132,7 @@ function backport() {
 	improvements=0
 	changes=0
 	deprecations=0
-	echo "  Writing into $file: "
+	echo "  Writing into $file "
 
 	rm -f $file $file_hrr_improvements $file_hrr_changes
 	while read line; do
@@ -198,25 +199,25 @@ function backport() {
 		echo -n $char
 	done < $target_lang_path
 	echo;
-	echo "  Summary" # commented echoes will be displayed in verbose mode (future option)
-	echo "  - $backports keys backported"
-	echo "  - $deprecations deprecated keys which don't exist in $source_english_path"
+	echo "  Summary of '$1' backport process:"
+	echo "   - $backports keys backported"
+	echo "   - $deprecations keys are in $target_english_path but not in $source_english_path"
 	if [[ $improvements -eq 0 ]]; then
 		rm  -f $file_hrr_improvements;
-		#echo "  - No improvements over previous translations in $target_lang_path"
+		echo "   - No improvements over previous translations in $target_lang_path"
 	else
-		echo "  - $improvements improvements over previous translations. Please review $file_hrr_improvements. You can diff it with $target_lang_path"
+		echo "   - $improvements improvements over previous translations. Please review $file_hrr_improvements. You can diff it with $target_lang_path"
 	fi
 	if [[ $changes -eq 0 ]]; then
 		rm  -f $file_hrr_changes;
-		#echo "  - No semantic changes in $target_lang_path"
+		echo "   - No semantic changes in $target_lang_path"
 	else
-		echo "  - $changes semantic changes. Please review $file_hrr_changes. You can diff it with $target_lang_path"
+		echo "   - $changes semantic changes. Please review $file_hrr_changes. You can diff it with $target_lang_path"
 	fi
 	now="$(($(date +%s%N)-now))"
 	seconds="$((now/1000000000))"
 	milliseconds="$((now/1000000))"
-	printf "  - Backport took %02d.%03d seconds\n" "$((seconds))" "${milliseconds}"
+	printf "   - Backport took %02d.%03d seconds\n" "$((seconds))" "${milliseconds}"
 
 }
 
