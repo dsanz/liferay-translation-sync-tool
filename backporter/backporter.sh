@@ -21,6 +21,7 @@ declare file_prefix="Language";
 declare file_ext="properties";
 declare file_sep="_";
 declare translations_dir="/portal-impl/src/content"
+declare backported_postfix=".backported"
 
 declare english_file="${file_prefix}.${file_ext}";
 declare source_dir
@@ -30,7 +31,14 @@ declare source_english_path;
 declare target_english_path;
 declare source_lang_path;
 declare target_lang_path;
-
+declare do_commit=1
+declare use_git=0
+declare pwd=$(pwd)
+declare result_branch="backport_translations"
+declare -A commit
+declare -A branch
+declare version="0.7"
+declare product="Liferay translation backporter v$version"
 
 #### Base functions
 
@@ -82,17 +90,62 @@ function is_automatic_translation() {
 
 #### Top level functions
 
+function is_git_dir() {
+	cd $1;
+	git rev-parse --git-dir > /dev/null 2>&1
+	[[ $? -eq 0 ]]
+}
+
+function update_to_head() {
+	if is_git_dir "$1"; then
+		branch[$1]=$(git branch 2>/dev/null| sed -n '/^\*/s/^\* //p')
+		cd $pwd
+		cd $1
+		echo "  - Updating ${branch[$1]} branch from upstream"
+		git pull upstream ${branch[$1]} > /dev/null 2>&1
+		commit[$1]=$(git rev-parse HEAD)
+	else
+		echo "  - $1 is not under GIT, unable to update"
+	fi
+}
+
+function check_git() {
+	update_to_head $source_dir
+	update_to_head $target_dir
+
+	do_commit=$(is_git_dir $target_dir)
+	if [[ do_commit ]]; then
+		echo "  - Backported files will be commited to $target_dir"
+	fi
+}
+
+function commit_result() {
+	if [[ $do_commit -eq 0 ]]; then
+		echo "Committing resulting files"
+		cd $target_dir
+		if [[ $(git branch | grep $result_branch | wc -l) -eq 1 ]]; then
+			echo "  - Deleting old branch $result_branch"
+			git branch -D $result_branch  > /dev/null 2>&1
+		fi;
+		echo "  - Creating branch $result_branch"
+		git checkout -b $result_branch > /dev/null 2>&1
+		git commit -a -m "Backported translations from ${branch[$source_dir]} (commit ${commit[$source_dir]}) to ${branch[$target_dir]} (commit ${commit[$target_dir]}), by $product" > /dev/null 2>&1
+	else
+		echo "Resulting files won't be committed"
+	fi
+}
+
 function set_base_paths() {
 	source_dir=$1
 	target_dir=$2
-	if ! [[ ($source_dir == *$translations_dir*) && -f $source_dir/$english_file ]]; then
+	if ! [[ ($source_dir == *$translations_dir*) || -f $source_dir/$english_file ]]; then
 		source_dir=$source_dir$translations_dir
 	fi;
-	if ! [[ $target_dir == *$translations_dir* && -f $target_dir/$english_file ]]; then
+	if ! [[ $target_dir == *$translations_dir* || -f $target_dir/$english_file ]]; then
 		target_dir=$target_dir$translations_dir
 	fi;
-	echo "Source dir set to $source_dir"
-	echo "Target dir set to $target_dir"
+	echo "  - Source dir set to $source_dir"
+	echo "  - Target dir set to $target_dir"
 }
 
 # sets source and target paths for Language.properties files
@@ -106,6 +159,19 @@ function set_lang_paths() {
 	lang_file="${file_prefix}${file_sep}$1.${file_ext}";
 	source_lang_path=$source_dir/$lang_file
 	target_lang_path=$target_dir/$lang_file
+}
+
+function prepare_dirs() {
+	echo
+	echo "Preparing working dirs"
+	set_base_paths $1 $2
+	if [[ $use_git == 0 ]]; then
+		echo "  - Using git"
+		check_git;
+	else
+		echo "  - Not using git"
+	fi
+	compute_locales
 }
 
 # reads a file and inserts keys in T (also in K if applicable)
@@ -138,7 +204,7 @@ function backport() {
 	echo "Backporting to '$1'"
 	clear_translations
 	read_lang_files $1
-	file="${target_lang_path}.backported"
+	file="${target_lang_path}${backported_postfix}"
 	file_hrr_improvements="${target_lang_path}.review.improvements"
 	file_hrr_changes="${target_lang_path}.review.changes"
 	declare -A result
@@ -213,6 +279,11 @@ function backport() {
 		echo -n $char
 	done < $target_lang_path
 	echo;
+	if [[ $do_commit -eq 0 ]]; then
+		echo  "  Moving $file to $target_lang_path"
+		mv $file $target_lang_path
+		file=$target_lang_path
+	fi
 	echo "  Summary of '$1' backport process:"
 	echo "   - $backports keys backported"
 	echo "   - $deprecations keys are in $target_english_path but not in $source_english_path"
@@ -220,19 +291,18 @@ function backport() {
 		rm  -f $file_hrr_improvements;
 		echo "   - No improvements over previous translations in $target_lang_path"
 	else
-		echo "   - $improvements improvements over previous translations. Please review $file_hrr_improvements. You can diff it with $target_lang_path"
+		echo "   - $improvements improvements over previous translations. Please review $file_hrr_improvements. You can diff it with $file"
 	fi
 	if [[ $changes -eq 0 ]]; then
 		rm  -f $file_hrr_changes;
 		echo "   - No semantic changes in $target_lang_path"
 	else
-		echo "   - $changes semantic changes. Please review $file_hrr_changes. You can diff it with $target_lang_path"
+		echo "   - $changes semantic changes. Please review $file_hrr_changes. You can diff it with $file"
 	fi
 	now="$(($(date +%s%N)-now))"
 	seconds="$((now/1000000000))"
 	milliseconds="$((now/1000000))"
 	printf "   - Backport took %02d.%03d seconds\n" "$((seconds))" "${milliseconds}"
-
 }
 
 function clear_translations() {
@@ -258,6 +328,7 @@ function echo_legend() {
 }
 
 function read_english_files() {
+	echo
 	echo "Reading english files"
 	set_english_paths
 	read_locale_file $source_english_path $new_english
@@ -276,27 +347,29 @@ function compute_locales() {
 		L[${#L[@]}]=$locale
 	done
 	locales="${L[@]}"
-	echo "Detected locales in target dir: '$locales'"
+	echo "  - Locales in target dir: '$locales'"
 }
 
 function usage() {
-	echo "Usage: $0 <source dir> <target dir>"
-	echo "   <source dir> and <target dir> must either:"
+	echo "Usage: $0 <source-dir> <target-dir> [-ng]"
+	echo "   <source-dir> and <target-dir> must either:"
 	echo "      - Contain language files (Language.properties et al), or"
-	echo "      - Point to the source root, then backporter will add 'src/portal-impl/content' to the paths"
+	echo "      - Point to the source root (backporter will add 'src/portal-impl/content' to the paths)"
 	echo "   Translations will be backported from source to target. Only language files in target are backported"
+	echo "   -ng disables git"
 	exit 1
 }
 
-echo "Liferay language key backporter v0.5"
-test $# -eq 2 || usage;
-set_base_paths $1 $2
-compute_locales
+echo "$product"
+test $# -eq 2 || test $# -eq 3 || usage;
+[[ $3 == "-ng" ]] && use_git=1
+prepare_dirs $1 $2
 read_english_files
 for locale in "${L[@]}"; do
 	backport $locale
 done
 echo_legend
+commit_result
 echo
 echo "Backport finished in $SECONDS s."
 
