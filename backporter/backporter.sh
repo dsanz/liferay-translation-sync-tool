@@ -20,6 +20,7 @@ declare kv_rexp="^([^=]+)=(.*)"
 declare file_prefix="Language";
 declare file_ext="properties";
 declare file_sep="_";
+declare translations_dir="/portal-impl/src/content"
 
 declare english_file="${file_prefix}.${file_ext}";
 declare source_dir
@@ -80,6 +81,19 @@ function is_automatic_translation() {
 }
 
 #### Top level functions
+
+function set_base_paths() {
+	source_dir=$1
+	target_dir=$2
+	if ! [[ ($source_dir == *$translations_dir*) && -f $source_dir/$english_file ]]; then
+		source_dir=$source_dir$translations_dir
+	fi;
+	if ! [[ $target_dir == *$translations_dir* && -f $target_dir/$english_file ]]; then
+		target_dir=$target_dir$translations_dir
+	fi;
+	echo "Source dir set to $source_dir"
+	echo "Target dir set to $target_dir"
+}
 
 # sets source and target paths for Language.properties files
 function set_english_paths() {
@@ -262,20 +276,21 @@ function compute_locales() {
 		L[${#L[@]}]=$locale
 	done
 	locales="${L[@]}"
-	echo "Backport process will be done for '$locales'"
+	echo "Detected locales in target dir: '$locales'"
 }
 
 function usage() {
 	echo "Usage: $0 <source dir> <target dir>"
-	echo "   <source dir> and <target dir> must contain language files (Language.properties et al)"
+	echo "   <source dir> and <target dir> must either:"
+	echo "      - Contain language files (Language.properties et al), or"
+	echo "      - Point to the source root, then backporter will add 'src/portal-impl/content' to the paths"
 	echo "   Translations will be backported from source to target. Only language files in target are backported"
 	exit 1
 }
 
 echo "Liferay language key backporter v0.5"
 test $# -eq 2 || usage;
-source_dir=$1
-target_dir=$2
+set_base_paths $1 $2
 compute_locales
 read_english_files
 for locale in "${L[@]}"; do
