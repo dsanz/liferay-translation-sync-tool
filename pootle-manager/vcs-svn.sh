@@ -27,12 +27,14 @@
 		fi
 	fi
 
-    echo "    Backing up svn files"
+	echo_yellow "    Backing up svn files"
+	echo -n "        cp $SVNDIR/$1/*.properties $TMP_PROP_IN_DIR/$1/svn/  "
 	for language in `ls $SVNDIR/$1/*.properties` ; do
-		echo "cp $language $TMP_PROP_IN_DIR/$1/svn/"
 		cp "$language" "$TMP_PROP_IN_DIR/$1/svn/"
+		echo -n "."
 	done
-    }
+	echo
+	}
 
     checkout_projects() {
 	echo_cyan "[`date`] Checkout projects..."
