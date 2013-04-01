@@ -10,7 +10,7 @@
 ####
 # $1 - project
 # $2 - repository
-    checkout() {
+function checkout() {
 	echo_white "  $1: checkout language files"
 
 	if [ "" != "$1" ] && [ "" != "$2" ]; then
@@ -34,15 +34,13 @@
 		echo -n "."
 	done
 	echo
-	}
+}
 
-    checkout_projects() {
+function checkout_projects() {
 	echo_cyan "[`date`] Checkout projects..."
 	projects_count=$((${#PROJECTS[@]} - 1))
 	for i in `seq 0 $projects_count`;
 	do
 		checkout ${PROJECTS[$i]}
 	done
-    }
-
-###
+}

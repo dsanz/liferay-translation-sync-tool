@@ -9,7 +9,7 @@
 ## File conversion/management
 ####
 
-    ascii_2_native() {
+function ascii_2_native() {
 	echo_cyan "[`date`] Converting properties files to native ..."
 
 	projects_count=$((${#PROJECTS[@]} - 1))
@@ -27,11 +27,11 @@
 			check_command
 		done
 	done
-    }
+}
 
-    # $1 - project
-    # $2 - language
-    refill_automatic_prop() {
+# $1 - project
+# $2 - language
+function refill_automatic_prop() {
 	echo "    $1/$2"
 	from="$TMP_PROP_OUT_DIR/$1/$2"
 	to="$TMP_PROP_OUT_DIR/$1/$2.filled"
@@ -94,10 +94,10 @@
 		unix2dos "$to"
 	fi
 	mv -f "$to" "$from"
-    }
+}
 
-    # gets called after checkout from SVN and before native2ascii
-    keep_template() {
+# gets called after checkout from SVN and before native2ascii
+function keep_template() {
 	echo_cyan "[`date`] Keeping file templates for later exporting ..."
 
 	projects_count=$((${#PROJECTS[@]} - 1))
@@ -107,4 +107,4 @@
 		echo_white "  $project: creating .po file"
 		prop2po -i $PODIR/$project/$FILE.$PROP_EXT -o $TMP_PO_DIR/$project/ -P
 	done
-    }
+}

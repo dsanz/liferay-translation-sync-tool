@@ -8,7 +8,7 @@
 
 # to Pootle
 
-    update_pootle_db() {
+function update_pootle_db() {
 	echo_cyan "[`date`] Updating pootle database..."
 	rm -f "$PODIR/$project/*"
 	projects=`ls $TMP_PROP_IN_DIR`
@@ -20,16 +20,16 @@
 		echo_white "  $project: updating Pootle templates"
 		$POOTLEDIR/manage.py update_from_templates --project="$project"	-v 0
 	done
-    }
+}
 
-	prepare_input_dirs() {
-		echo_cyan "[`date`] Preparing project input working dirs..."
-		projects_count=$((${#PROJECTS[@]} - 1))
-		for i in `seq 0 $projects_count`;
-		do
-			project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
-			echo_white "  $project: creating / cleaing dirs"
-			clean_dir "$TMP_PROP_IN_DIR/$project"
-			clean_dir "$TMP_PROP_IN_DIR/$project/svn"
-		done
-	}
+function prepare_input_dirs() {
+	echo_cyan "[`date`] Preparing project input working dirs..."
+	projects_count=$((${#PROJECTS[@]} - 1))
+	for i in `seq 0 $projects_count`;
+	do
+		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
+		echo_white "  $project: creating / cleaing dirs"
+		clean_dir "$TMP_PROP_IN_DIR/$project"
+		clean_dir "$TMP_PROP_IN_DIR/$project/svn"
+	done
+}
