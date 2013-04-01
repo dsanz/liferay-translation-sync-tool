@@ -44,8 +44,6 @@ verify_params 25 "Configuration load failed. You should fill in all variables in
 			export UPDATE_REPOSITORY=1
 		elif [ "$param" = "--repo2pootle" ] || [ "$param" = "-p" ]; then
 			export UPDATE_POOTLE_DB=1
-		elif [ "$param" = "--disable-new" ] || [ "$param" = "-d" ]; then
-			export DISABLE_NEW=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else
@@ -60,12 +58,10 @@ verify_params 25 "Configuration load failed. You should fill in all variables in
 		echo "Arguments:"
 		echo "  -r, --pootle2repo	Sync. stores of pootle and prepares files for commit to VCS (does not commit any file)"
 		echo "  -p, --repo2pootle	Updates all language files from VCS repository and update Pootle database."
-		echo "  -d, --disable-new	(only in conjunction with -p) Disables detection of new languages added to projects on the file system." 
-		echo 
+		echo
 
 		UPDATE_REPOSITORY=
 		UPDATE_POOTLE_DB=
-		DISABLE_NEW=
 	else
 		echo_green "[`date`] Pootle manager [START]"
 	fi
