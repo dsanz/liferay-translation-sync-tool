@@ -51,37 +51,6 @@
 	done
     }
 
-    split_automatic_prop() {
-	echo_cyan "[`date`] Selecting automatic translations from properties files..."
-	regex=".*\(Automatic (Translation|Copy)\)$"
-	projects=`ls $TMP_PROP_IN_DIR`
-	for project in $projects;
-	do
-		echo_white "  $project: processing automatic translations"
-		languages=`ls "$TMP_PROP_IN_DIR/$project"`
-		[ ! -d "$TMP_PROP_IN_DIR/$project/aut" ] && mkdir -p "$TMP_PROP_IN_DIR/$project/aut"
-		# uncomment to filter the manual translations
-		#[ ! -d "$TMP_PROP_IN_DIR/$project/man" ] && mkdir -p "$TMP_PROP_IN_DIR/$project/man"
-		for language in $languages;
-		do
-			if [ -f $TMP_PROP_IN_DIR/$project/$language ] && [ "$FILE.$PROP_EXT" != "$language" ]; then
-				l=`echo $language  | cut -f2- -d _ | cut -f1 -d .`
-				echo -n "    grep $project/$language "
-				grep -E "$regex" "$TMP_PROP_IN_DIR/$project/$language" > "$TMP_PROP_IN_DIR/$project/aut/$language"
-				# grep outputs 1 if no matches are found so check_command will show FAIL when there are no auto translations
-				if [ $? != 0 ]; then
-					echo -n " [no auto translations detected] "
-				else
-					echo -n " [auto translations detected] "
-				fi
-				# uncomment to filter the manual translations
-				#grep -v -E "$regex" "$TMP_PROP_IN_DIR/$project/$language" > "$TMP_PROP_IN_DIR/$project/man/$language"
-				check_command
-			fi
-		done
-	done
-    }
-
     # $1 - project
     # $2 - language
     refill_automatic_prop() {
