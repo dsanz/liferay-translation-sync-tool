@@ -77,13 +77,9 @@ verify_params 25 "Configuration load failed. You should fill in all variables in
 
     # checks out projects from SVN, updating pootle translations of each project so that:
     #  . only keys contained in Language.properties are processed
-    #  . new languages are added to the pootle project
     #  . new/deleted keys in Language.properties are conveniently updated in pootle project
-    #  . automatic translations are uploaded as suggestions instead of valid translations
-    #  . automatic copies of keys are ommited
     # preconditions:
     #  . project must exist in pootle
-    #  . templates language may not exist? (how affect exporting with comments?)
     svn2pootle() {
     # back-up database before importing anything
     backup_db
@@ -95,8 +91,6 @@ verify_params 25 "Configuration load failed. You should fill in all variables in
 	native_2_ascii
 	# let Pootle read the translation files
 	update_pootle_db
-	# Pootle does not have a management API for uploading suggestions, we do that via HTTP post
-	upload_suggestions
     }
 
     pootle2svn() {
