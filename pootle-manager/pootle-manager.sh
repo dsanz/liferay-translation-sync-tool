@@ -87,8 +87,6 @@ verify_params 25 "Configuration load failed. You should fill in all variables in
     prepare_input_dirs
 	#checkout .properties files from SVN
 	checkout_projects
-	# convert them to ascii format
-	native_2_ascii
 	# let Pootle read the translation files
 	update_pootle_db
     }

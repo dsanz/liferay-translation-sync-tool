@@ -8,28 +8,6 @@
 ####
 ## File conversion/management
 ####
-    native_2_ascii() {
-	# Convert native2ascii (all files) - If this causes performance
-	#  issues then svn output can be catched and parsed to understand
-	#  which only files needs to be converted.
-	echo_cyan "[`date`] Converting properties files to ascii ..."
-
-	projects=`ls $SVNDIR`
-	for project in $projects;
-	do
-		echo_white "  $project: converting properties to ascii"
-
-		cp $SVNDIR/$project/$FILE.$PROP_EXT $TMP_PROP_IN_DIR/$project
-		languages=`ls "$SVNDIR/$project"`
-		for language in $languages ; do
-			pl="$TMP_PROP_IN_DIR/$project/$language"
-			echo -n  "    native2ascii $project/$language "
-			[ -f $pl ] && native2ascii -encoding utf8 $pl "$pl.ascii"
-			[ -f "$pl.ascii" ] && mv --force "$pl.ascii" $pl
-			check_command
-		done
-	done
-    }
 
     ascii_2_native() {
 	echo_cyan "[`date`] Converting properties files to native ..."
