@@ -51,42 +51,6 @@
 	done
     }
 
-    clean_orphan_keys() {
-	echo_cyan "[`date`] Cleaning orphan keys from translation files ..."
-	projects=`ls $SVNDIR`
-	for project in $projects;
-	do
-		echo_white "  $project: cleaning orphan keys"
-		languages=`ls "$SVNDIR/$project"`
-		for language in $languages;
-		do
-			if [ -f $SVNDIR/$project/$language ] && [ "$FILE.$PROP_EXT" != "$language" ]; then
-				echo -n "    $project/$language "
-				to="$TMP_PROP_IN_DIR/$project/$language"
-				orphan="$TMP_PROP_IN_DIR/$project/orphan/$language"
-				while read line; do
-					isproperty=`echo $line | grep -E "^[^#].*?=" | sed -r "s/([^=]+=).*/\1/"`
-					if [ "$isproperty" != "" ]; then
-						isintemplate=`grep -F "${isproperty}" $SVNDIR/$project/$FILE.$PROP_EXT`
-						if [ "$isintemplate" != "" ]; then
-#							echo "'$isproperty' "
-							echo $line >> $to
-						else
-							echo
-							echo_red "      key $isproperty not present in $FILE.$PROP_EXT"
-							echo $line >> $orphan
-						fi
-					else
-						echo $line >> $to
-					fi
-				done < "$SVNDIR/$project/$language"
-				check_command
-			fi
-		done
-
-	done
-    }
-
     split_automatic_prop() {
 	echo_cyan "[`date`] Selecting automatic translations from properties files..."
 	regex=".*\(Automatic (Translation|Copy)\)$"

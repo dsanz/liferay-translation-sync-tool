@@ -87,7 +87,6 @@
 			project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
 			echo_white "  $project: creating / cleaing dirs"
 			clean_dir "$TMP_PROP_IN_DIR/$project"
-			clean_dir "$TMP_PROP_IN_DIR/$project/orphan"
 			clean_dir "$TMP_PROP_IN_DIR/$project/aut"
 			clean_dir "$TMP_PROP_IN_DIR/$project/empty"
 			clean_dir "$TMP_PROP_IN_DIR/$project/svn"

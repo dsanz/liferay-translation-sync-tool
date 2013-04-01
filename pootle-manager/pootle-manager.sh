@@ -91,8 +91,6 @@ verify_params 25 "Configuration load failed. You should fill in all variables in
     prepare_input_dirs
 	#checkout .properties files from SVN
 	checkout_projects
-	# makes sure that Language_*.properties do not have keys not present in Language.properties
-	clean_orphan_keys
 	# convert them to ascii format
 	native_2_ascii
 	# get .properties files only containing automatic copies/translations (will become suggestions)
