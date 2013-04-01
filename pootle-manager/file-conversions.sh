@@ -82,28 +82,6 @@
 	done
     }
 
-   empty_automatic_prop() {
-	echo_cyan "[`date`] Substituting automatic translations by empty ones in properties files..."
-	projects=`ls $TMP_PROP_IN_DIR`
-	for project in $projects;
-	do
-		[ ! -d "$TMP_PROP_IN_DIR/$project/empty" ] && mkdir -p "$TMP_PROP_IN_DIR/$project/empty"
-
-		# empty the values of the properties files
-		echo_white "  $project: Substituting auto-translated keys"
-		languages=`ls "$TMP_PROP_IN_DIR/$project/"`
-		for language in $languages;
-		do
-			# should we do this
-			if [ -f $TMP_PROP_IN_DIR/$project/$language ] && [ "$FILE.$PROP_EXT" != "$language" ]; then
-				echo -n "    sed $project/$language "
-				sed -r 's/([^=]+=).*\(Automatic (Translation|Copy)\)$/\1/' < "$TMP_PROP_IN_DIR/$project/$language" > "$TMP_PROP_IN_DIR/$project/empty/$language"
-				check_command
-			fi
-		done
-	done
-    }
-
     # $1 - project
     # $2 - language
     refill_automatic_prop() {

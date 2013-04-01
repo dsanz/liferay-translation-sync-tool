@@ -95,8 +95,6 @@ verify_params 25 "Configuration load failed. You should fill in all variables in
 	native_2_ascii
 	# get .properties files only containing automatic copies/translations (will become suggestions)
 	split_automatic_prop
-	# substitute by empty strings all automatic translations in the ascii .properties files
-	empty_automatic_prop
 	# let Pootle read the translation files
 	update_pootle_db
 	# Pootle does not have a management API for uploading suggestions, we do that via HTTP post
