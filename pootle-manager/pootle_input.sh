@@ -15,7 +15,7 @@
 	for project in $projects;
 	do
 		echo_white "  $project: copying project files"
-		cp "$TMP_PROP_IN_DIR/$project/${FILE}.$PROP_EXT" "$PODIR/$project"
+		cp "$TMP_PROP_IN_DIR/$project/svn/${FILE}.$PROP_EXT" "$PODIR/$project"
 		# Update database as well as file system to reflect the latest version of translation templates
 		echo_white "  $project: updating Pootle templates"
 		$POOTLEDIR/manage.py update_from_templates --project="$project"	-v 0
