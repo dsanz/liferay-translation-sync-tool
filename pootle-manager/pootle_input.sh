@@ -61,21 +61,9 @@
 	do
 		echo_white "  $project: copying project files"
 		cp "$TMP_PROP_IN_DIR/$project/${FILE}.$PROP_EXT" "$PODIR/$project"
-		languages=`ls "$TMP_PROP_IN_DIR/$project/empty/"`
-		for language in $languages;
-		do
-			# assume $project was previously created in pootle
-			cp "$TMP_PROP_IN_DIR/$project/empty/$language" "$PODIR/$project"
- 		done
-		# Detect new languages added to projects on the file system
-		echo_white "  $project: detecting new translations for Pootle DB"
-		[ ! "$DISABLE_NEW" ] && $POOTLEDIR/manage.py update_translation_projects --project="$project" -v 0
 		# Update database as well as file system to reflect the latest version of translation templates
 		echo_white "  $project: updating Pootle templates"
 		$POOTLEDIR/manage.py update_from_templates --project="$project"	-v 0
-		# Update the strings in database to reflect what is on disk
-		echo_white "  $project: updating Pootle DB translations"
-		$POOTLEDIR/manage.py update_stores --project="$project"	-v 0
 	done
     }
 
