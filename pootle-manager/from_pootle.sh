@@ -3,12 +3,49 @@
 . common_functions.sh
 
 ####
-## Pootle server communication
+## Pootle server communication - from pootle
 ####
 
+## basic functions
 
-# from pootle
+# creates temporary working dirs for working with pootle output
+function prepare_output_dirs() {
+	echo_cyan "[`date`] Preparing project output working dirs..."
+	projects_count=$((${#PROJECTS[@]} - 1))
+	for i in `seq 0 $projects_count`;
+	do
+		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
+		echo_white "  $project: creating / cleaing dirs"
+		clean_dir "$TMP_PROP_OUT_DIR/$project"
+		clean_dir "$TMP_PO_DIR/$project"
+	done
+}
 
+# moves files from working dirs to its final destination, making them ready for committing
+function prepare_vcs() {
+	echo_cyan "[`date`] Preparing processed files to VCS dir for commit..."
+	projects_count=$((${#PROJECTS[@]} - 1))
+	for i in `seq 0 $projects_count`;
+	do
+		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
+		languages=`ls $PODIR/$project`
+		echo_white "  $project: processing files"
+		for language in $languages; do
+			if [ "$FILE.$PROP_EXT" != "$language" ] ; then
+				echo -n "    $project/$language: "
+				if [ "`diff $TMP_PROP_OUT_DIR/$project/$language $TMP_PROP_IN_DIR/$project/svn/$language`" != "" ]; then
+					echo  "   * $SVNDIR/$project/$language"
+					cp -f "$TMP_PROP_OUT_DIR/$project/$language" "$SVNDIR/$project/$language"
+				fi
+			fi
+		done
+	done
+}
+
+
+## Pootle communication functions
+
+# tells pootle to export its translations to properties files inside webapp dirs
 function update_pootle_files() {
 	echo_cyan "[`date`] Updating pootle files from pootle DB..."
 	projects_count=$((${#PROJECTS[@]} - 1))
@@ -21,6 +58,9 @@ function update_pootle_files() {
 	done
 }
 
+## File processing functions
+
+# saves a .po file from the Language.properties file stored by pootle inside webapps dirs
 # gets called after checkout from SVN and before native2ascii
 function keep_template() {
 	echo_cyan "[`date`] Keeping file templates for later exporting ..."
@@ -34,6 +74,7 @@ function keep_template() {
 	done
 }
 
+# reformats .properties files by generating a .po, then a new .properties from that .po and the template .po
 function reformat_pootle_files() {
 	echo_cyan "[`date`] Reformatting exported pootle files..."
 	projects_count=$((${#PROJECTS[@]} - 1))
@@ -59,38 +100,7 @@ function reformat_pootle_files() {
 	done
 }
 
-function prepare_vcs() {
-	echo_cyan "[`date`] Preparing processed files to VCS dir for commit..."
-	projects_count=$((${#PROJECTS[@]} - 1))
-	for i in `seq 0 $projects_count`;
-	do
-		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
-		languages=`ls $PODIR/$project`
-		echo_white "  $project: processing files"
-		for language in $languages; do
-			if [ "$FILE.$PROP_EXT" != "$language" ] ; then
-				echo -n "    $project/$language: "
-				if [ "`diff $TMP_PROP_OUT_DIR/$project/$language $TMP_PROP_IN_DIR/$project/svn/$language`" != "" ]; then
-					echo  "   * $SVNDIR/$project/$language"
-					cp -f "$TMP_PROP_OUT_DIR/$project/$language" "$SVNDIR/$project/$language"
-				fi
-			fi
-		done
-	done
-}
-
-function prepare_output_dirs() {
-	echo_cyan "[`date`] Preparing project output working dirs..."
-	projects_count=$((${#PROJECTS[@]} - 1))
-	for i in `seq 0 $projects_count`;
-	do
-		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
-		echo_white "  $project: creating / cleaing dirs"
-		clean_dir "$TMP_PROP_OUT_DIR/$project"
-		clean_dir "$TMP_PO_DIR/$project"
-	done
-}
-
+# Pootle exports its translations into ascii-encoded properties files. This converts them to UTF-8
 function ascii_2_native() {
 	echo_cyan "[`date`] Converting properties files to native ..."
 
@@ -111,6 +121,8 @@ function ascii_2_native() {
 	done
 }
 
+# Pootle exports all untranslated keys, assigning them the english value. This function restores the values in old version of Language_*.properties
+# this way, untranslated keys will have the Automatic Copy/Translation tag
 function add_untranslated() {
 	echo_cyan "[`date`] Adding automatic translations to untranslated entries..."
 	projects_count=$((${#PROJECTS[@]} - 1))
@@ -126,6 +138,8 @@ function add_untranslated() {
 	done
 }
 
+# refills all untranslated keys with the value in a previous file.
+# this way, untranslated keys will have the Automatic Copy/Translation tag
 # $1 - project
 # $2 - language
 function refill_automatic_prop() {
@@ -139,12 +153,6 @@ function refill_automatic_prop() {
 
 	cp $svnorig $svnunix
 	dos2unix $svnunix
-
-	#echo "Readling lines from $from"
-	#echo "Checking template file $template"
-	#echo "Writing result to $to"
-	#echo "Original SVN is $svnorig"
-	#echo "UnixSVN is $svnunix"
 
 	[ -f "$to" ] && rm -f "$to"
 	script="\
@@ -192,5 +200,3 @@ function refill_automatic_prop() {
 	fi
 	mv -f "$to" "$from"
 }
-
-
