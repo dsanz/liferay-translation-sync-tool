@@ -15,7 +15,7 @@ function prepare_output_dirs() {
 	for i in `seq 0 $projects_count`;
 	do
 		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
-		echo_white "  $project: creating / cleaing dirs"
+		echo_white "  $project: cleaning output working dirs"
 		clean_dir "$TMP_PROP_OUT_DIR/$project"
 		clean_dir "$TMP_PO_DIR/$project"
 	done
@@ -32,11 +32,10 @@ function prepare_vcs() {
 		echo_white "  $project: processing files"
 		for language in $languages; do
 			if [ "$FILE.$PROP_EXT" != "$language" ] ; then
-				echo -n "    $project/$language: "
-				if [ "`diff $TMP_PROP_OUT_DIR/$project/$language $TMP_PROP_IN_DIR/$project/svn/$language`" != "" ]; then
-					echo  "   * $SVNDIR/$project/$language"
-					cp -f "$TMP_PROP_OUT_DIR/$project/$language" "$SVNDIR/$project/$language"
-				fi
+				echo_yellow "    $project/$language: "
+				echo -n  "      Copying into $SVNDIR/$project/$language"
+				cp -f "$TMP_PROP_OUT_DIR/$project/$language" "$SVNDIR/$project/$language"
+				check_command
 			fi
 		done
 	done
@@ -52,7 +51,7 @@ function update_pootle_files() {
 	for i in `seq 0 $projects_count`;
 	do
 		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
-		echo_white "  $project: synchronizing stores"
+		echo_white "  $project: synchronizing pootle stores for all locales"
 		# Save all translations currently in database to the file system
 		$POOTLEDIR/manage.py sync_stores --project="$project" -v 0
 	done
@@ -69,8 +68,10 @@ function keep_template() {
 	for i in `seq 0 $projects_count`;
 	do
 		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
-		echo_white "  $project: creating .po file"
-		prop2po -i $PODIR/$project/$FILE.$PROP_EXT -o $TMP_PO_DIR/$project/ -P
+		echo_white "  $project: creating .pot file from Language.properties"
+		prop2po -i $PODIR/$project/$FILE.$PROP_EXT -o $TMP_PO_DIR/$project/ -P --progress=none
+		check_command
+		echo "      Created $(ls $TMP_PO_DIR/$project/) file"
 	done
 }
 
@@ -86,17 +87,18 @@ function reformat_pootle_files() {
 		clean_dir "$TMP_PROP_OUT_DIR/$project"
 		for language in $languages; do
 			if [ "$language" != "$FILE.$PROP_EXT" ]; then
-				echo "    $project/$language "
+				echo_yellow "    $project/$language "
 				lang=`echo $language  | cut -f2- -d _ | cut -f1 -d .`
-				echo "    prop -> po $project/$language"
-				prop2po -i "$PODIR/$project/$language" -o "$TMP_PO_DIR/$project/" -t "$PODIR/$project/$FILE.$PROP_EXT"
+				echo -n "      Original ${FILE}_$lang.$PROP_EXT --> ${FILE}_$lang.$PO_EXT "
+				prop2po -i "$PODIR/$project/$language" -o "$TMP_PO_DIR/$project/" -t "$PODIR/$project/$FILE.$PROP_EXT" --progress=none
 				check_command
-				echo "    po -> prop $project/$language"
-				po2prop -i "$TMP_PO_DIR/$project/${FILE}_$lang.$PO_EXT" -o "$TMP_PROP_OUT_DIR/$project/" -t "$PODIR/$project/$FILE.$PROP_EXT"
+				echo -n "      ${FILE}_$lang.$PO_EXT --> formatted ${FILE}_$lang.$PROP_EXT"
+				po2prop -i "$TMP_PO_DIR/$project/${FILE}_$lang.$PO_EXT" -o "$TMP_PROP_OUT_DIR/$project/" -t "$PODIR/$project/$FILE.$PROP_EXT" --progress=none
 				check_command
 			fi
 		done
-	    cp -f "$PODIR/$project/$FILE.$PROP_EXT" "$TMP_PROP_OUT_DIR/$project/"
+		echo_white "  $project: copying Language.properties file into working dir"
+		cp -f "$PODIR/$project/$FILE.$PROP_EXT" "$TMP_PROP_OUT_DIR/$project/"
 	done
 }
 
@@ -108,7 +110,7 @@ function ascii_2_native() {
 	for i in `seq 0 $projects_count`;
 	do
 		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
-		echo_white "  $project: converting properties to native"
+		echo_white "  $project: converting working dir properties to native"
 		#cp -R $PODIR/$project/*.properties $TMP_PROP_OUT_DIR/$project
 		languages=`ls "$TMP_PROP_OUT_DIR/$project"`
 		for language in $languages ; do
