@@ -104,3 +104,16 @@ function get_param() {
 function verify_params() {
 	[ "$#" -lt $(($1 + 2)) ] && echo_red "$2" && exit 1
 }
+
+function backup_db() {
+	echo_cyan "[`date`] Backing up Pootle DB..."
+	dirname=$(date +%Y-%m);
+	filename=$(echo $(date +%F_%H-%M-%S)"-pootle.sql");
+	dumpfile="$TMP_DB_BACKUP_DIR/$dirname/$filename";
+
+	echo_white "  Dumping Pootle DB into $dumpfile"
+	check_dir "$TMP_DB_BACKUP_DIR/$dirname"
+	echo -n  "    Running dump command ";
+	$DB_DUMP_COMMAND > $dumpfile;
+	check_command;
+}
