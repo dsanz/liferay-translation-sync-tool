@@ -97,7 +97,7 @@ function reformat_pootle_files() {
 				check_command
 			fi
 		done
-		echo_white "  $project: copying formatted files into working dir"
+		echo_white "  $project: copying Language.properties file into working dir"
 		cp -f "$PODIR/$project/$FILE.$PROP_EXT" "$TMP_PROP_OUT_DIR/$project/"
 	done
 }
