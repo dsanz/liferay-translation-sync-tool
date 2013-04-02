@@ -12,12 +12,9 @@
 # Dependences:		svn, native2ascii, pootle-2.1.2
 ### END INIT INFO
 
-# TODO:
-#	auto-run this script (cron - once per week?): pootle-manager.sh --update-repository --update-pootle-db
-#	UNDER MAINTANANCE information into Apache Pootle root (line 281) 
-
 # Load configuration
 . pootle-manager.conf
+
 # Load common functions
 . common-functions.sh
 . vcs-svn.sh
@@ -36,21 +33,19 @@ verify_params 25 "Configuration load failed. You should fill in all variables in
 ## Resolve parameters
 ####
 # $1 - This parameter must contain $@ (parameters to resolve).
-    resolve_params() {
-    	params="$@"
-    	[ "$params" = "" ] && export HELP=1
+function resolve_params() {
+	params="$@"
+	[ "$params" = "" ] && export HELP=1
 	for param in $params ; do
 		if [ "$param" = "--pootle2repo" ] || [ "$param" = "-r" ]; then
 			export UPDATE_REPOSITORY=1
 		elif [ "$param" = "--repo2pootle" ] || [ "$param" = "-p" ]; then
 			export UPDATE_POOTLE_DB=1
-		elif [ "$param" = "--disable-new" ] || [ "$param" = "-d" ]; then
-			export DISABLE_NEW=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else
-		        echo_red "PAY ATTENTION! You've used unknown parameter."
-		        any_key
+			echo_red "PAY ATTENTION! You've used unknown parameter."
+			any_key
 		fi
 	done
 	if [ $HELP ]; then
@@ -60,74 +55,45 @@ verify_params 25 "Configuration load failed. You should fill in all variables in
 		echo "Arguments:"
 		echo "  -r, --pootle2repo	Sync. stores of pootle and prepares files for commit to VCS (does not commit any file)"
 		echo "  -p, --repo2pootle	Updates all language files from VCS repository and update Pootle database."
-		echo "  -d, --disable-new	(only in conjunction with -p) Disables detection of new languages added to projects on the file system." 
-		echo 
+		echo
 
 		UPDATE_REPOSITORY=
 		UPDATE_POOTLE_DB=
-		DISABLE_NEW=
 	else
 		echo_green "[`date`] Pootle manager [START]"
 	fi
-    }
+}
 
 ####
 ## Top-level functions
 ####
 
-    # checks out projects from SVN, updating pootle translations of each project so that:
-    #  . only keys contained in Language.properties are processed
-    #  . new languages are added to the pootle project
-    #  . new/deleted keys in Language.properties are conveniently updated in pootle project
-    #  . automatic translations are uploaded as suggestions instead of valid translations
-    #  . automatic copies of keys are ommited
-    # preconditions:
-    #  . project must exist in pootle
-    #  . templates language may not exist? (how affect exporting with comments?)
-    svn2pootle() {
-    # back-up database before importing anything
-    backup_db
-    # prepare working dirs
-    prepare_input_dirs
-	#checkout .properties files from SVN
+	# checks out projects from SVN, updating pootle translations of each project so that:
+	#  . only keys contained in Language.properties are processed
+	#  . new/deleted keys in Language.properties are conveniently updated in pootle project
+	# preconditions:
+	#  . project must exist in pootle
+function svn2pootle() {
+	backup_db
+	prepare_input_dirs
 	checkout_projects
-	# makes sure that Language_*.properties do not have keys not present in Language.properties
-	clean_orphan_keys
-	# convert them to ascii format
-	native_2_ascii
-	# get .properties files only containing automatic copies/translations (will become suggestions)
-	split_automatic_prop
-	# substitute by empty strings all automatic translations in the ascii .properties files
-	empty_automatic_prop
-	# let Pootle read the translation files
 	update_pootle_db
-	# Pootle does not have a management API for uploading suggestions, we do that via HTTP post
-	upload_suggestions
-    }
+}
 
-    pootle2svn() {
-	# prepare working dirs
-    prepare_output_dirs
-	# let Pootle write its DB contents to translation files
+function pootle2svn() {
+	prepare_output_dirs
 	update_pootle_files
-	# generate and keep a .po file for later export format conversion
 	keep_template
-	# make sure comments and blank lines remain in place
 	reformat_pootle_files
-	# convert them back to native format (this must be done before further manipulations)
 	ascii_2_native
-	# any untranslated key exported by pootle is substituted by its automatic translation/copy
 	add_untranslated
-	# copy files to VCS working copy
 	prepare_vcs
-	# TODO: do commit or notify someone to do that
-
-    }
+}
 
 ####
 ## Update 
 ####
-    update() {
+function update() {
 	# There should be placed UNDER MAINTANANCE mechanism
 	if [ $UPDATE_REPOSITORY ]; then
 		pootle2svn
@@ -136,8 +102,8 @@ verify_params 25 "Configuration load failed. You should fill in all variables in
 		svn2pootle
 	fi
 	[ ! $HELP ] &&	echo_green "[`date`] Pootle manager [DONE]"
-    }
-    
+}
+
 main() {
 	resolve_params $@
 	update

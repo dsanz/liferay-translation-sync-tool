@@ -10,7 +10,7 @@
 ####
 # $1 - project
 # $2 - repository
-    checkout() {
+function checkout() {
 	echo_white "  $1: checkout language files"
 
 	if [ "" != "$1" ] && [ "" != "$2" ]; then
@@ -27,20 +27,20 @@
 		fi
 	fi
 
-    echo "    Backing up svn files"
+	echo_yellow "    Backing up svn files"
+	echo -n "        cp $SVNDIR/$1/*.properties $TMP_PROP_IN_DIR/$1/svn/  "
 	for language in `ls $SVNDIR/$1/*.properties` ; do
-		echo "cp $language $TMP_PROP_IN_DIR/$1/svn/"
 		cp "$language" "$TMP_PROP_IN_DIR/$1/svn/"
+		echo -n "."
 	done
-    }
+	echo
+}
 
-    checkout_projects() {
+function checkout_projects() {
 	echo_cyan "[`date`] Checkout projects..."
 	projects_count=$((${#PROJECTS[@]} - 1))
 	for i in `seq 0 $projects_count`;
 	do
 		checkout ${PROJECTS[$i]}
 	done
-    }
-
-###
+}
