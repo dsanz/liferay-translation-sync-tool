@@ -32,11 +32,10 @@ function prepare_vcs() {
 		echo_white "  $project: processing files"
 		for language in $languages; do
 			if [ "$FILE.$PROP_EXT" != "$language" ] ; then
-				echo -n "    $project/$language: "
-				if [ "`diff $TMP_PROP_OUT_DIR/$project/$language $TMP_PROP_IN_DIR/$project/svn/$language`" != "" ]; then
-					echo  "   * $SVNDIR/$project/$language"
-					cp -f "$TMP_PROP_OUT_DIR/$project/$language" "$SVNDIR/$project/$language"
-				fi
+				echo_yellow "    $project/$language: "
+				echo -n  "      Copying into $SVNDIR/$project/$language"
+				cp -f "$TMP_PROP_OUT_DIR/$project/$language" "$SVNDIR/$project/$language"
+				check_command
 			fi
 		done
 	done
