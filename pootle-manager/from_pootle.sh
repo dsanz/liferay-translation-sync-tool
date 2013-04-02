@@ -90,10 +90,10 @@ function reformat_pootle_files() {
 			if [ "$language" != "$FILE.$PROP_EXT" ]; then
 				echo_yellow "    $project/$language "
 				lang=`echo $language  | cut -f2- -d _ | cut -f1 -d .`
-				echo "      Original ${FILE}_$lang.$PROP_EXT --> ${FILE}_$lang.$PO_EXT "
+				echo -n "      Original ${FILE}_$lang.$PROP_EXT --> ${FILE}_$lang.$PO_EXT "
 				prop2po -i "$PODIR/$project/$language" -o "$TMP_PO_DIR/$project/" -t "$PODIR/$project/$FILE.$PROP_EXT" --progress=none
 				check_command
-				echo "      ${FILE}_$lang.$PO_EXT --> formatted ${FILE}_$lang.$PROP_EXT"
+				echo -n "      ${FILE}_$lang.$PO_EXT --> formatted ${FILE}_$lang.$PROP_EXT"
 				po2prop -i "$TMP_PO_DIR/$project/${FILE}_$lang.$PO_EXT" -o "$TMP_PROP_OUT_DIR/$project/" -t "$PODIR/$project/$FILE.$PROP_EXT" --progress=none
 				check_command
 			fi
