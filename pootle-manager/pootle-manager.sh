@@ -19,8 +19,8 @@
 . common-functions.sh
 . vcs-svn.sh
 . file-conversions.sh
-. pootle_input.sh
-. pootle_output.sh
+. to_pootle.sh
+. from_pootle.sh
 
 # Simple configuration test
 verify_params 25 "Configuration load failed. You should fill in all variables in pootle-manager.conf." \
