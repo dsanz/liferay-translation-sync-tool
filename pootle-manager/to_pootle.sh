@@ -28,8 +28,9 @@ function prepare_input_dirs() {
 	for i in `seq 0 $projects_count`;
 	do
 		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
-		echo_white "  $project: creating / cleaing dirs"
+		echo_white "  $project: cleaning input working dirs"
 		clean_dir "$TMP_PROP_IN_DIR/$project"
 		clean_dir "$TMP_PROP_IN_DIR/$project/svn"
+		clean_dir "$SVNDIR"
 	done
 }
