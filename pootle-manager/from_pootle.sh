@@ -58,7 +58,7 @@ function update_pootle_files() {
 ## File processing functions
 
 # saves a .po file from the Language.properties file stored by pootle inside webapps dirs
-# gets called after checkout from SVN and before native2ascii
+# gets called before native2ascii
 function keep_template() {
 	echo_cyan "[`date`] Keeping file templates for later exporting ..."
 
@@ -148,21 +148,21 @@ function refill_automatic_prop() {
 	to="$TMP_PROP_OUT_DIR/$1/$2.filled"
 	template="$TMP_PROP_OUT_DIR/$1/$FILE.$PROP_EXT"
 	orig="$TMP_PROP_IN_DIR/$1/$2"
-	svnorig="$TMP_PROP_IN_DIR/$1/svn/$2"
-	svnunix="$TMP_PROP_OUT_DIR/$1/$2.unix"
+	src_orig="$TMP_PROP_IN_DIR/$1/svn/$2"
+	src_unix="$TMP_PROP_OUT_DIR/$1/$2.unix"
 
-	cp $svnorig $svnunix
-	dos2unix $svnunix
+	cp $src_orig $src_unix
+	dos2unix $src_unix
 
 	[ -f "$to" ] && rm -f "$to"
 	script="\
 		use strict;\
-		my %valuesFromSVN = ();\
-		open FILE, '$svnunix';\
+		my %valuesFromLang = ();\
+		open FILE, '$src_unix';\
 		while (my \$line = <FILE>) {\
 			if (\$line =~ m/^[^#].+=/) {\
 				(my \$key, my \$value) = split(/=/, \$line);\
-				\$valuesFromSVN{\$key} = \$line;\
+				\$valuesFromLang{\$key} = \$line;\
 			}\
 		}\
 		close FILE;\
@@ -181,7 +181,7 @@ function refill_automatic_prop() {
 			if (\$line =~ m/^[^#].+=/) {\
 				(my \$key, my \$value) = split(/=/, \$line);\
 				if (\$line eq \$valuesFromTemplate{\$key}) {\
-					print TO \$valuesFromSVN{\$key};\
+					print TO \$valuesFromLang{\$key};\
 				} else {\
 					print TO \$line;\
 				}\
@@ -193,9 +193,9 @@ function refill_automatic_prop() {
 		close TO;\
 		"
 	perl -e "$script"
-	rm -f $svnunix
+	rm -f $src_unix
 
-	if [ "CRLF" = "`file $svnorig | grep -o CRLF`" ]; then
+	if [ "CRLF" = "`file $src_orig | grep -o CRLF`" ]; then
 		unix2dos "$to"
 	fi
 	mv -f "$to" "$from"
