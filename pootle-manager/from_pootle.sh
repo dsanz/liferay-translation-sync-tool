@@ -33,8 +33,6 @@ function prepare_vcs() {
 		for language in $languages; do
 			if [ "$FILE.$PROP_EXT" != "$language" ] ; then
 				echo_yellow "    $project/$language: "
-				echo -n  "      Copying into $SVNDIR/$project/$language"
-				cp -f "$TMP_PROP_OUT_DIR/$project/$language" "$SVNDIR/$project/$language"
 				check_command
 			fi
 		done
