@@ -17,8 +17,6 @@
 
 # Load common functions
 . common-functions.sh
-. vcs-svn.sh
-. file-conversions.sh
 . to_pootle.sh
 . from_pootle.sh
 
@@ -26,7 +24,7 @@
 verify_params 25 "Configuration load failed. You should fill in all variables in pootle-manager.conf." \
 	$POOTLEDIR $PODIR $TMP_DIR $TMP_PROP_IN_DIR $TMP_PROP_OUT_DIR $TMP_PO_DIR \
 	$SVNDIR $SVN_USER $SVN_PASS $PO_USER $PO_PASS $PO_HOST $PO_PORT $PO_SRV \
-	$PO_COOKIES $SVN_HOST $SVN_PORT $SVN_PATH $SVN_SRV $SVN_PATH_PLUGIN_PREFIX \
+	$PO_COOKIES $SVN_HOST $SVN_PORT $SVN_PATH $SVN_PATH_PLUGIN_PREFIX \
 	$SVN_PATH_PLUGIN_SUFFIX $FILE $PROP_EXT $PO_EXT $POT_EXT $LANG_SEP
 
 ####
@@ -76,7 +74,6 @@ function resolve_params() {
 function svn2pootle() {
 	backup_db
 	prepare_input_dirs
-	checkout_projects
 	update_pootle_db
 }
 
