@@ -49,8 +49,9 @@ function create_working_branch() {
 }
 
 function pull_changes() {
-	cd $1
+	path="$1"
 	echo -n "      git checkout master "
+	cd $path
 	git checkout master > /dev/null 2>&1
 	check_command
 	echo -n "      git pull upstream master "
@@ -58,22 +59,44 @@ function pull_changes() {
 	check_command
 }
 
+function rotate_working_branch() {
+	path="$1"
+	# check if old branch exists
+	if exists_branch $LAST_BRANCH $path; then
+		echo -n "      git branch -D $LAST_BRANCH "
+		git branch -D $LAST_BRANCH > /dev/null 2>&1
+	else
+		echo "      '$LAST_BRANCH' does not exist, will be created now"
+	fi;
+
+	echo -n "      git branch -m $WORKING_BRANCH $LAST_BRANCH "
+	cd $path
+	git branch -m $WORKING_BRANCH $LAST_BRANCH > /dev/null 2>&1
+	check_command
+	echo "      Contents in '$LAST_BRANCH' will be used as reference of last successful Pootle update"
+}
+
 function setup_working_branches() {
 	echo_cyan "[`date`] Setting up git branches for project(s)"
-	declare -A paths;
-	for project in "${!PROJECTS[@]}";
-	do
-		src_dir=$(get_src_working_dir $project)
-		paths[$src_dir]="${paths[$src_dir]} $project"
-	done
-
 	old_dir=$pwd;
-	for path in "${!paths[@]}";
+	for path in "${!PATHS[@]}";
 	do
 		echo_white  "  $path"
-		echo_yellow "    for projects:${paths[$path]}"
+		echo_yellow "    for projects:${PATHS[$path]}"
  		pull_changes $path;
  		create_working_branch $path
+	done;
+	cd $old_dir
+}
+
+function rotate_working_branches() {
+	echo_cyan "[`date`] Rotating git branches for project(s)"
+	old_dir=$pwd;
+	for path in "${!PATHS[@]}";
+	do
+		echo_white  "  $path"
+		echo_yellow "    for projects:${PATHS[$path]}"
+ 		rotate_working_branch $path
 	done;
 	cd $old_dir
 }

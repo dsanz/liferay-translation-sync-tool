@@ -12,11 +12,13 @@
 # Dependences:		git, native2ascii, pootle-2.1.2
 ### END INIT INFO
 
+# Load common functions
+. common-functions.sh
+
 # Load configuration
 . pootle-manager.conf
 
-# Load common functions
-. common-functions.sh
+# Load API functions
 . to_pootle.sh
 . from_pootle.sh
 
@@ -76,7 +78,8 @@ function src2pootle() {
 	backup_db
 	prepare_input_dirs
 	setup_working_branches
-	update_pootle_db
+	#update_pootle_db
+	rotate_working_branches
 }
 
 function pootle2src() {

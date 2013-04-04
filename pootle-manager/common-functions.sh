@@ -129,6 +129,26 @@ function get_src_working_dir() {
 	echo $result
 }
 
+function compute_working_paths() {
+	for project in "${!PROJECTS[@]}";
+	do
+		src_dir=$(get_src_working_dir $project)
+		PATHS[$src_dir]="${PATHS[$src_dir]} $project"
+	done
+}
+
+function add_projects() {
+	plugins="$1"
+	suffix="$2"
+	prefix="$3"
+
+	for plugin in $plugins;
+	do
+		POOTLE_PROJECT_ID="$plugin$suffix"
+		PROJECTS["${POOTLE_PROJECT_ID}"]="${prefix}${POOTLE_PROJECT_ID}${SRC_PLUGINS_LANG_PATH}"
+	done
+}
+
 function exists_branch() {
 	branch_name="$1"
 	src_dir="$2"
