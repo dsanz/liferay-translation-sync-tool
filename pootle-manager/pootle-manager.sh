@@ -9,25 +9,25 @@
 # 			management of Pootle.
 # Author:		Milan Jaros, Daniel Sanz, Alberto Montero                               
 # Version: 		2.0
-# Dependences:		svn, native2ascii, pootle-2.1.2
+# Dependences:		git, native2ascii, pootle-2.1.2
 ### END INIT INFO
+
+# Load common functions
+. common-functions.sh
 
 # Load configuration
 . pootle-manager.conf
 
-# Load common functions
-. common-functions.sh
-. vcs-svn.sh
-. file-conversions.sh
+# Load API functions
 . to_pootle.sh
 . from_pootle.sh
 
 # Simple configuration test
-verify_params 25 "Configuration load failed. You should fill in all variables in pootle-manager.conf." \
-	$POOTLEDIR $PODIR $TMP_DIR $TMP_PROP_IN_DIR $TMP_PROP_OUT_DIR $TMP_PO_DIR \
-	$SVNDIR $SVN_USER $SVN_PASS $PO_USER $PO_PASS $PO_HOST $PO_PORT $PO_SRV \
-	$PO_COOKIES $SVN_HOST $SVN_PORT $SVN_PATH $SVN_SRV $SVN_PATH_PLUGIN_PREFIX \
-	$SVN_PATH_PLUGIN_SUFFIX $FILE $PROP_EXT $PO_EXT $POT_EXT $LANG_SEP
+#verify_params 19 "Configuration load failed. You should fill in all variables in pootle-manager.conf." \
+	#$POOTLEDIR $PODIR $TMP_DIR $TMP_PROP_IN_DIR $TMP_PROP_OUT_DIR $TMP_PO_DIR \
+	#$PO_USER $PO_PASS $PO_HOST $PO_PORT $PO_SRV \
+	#$PO_COOKIES $SRC_PATH_PLUGIN_PREFIX \
+	#$SRC_PATH_PLUGIN_SUFFIX $FILE $PROP_EXT $PO_EXT $POT_EXT $LANG_SEP
 
 ####
 ## Resolve parameters
@@ -68,19 +68,21 @@ function resolve_params() {
 ## Top-level functions
 ####
 
-	# checks out projects from SVN, updating pootle translations of each project so that:
+	# updates git branch, then updates pootle translations of each project so that:
 	#  . only keys contained in Language.properties are processed
 	#  . new/deleted keys in Language.properties are conveniently updated in pootle project
 	# preconditions:
 	#  . project must exist in pootle
-function svn2pootle() {
+	#  . portal/plugin sources are available and are under git control
+function src2pootle() {
 	backup_db
 	prepare_input_dirs
-	checkout_projects
-	update_pootle_db
+	setup_working_branches
+	#update_pootle_db
+	rotate_working_branches
 }
 
-function pootle2svn() {
+function pootle2src() {
 	prepare_output_dirs
 	update_pootle_files
 	keep_template
@@ -96,10 +98,10 @@ function pootle2svn() {
 function update() {
 	# There should be placed UNDER MAINTANANCE mechanism
 	if [ $UPDATE_REPOSITORY ]; then
-		pootle2svn
+		pootle2src
 	fi
 	if [ $UPDATE_POOTLE_DB ]; then
-		svn2pootle
+		src2pootle
 	fi
 	[ ! $HELP ] &&	echo_green "[`date`] Pootle manager [DONE]"
 }
