@@ -129,12 +129,38 @@ function get_src_working_dir() {
 	echo $result
 }
 
-function compute_working_paths() {
-	for project in "${!PROJECTS[@]}";
+function add_working_path() {
+	project=$1
+	base_src_dir=$2
+	idx=-1;
+	local j;
+	for (( j=0; j<${#PATH_BASE_DIR[@]}; j++ ));
 	do
-		src_dir=$(get_src_working_dir $project)
-		PATHS[$src_dir]="${PATHS[$src_dir]} $project"
+		if [[ "${PATH_BASE_DIR[$j]}" == "$base_src_dir" ]]; then
+			idx=$j;
+		fi;
+	done;
+	if [[ $idx == -1 ]]; then
+		idx=${#PATH_BASE_DIR[@]};
+	fi;
+	PATH_BASE_DIR[$idx]="$base_src_dir"
+	PATH_PROJECTS[$idx]=" $project"${PATH_PROJECTS[$idx]}
+}
+
+function compute_working_paths() {
+	local i;
+	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
+	do
+		add_working_path "${PROJECT_NAMES[$i]}" "$(get_src_working_dir ${PROJECT_NAMES[$i]})"
 	done
+}
+
+function add_project() {
+	project_name="$1"
+	source_path="$2"
+
+	PROJECT_NAMES[${#PROJECT_NAMES[@]}]="$project_name"
+	PROJECT_SRC[${#PROJECT_SRC[@]}]="$source_path"
 }
 
 function add_projects() {
@@ -144,8 +170,8 @@ function add_projects() {
 
 	for plugin in $plugins;
 	do
-		POOTLE_PROJECT_ID="$plugin$suffix"
-		PROJECTS["${POOTLE_PROJECT_ID}"]="${prefix}${POOTLE_PROJECT_ID}${SRC_PLUGINS_LANG_PATH}"
+		pootle_project_id="$plugin$suffix"
+		add_project "$pootle_project_id" "${prefix}${pootle_project_id}${SRC_PLUGINS_LANG_PATH}"
 	done
 }
 
