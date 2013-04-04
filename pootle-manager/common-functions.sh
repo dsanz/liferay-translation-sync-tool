@@ -117,3 +117,25 @@ function backup_db() {
 	$DB_DUMP_COMMAND > $dumpfile;
 	check_command;
 }
+
+# Given a project, returns the root dir where sources are supposed to be
+function get_src_working_dir() {
+	project="$1"
+	if [[ $project == $PORTAL_PROJECT_ID ]]; then
+		result=$SRC_PORTAL_BASE;
+	else
+		result=$SRC_PLUGINS_BASE;
+	fi;
+	echo $result
+}
+
+function exists_branch() {
+	branch_name="$1"
+	src_dir="$2"
+	old_dir=$(pwd)
+	cd $src_dir
+	rexp="\b$branch_name\b"
+	branches="$(git branch | sed 's/\*//g')"
+	cd $old_dir
+	[[ "$branches" =~ $rexp ]]
+}

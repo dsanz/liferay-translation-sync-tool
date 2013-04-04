@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. common_functions.sh
+. common-functions.sh
 
 ####
 ## Pootle server communication - from pootle
