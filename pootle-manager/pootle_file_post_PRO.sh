@@ -1,3 +1,5 @@
+#!/bin/bash
+
 declare -x -r PO_HOST="vm-9.liferay.com"
 declare -x -r PO_PORT="80"
 declare -x -r PO_SRV="http://$PO_HOST:$PO_PORT/pootle"
