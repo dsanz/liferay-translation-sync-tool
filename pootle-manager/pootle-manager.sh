@@ -78,7 +78,9 @@ function src2pootle() {
 	backup_db
 	prepare_input_dirs
 	setup_working_branches
-	#update_pootle_db
+	update_pootle_db
+	# bug #1949
+	post_language_translations
 	rotate_working_branches
 }
 
