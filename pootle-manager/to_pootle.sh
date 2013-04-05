@@ -5,6 +5,7 @@
 ####
 
 . common-functions.sh
+. to-pootle_file_poster.sh
 
 # to Pootle
 
@@ -107,4 +108,66 @@ function rotate_working_branches() {
  		rotate_working_branch "$path"
 	done;
 	cd $old_dir
+}
+
+function generate_addition() {
+	path="$1"
+	project="$2"
+	cd $path
+	files="$(ls ${FILE}${LANG_SEP}*.${PROP_EXT})"
+
+	for file in $files; do
+		if [[ "$file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
+			git diff $LAST_BRANCH $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$project/$file
+			number_of_additions=$(cat "$TMP_PROP_IN_DIR/$project/$file" | wc -l)
+			if [[ $number_of_additions -eq 0 ]]; then
+				rm "$TMP_PROP_IN_DIR/$project/$file"
+			else
+				echo -n "      ${file}: $number_of_additions key(s) added "
+				check_command
+			fi;
+		fi
+	done;
+}
+
+function generate_additions() {
+	echo_cyan "[`date`] Calculating commited translations from last update"
+	old_dir=$pwd;
+	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
+	do
+		projects=${PATH_PROJECTS[$i]}
+		base_src_dir=${PATH_BASE_DIR[$i]}
+		cd $base_src_dir
+		echo_white  "  $base_src_dir"
+		if exists_branch $LAST_BRANCH $base_src_dir; then
+			git checkout $WORKING_BRANCH > /dev/null 2>&1
+			for project in $projects; do
+				echo_yellow "    '$project'"
+				path=$(get_project_language_path "$project")
+	 			generate_addition "$path" "$project"
+			done;
+		else
+			echo "      There is no '$LAST_BRANCH' branch, so I can't diff it with '$WORKING_BRANCH' to detect additions for projects $projects"
+		fi;
+	done;
+	cd $old_dir
+}
+
+function post_new_translations() {
+	echo_cyan "[`date`] Posting commited translations from last update"
+	old_dir=$pwd;
+	for project in $(ls $TMP_PROP_IN_DIR); do
+		echo_white  "  $project"
+		cd $TMP_PROP_IN_DIR/$project
+		for file in $(ls $TMP_PROP_IN_DIR/$project); do
+			locale=$(echo $file | sed -r 's/Language_([^\.]+)\.properties/\1/')
+			post_file "$project" "$locale"
+		done;
+	done;
+	cd $old_dir
+}
+
+function post_language_translations() {
+	generate_additions
+	post_new_translations
 }

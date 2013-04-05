@@ -119,7 +119,7 @@ function backup_db() {
 }
 
 # Given a project, returns the root dir where sources are supposed to be
-function get_src_working_dir() {
+function get_src_base_dir() {
 	project="$1"
 	if [[ $project == $PORTAL_PROJECT_ID ]]; then
 		result=$SRC_PORTAL_BASE;
@@ -129,7 +129,7 @@ function get_src_working_dir() {
 	echo $result
 }
 
-function add_working_path() {
+function add_base_path() {
 	project=$1
 	base_src_dir=$2
 	idx=-1;
@@ -151,8 +151,25 @@ function compute_working_paths() {
 	local i;
 	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
-		add_working_path "${PROJECT_NAMES[$i]}" "$(get_src_working_dir ${PROJECT_NAMES[$i]})"
+		add_base_path "${PROJECT_NAMES[$i]}" "$(get_src_base_dir ${PROJECT_NAMES[$i]})"
 	done
+}
+
+function get_project_language_path() {
+	project="$1"
+	local j;
+	for (( j=0; j<${#PROJECT_NAMES[@]}; j++ ));
+	do
+		if [[ "${PROJECT_NAMES[$j]}" == "$project" ]]; then
+			idx=$j;
+		fi;
+	done;
+	if [[ $idx == -1 ]]; then
+		result=""
+	else
+		result="${PROJECT_SRC[$idx]}";
+	fi;
+	echo "$result"
 }
 
 function add_project() {
@@ -184,4 +201,24 @@ function exists_branch() {
 	branches="$(git branch | sed 's/\*//g')"
 	cd $old_dir
 	[[ "$branches" =~ $rexp ]]
+}
+
+function close_pootle_session() {
+	# get logout page and delete cookies
+	echo -n "      Closing pootle session... "
+	curl -s -b "$PO_COOKIES" -c "$PO_COOKIES" "$PO_SRV/accounts/logout" > /dev/null
+	check_command
+}
+
+function start_pootle_session() {
+	echo "      Opening new pootle session"
+	close_pootle_session
+	# 1. get login page (and cookies)
+	echo -n "      Accessing Pootle login page... "
+	curl -s -b "$PO_COOKIES" -c "$PO_COOKIES" "$PO_SRV/accounts/login" > /dev/null
+	check_command
+	# 2. post credentials, including one received cookie
+	echo -n "      Authenticating as $PO_USER ... "
+	curl -s -b "$PO_COOKIES" -c "$PO_COOKIES" -d "username=$PO_USER;password=$PO_PASS;csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" "$PO_SRV/accounts/login" > /dev/null
+	check_command
 }

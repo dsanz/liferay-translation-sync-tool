@@ -20,6 +20,7 @@
 
 # Load API functions
 . to_pootle.sh
+. to_pootle_file_poster.sh
 . from_pootle.sh
 
 # Simple configuration test
@@ -78,7 +79,8 @@ function src2pootle() {
 	backup_db
 	prepare_input_dirs
 	setup_working_branches
-	#update_pootle_db
+	update_pootle_db
+	post_language_translations # bug #1949
 	rotate_working_branches
 }
 
