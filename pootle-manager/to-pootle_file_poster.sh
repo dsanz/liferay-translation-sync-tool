@@ -43,44 +43,28 @@ function get_store_id() {
 	echo $i;
 }
 
-function get_key() {
-	echo $1 | sed s/=.*//
-}
-
-function get_value() {
-	echo $1 | sed -r s/^[^=]+=//
-}
-
 function upload_submission() {
 	key="$1"
 	value="$2"
 	storeId="$3"
 	path="$4"
 	index=$(get_index $storeId $key)
-	 id=$(get_unitid $storeId $key)
+	id=$(get_unitid $storeId $key)
 	sourcef=$(get_sourcef $storeId $key)
-    echo "[`date`] Posting $key=$value"
+    echo "      posting translation for '$key'"
 	curl -s -b "$PO_COOKIES" -c "$PO_COOKIES"  -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "id=$id" -d "path=$path" -d  "pootle_path=$path" -d "source_f_0=$sourcef" -d  "store=$path" -d "submit=Submit" -d  "target_f_0=$value" -d "index=$index" "$PO_SRV$path/translate/?" > /dev/null
 }
 
-function readfile() {
+function post_file() {
 	locale="$2"
 	project="$1"
 	storeId=$(get_store_id $project $locale)
 	path=$(get_pootle_path $project $locale)
 	filename=$(get_filename $locale)
 
-	echo "Utility for posting translations via HTTP"
-	echo "  project : $project"
-	echo "  locale  : $locale"
-    echo "  storeid : $storeId"
-	echo "  path    : $path"
-	echo "  filename: $filename"
-
-	echo "[`date`] submitting keys to project '$project' read from '$filename'..."
+	echo_yellow "    Posting new translations for $project "
 	start_pootle_session
-	while read line; do 
-		# debug: echo "L: $line"
+	while read line; do
 		key=$(echo $line | sed s/=.*//)
 		value=$(echo $line | sed -r s/^[^=]+=//)
 		upload_submission "$key" "$value" "$storeId" "$path"
@@ -88,4 +72,4 @@ function readfile() {
 	close_pootle_session
 }
 
-readfile $@
+
