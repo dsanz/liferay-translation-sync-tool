@@ -5,6 +5,7 @@
 ####
 
 . common-functions.sh
+. to-pootle_file_poster.sh
 
 # to Pootle
 
@@ -119,10 +120,11 @@ function generate_addition() {
 		if [[ "$file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
 			git diff $LAST_BRANCH $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$project/$file
 			number_of_additions=$(cat "$TMP_PROP_IN_DIR/$project/$file" | wc -l)
-			echo -n "      ${file}: $number_of_additions key(s) added "
-			check_command
 			if [[ $number_of_additions -eq 0 ]]; then
 				rm "$TMP_PROP_IN_DIR/$project/$file"
+			else
+				echo -n "      ${file}: $number_of_additions key(s) added "
+				check_command
 			fi;
 		fi
 	done;
@@ -151,6 +153,21 @@ function generate_additions() {
 	cd $old_dir
 }
 
+function post_new_translations() {
+	echo_cyan "[`date`] Posting commited translations from last update"
+	old_dir=$pwd;
+	for project in $(ls $TMP_PROP_IN_DIR); do
+		echo_white  "  $project"
+		cd $TMP_PROP_IN_DIR/$project
+		for file in $(ls $TMP_PROP_IN_DIR/$project); do
+			locale=$(echo $file | sed -r 's/Language_([^\.]+)\.properties/\1/')
+			post_file "$project" "$locale"
+		done;
+	done;
+	cd $old_dir
+}
+
 function post_language_translations() {
 	generate_additions
+	post_new_translations
 }

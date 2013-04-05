@@ -51,7 +51,7 @@ function upload_submission() {
 	index=$(get_index $storeId $key)
 	id=$(get_unitid $storeId $key)
 	sourcef=$(get_sourcef $storeId $key)
-    echo "      posting translation for '$key'"
+	echo "      publishing translation '$key'"
 	curl -s -b "$PO_COOKIES" -c "$PO_COOKIES"  -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "id=$id" -d "path=$path" -d  "pootle_path=$path" -d "source_f_0=$sourcef" -d  "store=$path" -d "submit=Submit" -d  "target_f_0=$value" -d "index=$index" "$PO_SRV$path/translate/?" > /dev/null
 }
 
@@ -62,7 +62,7 @@ function post_file() {
 	path=$(get_pootle_path $project $locale)
 	filename=$(get_filename $locale)
 
-	echo_yellow "    Posting new translations for $project "
+	echo_yellow "    Posting new translations for $project taken from ${pwd}/${filename}"
 	start_pootle_session
 	while read line; do
 		key=$(echo $line | sed s/=.*//)
