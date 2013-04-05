@@ -1,15 +1,5 @@
 #!/bin/bash
 
-declare -x -r PO_HOST="vm-9.liferay.com"
-declare -x -r PO_PORT="80"
-declare -x -r PO_SRV="http://$PO_HOST:$PO_PORT/pootle"
-declare -x -r PO_COOKIES="$TMP_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
-declare -x -r PO_USER="pootle"
-declare -x -r PO_PASS="Foxa26sl"
-declare -x -r DB_NAME="pootle"
-
-## specific functions (above this everything was copied from pootle_manager.sh)
-
     # given the storeId and the language key (unitId) returns the index of that translation unit in the DB
     get_index() {
 	local i=$(mysql $DB_NAME -s  -e "select pootle_store_unit.index from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";"  | cut -d : -f2)
