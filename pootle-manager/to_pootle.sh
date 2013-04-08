@@ -156,14 +156,18 @@ function generate_additions() {
 function post_new_translations() {
 	echo_cyan "[`date`] Posting commited translations from last update"
 	old_dir=$pwd;
+	echo_white  "  Creating session in Pootle"
+	start_pootle_session
 	for project in $(ls $TMP_PROP_IN_DIR); do
 		echo_white  "  $project"
 		cd $TMP_PROP_IN_DIR/$project
 		for file in $(ls $TMP_PROP_IN_DIR/$project); do
 			locale=$(echo $file | sed -r 's/Language_([^\.]+)\.properties/\1/')
-			post_file "$project" "$locale"
+			post_file_batch "$project" "$locale"
 		done;
 	done;
+	echo_white  "  Closing session in Pootle"
+	close_pootle_session
 	cd $old_dir
 }
 

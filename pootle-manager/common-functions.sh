@@ -211,7 +211,7 @@ function close_pootle_session() {
 }
 
 function start_pootle_session() {
-	echo "      Opening new pootle session"
+	echo "      First, access logout page from pootle"
 	close_pootle_session
 	# 1. get login page (and cookies)
 	echo -n "      Accessing Pootle login page... "
