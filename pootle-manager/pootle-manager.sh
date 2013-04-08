@@ -15,9 +15,6 @@
 # Load common functions
 . common-functions.sh
 
-# Load configuration
-. pootle-manager.conf
-
 # Load API functions
 . to_pootle.sh
 . to_pootle_file_poster.sh
@@ -109,6 +106,7 @@ function update() {
 }
 
 main() {
+	load_config
 	resolve_params $@
 	update
 }

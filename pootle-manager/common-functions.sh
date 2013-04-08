@@ -222,3 +222,15 @@ function start_pootle_session() {
 	curl -s -b "$PO_COOKIES" -c "$PO_COOKIES" -d "username=$PO_USER;password=$PO_PASS;csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" "$PO_SRV/accounts/login" > /dev/null
 	check_command
 }
+
+function load_config() {
+	if [[ -n "$POOTLE_MANAGER_PROFILE" ]]; then
+		pmp="$POOTLE_MANAGER_PROFILE"
+		echo_blue "Loading configuration profile '$pmp'"
+	else
+		pmp=""
+		echo_blue "Loading default config profile"
+	fi;
+
+	. pootle-manager${pmp}.conf
+}
