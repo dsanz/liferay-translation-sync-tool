@@ -223,18 +223,6 @@ function start_pootle_session() {
 	check_command
 }
 
-function load_config() {
-	if [[ -n "$POOTLE_MANAGER_PROFILE" ]]; then
-		pmp="$POOTLE_MANAGER_PROFILE"
-		echo_blue "Loading configuration profile '$pmp'"
-	else
-		pmp=""
-		echo_blue "Loading default config profile"
-	fi;
-
-	. pootle-manager${pmp}.conf
-}
-
 # $1 - This parameter must contain $@ (parameters to resolve).
 function resolve_params() {
 	params="$@"
@@ -265,4 +253,16 @@ function resolve_params() {
 	else
 		echo_green "[`date`] Pootle manager [START]"
 	fi
+}
+
+function load_config() {
+	if [[ -n "$POOTLE_MANAGER_PROFILE" ]]; then
+		pmp="pootle-manager.$POOTLE_MANAGER_PROFILE.conf"
+		echo_yellow "Loading configuration profile '$pmp'"
+	else
+		pmp="pootle-manager.conf"
+		echo_yellow "Loading default config profile '$pmp'"
+	fi;
+
+	. "${pmp}"
 }

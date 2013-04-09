@@ -9,7 +9,7 @@ function load_api() {
 
 	# Load API functions
 	. to_pootle.sh
-	. to_pootle_file_poster.sh
+	. to-pootle_file_poster.sh
 	. from_pootle.sh
 }
 
