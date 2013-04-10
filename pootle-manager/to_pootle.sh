@@ -39,7 +39,6 @@ function prepare_input_dirs() {
 
 function create_working_branch() {
 	path="$1"
-
 	cd $path
 	if exists_branch $WORKING_BRANCH $path; then
 		echo -n "      '$WORKING_BRANCH' branch already exists. There seems to be a previous, interrupted process. Deleting branch '$WORKING_BRANCH' "
@@ -74,7 +73,6 @@ function rotate_working_branch() {
 	else
 		echo "      branch '$LAST_BRANCH' does not exist, will be created now"
 	fi;
-
 	echo -n "      git branch -m $WORKING_BRANCH $LAST_BRANCH "
 	git branch -m $WORKING_BRANCH $LAST_BRANCH > /dev/null 2>&1
 	check_command
@@ -90,8 +88,8 @@ function setup_working_branches() {
 		path=${PATH_BASE_DIR[$i]}
 		echo_white  "  $path"
 		echo_yellow "    for projects:$projects"
- 		pull_changes "$path";
- 		create_working_branch "$path"
+		pull_changes "$path";
+		create_working_branch "$path"
 	done;
 	cd $old_dir
 }
@@ -115,7 +113,6 @@ function generate_addition() {
 	project="$2"
 	cd $path
 	files="$(ls ${FILE}${LANG_SEP}*.${PROP_EXT})"
-
 	for file in $files; do
 		if [[ "$file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
 			git diff $LAST_BRANCH $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$project/$file
@@ -156,14 +153,18 @@ function generate_additions() {
 function post_new_translations() {
 	echo_cyan "[`date`] Posting commited translations from last update"
 	old_dir=$pwd;
+	echo_white  "  Creating session in Pootle"
+	start_pootle_session
 	for project in $(ls $TMP_PROP_IN_DIR); do
 		echo_white  "  $project"
 		cd $TMP_PROP_IN_DIR/$project
 		for file in $(ls $TMP_PROP_IN_DIR/$project); do
 			locale=$(echo $file | sed -r 's/Language_([^\.]+)\.properties/\1/')
-			post_file "$project" "$locale"
+			post_file_batch "$project" "$locale"
 		done;
 	done;
+	echo_white  "  Closing session in Pootle"
+	close_pootle_session
 	cd $old_dir
 }
 
