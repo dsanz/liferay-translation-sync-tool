@@ -34,8 +34,6 @@ function src2pootle() {
 function pootle2src() {
 	prepare_output_dirs
 	update_pootle_files
-	keep_template
-	reformat_pootle_files
 	ascii_2_native
 	process_untranslated
 	prepare_vcs
