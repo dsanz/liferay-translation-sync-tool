@@ -37,7 +37,7 @@ function pootle2src() {
 	keep_template
 	reformat_pootle_files
 	ascii_2_native
-	add_untranslated
+	process_untranslated
 	prepare_vcs
 }
 

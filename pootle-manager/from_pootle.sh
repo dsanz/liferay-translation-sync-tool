@@ -45,13 +45,14 @@ function prepare_vcs() {
 # tells pootle to export its translations to properties files inside webapp dirs
 function update_pootle_files() {
 	echo_cyan "[`date`] Updating pootle files from pootle DB..."
-	projects_count=$((${#PROJECTS[@]} - 1))
-	for i in `seq 0 $projects_count`;
+	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
-		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
-		echo_white "  $project: synchronizing pootle stores for all locales"
+		project=${PROJECT_NAMES[$i]}
+		echo_white "  $project"
+		echo -n "    Synchronizing pootle stores for all languages"
 		# Save all translations currently in database to the file system
 		$POOTLEDIR/manage.py sync_stores --project="$project" -v 0
+		check_command
 	done
 }
 
@@ -104,10 +105,9 @@ function reformat_pootle_files() {
 function ascii_2_native() {
 	echo_cyan "[`date`] Converting properties files to native ..."
 
-	projects_count=$((${#PROJECTS[@]} - 1))
-	for i in `seq 0 $projects_count`;
+	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
-		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
+		project=${PROJECT_NAMES[$i]}
 		echo_white "  $project: converting working dir properties to native"
 		#cp -R $PODIR/$project/*.properties $TMP_PROP_OUT_DIR/$project
 		languages=`ls "$TMP_PROP_OUT_DIR/$project"`
@@ -123,15 +123,16 @@ function ascii_2_native() {
 
 # Pootle exports all untranslated keys, assigning them the english value. This function restores the values in old version of Language_*.properties
 # this way, untranslated keys will have the Automatic Copy/Translation tag
-function add_untranslated() {
-	echo_cyan "[`date`] Adding automatic translations to untranslated entries..."
-	projects_count=$((${#PROJECTS[@]} - 1))
-	for i in `seq 0 $projects_count`;
+function process_untranslated() {
+	echo_cyan "[`date`] Processing untranslated keys"
+	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
-		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
+		project=${PROJECT_NAMES[$i]}
+		echo_white "  $project"
 		languages=`ls $PODIR/$project`
 		[ ! -d "$TMP_PROP_OUT_DIR/$project" ] && mkdir -p "$TMP_PROP_OUT_DIR/$project"
-		echo_white "  $project: refilling untranslated entries"
+		echo_white "  $project:"
+		echo_yellow "    Adding automatic translations to untranslated entries..."
 		for language in $languages; do
 			refill_automatic_prop $project $language
 		done
