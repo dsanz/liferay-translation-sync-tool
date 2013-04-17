@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. common-functions.sh
+. api-base.sh
 
 ####
 ## Pootle server communication - from pootle
