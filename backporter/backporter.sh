@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. api-git.sh
+
 # T contains all translations
 declare -A T;
 # K contains all keys in the $target_english_path file
@@ -92,12 +94,6 @@ function is_automatic_translation() {
 }
 
 #### Top level functions
-
-function is_git_dir() {
-	cd $1;
-	git rev-parse --git-dir > /dev/null 2>&1
-	[[ $? -eq 0 ]]
-}
 
 function update_to_head() {
 	if is_git_dir "$1"; then

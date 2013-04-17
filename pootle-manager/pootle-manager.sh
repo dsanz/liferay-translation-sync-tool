@@ -4,10 +4,14 @@
 # Version: 		2.0
 
 function load_api() {
-	# Load common functions
-	. common-functions.sh
+	# Load base APIs
+	. api-base.sh
+	. api-config.sh
+	. api-git.sh
+	. api-http.sh
+	. api-db.sh
 
-	# Load API functions
+	# Load APIs
 	. to_pootle.sh
 	. to-pootle_file_poster.sh
 	. from_pootle.sh
