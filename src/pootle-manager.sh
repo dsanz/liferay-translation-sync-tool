@@ -48,7 +48,7 @@ main() {
 	load_config
 	resolve_params $@
 	# Simple configuration test
-	#verify_params 19 "Configuration load failed. You should fill in all variables in pootle-manager.conf." \
+	#verify_params 19 "Configuration load failed. You should fill in all variables in pootle-manager.conf.sh." \
 		#$POOTLEDIR $PODIR $TMP_DIR $TMP_PROP_IN_DIR $TMP_PROP_OUT_DIR $TMP_PO_DIR \
 		#$PO_USER $PO_PASS $PO_HOST $PO_PORT $PO_SRV \
 		#$PO_COOKIES $SRC_PATH_PLUGIN_PREFIX \
