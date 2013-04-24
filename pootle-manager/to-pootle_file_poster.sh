@@ -16,7 +16,6 @@ function upload_submission() {
 function upload_submissions() {
 	locale="$2"
 	project="$1"
-	. api-db.sh
 	storeId=$(get_store_id $project $locale)
 	path=$(get_pootle_path $project $locale)
 	filename=$(get_filename $locale)
@@ -32,7 +31,6 @@ function upload_submissions() {
 function post_file() {
 	project="$1"
 	locale="$2"
-	. api-http.sh
 	echo_yellow "    Posting new '$locale' translations for $project"
 	start_pootle_session
 	upload_submissions "$1" "$2"
