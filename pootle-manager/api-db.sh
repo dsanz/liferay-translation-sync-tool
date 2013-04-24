@@ -31,6 +31,12 @@ function get_sourcef() {
 	echo $i;
 }
 
+# given the storeId and the language key (unitId) returns the target_f field of that translation unit in the DB, which stores the translation of the key
+function get_targetf() {
+	local i=$(mysql $DB_NAME -s  -e "select pootle_store_unit.target_f from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";"  | cut -d : -f2)
+	echo $i;
+}
+
 # given a locale name such as "pt_BR" returns the file name "Language_pt_BR.properties"
 function get_filename(){
 	local i="Language_$1.properties"
