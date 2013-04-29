@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. common-functions.sh
+. api-base.sh
 
 ####
 ## Pootle server communication - from pootle
@@ -45,69 +45,28 @@ function prepare_vcs() {
 # tells pootle to export its translations to properties files inside webapp dirs
 function update_pootle_files() {
 	echo_cyan "[`date`] Updating pootle files from pootle DB..."
-	projects_count=$((${#PROJECTS[@]} - 1))
-	for i in `seq 0 $projects_count`;
+	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
-		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
-		echo_white "  $project: synchronizing pootle stores for all locales"
+		project=${PROJECT_NAMES[$i]}
+		echo_white "  $project"
+		echo -n "    Synchronizing pootle stores for all languages"
 		# Save all translations currently in database to the file system
 		$POOTLEDIR/manage.py sync_stores --project="$project" -v 0
+		check_command
+		echo -n "   Copying Language.properties file into working dir"
+		cp -f "$PODIR/$project/${FILE}*.${PROP_EXT}" "$TMP_PROP_OUT_DIR/$project/"
 	done
 }
 
 ## File processing functions
 
-# saves a .po file from the Language.properties file stored by pootle inside webapps dirs
-# gets called before native2ascii
-function keep_template() {
-	echo_cyan "[`date`] Keeping file templates for later exporting ..."
-
-	projects_count=$((${#PROJECTS[@]} - 1))
-	for i in `seq 0 $projects_count`;
-	do
-		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
-		echo_white "  $project: creating .pot file from Language.properties"
-		prop2po -i $PODIR/$project/$FILE.$PROP_EXT -o $TMP_PO_DIR/$project/ -P --progress=none
-		check_command
-		echo "      Created $(ls $TMP_PO_DIR/$project/) file"
-	done
-}
-
-# reformats .properties files by generating a .po, then a new .properties from that .po and the template .po
-function reformat_pootle_files() {
-	echo_cyan "[`date`] Reformatting exported pootle files..."
-	projects_count=$((${#PROJECTS[@]} - 1))
-	for i in `seq 0 $projects_count`;
-	do
-		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
-		languages=`ls $PODIR/$project`
-		echo_white "  $project: reformatting files"
-		clean_dir "$TMP_PROP_OUT_DIR/$project"
-		for language in $languages; do
-			if [ "$language" != "$FILE.$PROP_EXT" ]; then
-				echo_yellow "    $project/$language "
-				lang=`echo $language  | cut -f2- -d _ | cut -f1 -d .`
-				echo -n "      Original ${FILE}_$lang.$PROP_EXT --> ${FILE}_$lang.$PO_EXT "
-				prop2po -i "$PODIR/$project/$language" -o "$TMP_PO_DIR/$project/" -t "$PODIR/$project/$FILE.$PROP_EXT" --progress=none
-				check_command
-				echo -n "      ${FILE}_$lang.$PO_EXT --> formatted ${FILE}_$lang.$PROP_EXT"
-				po2prop -i "$TMP_PO_DIR/$project/${FILE}_$lang.$PO_EXT" -o "$TMP_PROP_OUT_DIR/$project/" -t "$PODIR/$project/$FILE.$PROP_EXT" --progress=none
-				check_command
-			fi
-		done
-		echo_white "  $project: copying Language.properties file into working dir"
-		cp -f "$PODIR/$project/$FILE.$PROP_EXT" "$TMP_PROP_OUT_DIR/$project/"
-	done
-}
-
 # Pootle exports its translations into ascii-encoded properties files. This converts them to UTF-8
 function ascii_2_native() {
 	echo_cyan "[`date`] Converting properties files to native ..."
 
-	projects_count=$((${#PROJECTS[@]} - 1))
-	for i in `seq 0 $projects_count`;
+	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
-		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
+		project=${PROJECT_NAMES[$i]}
 		echo_white "  $project: converting working dir properties to native"
 		#cp -R $PODIR/$project/*.properties $TMP_PROP_OUT_DIR/$project
 		languages=`ls "$TMP_PROP_OUT_DIR/$project"`
@@ -123,15 +82,16 @@ function ascii_2_native() {
 
 # Pootle exports all untranslated keys, assigning them the english value. This function restores the values in old version of Language_*.properties
 # this way, untranslated keys will have the Automatic Copy/Translation tag
-function add_untranslated() {
-	echo_cyan "[`date`] Adding automatic translations to untranslated entries..."
-	projects_count=$((${#PROJECTS[@]} - 1))
-	for i in `seq 0 $projects_count`;
+function process_untranslated() {
+	echo_cyan "[`date`] Processing untranslated keys"
+	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
-		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
+		project=${PROJECT_NAMES[$i]}
+		echo_white "  $project"
 		languages=`ls $PODIR/$project`
 		[ ! -d "$TMP_PROP_OUT_DIR/$project" ] && mkdir -p "$TMP_PROP_OUT_DIR/$project"
-		echo_white "  $project: refilling untranslated entries"
+		echo_white "  $project:"
+		echo_yellow "    Adding automatic translations to untranslated entries..."
 		for language in $languages; do
 			refill_automatic_prop $project $language
 		done

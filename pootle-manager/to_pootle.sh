@@ -4,7 +4,7 @@
 ## Pootle server communication
 ####
 
-. common-functions.sh
+. api-base.sh
 . to-pootle_file_poster.sh
 
 # to Pootle
