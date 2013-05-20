@@ -1,7 +1,7 @@
 #!/bin/bash
 
-. api-git.sh
-. api-properties.sh
+. api/api-git.sh
+. api/api-properties.sh
 
 
 # L contains all locales in target_dir

@@ -5,11 +5,11 @@
 
 function load_api() {
 	# Load base APIs
-	. api-base.sh
-	. api-config.sh
-	. api-git.sh
-	. api-http.sh
-	. api-db.sh
+	. api/api-base.sh
+	. api/api-config.sh
+	. api/api-git.sh
+	. api/api-http.sh
+	. api/api-db.sh
 
 	# Load APIs
 	. to_pootle.sh
