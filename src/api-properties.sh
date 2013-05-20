@@ -45,8 +45,10 @@ function is_automatic_translation() {
 # reads a file and inserts keys in T (also in K if applicable)
 # $1 is the file name path
 # $2 is the key prefix where keys will be stored
+# $3 is an optional boolean which states if keys are being read from the template or not
 function read_locale_file() {
 	lines=$(wc -l "$1" | cut -d' ' -f1)
+	template=$3
 	echo -n "  Reading file $1        "
 	counter=0
 	while read line; do
@@ -56,7 +58,7 @@ function read_locale_file() {
 		if is_key_line "$line" ; then
 			[[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
 			T[$2,$key]=$value
-			if [[ $2 == $old_english ]]; then
+			if [[ $template ]]; then
 				K[${#K[@]}]=$key
 			fi;
 		else

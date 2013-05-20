@@ -282,7 +282,7 @@ function read_english_files() {
 	echo "Reading english files"
 	set_english_paths
 	read_locale_file $source_english_path $new_english
-	read_locale_file $target_english_path $old_english
+	read_locale_file $target_english_path $old_english true
 }
 
 function read_lang_files() {
