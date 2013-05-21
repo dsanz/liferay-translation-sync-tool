@@ -1,20 +1,19 @@
 #!/bin/bash
-#
+
 # Author:		Milan Jaros, Daniel Sanz, Alberto Montero
-# Version: 		2.0
 
 function load_api() {
 	# Load base APIs
-	. api-base.sh
-	. api-config.sh
-	. api-git.sh
-	. api-http.sh
-	. api-db.sh
+	. api/api-base.sh
+	. api/api-config.sh
+	. api/api-git.sh
+	. api/api-http.sh
+	. api/api-db.sh
 
 	# Load APIs
-	. to_pootle.sh
-	. to-pootle_file_poster.sh
-	. from_pootle.sh
+	. pootle-api/to_pootle.sh
+	. pootle-api/to_pootle-file_poster.sh
+	. pootle-api/from_pootle.sh
 }
 
 ####
@@ -48,7 +47,7 @@ main() {
 	load_config
 	resolve_params $@
 	# Simple configuration test
-	#verify_params 19 "Configuration load failed. You should fill in all variables in pootle-manager.conf." \
+	#verify_params 19 "Configuration load failed. You should fill in all variables in pootle-manager.conf.sh." \
 		#$POOTLEDIR $PODIR $TMP_DIR $TMP_PROP_IN_DIR $TMP_PROP_OUT_DIR $TMP_PO_DIR \
 		#$PO_USER $PO_PASS $PO_HOST $PO_PORT $PO_SRV \
 		#$PO_COOKIES $SRC_PATH_PLUGIN_PREFIX \
