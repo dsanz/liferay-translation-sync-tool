@@ -1,13 +1,7 @@
 #!/bin/bash
 
-####
-## Pootle server communication
-####
-
-. api/api-base.sh
+. ../api/api-base.sh
 . to-pootle_file_poster.sh
-
-# to Pootle
 
 function update_pootle_db() {
 	echo_cyan "[`date`] Updating pootle database..."

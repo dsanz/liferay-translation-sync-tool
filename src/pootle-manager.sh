@@ -1,7 +1,6 @@
 #!/bin/bash
-#
+
 # Author:		Milan Jaros, Daniel Sanz, Alberto Montero
-# Version: 		2.0
 
 function load_api() {
 	# Load base APIs
@@ -12,9 +11,9 @@ function load_api() {
 	. api/api-db.sh
 
 	# Load APIs
-	. to_pootle.sh
-	. to-pootle_file_poster.sh
-	. from_pootle.sh
+	. pootle-api/to_pootle.sh
+	. pootle-api/to-pootle_file_poster.sh
+	. pootle-api/from_pootle.sh
 }
 
 ####
