@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Author:		Milan Jaros, Daniel Sanz, Alberto Montero
+
 . api/api-git.sh
 . api/api-properties.sh
 
