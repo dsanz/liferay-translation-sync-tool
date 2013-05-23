@@ -85,13 +85,59 @@ function process_untranslated() {
 		project=${PROJECT_NAMES[$i]}
 		echo_white "  $project"
 		languages=`ls $PODIR/$project`
-		[ ! -d "$TMP_PROP_OUT_DIR/$project" ] && mkdir -p "$TMP_PROP_OUT_DIR/$project"
-		echo_white "  $project:"
-		echo_yellow "    Adding automatic translations to untranslated entries..."
+        echo_yellow "    Reading template file"
+        read_pootle_exported_template $project
 		for language in $languages; do
-			refill_automatic_prop $project $language
+		    echo_yellow "    Reading $language file"
+            read_pootle_exported_language_file $project $language
+			echo_yellow "    Reading $language file from source branch (at last commit uploaded to pootle)"
+            read_previous_language_file $project $language
+            refill_translations $project $language
 		done
 	done
+}
+
+function is_from_template() {
+    project="$1"
+    locale="$2"
+    key="$3"
+    [[ ${T[$project,$key]} == ${T[$locale,$key]} ]]
+}
+
+# Due to pootle exports all untranslated keys, there is no way to know if a value in Language_xx.properties
+# comes from an untranslated keys or a key which valid value in that language is the same than english.
+# This distinction is crucial to skip auto translating terms which are better known if the english word is used.
+# For example: "staging" is used in Spanish to denote "Staging".
+# In order to know this, direct access to Pootle DB is needed
+function refill_translations() {
+    project="$1";
+    language="$2";
+    locale=get_locale_from_file_name $language
+    file="$(get_project_language_path $project)/$language.final"
+    target_lang_path="$TMP_PROP_OUT_DIR/$project/$language"
+    while read line; do
+	    char="x"
+		if is_key_line "$line" ; then
+			[[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}"
+			if is_from_template $project $locale $key; then
+			    storeId=$(get_store_id $project $locale)
+			    targetf=$(get_targetf $storeId $key)
+			    if [[ targetf == ${T[$project,$key]} ]]; then
+			        value=${T[$project,$key]}
+			        char="e"
+			    else
+			        value=${T["p$locale",$key]}
+			        char="o"
+			    fi
+			else
+			    translation=${T[$locale,$key]}
+			fi
+		else
+			char="#"
+		fi
+		echo "${key}=${value}" >> $file
+		echo -n $char
+	done < $target_lang_path
 }
 
 # given a project, reads the Language.properties file exported from pootle
@@ -120,6 +166,7 @@ function read_previous_language_file() {
     locale=get_locale_from_file_name $language
     sources=get_project_language_path $project
     langFile="$sources/$language"
+    #be sure we are in the correct branch
 	read_locale_file $langFile "p$locale"
 }
 
