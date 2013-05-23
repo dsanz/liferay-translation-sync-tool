@@ -94,6 +94,35 @@ function process_untranslated() {
 	done
 }
 
+# given a project, reads the Language.properties file exported from pootle
+# and puts it into array T using the project as prefix
+function read_pootle_exported_template() {
+    project="$1";
+    template="$TMP_PROP_OUT_DIR/$project/$FILE.$PROP_EXT"
+	read_locale_file $source_lang_path $project true
+}
+
+# given a project and a language, reads the Language_xx.properties file
+# exported from pootle and puts it into array T using the locale as prefix
+function read_pootle_exported_language_file() {
+    project="$1";
+    language="$2";
+    locale=get_locale_from_file_name $language
+    langFile="$TMP_PROP_OUT_DIR/$project/$language"
+	read_locale_file $langFile $locale
+}
+
+# given a project and a language, reads the Language_xx.properties file
+# from the branch and puts it into array T using "p"+locale as prefix
+function read_previous_language_file() {
+    project="$1";
+    language="$2";
+    locale=get_locale_from_file_name $language
+    sources=get_project_language_path $project
+    langFile="$sources/$language"
+	read_locale_file $langFile "p$locale"
+}
+
 # refills all untranslated keys with the value in a previous file.
 # this way, untranslated keys will have the Automatic Copy/Translation tag
 # $1 - project
