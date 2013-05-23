@@ -10,6 +10,13 @@ declare kv_rexp="^([^=]+)=(.*)"
 
 #### Base functions
 
+# removes from T all entries for a given prefix
+# $1 is the prefix
+function clear_keys() {
+    for key in "${K[@]}"; do
+		unset 'T[$1,$key]'
+	done;
+}
 # returns true if line is a translation line (as opposed to comments or blank lines), false otherwise
 # $1 is the line
 function is_key_line() {
