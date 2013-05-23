@@ -153,7 +153,7 @@ function post_new_translations() {
 		echo_white  "  $project"
 		cd $TMP_PROP_IN_DIR/$project
 		for file in $(ls $TMP_PROP_IN_DIR/$project); do
-			locale=$(echo $file | sed -r 's/Language_([^\.]+)\.properties/\1/')
+			locale=$(get_locale_from_filename $file)
 			post_file_batch "$project" "$locale"
 		done;
 	done;

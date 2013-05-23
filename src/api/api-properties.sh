@@ -49,6 +49,11 @@ function is_automatic_translation() {
 	[[ "${T[$1,$2]}" =~ $rexp ]]
 }
 
+function get_locale_from_file_name() {
+    file=$1
+    echo $file | sed -r 's/Language_([^\.]+)\.properties/\1/'
+}
+
 # reads a file and inserts keys in T (also in K if applicable)
 # $1 is the file name path
 # $2 is the key prefix where keys will be stored
