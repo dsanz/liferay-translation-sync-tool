@@ -1,7 +1,7 @@
 #!/bin/bash
 
-. ../api/api-base.sh
-. to_pootle-file_poster.sh
+. api/api-base.sh
+. pootle-api/to_pootle-file_poster.sh
 
 function update_pootle_db() {
 	echo_cyan "[`date`] Updating pootle database..."

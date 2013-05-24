@@ -135,5 +135,5 @@ function load_config() {
 		echo_yellow "Loading default config profile '$pmp'"
 	fi;
 
-	. "../conf/${pmp}"
+	. "conf/${pmp}"
 }
