@@ -118,6 +118,7 @@ function is_from_template() {
 # For example: "staging" is used in Spanish to denote "Staging".
 # In order to know this, direct access to Pootle DB is needed
 function refill_translations() {
+    set -f
     project="$1";
     language="$2";
     locale=$(get_locale_from_file_name $language)
@@ -134,12 +135,12 @@ function refill_translations() {
 			[[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}"
 			if is_from_template $project $locale $key; then                 # is the exported value equals to the template?
 			    targetf=$(get_targetf $storeId $key)
-			    if [[ $targetf == $(getTVal $templatePrefix $key) ]]; then  #   then, was it translated that way on purpose?
-			        value=targetf                                           #       grab the translation
-			        char="e"
+			    value=$(getTVal $templatePrefix $key)
+			    if [[ $targetf == $value ]]; then                       #   then, was it translated that way on purpose?
+			        char="e"                                                #       use the template value (already set)
 			    else                                                        #       otherwise, key is really untranslated in pootle
 			        value=$(getTVal $previousPrefix $key)                   #           get the translation from master
-			        if is_translated_value $value; then                     #           is not auto-translated?
+			        if is_translated_value "$value"; then                   #           is not auto-translated?
                         char="-"                                            #               discard it! ant build-lang will do
                     	value=""
 			        else
@@ -158,6 +159,7 @@ function refill_translations() {
 		echo "$result" >> $file
 		echo -n $char
 	done < $target_lang_path
+	set +f
 }
 
 # given a project, reads the Language.properties file exported from pootle
@@ -185,7 +187,7 @@ function read_pootle_exported_language_file() {
 }
 
 function get_exported_language_prefix() {
-    echo "$1$2"
+    echo $1$2
 }
 
 # given a project and a language, reads the Language_xx.properties file
