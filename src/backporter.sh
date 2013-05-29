@@ -257,10 +257,8 @@ function backport() {
 }
 
 function clear_translations() {
-	for key in "${K[@]}"; do
-		unset 'T[$new_lang,$key]'
-	 	unset 'T[$old_lang,$key]'
-	done;
+    clear_keys $new_lang
+    clear_keys $old_lang
 }
 
 function echo_legend() {

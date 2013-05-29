@@ -1,7 +1,7 @@
 #!/bin/bash
 
-. ../api/api-base.sh
-. to_pootle-file_poster.sh
+. api/api-base.sh
+. pootle-api/to_pootle-file_poster.sh
 
 function update_pootle_db() {
 	echo_cyan "[`date`] Updating pootle database..."
@@ -153,7 +153,7 @@ function post_new_translations() {
 		echo_white  "  $project"
 		cd $TMP_PROP_IN_DIR/$project
 		for file in $(ls $TMP_PROP_IN_DIR/$project); do
-			locale=$(echo $file | sed -r 's/Language_([^\.]+)\.properties/\1/')
+			locale=$(get_locale_from_filename $file)
 			post_file_batch "$project" "$locale"
 		done;
 	done;

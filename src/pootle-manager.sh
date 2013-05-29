@@ -9,6 +9,7 @@ function load_api() {
 	. api/api-git.sh
 	. api/api-http.sh
 	. api/api-db.sh
+	. api/api-properties.sh
 
 	# Load APIs
 	. pootle-api/to_pootle.sh
