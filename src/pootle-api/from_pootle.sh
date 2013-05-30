@@ -95,6 +95,8 @@ function process_untranslated() {
             read_pootle_exported_language_file $project $language
 			echo_yellow "    Reading $language file from source branch (at last commit uploaded to pootle)"
             read_previous_language_file $project $language
+			echo_yellow "    Reading overriding translations"
+            read_ext_language_file $project $language
             refill_translations $project $language
             locale=$(get_locale_from_file_name $language)
             clear_keys "$(get_exported_language_prefix $project $locale)"
@@ -123,43 +125,112 @@ function refill_translations() {
     language="$2";
     locale=$(get_locale_from_file_name $language)
     file=$(get_project_language_path $project)/$language.final
-    rm $file
+    rm $file $file.log
     target_lang_path="$TMP_PROP_OUT_DIR/$project/$language"
 	exportedPrefix=$(get_exported_language_prefix $project $locale)
     previousPrefix=$(get_previous_language_prefix $project $locale)
     templatePrefix=$(get_template_prefix $project $locale)
+    extPrefix=$(get_ext_language_prefix $project $locale)
     storeId=$(get_store_id $project $locale)
+    path=$(get_pootle_path $project $locale)
+    echo_yellow "    Copying translations: 'p' from pootle.  'x' conflict, pootle wins, please review logs.  '·' same valid translation in pootle and master.  'o' overriden from ext.  'e' English is ok.  'u' untranslated, pick old commit.  'r' reverse-path (sources translated, pootle not).  'a' to be translated by ant.  '#' comment.  '!' uncovered case)"
+    declare -A R  # referse translations
+    declare -A C  # conflicts
     while read line; do
-	    char="x"
+	    char="!"
 		if is_key_line "$line" ; then
 			[[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}"
-			if is_from_template $project $locale $key; then                 # is the exported value equals to the template?
+			if exists_ext_value $extPrefix $key; then                       # has translation to be overriden?
+			    value=$(getTVal $extPrefix $key)
+			    char="o"
+			elif is_from_template $project $locale $key; then               # otherwise, is the exported value equals to the template?
 			    targetf=$(get_targetf $storeId $key)
-			    value=$(getTVal $templatePrefix $key)
-			    if [[ $targetf == $value ]]; then                       #   then, was it translated that way on purpose?
-			        char="e"                                                #       use the template value (already set)
-			    else                                                        #       otherwise, key is really untranslated in pootle
-			        value=$(getTVal $previousPrefix $key)                   #           get the translation from master
-			        if is_translated_value "$value"; then                   #           is not auto-translated?
-                        char="-"                                            #               discard it! ant build-lang will do
-                    	value=""
+			    valueTpl=$(getTVal $templatePrefix $key)
+			    if [[ "$targetf" == "$value" ]]; then                       #   then, was it translated that way on purpose?
+			        char="e"                                                #       use the template value
+			        value=$valueTpl
+			    else                                                        #   otherwise, key is really untranslated in pootle
+			        valuePrev=$(getTVal $previousPrefix $key)               #       get the translation from master, current commit (or previous??)
+			        if is_translated_value "$valuePrev"; then               #       is the key translated in master? shouldn't happen unless we have an auto-translation
+			            if [[ "$valuePrev" != "$valueTpl" ]]; then          #           is the value in master different from the template?
+                            char="r"
+                            value=$valuePrev
+                            R[$key]="$value"
+			            else                                                #           ok, value in master is just like the template
+                            char="a"                                        #               discard it! ant build-lang will do
+                    	    value=""
+                    	fi
 			        else
-			            char="o"                                            #           otherwise, reuse it, don't do same work twice
+			            char="u"                                            #        otherwise, it's auto-translated: reuse it, don't do same work twice
+			            value=$valuePrev
 			        fi;
 			    fi
 			else
 			    value=$(getTVal $exportedPrefix $key)                       #   otherwise, it's supposed to be a valid translation
-			    char="."
+		        valuePrev=$(getTVal $previousPrefix $key)                   #   get the translation from master, current commit (or previous??)
+                if is_translated_value "$valuePrev"; then                   #   was the master value translated
+                    if [[ "$valuePrev" != "$value" ]]; then                 #       is this translation different than the one pootle exported?
+                        char="x"                                            #           conflict, pootle wins. Let user know
+                        C[$key]="$value"                                    #           take note of itfor logging purposes
+                    else
+                        char="·"                                            #       no-op, already translated both in pootle and master
+                    fi
+                else                                                        # the master value is auto-translated/auto-copied
+                    char="p"                                                #   translated in pootle, but not in master. OK!!
+                fi
 			fi
 			result="${key}=${value}"
-		else
+		else                                                               # is it a comment line?
 			char="#"
-			result=$line
+			result=$line                                                   #    get the whole line
 		fi
 		echo "$result" >> $file
+		echo "$char - $result" >> $file.log
 		echo -n $char
 	done < $target_lang_path
+
+    echo
+    if [[ ${#R[@]} -gt 0 ]]; then
+        echo_yellow "    Submitting translations from master to pootle. Next time be sure to run this manager with -p option!"
+        start_pootle_session
+        for key in "${!R[@]}"; do
+            value=${R[$key]}
+            upload_submission "$key" "$value" "$storeId" "$path"
+	    done;
+	    close_pootle_session
+    fi
+    if [[ ${#C[@]} -gt 0 ]]; then
+        echo_yellow "    Conflicts are keys having correct, different translations both in pootle and in sources. Please check following keys:"
+        for key in "${!C[@]}"; do
+            echo -n "$key "
+	    done;
+    fi
 	set +f
+	unset R
+	unset C
+}
+
+function exists_ext_value() {
+    extPrefix=$1
+    key=$2
+    exists_key $extPrefix $key
+}
+
+# given a project and a language, reads the Language_xx.properties file
+# exported from pootle and puts it into array T using the locale as prefix
+function read_ext_language_file() {
+    project="$1";
+    language="$2";
+    locale=$(get_locale_from_file_name $language)
+    langFile="conf/ext/$project/$language"
+	if [ -e $langFile ]; then
+        prefix=$(get_ext_language_prefix $project $locale)
+	    read_locale_file $langFile $prefix
+	fi
+}
+
+function get_ext_language_prefix() {
+    echo "x$1$2"
 }
 
 # given a project, reads the Language.properties file exported from pootle
@@ -198,7 +269,7 @@ function read_previous_language_file() {
     locale=$(get_locale_from_file_name $language)
     sources=$(get_project_language_path $project)
     langFile="$sources/$language"
-    #be sure we are in the correct branch
+    git checkout $LAST_BRANCH > /dev/null 2>&1   # just in case we have run with -p. Now we are in the las update branch
 	prefix=$(get_previous_language_prefix $project $locale)
 	read_locale_file $langFile $prefix
 }
