@@ -51,7 +51,8 @@ function is_key_line() {
 # $1 is the key prefix
 # $2 is the key name
 function exists_key() {
-	[ $($(getTVal $1 $2)+abc) ]
+    k=$(getTKey $1 $2)
+    [ ${T[$k]+abc} ]
 }
 # returns true if value of a given key has changed amongst 2 key prefixes, false otherwise
 # $1 is one key prefix
