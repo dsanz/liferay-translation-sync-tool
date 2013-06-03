@@ -88,6 +88,8 @@ function process_untranslated() {
 		project=${PROJECT_NAMES[$i]}
 		echo_white "  $project"
 		languages=`ls $PODIR/$project`
+        echo_yellow "    Setting up log file"
+        check_dir "$logbase/$project/"
         echo_yellow "    Reading template file"
         read_pootle_exported_template $project
 		for language in $languages; do
@@ -124,15 +126,24 @@ function refill_translations() {
     project="$1";
     language="$2";
     locale=$(get_locale_from_file_name $language)
-    file=$(get_project_language_path $project)/$language.final
-    rm $file $file.log
+
+    # required by api-db to access pootle DB in case we need to know if a term was translated using the english word or not
+    storeId=$(get_store_id $project $locale)
+    path=$(get_pootle_path $project $locale)
+
+    # involved file paths
+    srcfile=$(get_project_language_path $project)/$language
+    workingfile=$(srcfile)/$language.final
+    logfile="$logbase/$project/$language"
+    rm $workingfile # when debugging we don't run all sync stages so we can have this file from a previous run
     target_lang_path="$TMP_PROP_OUT_DIR/$project/$language"
+
+    # prefixes for array accessing
 	exportedPrefix=$(get_exported_language_prefix $project $locale)
     previousPrefix=$(get_previous_language_prefix $project $locale)
     templatePrefix=$(get_template_prefix $project $locale)
     extPrefix=$(get_ext_language_prefix $project $locale)
-    storeId=$(get_store_id $project $locale)
-    path=$(get_pootle_path $project $locale)
+
     echo_yellow "    Copying translations: 'p' from pootle.  'x' conflict, pootle wins, please review logs.  '·' same valid translation in pootle and master.  'o' overriden from ext.  'e' English is ok.  'u' untranslated, pick old commit.  'r' reverse-path (sources translated, pootle not).  'a' to be translated by ant.  '#' comment.  '!' uncovered case)"
     declare -A R  # referse translations
     declare -A C  # conflicts
@@ -184,8 +195,8 @@ function refill_translations() {
 			char="#"
 			result=$line                                                   #    get the whole line
 		fi
-		echo "$result" >> $file
-		echo "$char - $result" >> $file.log
+		echo "$result" >> $workingfile
+		echo "[${char}]___${result}" >> $logfile
 		echo -n $char
 	done < $target_lang_path
 
@@ -208,6 +219,7 @@ function refill_translations() {
 	set +f
 	unset R
 	unset C
+	mv $workingfile $srcfile
 }
 
 function exists_ext_value() {

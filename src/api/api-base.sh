@@ -72,3 +72,11 @@ function echo_blue() { echo -e "$BLUE$@$COLOROFF"; }
 function echo_white() { echo -e "$WHITE$@$COLOROFF"; }
 function echo_cyan() { echo -e "$CYAN$@$COLOROFF"; }
 
+function set_log_dir() {
+    dirname=$(date +%Y-%m);
+    subdirname=$(date +%F_%H-%M-%S)
+	filename="pootle_manager.log";
+	logbase="$LOG_DIR/$dirname/$subdirname/"
+	check_dir $logbase
+	logFile="$logbase/$filename";
+}
