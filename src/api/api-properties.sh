@@ -95,7 +95,7 @@ function get_locale_from_file_name() {
 function read_locale_file() {
 	lines=$(wc -l "$1" | cut -d' ' -f1)
 	template=$3
-	echo -n "  Reading file $1        "
+	logt 4 -n "Reading file $1        "
 	counter=0
 	while read line; do
 		printf "\b\b\b\b\b"
@@ -111,5 +111,5 @@ function read_locale_file() {
 			: #echo -n "."
 		fi
 	done < $1
-	echo;
+	logt 0;
 }

@@ -56,6 +56,7 @@ function display_projects() {
 }
 
 main() {
+	echo "Pootle manager [START]"
 	load_api
 	load_config
 	resolve_params $@
@@ -74,7 +75,7 @@ main() {
 	if [ $RESCAN_FILES ]; then
 	    rescan_files
 	fi
-	[ ! $HELP ] &&	echo_green "[`date`] Pootle manager [DONE]"
+	[ ! $HELP ] &&	echo "Pootle manager [DONE]"
 }
 
 main $@

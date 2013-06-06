@@ -4,29 +4,29 @@
 . pootle-api/to_pootle-file_poster.sh
 
 function update_pootle_db() {
-	echo_cyan "[`date`] Updating pootle database..."
+	logt 1 "Updating pootle database..."
 	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
 		project=${PROJECT_NAMES[$i]}
 		src_dir=${PROJECT_SRC[$i]}
-		echo_white "  $project: "
-		echo_yellow "    Updating the set of translatable keys"
-		echo -n "      Copying project files "
+		logt 2 "$project: "
+		logt 3 "Updating the set of translatable keys"
+		logt 4 -n "Copying project files "
 		cp "$src_dir/${FILE}.$PROP_EXT" "$PODIR/$project"
 		check_command
 		# Update database as well as file system to reflect the latest version of translation templates
-		echo -n "      Updating Pootle templates "
+		logt 4 -n "Updating Pootle templates "
 		$POOTLEDIR/manage.py update_from_templates --project="$project" -v 0 > /dev/null 2>&1
 		check_command
 	done
 }
 
 function prepare_input_dirs() {
-	echo_cyan "[`date`] Preparing project input working dirs..."
+	logt 1 "Preparing project input working dirs..."
 	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
 		project=${PROJECT_NAMES[$i]}
-		echo_white "  $project: cleaning input working dirs"
+		logt 2 "$project: cleaning input working dirs"
 		clean_dir "$TMP_PROP_IN_DIR/$project"
 	done
 }
@@ -35,22 +35,22 @@ function create_working_branch() {
 	path="$1"
 	cd $path
 	if exists_branch $WORKING_BRANCH $path; then
-		echo -n "      '$WORKING_BRANCH' branch already exists. There seems to be a previous, interrupted process. Deleting branch '$WORKING_BRANCH' "
+		logt 3 -n "'$WORKING_BRANCH' branch already exists. There seems to be a previous, interrupted process. Deleting branch '$WORKING_BRANCH' "
 		git branch -D $WORKING_BRANCH > /dev/null 2>&1
 		check_command
 	fi;
-	echo -n "      git checkout -b $WORKING_BRANCH "
+	logt 3 -n "git checkout -b $WORKING_BRANCH "
 	git checkout -b $WORKING_BRANCH > /dev/null 2>&1
 	check_command
 }
 
 function pull_changes() {
 	path="$1"
-	echo -n "      git checkout master "
+	logt 3 -n "git checkout master "
 	cd $path
 	git checkout master > /dev/null 2>&1
 	check_command
-	echo -n "      git pull upstream master "
+	logt 3 -n "git pull upstream master "
 	git pull upstream master > /dev/null 2>&1
 	check_command
 }
@@ -61,27 +61,27 @@ function rotate_working_branch() {
 	git checkout master > /dev/null 2>&1
 	# check if old branch exists
 	if exists_branch $LAST_BRANCH $path; then
-		echo -n "      git branch -D $LAST_BRANCH "
+		logt 3 -n "git branch -D $LAST_BRANCH "
 		git branch -D $LAST_BRANCH > /dev/null 2>&1
 		check_command
 	else
-		echo "      branch '$LAST_BRANCH' does not exist, will be created now"
+		logt 3 "branch '$LAST_BRANCH' does not exist, will be created now"
 	fi;
-	echo -n "      git branch -m $WORKING_BRANCH $LAST_BRANCH "
+	logt 3 -n "git branch -m $WORKING_BRANCH $LAST_BRANCH "
 	git branch -m $WORKING_BRANCH $LAST_BRANCH > /dev/null 2>&1
 	check_command
-	echo "      Contents in '$LAST_BRANCH' will be used as reference of last successful Pootle update"
+	logt 3 "Contents in '$LAST_BRANCH' will be used as reference of last successful Pootle update"
 }
 
 function setup_working_branches() {
-	echo_cyan "[`date`] Setting up git branches for project(s)"
+	logt 1 "Setting up git branches for project(s)"
 	old_dir=$pwd;
 	for (( i=0; i<${#PATH_PROJECTS[@]}; i++ ));
 	do
 		projects=${PATH_PROJECTS[$i]}
 		path=${PATH_BASE_DIR[$i]}
-		echo_white  "  $path"
-		echo_yellow "    for projects:$projects"
+		logt 2 "$path"
+		logt 3 "for projects:$projects"
 		pull_changes "$path";
 		create_working_branch "$path"
 	done;
@@ -89,14 +89,14 @@ function setup_working_branches() {
 }
 
 function rotate_working_branches() {
-	echo_cyan "[`date`] Rotating git branches for project(s)"
+	logt 1 "Rotating git branches for project(s)"
 	old_dir=$pwd;
 	for (( i=0; i<${#PATH_PROJECTS[@]}; i++ ));
 	do
 		projects=${PATH_PROJECTS[$i]}
 		path=${PATH_BASE_DIR[$i]}
-		echo_white  "  $path"
-		echo_yellow "    for projects:$projects"
+		logt 2 "$path"
+		logt 3 "for projects:$projects"
  		rotate_working_branch "$path"
 	done;
 	cd $old_dir
@@ -114,7 +114,7 @@ function generate_addition() {
 			if [[ $number_of_additions -eq 0 ]]; then
 				rm "$TMP_PROP_IN_DIR/$project/$file"
 			else
-				echo -n "      ${file}: $number_of_additions key(s) added "
+				logt 3 -n "${file}: $number_of_additions key(s) added "
 				check_command
 			fi;
 		fi
@@ -122,42 +122,42 @@ function generate_addition() {
 }
 
 function generate_additions() {
-	echo_cyan "[`date`] Calculating commited translations from last update"
+	logt 1 "Calculating commited translations from last update"
 	old_dir=$pwd;
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		projects=${PATH_PROJECTS[$i]}
 		base_src_dir=${PATH_BASE_DIR[$i]}
 		cd $base_src_dir
-		echo_white  "  $base_src_dir"
+		logt 2 "$base_src_dir"
 		if exists_branch $LAST_BRANCH $base_src_dir; then
 			git checkout $WORKING_BRANCH > /dev/null 2>&1
 			for project in $projects; do
-				echo_yellow "    '$project'"
+				logt 3 "$project"
 				path=$(get_project_language_path "$project")
 	 			generate_addition "$path" "$project"
 			done;
 		else
-			echo "      There is no '$LAST_BRANCH' branch, so I can't diff it with '$WORKING_BRANCH' to detect additions for projects $projects"
+			logt 3 "There is no '$LAST_BRANCH' branch, so I can't diff it with '$WORKING_BRANCH' to detect additions for projects $projects"
 		fi;
 	done;
 	cd $old_dir
 }
 
 function post_new_translations() {
-	echo_cyan "[`date`] Posting commited translations from last update"
+	logt 1 "Posting commited translations from last update"
 	old_dir=$pwd;
-	echo_white  "  Creating session in Pootle"
+	logt 2 "Creating session in Pootle"
 	start_pootle_session
 	for project in $(ls $TMP_PROP_IN_DIR); do
-		echo_white  "  $project"
+		logt 3 "$project"
 		cd $TMP_PROP_IN_DIR/$project
 		for file in $(ls $TMP_PROP_IN_DIR/$project); do
 			locale=$(get_locale_from_filename $file)
 			post_file_batch "$project" "$locale"
 		done;
 	done;
-	echo_white  "  Closing session in Pootle"
+	logt 2 "Closing session in Pootle"
 	close_pootle_session
 	cd $old_dir
 }
@@ -168,18 +168,18 @@ function post_language_translations() {
 }
 
 function rescan_files() {
-    echo_cyan "Rescaning project files"
+    logt 1 "Rescaning project files"
     start_pootle_session
     for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
 	    project=${PROJECT_NAMES[$i]}
-		echo_white "   $project"
+		logt 2 "$project"
 		languages=`ls $PODIR/$project/`
 		for language in $languages; do
 		    locale=$(get_locale_from_file_name $language)
 		    path=$(get_path $project $locale)
-		    echo_yellow "      $locale"
-		    echo "        Posting to $path"
+		    logt 3 -n "$locale, posting to $path"
 		    curl -s -b "$PO_COOKIES" -c "$PO_COOKIES"  -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "scan_files=Rescan project files"  "$PO_SRV$path/admin_files.html" > /dev/null
+		    check_command
 		done
     done
     close_pootle_session

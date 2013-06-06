@@ -16,10 +16,10 @@ function check_command() {
 ####
 function check_dir() {
 	if [ ! -d $1 ]; then
-		logt 1 -n "Creating dir $1"
+		logt 3 -n "Creating dir $1"
 		mkdir -p $1
 	else
-		logt 1 -n "Using dir $1"
+		logt 3 -n "Using dir $1"
 		:
 	fi
 	check_command
@@ -30,10 +30,10 @@ function check_dir() {
 ####
 function clean_dir() {
 	if [ ! -d $1 ]; then
-		logt 1 -n "Creating dir $1"
+		logt 3 -n "Creating dir $1"
 		mkdir -p $1
 	else
-		logt 1 -n "Cleaning dir $1"
+		logt 3 -n "Cleaning dir $1"
 		rm -Rf $1/*
 	fi
 	check_command
@@ -89,10 +89,12 @@ function loglc() {
         shift 1
         newline=false;
     fi;
-    echo -ne "$color";
     prefix="";
-    [[ $length -gt 0 ]] && prefix=$(printf "%${length}s")
-    baselog "$prefix$@";
+    [[ $length -gt 0 ]] && prefix="["$(date +%T.%3N)"]"$(printf "%${length}s")
+    echo -ne "$LILA"
+    baselog "$prefix"
+    echo -ne "$color";
+    baselog "$@";
     echo -ne "$COLOROFF";
     $newline && echo | tee -a $logfile
 }
@@ -113,7 +115,8 @@ function logt() {
     0) color=$COLOROFF ;;
     1) color=$CYAN ;;
     2) color=$WHITE ;;
-    3) color=$GREEN ;;
+    3) color=$YELLOW ;;
+    4) color=$COLOROFF ;;
     esac;
     length=$(( $depth * 2 ))
     shift 1;
@@ -128,7 +131,7 @@ function set_log_dir() {
 	logbase="$LOG_DIR/$dirname/$subdirname/"
 	logfile="$logbase$filename";
 	# this can't be logged because log is not ready yet
-	echo -e "${COLOROFF}Logging to $logfile"
+	echo -e "$LILA[$(date +%T.%3N)]${COLOROFF}$CYAN  Preparing log file $logfile"
 	# logbase dir has to be created prior to check_dir call
 	mkdir -p $logbase
 	check_dir $logbase

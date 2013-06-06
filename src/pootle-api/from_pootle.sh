@@ -5,11 +5,11 @@
 
 # creates temporary working dirs for working with pootle output
 function prepare_output_dirs() {
-	echo_cyan "[`date`] Preparing project output working dirs..."
+	logt 1 "Preparing project output working dirs..."
 	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
 		project=${PROJECT_NAMES[$i]}
-		echo_white "  $project: cleaning output working dirs"
+		logt 2 "$project: cleaning output working dirs"
 		clean_dir "$TMP_PROP_OUT_DIR/$project"
 		clean_dir "$TMP_PO_DIR/$project"
 	done
@@ -17,16 +17,16 @@ function prepare_output_dirs() {
 
 # moves files from working dirs to its final destination, making them ready for committing
 function prepare_vcs() {
-	echo_cyan "[`date`] Preparing processed files to VCS dir for commit..."
+	logt 1 "Preparing processed files to VCS dir for commit..."
 	projects_count=$((${#PROJECTS[@]} - 1))
 	for i in `seq 0 $projects_count`;
 	do
 		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
 		languages=`ls $PODIR/$project`
-		echo_white "  $project: processing files"
+		logt 2 "$project: processing files"
 		for language in $languages; do
 			if [ "$FILE.$PROP_EXT" != "$language" ] ; then
-				echo_yellow "    $project/$language: "
+				logt 3 "$project/$language: "
 				check_command
 			fi
 		done
@@ -38,22 +38,21 @@ function prepare_vcs() {
 
 # tells pootle to export its translations to properties files inside webapp dirs
 function update_pootle_files() {
-	echo_cyan "[`date`] Updating pootle files from pootle DB..."
+	logt 1 "Updating pootle files from pootle DB..."
 	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
 		project=${PROJECT_NAMES[$i]}
-		echo_white "  $project"
-		echo -n "    Synchronizing pootle stores for all languages "
+		logt 2 "  $project"
+		logt 3 -n "    Synchronizing pootle stores for all languages "
 		# Save all translations currently in database to the file system
-		$POOTLEDIR/manage.py sync_stores --project="$project" -v 0 > /dev/null 2>&1
+		$POOTLEDIR/manage.py sync_stores --project=s"$project" -v 0 > /dev/null 2>&1
 		check_command
-		echo "    Copying exported tranlsations into working dir"
-		echo -n "       "
+		logt 3 "    Copying exported tranlsations into working dir"
 		for language in $(ls "$PODIR/$project"); do
-		    echo -n  "$(get_locale_from_file_name $language) "
+		    logt 0 -n  "$(get_locale_from_file_name $language) "
     		cp -f  "$PODIR/$project/$language" "$TMP_PROP_OUT_DIR/$project/"
 		done
-	    echo
+	    check_command
 	done
 }
 
@@ -61,17 +60,16 @@ function update_pootle_files() {
 
 # Pootle exports its translations into ascii-encoded properties files. This converts them to UTF-8
 function ascii_2_native() {
-	echo_cyan "[`date`] Converting properties files to native ..."
-
+	logt 1 "Converting properties files to native ..."
 	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
 		project=${PROJECT_NAMES[$i]}
-		echo_white "  $project: converting working dir properties to native"
+		logt 2 "$project: converting working dir properties to native"
 		#cp -R $PODIR/$project/*.properties $TMP_PROP_OUT_DIR/$project
 		languages=`ls "$TMP_PROP_OUT_DIR/$project"`
 		for language in $languages ; do
 			pl="$TMP_PROP_OUT_DIR/$project/$language"
-			echo -n  "$(get_locale_from_file_name $language) "
+			logt 0 -n "$(get_locale_from_file_name $language) "
 			[ -f $pl ] && native2ascii -reverse -encoding utf8 $pl "$pl.native"
 			[ -f "$pl.native" ] && mv --force "$pl.native" $pl
 		done
@@ -82,27 +80,30 @@ function ascii_2_native() {
 # Pootle exports all untranslated keys, assigning them the english value. This function restores the values in old version of Language_*.properties
 # this way, untranslated keys will have the Automatic Copy/Translation tag
 function process_untranslated() {
-	echo_cyan "[`date`] Processing untranslated keys"
+	logt 1 "Processing untranslated keys"
 	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
 		project=${PROJECT_NAMES[$i]}
-		echo_white "  $project"
 		languages=`ls $PODIR/$project`
-        echo_yellow "    Setting up log file"
+        logt 2 "$project"
+        logt 3 "Setting up per-project log file"
         check_dir "$logbase/$project/"
-        echo_yellow "    Reading template file"
+        logt 3 "Reading template file"
         read_pootle_exported_template $project
 		for language in $languages; do
-		    echo_yellow "    Reading $language file"
+		    locale=$(get_locale_from_file_name $language)
+		    logt 2 "$project: $locale"
+		    logt 3 "Reading $language file"
             read_pootle_exported_language_file $project $language
-			echo_yellow "    Reading $language file from source branch (at last commit uploaded to pootle)"
+			logt 3 "Reading $language file from source branch (at last commit uploaded to pootle)"
             read_previous_language_file $project $language
-			echo_yellow "    Reading overriding translations"
+			logt 3 "Reading overriding translations"
             read_ext_language_file $project $language
             refill_translations $project $language
-            locale=$(get_locale_from_file_name $language)
+            logt 3 "Garbage collection... "
             clear_keys "$(get_exported_language_prefix $project $locale)"
             clear_keys "$(get_previous_language_prefix $project $locale)"
+            check_command
 		done
 	done
 }
@@ -133,9 +134,9 @@ function refill_translations() {
 
     # involved file paths
     srcfile=$(get_project_language_path $project)/$language
-    workingfile=$(srcfile)/$language.final
-    logfile="$logbase/$project/$language"
-    rm $workingfile # when debugging we don't run all sync stages so we can have this file from a previous run
+    workingfile="${srcfile}.final"
+    copyingLogfile="$logbase/$project/$language"
+    [[ -f $workingfile ]] && rm $workingfile # when debugging we don't run all sync stages so we can have this file from a previous run
     target_lang_path="$TMP_PROP_OUT_DIR/$project/$language"
 
     # prefixes for array accessing
@@ -144,9 +145,20 @@ function refill_translations() {
     templatePrefix=$(get_template_prefix $project $locale)
     extPrefix=$(get_ext_language_prefix $project $locale)
 
-    echo_yellow "    Copying translations: 'p' from pootle.  'x' conflict, pootle wins, please review logs.  '·' same valid translation in pootle and master.  'o' overriden from ext.  'e' English is ok.  'u' untranslated, pick old commit.  'r' reverse-path (sources translated, pootle not).  'a' to be translated by ant.  '#' comment.  '!' uncovered case)"
-    declare -A R  # referse translations
+    logt 3 "Copying translations: 'p' from pootle.  'x' conflict, pootle wins, please review logs.  '·' same valid translation in pootle and master.  'o' overriden from ext.  'e' English is ok.  'u' untranslated, pick old commit.  'r' reverse-path (sources translated, pootle not).  'a' to be translated by ant.  '#' comment.  '!' uncovered case)"
+    declare -A R  # reverse translations
     declare -A C  # conflicts
+    declare -A charc # colors
+    charc["!"]=$RED
+    charc["o"]=$GREEN
+    charc["e"]=$LILA
+    charc["r"]=$YELLOW
+    charc["a"]=$BLUE;
+    charc["u"]=$CYAN;
+    charc["x"]=$RED;
+    charc["·"]=$COLOROFF;
+    charc["p"]=$WHITE;
+    charc["#"]=$COLOROFF;
     while read line; do
 	    char="!"
 		if is_key_line "$line" ; then
@@ -196,13 +208,13 @@ function refill_translations() {
 			result=$line                                                   #    get the whole line
 		fi
 		echo "$result" >> $workingfile
-		echo "[${char}]___${result}" >> $logfile
-		echo -n $char
+		echo "[${char}]___${result}" >> $copyingLogfile
+		loglc 0 ${charc[$char]} -n "$char"
 	done < $target_lang_path
 
-    echo
+    logt 0
     if [[ ${#R[@]} -gt 0 ]]; then
-        echo_yellow "    Submitting translations from master to pootle. Next time be sure to run this manager with -p option!"
+        logt 3 "Submitting translations from master to pootle. Next time be sure to run this manager with -p option!"
         start_pootle_session
         for key in "${!R[@]}"; do
             value=${R[$key]}
@@ -211,15 +223,18 @@ function refill_translations() {
 	    close_pootle_session
     fi
     if [[ ${#C[@]} -gt 0 ]]; then
-        echo_yellow "    Conflicts are keys having correct, different translations both in pootle and in sources. Please check following keys:"
+        logt 3 "Conflicts are keys having correct, different translations both in pootle and in sources. Please check following keys:"
         for key in "${!C[@]}"; do
-            echo -n "$key "
+            loglc 0 $RED -n "$key "
 	    done;
     fi
 	set +f
 	unset R
 	unset C
+	logt 3 "Moving processed file to source dir"
+	logt 4 -n "Moving to $srcfile"
 	mv $workingfile $srcfile
+	check_command
 }
 
 function exists_ext_value() {

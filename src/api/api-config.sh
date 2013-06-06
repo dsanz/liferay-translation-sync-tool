@@ -123,8 +123,6 @@ function resolve_params() {
 
 		UPDATE_REPOSITORY=
 		UPDATE_POOTLE_DB=
-	else
-		echo_green "[`date`] Pootle manager [START]"
 	fi
 }
 
@@ -141,5 +139,5 @@ function load_config() {
 
 	set_log_dir
 
-	logc "$YELLOW" "$msg"
+	logt 1 "$msg"
 }
