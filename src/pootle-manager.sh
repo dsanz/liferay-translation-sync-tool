@@ -46,11 +46,12 @@ function pootle2src() {
 }
 
 function display_projects() {
-    echo_cyan "Working project list"
+    logt 1 "Working project list"
     for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
 		project=${PROJECT_NAMES[$i]}
-		echo_white "   $project"
-		echo_yellow "      $(get_project_language_path $project)"
+		project=$(printf "%-35s%s" "$project")
+		logt 2 -n "$project"
+		log "$(get_project_language_path $project)"
 	done
 }
 
@@ -58,7 +59,6 @@ main() {
 	load_api
 	load_config
 	resolve_params $@
-    set_log_dir
 	# Simple configuration test
 	#verify_params 19 "Configuration load failed. You should fill in all variables in pootle-manager.conf.sh." \
 		#$POOTLEDIR $PODIR $TMP_DIR $TMP_PROP_IN_DIR $TMP_PROP_OUT_DIR $TMP_PO_DIR \
