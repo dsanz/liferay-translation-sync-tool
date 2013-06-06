@@ -129,11 +129,15 @@ function resolve_params() {
 function load_config() {
 	if [[ -n "$POOTLE_MANAGER_PROFILE" ]]; then
 		pmp="pootle-manager.$POOTLE_MANAGER_PROFILE.conf.sh"
-		echo_yellow "Loading configuration profile '$pmp'"
+		msg="Loaded configuration profile '$pmp'"
 	else
 		pmp="pootle-manager.conf.sh"
-		echo_yellow "Loading default config profile '$pmp'"
+		msg="Loaded default config profile '$pmp'"
 	fi;
 
 	. "conf/${pmp}"
+
+	set_log_dir
+
+	logc "$YELLOW" "$msg"
 }
