@@ -54,6 +54,16 @@ function get_pootle_path() {
 	echo $i;
 }
 
+# given a project name and a locale, returns the path for translations of that project in that language
+# this is required to rescan files
+function get_path() {
+    project="$1"
+	locale="$2"
+	# value example: "/pt_BR/portal"
+	local i="/$locale/$project/"
+	echo $i;
+}
+
 # given the project name and a locale, returns the storeId of the store which has all translations of that project in that language
 function get_store_id() {
 	project="$1"

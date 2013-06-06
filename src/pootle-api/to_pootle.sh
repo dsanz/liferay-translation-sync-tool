@@ -166,3 +166,21 @@ function post_language_translations() {
 	generate_additions
 	post_new_translations
 }
+
+function rescan_files() {
+    echo_cyan "Rescaning project files"
+    start_pootle_session
+    for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
+	    project=${PROJECT_NAMES[$i]}
+		echo_white "   $project"
+		languages=`ls $PODIR/$project/`
+		for language in $languages; do
+		    locale=$(get_locale_from_file_name $language)
+		    path=$(get_path $project $locale)
+		    echo_yellow "      $locale"
+		    echo "        Posting to $path"
+		    curl -s -b "$PO_COOKIES" -c "$PO_COOKIES"  -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "scan_files=Rescan project files"  "$PO_SRV$path/admin_files.html" > /dev/null
+		done
+    done
+    close_pootle_session
+}

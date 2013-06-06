@@ -71,6 +71,9 @@ main() {
 	if [ $UPDATE_POOTLE_DB ]; then
 		src2pootle
 	fi
+	if [ $RESCAN_FILES ]; then
+	    rescan_files
+	fi
 	[ ! $HELP ] &&	echo_green "[`date`] Pootle manager [DONE]"
 }
 

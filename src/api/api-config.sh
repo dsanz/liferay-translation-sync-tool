@@ -103,6 +103,8 @@ function resolve_params() {
 			export UPDATE_REPOSITORY=1
 		elif [ "$param" = "--repo2pootle" ] || [ "$param" = "-p" ]; then
 			export UPDATE_POOTLE_DB=1
+	    elif [ "$param" = "--rescanfile" ] || [ "$param" = "-s" ]; then
+			export RESCAN_FILES=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else
