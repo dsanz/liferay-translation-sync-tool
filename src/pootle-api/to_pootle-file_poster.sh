@@ -8,7 +8,7 @@ function upload_submission() {
 	index=$(get_index $storeId $key)
 	id=$(get_unitid $storeId $key)
 	sourcef=$(get_sourcef $storeId $key)
-	echo -n "      publishing translation '$key'"
+	logt 4 -n "publishing translation '$key'"
 	curl -s -b "$PO_COOKIES" -c "$PO_COOKIES"  -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "id=$id" -d "path=$path" -d  "pootle_path=$path" -d "source_f_0=$sourcef" -d  "store=$path" -d "submit=Submit" -d  "target_f_0=$value" -d "index=$index" "$PO_SRV$path/translate/?" > /dev/null
 	check_command
 }
@@ -31,7 +31,7 @@ function upload_submissions() {
 function post_file() {
 	project="$1"
 	locale="$2"
-	echo_yellow "    Posting new '$locale' translations for $project"
+	logt 2 "Posting new '$locale' translations for $project"
 	start_pootle_session
 	upload_submissions "$1" "$2"
 	close_pootle_session
@@ -41,8 +41,6 @@ function post_file() {
 function post_file_batch() {
 	project="$1"
 	locale="$2"
-	echo_yellow "    Posting new '$locale' translations for $project"
+	logt 2 "Posting new '$locale' translations for $project"
 	upload_submissions "$project" "$locale"
 }
-
-

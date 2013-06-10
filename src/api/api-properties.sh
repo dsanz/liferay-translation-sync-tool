@@ -51,7 +51,8 @@ function is_key_line() {
 # $1 is the key prefix
 # $2 is the key name
 function exists_key() {
-	[ $($(getTVal $1 $2)+abc) ]
+    k=$(getTKey $1 $2)
+    [ ${T[$k]+abc} ]
 }
 # returns true if value of a given key has changed amongst 2 key prefixes, false otherwise
 # $1 is one key prefix
@@ -94,7 +95,7 @@ function get_locale_from_file_name() {
 function read_locale_file() {
 	lines=$(wc -l "$1" | cut -d' ' -f1)
 	template=$3
-	echo -n "  Reading file $1        "
+	logt 4 -n "Reading file $1        "
 	counter=0
 	while read line; do
 		printf "\b\b\b\b\b"
@@ -110,5 +111,5 @@ function read_locale_file() {
 			: #echo -n "."
 		fi
 	done < $1
-	echo;
+	logt 0;
 }

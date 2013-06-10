@@ -27,6 +27,7 @@ function load_api() {
 	#  . project must exist in pootle
 	#  . portal/plugin sources are available and are under git control
 function src2pootle() {
+	display_projects
 	backup_db
 	prepare_input_dirs
 	setup_working_branches
@@ -36,14 +37,26 @@ function src2pootle() {
 }
 
 function pootle2src() {
+    display_projects
 	prepare_output_dirs
-	update_pootle_files
+    update_pootle_files
 	ascii_2_native
 	process_untranslated
 	prepare_vcs
 }
 
+function display_projects() {
+    logt 1 "Working project list"
+    for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
+		project=${PROJECT_NAMES[$i]}
+		project=$(printf "%-35s%s" "$project")
+		logt 2 -n "$project"
+		log "$(get_project_language_path $project)"
+	done
+}
+
 main() {
+	echo "Pootle manager [START]"
 	load_api
 	load_config
 	resolve_params $@
@@ -59,7 +72,10 @@ main() {
 	if [ $UPDATE_POOTLE_DB ]; then
 		src2pootle
 	fi
-	[ ! $HELP ] &&	echo_green "[`date`] Pootle manager [DONE]"
+	if [ $RESCAN_FILES ]; then
+	    rescan_files
+	fi
+	[ ! $HELP ] &&	echo "Pootle manager [DONE]"
 }
 
 main $@

@@ -1,14 +1,14 @@
 #!/bin/bash
 
 function backup_db() {
-	echo_cyan "[`date`] Backing up Pootle DB..."
+	logt 1  "Backing up Pootle DB..."
 	dirname=$(date +%Y-%m);
 	filename=$(echo $(date +%F_%H-%M-%S)"-pootle.sql");
 	dumpfile="$TMP_DB_BACKUP_DIR/$dirname/$filename";
 
-	echo_white "  Dumping Pootle DB into $dumpfile"
+	logt 2 "Dumping Pootle DB into $dumpfile"
 	check_dir "$TMP_DB_BACKUP_DIR/$dirname"
-	echo -n  "    Running dump command ";
+	logt 3 -n "Running dump command ";
 	$DB_DUMP_COMMAND > $dumpfile;
 	check_command;
 }
@@ -51,6 +51,16 @@ function get_pootle_path() {
 	locale="$2"
 	# value example: "/pt_BR/portal/Language_pt_BR.properties"
 	local i="/$locale/$project/$(get_filename $locale)"
+	echo $i;
+}
+
+# given a project name and a locale, returns the path for translations of that project in that language
+# this is required to rescan files
+function get_path() {
+    project="$1"
+	locale="$2"
+	# value example: "/pt_BR/portal"
+	local i="/$locale/$project/"
 	echo $i;
 }
 

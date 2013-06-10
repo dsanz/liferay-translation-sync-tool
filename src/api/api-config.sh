@@ -103,6 +103,8 @@ function resolve_params() {
 			export UPDATE_REPOSITORY=1
 		elif [ "$param" = "--repo2pootle" ] || [ "$param" = "-p" ]; then
 			export UPDATE_POOTLE_DB=1
+	    elif [ "$param" = "--rescanfile" ] || [ "$param" = "-s" ]; then
+			export RESCAN_FILES=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else
@@ -121,19 +123,21 @@ function resolve_params() {
 
 		UPDATE_REPOSITORY=
 		UPDATE_POOTLE_DB=
-	else
-		echo_green "[`date`] Pootle manager [START]"
 	fi
 }
 
 function load_config() {
 	if [[ -n "$POOTLE_MANAGER_PROFILE" ]]; then
 		pmp="pootle-manager.$POOTLE_MANAGER_PROFILE.conf.sh"
-		echo_yellow "Loading configuration profile '$pmp'"
+		msg="Loaded configuration profile '$pmp'"
 	else
 		pmp="pootle-manager.conf.sh"
-		echo_yellow "Loading default config profile '$pmp'"
+		msg="Loaded default config profile '$pmp'"
 	fi;
 
 	. "conf/${pmp}"
+
+	set_log_dir
+
+	logt 1 "$msg"
 }
