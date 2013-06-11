@@ -99,7 +99,7 @@ function process_untranslated() {
 			logt 3 "Reading overriding translations"
             read_ext_language_file $project $language
             refill_translations $project $language
-            logt 3 "Garbage collection... "
+            logt 3 -n "Garbage collection... "
             clear_keys "$(get_exported_language_prefix $project $locale)"
             clear_keys "$(get_previous_language_prefix $project $locale)"
             check_command
@@ -227,6 +227,7 @@ function refill_translations() {
             loglc 0 $RED -n "$key "
 	    done;
     fi
+    log
 	set +f
 	unset R
 	unset C
