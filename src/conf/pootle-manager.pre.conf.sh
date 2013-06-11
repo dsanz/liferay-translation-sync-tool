@@ -92,7 +92,6 @@ declare -r PATH_BASE_DIR
 declare -xgr FILE="Language"
 declare -xgr PROP_EXT="properties"
 declare -xgr PO_EXT="po"
-declare -xgr POT_EXT="pot"
 declare -xgr LANG_SEP="_"
 
 # How DB dump/restore commands look like (depends on pootle installation)
