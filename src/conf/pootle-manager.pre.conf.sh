@@ -19,7 +19,7 @@ declare -xgr POOTLEDIR="/var/www/Pootle"
 # translation files for Pootle DB update/sync
 declare -xgr PODIR="$POOTLEDIR/po"
 # base working dir for the scripts
-declare -xgr BASE_DIR="/opt/pootle"
+declare -xgr BASE_DIR="/home/dsanz/"
 # temporal working dirs
 declare -xgr TMP_DIR="$BASE_DIR/po-lf"
 declare -xgr TMP_PROP_IN_DIR="$TMP_DIR/prop_in"
@@ -97,5 +97,5 @@ declare -xgr POT_EXT="pot"
 declare -xgr LANG_SEP="_"
 
 # How DB dump/restore commands look like (depends on pootle installation)
-declare -xgr DB_NAME="pootle_2013_05_30"
+declare -xgr DB_NAME="pootle"
 declare -xgr DB_DUMP_COMMAND="mysqldump $DB_NAME "
