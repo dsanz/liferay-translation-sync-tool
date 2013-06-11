@@ -89,7 +89,6 @@ declare -r PATH_BASE_DIR
 # How does language file look like (e.g. Language.properties)
 declare -xgr FILE="Language"
 declare -xgr PROP_EXT="properties"
-declare -xgr PO_EXT="po"
 declare -xgr LANG_SEP="_"
 
 # How DB dump/restore commands look like (depends on pootle installation)
