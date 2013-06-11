@@ -62,7 +62,7 @@ main() {
 	resolve_params $@
 	# Simple configuration test
 	#verify_params 19 "Configuration load failed. You should fill in all variables in pootle-manager.conf.sh." \
-		#$POOTLEDIR $PODIR $TMP_DIR $TMP_PROP_IN_DIR $TMP_PROP_OUT_DIR $TMP_PO_DIR \
+		#$POOTLEDIR $PODIR $TMP_DIR $TMP_PROP_IN_DIR $TMP_PROP_OUT_DIR \
 		#$PO_USER $PO_PASS $PO_HOST $PO_PORT $PO_SRV \
 		#$PO_COOKIES $SRC_PATH_PLUGIN_PREFIX \
 		#$SRC_PATH_PLUGIN_SUFFIX $FILE $PROP_EXT $PO_EXT $POT_EXT $LANG_SEP

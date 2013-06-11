@@ -11,7 +11,6 @@ function prepare_output_dirs() {
 		project=${PROJECT_NAMES[$i]}
 		logt 2 "$project: cleaning output working dirs"
 		clean_dir "$TMP_PROP_OUT_DIR/$project"
-		clean_dir "$TMP_PO_DIR/$project"
 	done
 }
 

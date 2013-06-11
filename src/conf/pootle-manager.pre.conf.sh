@@ -24,7 +24,6 @@ declare -xgr BASE_DIR="/home/dsanz/"
 declare -xgr TMP_DIR="$BASE_DIR/po-lf"
 declare -xgr TMP_PROP_IN_DIR="$TMP_DIR/prop_in"
 declare -xgr TMP_PROP_OUT_DIR="$TMP_DIR/prop_out"
-declare -xgr TMP_PO_DIR="$TMP_DIR/po"
 declare -xgr TMP_DB_BACKUP_DIR="$BASE_DIR/db-backups"
 declare -xgr LOG_DIR="$BASE_DIR/log"
 # source dirs
