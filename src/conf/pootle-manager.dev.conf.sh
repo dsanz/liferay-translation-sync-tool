@@ -1,16 +1,4 @@
 #!/bin/bash
-#
-### BEGIN INIT INFO
-# Provides:             pootle
-# Required-Start:	$syslog $time
-# Required-Stop:	$syslog $time
-# Short-Description:	Manage pootle - conf file
-# Description:		Configuration file for Pootle Management script
-# 			that provides simplification for management of Pootle.
-# Author:		Milan Jaroš, Daniel Sanz, Alberto Montero
-# Version: 		1.0
-# Dependences:
-### END INIT INFO
 
 ## Configuration of directories
 ## base dirs
@@ -27,7 +15,7 @@ declare -xgr TMP_PROP_OUT_DIR="$TMP_DIR/prop_out"
 declare -xgr TMP_DB_BACKUP_DIR="$BASE_DIR/db-backups"
 declare -xgr LOG_DIR="$BASE_DIR/log"
 # source dirs
-declare -xgr SRC_BASE="$BASE_DIR/src/"
+declare -xgr SRC_BASE="$BASE_DIR/"
 declare -xgr SRC_PORTAL_BASE="${SRC_BASE}liferay-portal/"
 declare -xgr SRC_PORTAL_LANG_PATH="portal-impl/src/content/"
 declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}liferay-plugins/"

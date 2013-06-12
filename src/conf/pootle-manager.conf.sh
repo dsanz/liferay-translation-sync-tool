@@ -1,16 +1,4 @@
 #!/bin/bash
-#
-### BEGIN INIT INFO
-# Provides:             pootle
-# Required-Start:	$syslog $time
-# Required-Stop:	$syslog $time
-# Short-Description:	Manage pootle - conf file
-# Description:		Configuration file for Pootle Management script
-# 			that provides simplification for management of Pootle.
-# Author:		Milan Jaroš, Daniel Sanz, Alberto Montero
-# Version: 		1.0
-# Dependences:
-### END INIT INFO
 
 ## Configuration of directories
 ## base dirs
