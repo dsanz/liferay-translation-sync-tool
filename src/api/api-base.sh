@@ -1,8 +1,6 @@
 #!/bin/sh
 
-####
-## Check last command and echo it's state
-####
+# Checks last command and echoes it's state
 function check_command() {
 	if [ $? -eq 0 ]; then
 		logc $GREEN " [OK]"
@@ -11,9 +9,7 @@ function check_command() {
 	fi
 }
 
-####
-## Create dir if does not exist
-####
+# Creates dir if does not exist
 function check_dir() {
 	if [ ! -d $1 ]; then
 		logt 3 -n "Creating dir $1"
@@ -25,9 +21,7 @@ function check_dir() {
 	check_command
 }
 
-####
-## Create dir if does not exist, delete its contents otherwise
-####
+# Creates dir if does not exist, deletes its contents otherwise
 function clean_dir() {
 	if [ ! -d $1 ]; then
 		logt 3 -n "Creating dir $1"
@@ -39,10 +33,7 @@ function clean_dir() {
 	check_command
 }
 
-####
-## Echo coloured messages
-####
-# $@ - Message (all parameters)
+# some colours
 COLOROFF="\033[1;0m"; GREEN="\033[1;32m"; RED="\033[1;31m"; LILA="\033[1;35m"
 YELLOW="\033[1;33m"; BLUE="\033[1;34m"; WHITE="\033[1;37m"; CYAN="\033[1;36m"
 
@@ -50,6 +41,8 @@ function baselog() {
     echo -n "$1" | tee -a $logfile
 }
 
+# given a length for indentation, a color, an optional "-n" and a message, logs coloured
+# message to stdout and an uncolored one to the log file.
 function loglc() {
     length=$1
     shift 1;
@@ -70,14 +63,17 @@ function loglc() {
     $newline && echo | tee -a $logfile
 }
 
+# logs a message using length 0 and the specified color
 function logc() {
     loglc 0 "$@"
 }
 
+# logs a message using length 0 and no color
 function log() {
     loglc 0 "$COLOROFF" "$@"
 }
 
+# logs a message using a number of tabs. The tab number provides a way to compute the color
 function logt() {
     depth=$1
     color=$COLOROFF;
@@ -94,7 +90,7 @@ function logt() {
     loglc "$length" "$color" "$@"
 }
 
-
+# sets the log directory and file for the rest of program functions
 function set_log_dir() {
     dirname=$(date +%Y-%m);
     subdirname=$(date +%F_%H-%M-%S)

@@ -1,8 +1,6 @@
 #!/bin/bash
 
-####
-## Get parameter
-####
+# Get parameter
 # $1 - Which parameter would you like to get
 # $2 - Get parameter from this list (usually something like ${PROJECTS[$i]})
 function get_param() {
@@ -10,9 +8,7 @@ function get_param() {
 	echo  $1
 }
 
-####
-## Verify parameters
-####
+# Verify parameters
 # $1 - How many parameters should be passed on, otherwise fail...
 # $2 - Message to be displayed if verification failed
 # $* - Parameters to be verified
