@@ -15,7 +15,7 @@ function update_pootle_db() {
 		cp "$src_dir/${FILE}.$PROP_EXT" "$PODIR/$project"
 		check_command
 		# Update database as well as file system to reflect the latest version of translation templates
-		logt 4 -n "Updating Pootle templates "
+		logt 4 -n "Updating Pootle templates (this may take a while...)"
 		$POOTLEDIR/manage.py update_from_templates --project="$project" -v 0 > /dev/null 2>&1
 		check_command
 	done
@@ -35,22 +35,25 @@ function create_working_branch() {
 	path="$1"
 	cd $path
 	if exists_branch $WORKING_BRANCH $path; then
-		logt 3 -n "'$WORKING_BRANCH' branch already exists. There seems to be a previous, interrupted process. Deleting branch '$WORKING_BRANCH' "
+		logt 4 -n "'$WORKING_BRANCH' branch already exists. There seems to be a previous, interrupted process. Deleting branch '$WORKING_BRANCH' "
 		git branch -D $WORKING_BRANCH > /dev/null 2>&1
 		check_command
 	fi;
-	logt 3 -n "git checkout -b $WORKING_BRANCH "
+	logt 4 -n "git checkout -b $WORKING_BRANCH "
 	git checkout -b $WORKING_BRANCH > /dev/null 2>&1
 	check_command
 }
 
 function pull_changes() {
 	path="$1"
-	logt 3 -n "git checkout master "
+	logt 4 -n "git checkout master "
 	cd $path
 	git checkout master > /dev/null 2>&1
 	check_command
-	logt 3 -n "git pull upstream master "
+	logt 4 -n "git reset --hard HEAD"
+	git reset --hard HEAD > /dev/null 2>&1
+	check_command
+	logt 4 -n "git pull upstream master "
 	git pull upstream master > /dev/null 2>&1
 	check_command
 }
@@ -61,16 +64,16 @@ function rotate_working_branch() {
 	git checkout master > /dev/null 2>&1
 	# check if old branch exists
 	if exists_branch $LAST_BRANCH $path; then
-		logt 3 -n "git branch -D $LAST_BRANCH "
+		logt 4 -n "git branch -D $LAST_BRANCH "
 		git branch -D $LAST_BRANCH > /dev/null 2>&1
 		check_command
 	else
-		logt 3 "branch '$LAST_BRANCH' does not exist, will be created now"
+		logt 4 "branch '$LAST_BRANCH' does not exist, will be created now"
 	fi;
-	logt 3 -n "git branch -m $WORKING_BRANCH $LAST_BRANCH "
+	logt 4 -n "git branch -m $WORKING_BRANCH $LAST_BRANCH "
 	git branch -m $WORKING_BRANCH $LAST_BRANCH > /dev/null 2>&1
 	check_command
-	logt 3 "Contents in '$LAST_BRANCH' will be used as reference of last successful Pootle update"
+	logt 4 "Contents in '$LAST_BRANCH' will be used as reference of last successful Pootle update"
 }
 
 function setup_working_branches() {
