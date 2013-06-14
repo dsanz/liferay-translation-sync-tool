@@ -14,7 +14,7 @@ function load_api() {
 	# Load APIs
 	. pootle-api/to_pootle.sh
 	. pootle-api/to_pootle-file_poster.sh
-	. pootle-api/from_pootle.sh
+	. pootle-api/to_liferay.sh
 }
 
 ####
@@ -56,16 +56,16 @@ function display_projects() {
 }
 
 main() {
-	echo "Pootle manager [START]"
+	echo "$product [START]"
 	load_api
 	load_config
 	resolve_params $@
 	# Simple configuration test
 	#verify_params 19 "Configuration load failed. You should fill in all variables in pootle-manager.conf.sh." \
-		#$POOTLEDIR $PODIR $TMP_DIR $TMP_PROP_IN_DIR $TMP_PROP_OUT_DIR $TMP_PO_DIR \
+		#$POOTLEDIR $PODIR $TMP_DIR $TMP_PROP_IN_DIR $TMP_PROP_OUT_DIR \
 		#$PO_USER $PO_PASS $PO_HOST $PO_PORT $PO_SRV \
 		#$PO_COOKIES $SRC_PATH_PLUGIN_PREFIX \
-		#$SRC_PATH_PLUGIN_SUFFIX $FILE $PROP_EXT $PO_EXT $POT_EXT $LANG_SEP
+		#$SRC_PATH_PLUGIN_SUFFIX $FILE $PROP_EXT $LANG_SEP
 	if [ $UPDATE_REPOSITORY ]; then
 		pootle2src
 	fi
@@ -75,7 +75,7 @@ main() {
 	if [ $RESCAN_FILES ]; then
 	    rescan_files
 	fi
-	[ ! $HELP ] &&	echo "Pootle manager [DONE]"
+	[ ! $HELP ] &&	echo "$product [DONE]"
 }
 
 main $@

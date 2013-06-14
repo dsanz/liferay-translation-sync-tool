@@ -1,16 +1,4 @@
 #!/bin/bash
-#
-### BEGIN INIT INFO
-# Provides:             pootle
-# Required-Start:	$syslog $time
-# Required-Stop:	$syslog $time
-# Short-Description:	Manage pootle - conf file
-# Description:		Configuration file for Pootle Management script
-# 			that provides simplification for management of Pootle.
-# Author:		Milan Jaroš, Daniel Sanz, Alberto Montero
-# Version: 		1.0
-# Dependences:
-### END INIT INFO
 
 ## Configuration of directories
 ## base dirs
@@ -19,16 +7,15 @@ declare -xgr POOTLEDIR="/var/www/Pootle"
 # translation files for Pootle DB update/sync
 declare -xgr PODIR="$POOTLEDIR/po"
 # base working dir for the scripts
-declare -xgr BASE_DIR="/opt/pootle"
+declare -xgr BASE_DIR="/home/dsanz/"
 # temporal working dirs
 declare -xgr TMP_DIR="$BASE_DIR/po-lf"
 declare -xgr TMP_PROP_IN_DIR="$TMP_DIR/prop_in"
 declare -xgr TMP_PROP_OUT_DIR="$TMP_DIR/prop_out"
-declare -xgr TMP_PO_DIR="$TMP_DIR/po"
 declare -xgr TMP_DB_BACKUP_DIR="$BASE_DIR/db-backups"
 declare -xgr LOG_DIR="$BASE_DIR/log"
 # source dirs
-declare -xgr SRC_BASE="$BASE_DIR/src/"
+declare -xgr SRC_BASE="$BASE_DIR/"
 declare -xgr SRC_PORTAL_BASE="${SRC_BASE}liferay-portal/"
 declare -xgr SRC_PORTAL_LANG_PATH="portal-impl/src/content/"
 declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}liferay-plugins/"
@@ -92,10 +79,8 @@ declare -r PATH_BASE_DIR
 # How does language file look like (e.g. Language.properties)
 declare -xgr FILE="Language"
 declare -xgr PROP_EXT="properties"
-declare -xgr PO_EXT="po"
-declare -xgr POT_EXT="pot"
 declare -xgr LANG_SEP="_"
 
 # How DB dump/restore commands look like (depends on pootle installation)
-declare -xgr DB_NAME="pootle_2013_05_30"
+declare -xgr DB_NAME="pootle"
 declare -xgr DB_DUMP_COMMAND="mysqldump $DB_NAME "

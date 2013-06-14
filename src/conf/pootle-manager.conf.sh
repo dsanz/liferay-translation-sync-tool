@@ -1,16 +1,4 @@
 #!/bin/bash
-#
-### BEGIN INIT INFO
-# Provides:             pootle
-# Required-Start:	$syslog $time
-# Required-Stop:	$syslog $time
-# Short-Description:	Manage pootle - conf file
-# Description:		Configuration file for Pootle Management script
-# 			that provides simplification for management of Pootle.
-# Author:		Milan Jaroš, Daniel Sanz, Alberto Montero
-# Version: 		1.0
-# Dependences:
-### END INIT INFO
 
 ## Configuration of directories
 ## base dirs
@@ -24,7 +12,6 @@ declare -xgr BASE_DIR="/opt/liferay-pootle-manager"
 declare -xgr TMP_DIR="$BASE_DIR/po-lf"
 declare -xgr TMP_PROP_IN_DIR="$TMP_DIR/prop_in"
 declare -xgr TMP_PROP_OUT_DIR="$TMP_DIR/prop_out"
-declare -xgr TMP_PO_DIR="$TMP_DIR/po"
 declare -xgr TMP_DB_BACKUP_DIR="$BASE_DIR/db-backups"
 declare -xgr LOG_DIR="$BASE_DIR/log"
 # source dirs
@@ -90,8 +77,6 @@ declare -r PATH_BASE_DIR
 # How does language file look like (e.g. Language.properties)
 declare -xgr FILE="Language"
 declare -xgr PROP_EXT="properties"
-declare -xgr PO_EXT="po"
-declare -xgr POT_EXT="pot"
 declare -xgr LANG_SEP="_"
 
 # How DB dump/restore commands look like (depends on pootle installation)
