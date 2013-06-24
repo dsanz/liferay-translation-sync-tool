@@ -147,61 +147,67 @@ function refill_translations() {
     templatePrefix=$(get_template_prefix $project $locale)
     extPrefix=$(get_ext_language_prefix $project $locale)
 
-    logt 3 "Copying translations: 'p' from pootle.  'x' conflict, pootle wins, please review logs.  '·' same valid translation in pootle and master.  'o' overriden from ext.  'e' English is ok.  'u' untranslated, pick old commit.  'r' reverse-path (sources translated, pootle not).  'a' to be translated by ant.  '#' comment.  '!' uncovered case)"
     declare -A R  # reverse translations
     declare -A C  # conflicts
     declare -A charc # colors
-    charc["!"]=$RED
-    charc["o"]=$GREEN
-    charc["e"]=$LILA
-    charc["r"]=$YELLOW
-    charc["a"]=$BLUE;
-    charc["u"]=$CYAN;
-    charc["x"]=$RED;
-    charc["·"]=$COLOROFF;
-    charc["p"]=$WHITE;
-    charc["#"]=$COLOROFF;
+    declare -A chart # text legend
+    charc["!"]=$RED; chart["!"]="uncovered case"
+    charc["o"]=$GREEN; chart["o"]="overriden from ext"
+    charc["e"]=$LILA; chart["e"]="English is ok"
+    charc["r"]=$YELLOW; chart["r"]="reverse-path (sources translated, pootle not)"
+    charc["a"]=$BLUE; chart["a"]="to be translated by ant"
+    charc["u"]=$CYAN; chart["u"]="untranslated, pick old commit"
+    charc["x"]=$RED; chart["x"]="conflict, pootle wins, please review logs"
+    charc["·"]=$COLOROFF; chart["·"]="same valid translation in pootle and master"
+    charc["p"]=$WHITE; chart["p"]="comes from pootle"
+    charc["#"]=$COLOROFF; chart["#"]="comment/blanck line"
+
+    logt 3 -n "Copying translations: "
+    for char in ${!charc[@]}; do
+        loglc 0 ${charc[$char]} -n "'$char' ${chart[$char]}.  "
+    done;
+    logt 0
     while read line; do
 	    char="!"
 		if is_key_line "$line" ; then
-			[[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}"
+		    [[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
 			if exists_ext_value $extPrefix $key; then                       # has translation to be overriden?
 			    value=$(getTVal $extPrefix $key)
 			    char="o"
-			elif is_from_template $project $locale $key; then               # otherwise, is the exported value equals to the template?
-			    targetf=$(get_targetf $storeId $key)
+			elif is_from_template $project $locale $key; then               # ok, no overriding. Now, is exported value = template value?
+			    targetf=$(get_targetf $storeId $key)                        #   then let's see if translators wrote the template value by hand in the text box
 			    valueTpl=$(getTVal $templatePrefix $key)
-			    if [[ "$targetf" == "$value" ]]; then                       #   then, was it translated that way on purpose?
-			        char="e"                                                #       use the template value
+			    if [[ "$targetf" == "$valueTpl" ]]; then                    #   was it translated that way on purpose?
+			        char="e"                                                #       use the template value. English is ok in this case.
 			        value=$valueTpl
 			    else                                                        #   otherwise, key is really untranslated in pootle
-			        valuePrev=$(getTVal $previousPrefix $key)               #       get the translation from master, current commit (or previous??)
-			        if is_translated_value "$valuePrev"; then               #       is the key translated in master? shouldn't happen unless we have an auto-translation
-			            if [[ "$valuePrev" != "$valueTpl" ]]; then          #           is the value in master different from the template?
-                            char="r"
-                            value=$valuePrev
-                            R[$key]="$value"
+			        valuePrev=$(getTVal $previousPrefix $key)               #       let's look for the current key translation in master
+			        if is_translated_value "$valuePrev"; then               #       is the key translated in master? [shouldn't happen unless we run -r before a -p]
+			            if [[ "$valuePrev" != "$valueTpl" ]]; then          #           ok, key is already translated in master. is that value different from the template?
+                            char="r"                                        #               ok, then master is translated but Pootle not, hmmm! we have a reverse-path
+                            value=$valuePrev                                #               let's keep`the value in master as a good default.
+                            R[$key]="$value"                                #               and memorize it so that Pootle can be properly updated later
 			            else                                                #           ok, value in master is just like the template
                             char="a"                                        #               discard it! ant build-lang will do
                     	    value=""
                     	fi
-			        else
-			            char="u"                                            #        otherwise, it's auto-translated: reuse it, don't do same work twice
+			        else                                                    #       value in master is not translated. This means an auto-copy or auto-translation
+			            char="u"                                            #           let's reuse it, we are saving build-lang work. don't do same work twice
 			            value=$valuePrev
 			        fi;
 			    fi
-			else
-			    value=$(getTVal $exportedPrefix $key)                       #   otherwise, it's supposed to be a valid translation
-		        valuePrev=$(getTVal $previousPrefix $key)                   #   get the translation from master, current commit (or previous??)
-                if is_translated_value "$valuePrev"; then                   #   was the master value translated
-                    if [[ "$valuePrev" != "$value" ]]; then                 #       is this translation different than the one pootle exported?
-                        char="x"                                            #           conflict, pootle wins. Let user know
-                        C[$key]="$value"                                    #           take note of itfor logging purposes
-                    else
-                        char="·"                                            #       no-op, already translated both in pootle and master
+			else                                                            # ok, no overriding, and value is not the english one: it's supposed to be a valid translation!!
+			    value=$(getTVal $exportedPrefix $key)                       #   get translation exported by pootle
+		        valuePrev=$(getTVal $previousPrefix $key)                   #   get the translation from master
+                if is_translated_value "$valuePrev"; then                   #   is the master value translated?
+                    if [[ "$valuePrev" != "$value" ]]; then                 #      is this translation different than the one pootle exported?
+                        char="x"                                            #           ok, we have a conflict, pootle wins. Let user know
+                        C[$key]="$value"                                    #           take note for logging purposes
+                    else                                                    #      ok, translation in master is just like the exported by pootle.
+                        char="·"                                            #           no-op, already translated both in pootle and master
                     fi
-                else                                                        # the master value is auto-translated/auto-copied
-                    char="p"                                                #   translated in pootle, but not in master. OK!!
+                else                                                        #   master value is NOT translated but auto-translated/auto-copied
+                    char="p"                                                #      ok, translated in pootle, but not in master. OK!!
                 fi
 			fi
 			result="${key}=${value}"
