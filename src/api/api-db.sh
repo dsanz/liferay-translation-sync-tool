@@ -1,15 +1,23 @@
 #!/bin/bash
 
 function backup_db() {
-	logt 1  "Backing up Pootle DB..."
+	logt 1  "Backing up pootle data..."
 	dirname=$(date +%Y-%m);
-	filename=$(echo $(date +%F_%H-%M-%S)"-pootle.sql");
-	dumpfile="$TMP_DB_BACKUP_DIR/$dirname/$filename";
+	filePrefix=$(date +%F_%H-%M-%S)
+	dumpfilename="$filePrefix-pootle.sql"
+	dumpfilepath="$TMP_DB_BACKUP_DIR/$dirname/$dumpfilename";
+	fsfilename="$filePrefix-po.tgz"
+	fsfilepath="$TMP_DB_BACKUP_DIR/$dirname/$fsfilename";
+    check_dir "$TMP_DB_BACKUP_DIR/$dirname"
 
-	logt 2 "Dumping Pootle DB into $dumpfile"
-	check_dir "$TMP_DB_BACKUP_DIR/$dirname"
+	logt 2 "Dumping Pootle DB into $dumpfilepath"
 	logt 3 -n "Running dump command ";
-	$DB_DUMP_COMMAND > $dumpfile;
+	$DB_DUMP_COMMAND > $dumpfilepath;
+	check_command;
+
+    logt 2 "Compressing po/ dir into $fsfilepath"
+	logt 3 -n "Running tar command: tar czvf $fsfilepath $PODIR";
+	tar czvf $fsfilepath $PODIR > /dev/null 2>&1;
 	check_command;
 }
 
@@ -98,7 +106,7 @@ function fix_malformed_paths() {
         else
            logt 3 "Seems that no po file exist!!!"
         fi
-        logt 3 -n "Updating pootle_path,file columns in store database table.";
+        logt 3 -n "Updating (pootle_path,file,name) columns in 'pootle_store_store' database table.";
         mysql $DB_NAME -s -e "update pootle_store_store set pootle_path='$correctPath',file='$correctFilePath',name='$correctFileName' where pootle_path='$path'"; > /dev/null 2>&1
         check_command
     done;
