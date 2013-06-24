@@ -187,3 +187,9 @@ function rescan_files() {
     done
     close_pootle_session
 }
+
+function uniformize_pootle_paths() {
+    logt 1 "Uniformizing wrong pootle paths"
+    backup_db
+    fix_malformed_paths
+}

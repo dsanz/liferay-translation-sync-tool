@@ -73,7 +73,7 @@ main() {
 		src2pootle
 	fi
 	if [ $RESCAN_FILES ]; then
-	    rescan_files
+	    uniformize_pootle_paths
 	fi
 	[ ! $HELP ] &&	echo "$product [DONE]"
 }

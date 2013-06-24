@@ -71,3 +71,35 @@ function get_store_id() {
 	local i=$(mysql $DB_NAME -s  -e "select pootle_store_store.id from pootle_store_store where pootle_path=\"$(get_pootle_path $project $locale)\";"  | cut -d : -f2)
 	echo $i;
 }
+
+function get_malformed_paths() {
+    echo $(mysql $DB_NAME -s -e "select pootle_path from pootle_store_store where pootle_path like '%Language-%';" | grep properties)
+}
+
+function fix_malformed_paths() {
+    for path in $(get_malformed_paths); do
+        # path has the form /locale/project/Language-locale.properties
+        logt 2 "Fixing path $path"
+        # correctPath has the form /locale/project/Language_locale.properties
+        correctPath=$(echo $path | sed 's/Language-/Language_/')
+        # filePath has the form /project/Language-locale.properties
+        filePath=$(echo $path | cut -d '/' -f3-)
+        # correctFilePath has the form /project/Language-locale.properties
+        correctFilePath=$(echo $filePath | sed 's/Language-/Language_/')
+        # correctFileName has the form Language-locale.properties
+        correctFileName=$(echo $correctFilePath | cut -d '/' -f2-)
+
+        if [ -f $PODIR/$filePath ]; then
+           logt 3 -n "Moving po file to $correctPath"
+           mv $PODIR/$filePath $PODIR/$correctFilePath
+           check_command
+        elif [ -f $PODIR/$correctFilePath ]; then
+           logt 3 "po file seems already ok"
+        else
+           logt 3 "Seems that no po file exist!!!"
+        fi
+        logt 3 -n "Updating pootle_path,file columns in store database table.";
+        mysql $DB_NAME -s -e "update pootle_store_store set pootle_path='$correctPath',file='$correctFilePath',name='$correctFileName' where pootle_path='$path'"; > /dev/null 2>&1
+        check_command
+    done;
+}
