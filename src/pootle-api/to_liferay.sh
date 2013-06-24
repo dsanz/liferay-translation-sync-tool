@@ -104,6 +104,9 @@ function process_untranslated() {
             clear_keys "$(get_previous_language_prefix $project $locale)"
             check_command
 		done
+		logt 3 -n "Garbage collection (whole project)... "
+		clear_keys "$(get_template_prefix $project $locale)"
+		check_command
 	done
 }
 
@@ -209,7 +212,7 @@ function refill_translations() {
 		echo "$result" >> $workingfile
 		echo "[${char}]___${result}" >> $copyingLogfile
 		loglc 0 ${charc[$char]} -n "$char"
-	done < $target_lang_path
+	done < $srcfile
 
     logt 0
     if [[ ${#R[@]} -gt 0 ]]; then
