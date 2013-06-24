@@ -38,6 +38,7 @@ function src2pootle() {
 
 function pootle2src() {
     display_projects
+    prepare_source_dirs
 	prepare_output_dirs
     update_pootle_files
 	ascii_2_native
