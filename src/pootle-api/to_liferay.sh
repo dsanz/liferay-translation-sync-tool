@@ -246,7 +246,7 @@ function refill_translations() {
 		echo "$result" >> $workingfile
 		echo "[${char}]___${result}" >> $copyingLogfile
 		loglc 0 ${charc[$char]} -n "$char"
-	done < $srcfile
+	done < $target_lang_path
 
     logt 0
     if [[ ${#R[@]} -gt 0 ]]; then
