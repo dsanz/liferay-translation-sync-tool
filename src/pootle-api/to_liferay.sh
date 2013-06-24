@@ -119,18 +119,20 @@ function process_untranslated() {
         read_pootle_exported_template $project
 		for language in $languages; do
 		    locale=$(get_locale_from_file_name $language)
-		    logt 2 "$project: $locale"
-		    logt 3 "Reading $language file"
-            read_pootle_exported_language_file $project $language
-			logt 3 "Reading $language file from source branch (at last commit uploaded to pootle)"
-            read_previous_language_file $project $language
-			logt 3 "Reading overriding translations"
-            read_ext_language_file $project $language
-            refill_translations $project $language
-            logt 3 -n "Garbage collection... "
-            clear_keys "$(get_exported_language_prefix $project $locale)"
-            clear_keys "$(get_previous_language_prefix $project $locale)"
-            check_command
+		    if [[ "$locale" != "en" ]]; then
+                logt 2 "$project: $locale"
+                logt 3 "Reading $language file"
+                read_pootle_exported_language_file $project $language
+                logt 3 "Reading $language file from source branch (at last commit uploaded to pootle)"
+                read_previous_language_file $project $language
+                logt 3 "Reading overriding translations"
+                read_ext_language_file $project $language
+                refill_translations $project $language
+                logt 3 -n "Garbage collection... "
+                clear_keys "$(get_exported_language_prefix $project $locale)"
+                clear_keys "$(get_previous_language_prefix $project $locale)"
+                check_command
+            fi
 		done
 		logt 3 -n "Garbage collection (whole project)... "
 		clear_keys "$(get_template_prefix $project $locale)"
