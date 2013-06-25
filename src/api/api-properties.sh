@@ -21,7 +21,7 @@ function getTKey() {
 # $1 is the key prefix
 # $2 is the language key we want to access
 function getTVal() {
-    k=$(getTKey $1 $2)
+    k="$1$2"
     echo ${T[$k]}
 }
 
@@ -30,7 +30,7 @@ function getTVal() {
 # $2 is the language key we want to access
 # $3 is the value
 function setTVal() {
-    k=$(getTKey $1 $2)
+    k="$1$2"
     T[$k]="$3"
 }
 
@@ -38,7 +38,7 @@ function setTVal() {
 # $1 is the prefix
 function clear_keys() {
     for key in "${K[@]}"; do
-        k="$(getTKey $1 $key)"
+        k="$1$key"
 		unset T['$k']
 	done;
 }
@@ -51,7 +51,7 @@ function is_key_line() {
 # $1 is the key prefix
 # $2 is the key name
 function exists_key() {
-    k=$(getTKey $1 $2)
+    k="$1$2"
     [ ${T[$k]+abc} ]
 }
 # returns true if value of a given key has changed amongst 2 key prefixes, false otherwise
@@ -59,7 +59,7 @@ function exists_key() {
 # $2 is the other key prefix
 # $3 is the key name
 function value_changed() {
-	[[ $(getTVal $1 $3) != $(getTVal $2 $3) ]]
+	[[ ${T["$1$3"]} != ${T["$2$3"]} ]]
 }
 
 function is_translated_value() {
@@ -72,11 +72,11 @@ function is_translated() {
 }
 function is_automatic_copy() {
 	rexp='\(Automatic Copy\)$'
-	[[ "$(getTVal $1 $2)" =~ $rexp ]]
+	[[ ${T["$1$2"]} =~ $rexp ]]
 }
 function is_automatic_translation() {
 	rexp='\(Automatic Translation\)$'
-	[[ "$(getTVal $1 $2)" =~ $rexp ]]
+	[[ ${T["$1$2"]} =~ $rexp ]]
 }
 
 function get_locale_from_file_name() {

@@ -144,8 +144,8 @@ function is_from_template() {
     project="$1"
     locale="$2"
     key="$3"
-    templatePrefix=$(get_template_prefix $project $locale)
-    exportedPrefix=$(get_exported_language_prefix $project $locale)
+    #templatePrefix=$(get_template_prefix $project $locale)
+    #exportedPrefix=$(get_exported_language_prefix $project $locale)
     ! $(value_changed $templatePrefix $exportedPrefix $key)
 }
 
@@ -206,12 +206,12 @@ function refill_translations() {
 			    char="o"
 			elif is_from_template $project $locale $key; then               # ok, no overriding. Now, is exported value = template value?
 			    targetf=$(get_targetf $storeId $key)                        #   then let's see if translators wrote the template value by hand in the text box
-			    valueTpl=$(getTVal $templatePrefix $key)
+			    valueTpl=${T["$templatePrefix$key"]}
 			    if [[ "$targetf" == "$valueTpl" ]]; then                    #   was it translated that way on purpose?
 			        char="e"                                                #       use the template value. English is ok in this case.
 			        value=$valueTpl
 			    else                                                        #   otherwise, key is really untranslated in pootle
-			        valuePrev=$(getTVal $previousPrefix $key)               #       let's look for the current key translation in master
+			        valuePrev=${T["$previousPrefix$key"]}               #       let's look for the current key translation in master
 			        if is_translated_value "$valuePrev"; then               #       is the key translated in master? [shouldn't happen unless we run -r before a -p]
 			            if [[ "$valuePrev" != "$valueTpl" ]]; then          #           ok, key is already translated in master. is that value different from the template?
                             char="r"                                        #               ok, then master is translated but Pootle not, hmmm! we have a reverse-path
@@ -227,8 +227,8 @@ function refill_translations() {
 			        fi;
 			    fi
 			else                                                            # ok, no overriding, and value is not the english one: it's supposed to be a valid translation!!
-			    value=$(getTVal $exportedPrefix $key)                       #   get translation exported by pootle
-		        valuePrev=$(getTVal $previousPrefix $key)                   #   get the translation from master
+			    value=${T["$exportedPrefix$key"]}                       #   get translation exported by pootle
+		        valuePrev=${T["$previousPrefix$key"]}                   #   get the translation from master
                 if is_translated_value "$valuePrev"; then                   #   is the master value translated?
                     if [[ "$valuePrev" != "$value" ]]; then                 #      is this translation different than the one pootle exported?
                         char="x"                                            #           ok, we have a conflict, pootle wins. Let user know
