@@ -59,7 +59,9 @@ function exists_key() {
 # $2 is the other key prefix
 # $3 is the key name
 function value_changed() {
-	[[ ${T["$1$3"]} != ${T["$2$3"]} ]]
+    value_a=${T["$1$3"]}
+    value_b=${T["$2$3"]}
+	[[ "$value_a" != "$value_b" ]]
 }
 
 function is_translated_value() {
@@ -72,11 +74,13 @@ function is_translated() {
 }
 function is_automatic_copy() {
 	rexp='\(Automatic Copy\)$'
-	[[ ${T["$1$2"]} =~ $rexp ]]
+	value=${T["$1$2"]}
+	[[ "$value" =~ $rexp ]]
 }
 function is_automatic_translation() {
 	rexp='\(Automatic Translation\)$'
-	[[ ${T["$1$2"]} =~ $rexp ]]
+	value=${T["$1$2"]}
+	[[ "$value" =~ $rexp ]]
 }
 
 function get_locale_from_file_name() {
