@@ -43,7 +43,7 @@ function pootle2src() {
     update_pootle_files
 	ascii_2_native
 	process_untranslated
-	prepare_vcs
+	do_commit
 }
 
 function display_projects() {

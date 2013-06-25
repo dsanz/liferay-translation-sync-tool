@@ -42,24 +42,27 @@ function prepare_source_dirs() {
 }
 
 
-# moves files from working dirs to its final destination, making them ready for committing
-function prepare_vcs() {
-	logt 1 "Preparing processed files to VCS dir for commit..."
-	projects_count=$((${#PROJECTS[@]} - 1))
-	for i in `seq 0 $projects_count`;
+function do_commit() {
+    logt 1 "Committing results"
+	old_dir=$pwd;
+	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
-		project=`echo ${PROJECTS[$i]}| cut -f1 -d ' '`
-		languages=`ls $PODIR/$project`
-		logt 2 "$project: processing files"
-		for language in $languages; do
-			if [ "$FILE.$PROP_EXT" != "$language" ] ; then
-				logt 3 "$project/$language: "
-				check_command
-			fi
-		done
-	done
+		base_src_dir=${PATH_BASE_DIR[$i]}
+		cd $base_src_dir
+		logt 2 "$base_src_dir"
+		logt 3 -n "git checkout -b pootle_export"
+		git checkout -b pootle_export > /dev/null 2>&1
+		check_command
+		msg="Pootle export, created by $product"
+		logt 3 -n "git commit -a -m $msg"
+		git commit -a -m "$msg"  > /dev/null 2>&1
+		check_command
+		logt 3 -n "git push origin pootle_export"
+		git push origin pootle_export > /dev/null 2>&1
+		check_command
+	done;
+	cd $old_dir
 }
-
 
 ## Pootle communication functions
 
