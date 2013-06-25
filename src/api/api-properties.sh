@@ -64,7 +64,7 @@ function value_changed() {
 
 function is_translated_value() {
 	rexp='\(Automatic [^\)]+\)$'
-	! [[ "$1" =~ $rexp ]]
+	! [[ "$1" =~ $rexp || "$1" == "" ]]
 }
 
 function is_translated() {
