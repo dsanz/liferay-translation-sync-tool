@@ -50,7 +50,12 @@ function do_commit() {
 		base_src_dir=${PATH_BASE_DIR[$i]}
 		cd $base_src_dir
 		logt 2 "$base_src_dir"
-		logt 3 -n "git checkout -b pootle_export"
+		if exists_branch "pootle_export" "$base_src_dir"; then
+		    logt 3 -n "Cleaning old export branch: git branch -D pootle_export"
+            git branch -D pootle_export > /dev/null 2>&1
+            check_command
+		fi
+		logt 3 -n "Creating new export branch: git checkout -b pootle_export"
 		git checkout -b pootle_export > /dev/null 2>&1
 		check_command
 		msg="Pootle export, created by $product"
@@ -122,7 +127,7 @@ function process_untranslated() {
         read_pootle_exported_template $project
 		for language in $languages; do
 		    locale=$(get_locale_from_file_name $language)
-		    if [[ "$locale" != "en" ]]; then
+		    if [[ "$locale" != "en" && "$locale" == "es" ]]; then
                 logt 2 "$project: $locale"
                 logt 3 "Reading $language file"
                 read_pootle_exported_language_file $project $language
