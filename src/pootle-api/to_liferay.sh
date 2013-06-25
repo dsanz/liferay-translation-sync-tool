@@ -75,7 +75,7 @@ function update_pootle_files() {
 		logt 2 "  $project"
 		logt 3 -n "    Synchronizing pootle stores for all languages "
 		# Save all translations currently in database to the file system
-		$POOTLEDIR/manage.py sync_stores --project=s"$project" -v 0 > /dev/null 2>&1
+		$POOTLEDIR/manage.py sync_stores --project="$project" -v 0 > /dev/null 2>&1
 		check_command
 		logt 3 "    Copying exported tranlsations into working dir"
 		for language in $(ls "$PODIR/$project"); do
@@ -234,12 +234,14 @@ function refill_translations() {
 	    char="!"
 		if is_key_line "$line" ; then
 		    [[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
+		    valueTpl=${T["$templatePrefix$key"]}
+		    valueExp=${T["$exportedPrefix$key"]}                            # get translation exported by pootle
+
 			if exists_ext_value $extPrefix $key; then                       # has translation to be overriden?
 			    value=$(getTVal $extPrefix $key)
 			    char="o"
-			elif is_from_template $project $locale $key; then               # ok, no overriding. Now, is exported value = template value?
+			elif [[ "$valueExp" == "$valueTpl" ]]; then                     # ok, no overriding. Now, is exported value = template value?
 			    valueStore=${T["storePrefix$key"]}                          #   then let's see if translators wrote the template value by hand in the text box
-			    valueTpl=${T["$templatePrefix$key"]}
 			    if [[ "$valueStore" == "$valueTpl" ]]; then                 #   was it translated that way on purpose?
 			        char="e"                                                #       use the template value. English is ok in this case.
 			        value=$valueTpl
