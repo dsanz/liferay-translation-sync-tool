@@ -38,11 +38,12 @@ function src2pootle() {
 
 function pootle2src() {
     display_projects
+    prepare_source_dirs
 	prepare_output_dirs
     update_pootle_files
 	ascii_2_native
 	process_untranslated
-	prepare_vcs
+	do_commit
 }
 
 function display_projects() {
