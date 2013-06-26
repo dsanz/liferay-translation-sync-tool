@@ -45,6 +45,10 @@ function get_targetf() {
 	echo $i;
 }
 
+function export_targets() {
+    mysql pootle -s -e "select concat(unitid,\"=\",target_f) from pootle_store_unit where store_id=\"$1\";" > $2
+}
+
 # given a locale name such as "pt_BR" returns the file name "Language_pt_BR.properties"
 function get_filename(){
 	local i="Language_$1.properties"
