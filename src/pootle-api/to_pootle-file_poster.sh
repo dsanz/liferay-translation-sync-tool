@@ -24,7 +24,11 @@ function upload_submissions() {
 	while read line; do
 		key=$(echo $line | sed s/=.*//)
 		value=$(echo $line | sed -r s/^[^=]+=//)
-		upload_submission "$key" "$value" "$storeId" "$path"
+		if is_translated_value "$value"; then
+		    upload_submission "$key" "$value" "$storeId" "$path"
+		else
+		    logt 4 "Skipping untranslated key '$key': $value"
+		fi
 	done < $filename
 }
 
@@ -32,7 +36,7 @@ function upload_submissions() {
 function post_file() {
 	project="$1"
 	locale="$2"
-	logt 2 "Posting new '$locale' translations for $project"
+	logt 3 "Posting '$locale' translations"
 	start_pootle_session
 	upload_submissions "$1" "$2"
 	close_pootle_session
@@ -42,6 +46,6 @@ function post_file() {
 function post_file_batch() {
 	project="$1"
 	locale="$2"
-	logt 2 "Posting new '$locale' translations for $project"
+	logt 3 "Posting '$locale' translations"
 	upload_submissions "$project" "$locale"
 }
