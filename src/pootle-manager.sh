@@ -10,7 +10,7 @@ function load_api() {
 	. api/api-http.sh
 	. api/api-db.sh
 	. api/api-properties.sh
-	. api/api_version.sh
+	. api/api-version.sh
 
 	# Load APIs
 	. pootle-api/to_pootle.sh
@@ -38,12 +38,12 @@ function src2pootle() {
 }
 
 function pootle2src() {
-    display_projects
-    prepare_source_dirs
-	prepare_output_dirs
-    update_pootle_files
-	ascii_2_native
-	process_untranslated
+    #display_projects
+    #prepare_source_dirs
+	#prepare_output_dirs
+    #update_pootle_files
+	#ascii_2_native
+	#process_untranslated
 	do_commit
 }
 
