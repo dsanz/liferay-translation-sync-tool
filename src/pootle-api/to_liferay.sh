@@ -61,7 +61,7 @@ function do_commit() {
             check_command
             msg="Pootle export, created by $product"
             logt 3 -n "git commit -m $msg"
-            git commit -m "\"$msg\""
+            git commit -m "$msg" > /dev/null 2>&1
             check_command
             logt 3 -n "git push origin pootle_export"
             git push -f origin pootle_export > /dev/null 2>&1
