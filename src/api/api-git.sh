@@ -16,3 +16,7 @@ function is_git_dir() {
 	git rev-parse --git-dir > /dev/null 2>&1
 	[[ $? -eq 0 ]]
 }
+
+function something_changed() {
+    [[ $(git diff | wc -l) -gt 0 ]]
+}

@@ -50,15 +50,27 @@ function do_commit() {
 		base_src_dir=${PATH_BASE_DIR[$i]}
 		cd $base_src_dir
 		logt 2 "$base_src_dir"
-		logt 3 -n "git checkout -b pootle_export"
-		git checkout -b pootle_export > /dev/null 2>&1
-		check_command
-		msg="Pootle export, created by $product"
-		logt 3 -n "git commit -a -m $msg"
-		git commit -a -m "$msg"  > /dev/null 2>&1
-		check_command
-		logt 3 -n "git push origin pootle_export"
-		git push origin pootle_export > /dev/null 2>&1
+		if something_changed; then
+            if exists_branch "pootle_export" "$base_src_dir"; then
+                logt 3 -n "Cleaning old export branch: git branch -D pootle_export"
+                git branch -D pootle_export > /dev/null 2>&1
+                check_command
+            fi
+            logt 3 -n "Creating new export branch: git checkout -b pootle_export"
+            git checkout -b pootle_export > /dev/null 2>&1
+            check_command
+            msg="Pootle export, created by $product"
+            logt 3 -n "git commit -m $msg"
+            git commit -m "$msg" > /dev/null 2>&1
+            check_command
+            logt 3 -n "git push origin pootle_export"
+            git push -f origin pootle_export > /dev/null 2>&1
+            check_command
+		else
+		    logt 3 "No changes to commit!!"
+		fi
+		logt 3 -n "git checkout master"
+		git checkout master > /dev/null 2>&1
 		check_command
 	done;
 	cd $old_dir
@@ -73,11 +85,11 @@ function update_pootle_files() {
 	do
 		project=${PROJECT_NAMES[$i]}
 		logt 2 "  $project"
-		logt 3 -n "    Synchronizing pootle stores for all languages "
+		logt 3 -n "Synchronizing pootle stores for all languages "
 		# Save all translations currently in database to the file system
-		$POOTLEDIR/manage.py sync_stores --project=s"$project" -v 0 > /dev/null 2>&1
+		$POOTLEDIR/manage.py sync_stores --project="$project" -v 0 > /dev/null 2>&1
 		check_command
-		logt 3 "    Copying exported tranlsations into working dir"
+		logt 3 "Copying exported tranlsations into working dir"
 		for language in $(ls "$PODIR/$project"); do
 		    logt 0 -n  "$(get_locale_from_file_name $language) "
     		cp -f  "$PODIR/$project/$language" "$TMP_PROP_OUT_DIR/$project/"
@@ -122,7 +134,7 @@ function process_untranslated() {
         read_pootle_exported_template $project
 		for language in $languages; do
 		    locale=$(get_locale_from_file_name $language)
-		    if [[ "$locale" != "en" ]]; then
+		    if [[ "$locale" != "en" && "$locale" == "es" ]]; then
                 logt 2 "$project: $locale"
                 logt 3 "Reading $language file"
                 read_pootle_exported_language_file $project $language
@@ -234,12 +246,14 @@ function refill_translations() {
 	    char="!"
 		if is_key_line "$line" ; then
 		    [[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
+		    valueTpl=${T["$templatePrefix$key"]}
+		    valueExp=${T["$exportedPrefix$key"]}                            # get translation exported by pootle
+
 			if exists_ext_value $extPrefix $key; then                       # has translation to be overriden?
 			    value=$(getTVal $extPrefix $key)
 			    char="o"
-			elif is_from_template $project $locale $key; then               # ok, no overriding. Now, is exported value = template value?
+			elif [[ "$valueExp" == "$valueTpl" ]]; then                     # ok, no overriding. Now, is exported value = template value?
 			    valueStore=${T["storePrefix$key"]}                          #   then let's see if translators wrote the template value by hand in the text box
-			    valueTpl=${T["$templatePrefix$key"]}
 			    if [[ "$valueStore" == "$valueTpl" ]]; then                 #   was it translated that way on purpose?
 			        char="e"                                                #       use the template value. English is ok in this case.
 			        value=$valueTpl
