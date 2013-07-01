@@ -114,10 +114,12 @@ function generate_addition() {
 		if [[ "$file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
 			git diff $LAST_BRANCH $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$project/$file
 			number_of_additions=$(cat "$TMP_PROP_IN_DIR/$project/$file" | wc -l)
+			color="$WHITE"
 			if [[ $number_of_additions -eq 0 ]]; then
 				rm "$TMP_PROP_IN_DIR/$project/$file"
+				color="$COLOROFF"
 			fi;
-			log -n $(get_locale_from_file_name $file)"($number_of_additions) "
+			loglc 0 "$color" -n $(get_locale_from_file_name $file)"($number_of_additions) "
 		fi
 	done;
 	log ""
@@ -189,7 +191,7 @@ function rescan_files() {
 }
 
 function uniformize_pootle_paths() {
-    backup_db
+    #backup_db
     logt 1 "Uniformizing wrong pootle paths"
     fix_malformed_paths
 }
