@@ -134,7 +134,7 @@ function process_untranslated() {
         read_pootle_exported_template $project
 		for language in $languages; do
 		    locale=$(get_locale_from_file_name $language)
-		    if [[ "$locale" != "en" && "$locale" == "es" ]]; then
+		    if [[ "$locale" != "en" ]]; then
                 logt 2 "$project: $locale"
                 logt 3 "Reading $language file"
                 read_pootle_exported_language_file $project $language
@@ -232,7 +232,7 @@ function refill_translations() {
     charc["r"]=$YELLOW; chart["r"]="reverse-path (sources translated, pootle not)"
     charc["a"]=$BLUE; chart["a"]="to be translated by ant"
     charc["u"]=$CYAN; chart["u"]="untranslated, pick existing source value"
-    charc["x"]=$RED; chart["x"]="conflict, pootle wins, please review logs"
+    charc["x"]=$RED; chart["x"]="conflict, pootle wins, please review $copyingLogfile"
     charc["·"]=$COLOROFF; chart["·"]="same, valid translation in pootle and master"
     charc["p"]=$WHITE; chart["p"]="valid translation coming from pootle"
     charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
