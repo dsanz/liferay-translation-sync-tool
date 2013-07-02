@@ -20,3 +20,24 @@ function is_git_dir() {
 function something_changed() {
     [[ $(git diff | wc -l) -gt 0 ]]
 }
+
+function goto_master() {
+    cd $1
+    logt 3 "Going master for $1"
+    logt 4 -n "git reset --hard HEAD"
+    git reset --hard HEAD > /dev/null 2>&1
+    check_command
+    logt 4 -n "git clean -df"
+    git clean -df  > /dev/null 2>&1
+    check_command
+    logt 4 -n "git checkout -- ."
+    git checkout -- .  > /dev/null 2>&1
+    check_command
+    logt 4 -n "git checkout master"
+    git checkout master  > /dev/null 2>&1
+    check_command
+    logt 4 -n "git pull upstream master"
+    git pull upstream master  > /dev/null 2>&1
+    check_command
+}
+
