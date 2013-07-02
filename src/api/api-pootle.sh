@@ -182,11 +182,17 @@ function rename_pootle_notifications_notice_entries() {
     done <<< "$entries"
 }
 
+function is_pootle_server_up() {
+    wget -q --delete-after $PO_SRV
+}
+
 function rename_pootle_project() {
     currentName="$1"
     newName="$2"
     if [[ "$currentName" == "" || "$newName" == "" || "$currentName" == "$newName" ]]; then
         logt 1 "Unable to rename Pootle project \"$currentName\" to \"$newName\". Either names are equal or some of them is empty"
+    elif is_pootle_server_up; then
+        logt 1 "Unable to rename Pootle project: pootle server is up and running. Please stop it, then rerun this command"
     else
         logt 1 "Renaming Pootle project \"$currentName\" to \"$newName\""
         backup_db
@@ -200,5 +206,6 @@ function rename_pootle_project() {
         logt 3 -n "mv $PODIR/$currentName $PODIR/$newName"
         mv $PODIR/$currentName $PODIR/$newName > /dev/null 2>&1
         check_command
+        logt 1 "Pootle project renamed. Please start up Pootle server and check $PO_SRV/$newName"
     fi
 }
