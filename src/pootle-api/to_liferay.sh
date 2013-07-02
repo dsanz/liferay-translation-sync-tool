@@ -110,10 +110,12 @@ function ascii_2_native() {
 		#cp -R $PODIR/$project/*.properties $TMP_PROP_OUT_DIR/$project
 		languages=`ls "$TMP_PROP_OUT_DIR/$project"`
 		for language in $languages ; do
-			pl="$TMP_PROP_OUT_DIR/$project/$language"
-			logt 0 -n "$(get_locale_from_file_name $language) "
-			[ -f $pl ] && native2ascii -reverse -encoding utf8 $pl "$pl.native"
-			[ -f "$pl.native" ] && mv --force "$pl.native" $pl
+		    if [[ $language != "Language.properties" ]]; then
+			    pl="$TMP_PROP_OUT_DIR/$project/$language"
+			    logt 0 -n "$(get_locale_from_file_name $language) "
+			    [ -f $pl ] && native2ascii -reverse -encoding utf8 $pl "$pl.native"
+			    [ -f "$pl.native" ] && mv --force "$pl.native" $pl
+			fi
 		done
 		check_command
 	done
@@ -134,7 +136,7 @@ function process_untranslated() {
         read_pootle_exported_template $project
 		for language in $languages; do
 		    locale=$(get_locale_from_file_name $language)
-		    if [[ "$locale" != "en" ]]; then
+		    if [[ "$locale" != "en" && "$language" != "Language.properties" ]]; then
                 logt 2 "$project: $locale"
                 logt 3 "Reading $language file"
                 read_pootle_exported_language_file $project $language
@@ -227,14 +229,14 @@ function refill_translations() {
     declare -A charc # colors
     declare -A chart # text legend
     charc["!"]=$RED; chart["!"]="uncovered case"
-    charc["o"]=$GREEN; chart["o"]="overriden from ext"
+    charc["o"]=$WHITE; chart["o"]="overriden from ext"
     charc["e"]=$LILA; chart["e"]="English is ok"
     charc["r"]=$YELLOW; chart["r"]="reverse-path (sources translated, pootle not)"
-    charc["a"]=$BLUE; chart["a"]="to be translated by ant"
-    charc["u"]=$CYAN; chart["u"]="untranslated, pick existing source value"
+    charc["a"]=$CYAN; chart["a"]="to be translated by ant"
+    charc["u"]=$BLUE; chart["u"]="untranslated, pick existing source value"
     charc["x"]=$RED; chart["x"]="conflict, pootle wins, please review $copyingLogfile"
     charc["·"]=$COLOROFF; chart["·"]="same, valid translation in pootle and master"
-    charc["p"]=$WHITE; chart["p"]="valid translation coming from pootle"
+    charc["p"]=$GREEN; chart["p"]="valid translation coming from pootle"
     charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
 
     logt 3 -n "Copying translations: "
@@ -339,6 +341,8 @@ function read_ext_language_file() {
 	if [ -e $langFile ]; then
         prefix=$(get_ext_language_prefix $project $locale)
 	    read_locale_file $langFile $prefix
+	else
+	    logt 4 "$langFile not found: I won't override $locale translations"
 	fi
 }
 
