@@ -189,7 +189,7 @@ function rename_pootle_project() {
         logt 1 "Unable to rename Pootle project \"$currentName\" to \"$newName\". Either names are equal or some of them is empty"
     else
         logt 1 "Renaming Pootle project \"$currentName\" to \"$newName\""
-        bac
+        backup_db
         logt 2 "Updating database tables"
         rename_pootle_store_store_entries $currentName $newName
         rename_pootle_app_directory_entries $currentName $newName
