@@ -171,27 +171,3 @@ function post_language_translations() {
 	generate_additions
 	post_new_translations
 }
-
-function rescan_files() {
-    logt 1 "Rescaning project files"
-    start_pootle_session
-    for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
-	    project=${PROJECT_NAMES[$i]}
-		logt 2 "$project"
-		languages=`ls $PODIR/$project/`
-		for language in $languages; do
-		    locale=$(get_locale_from_file_name $language)
-		    path=$(get_path $project $locale)
-		    logt 3 -n "$locale, posting to $path"
-		    curl -s -b "$PO_COOKIES" -c "$PO_COOKIES"  -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "scan_files=Rescan project files"  "$PO_SRV$path/admin_files.html" > /dev/null
-		    check_command
-		done
-    done
-    close_pootle_session
-}
-
-function uniformize_pootle_paths() {
-    #backup_db
-    logt 1 "Uniformizing wrong pootle paths"
-    fix_malformed_paths
-}

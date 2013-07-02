@@ -11,6 +11,7 @@ function load_api() {
 	. api/api-db.sh
 	. api/api-properties.sh
 	. api/api-version.sh
+	. api/api-pootle.sh
 
 	# Load APIs
 	. pootle-api/to_pootle.sh
