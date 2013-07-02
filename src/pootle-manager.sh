@@ -83,6 +83,9 @@ main() {
 	if [ $RESCAN_FILES ]; then
 	    uniformize_pootle_paths
 	fi
+	if [ $MOVE_PROJECT ]; then
+	    rename_pootle_project $2 $3
+	fi
 	[ ! $HELP ] &&	echo "$product [DONE]"
 }
 

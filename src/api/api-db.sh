@@ -80,6 +80,30 @@ function get_path() {
 function get_store_id() {
 	project="$1"
 	locale="$2"
-	local i=$(mysql $DB_NAME -s  -e "select pootle_store_store.id from pootle_store_store where pootle_path=\"$(get_pootle_path $project $locale)\";"  | cut -d : -f2)
+	local i=$(mysql $DB_NAME -s -e "select pootle_store_store.id from pootle_store_store where pootle_path=\"$(get_pootle_path $project $locale)\";"  | cut -d : -f2)
 	echo $i;
+}
+
+function get_pootle_store_store_entries() {
+    project="$1"
+    local i=$(mysql $DB_NAME -s -e "select CONCAT(file,',',pootle_path) from pootle_store_store  where pootle_path like '%${project}%';")
+    echo -e "$i";
+}
+
+function get_pootle_app_directory_entries() {
+    project="$1"
+    local i=$(mysql $DB_NAME -s -e "select CONCAT(name,',',pootle_path) from pootle_app_directory where name='${project}';")
+    echo -e "$i";
+}
+
+function get_pootle_app_translationproject_entries() {
+    project="$1"
+    local i=$(mysql $DB_NAME -s -e "select CONCAT(real_path,',',pootle_path) from pootle_app_translationproject where real_path='${project}';")
+    echo -e "$i";
+}
+
+function get_pootle_notifications_notice_entries() {
+    project="$1"
+    local i=$(mysql $DB_NAME -s -e "select message from pootle_notifications_notice where message like '%${project}%';")
+    echo -e "$i";
 }
