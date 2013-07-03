@@ -20,27 +20,10 @@ function prepare_source_dirs() {
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		base_src_dir=${PATH_BASE_DIR[$i]}
-		cd $base_src_dir
-		logt 2 "$base_src_dir"
-		logt 3 -n "git reset --hard HEAD"
-		git reset --hard HEAD > /dev/null 2>&1
-		check_command
-		logt 3 -n "git clean -df"
-		git clean -df  > /dev/null 2>&1
-		check_command
-		logt 3 -n "git checkout -- ."
-		git checkout -- .  > /dev/null 2>&1
-		check_command
-		logt 3 -n "git checkout master"
-		git checkout master  > /dev/null 2>&1
-		check_command
-        logt 3 -n "git pull upstream master"
-        git pull upstream master  > /dev/null 2>&1
-        check_command
+        goto_master "$base_src_dir"
 	done;
 	cd $old_dir
 }
-
 
 function do_commit() {
     logt 1 "Committing results"

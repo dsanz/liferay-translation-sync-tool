@@ -44,20 +44,6 @@ function create_working_branch() {
 	check_command
 }
 
-function pull_changes() {
-	path="$1"
-	logt 4 -n "git checkout master "
-	cd $path
-	git checkout master > /dev/null 2>&1
-	check_command
-	logt 4 -n "git reset --hard HEAD"
-	git reset --hard HEAD > /dev/null 2>&1
-	check_command
-	logt 4 -n "git pull upstream master "
-	git pull upstream master > /dev/null 2>&1
-	check_command
-}
-
 function rotate_working_branch() {
 	path="$1"
 	cd $path
@@ -85,7 +71,7 @@ function setup_working_branches() {
 		path=${PATH_BASE_DIR[$i]}
 		logt 2 "$path"
 		logt 3 "for projects:$projects"
-		pull_changes "$path";
+		goto_master "$path";
 		create_working_branch "$path"
 	done;
 	cd $old_dir
