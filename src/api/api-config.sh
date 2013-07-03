@@ -101,6 +101,8 @@ function resolve_params() {
 			export UPDATE_POOTLE_DB=1
 	    elif [ "$param" = "--rescanfile" ] || [ "$param" = "-s" ]; then
 			export RESCAN_FILES=1
+		elif [ "$param" = "--moveproject" ] || [ "$param" = "-m" ]; then
+			export MOVE_PROJECT=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else

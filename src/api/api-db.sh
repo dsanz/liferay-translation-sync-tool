@@ -80,72 +80,30 @@ function get_path() {
 function get_store_id() {
 	project="$1"
 	locale="$2"
-	local i=$(mysql $DB_NAME -s  -e "select pootle_store_store.id from pootle_store_store where pootle_path=\"$(get_pootle_path $project $locale)\";"  | cut -d : -f2)
+	local i=$(mysql $DB_NAME -s -e "select pootle_store_store.id from pootle_store_store where pootle_path=\"$(get_pootle_path $project $locale)\";"  | cut -d : -f2)
 	echo $i;
 }
 
-
-function fix_pootle_path() {
-   path="$1"
-   correctPath="$2"
-   filePath="$3"
-   correctFilePath="$4"
-   correctFileName="$5"
-
-   logt 3 -n "Updating (pootle_path,file,name) columns in 'pootle_store_store' database table.";
-   mysql $DB_NAME -s -e "update pootle_store_store set pootle_path='$correctPath',file='$correctFilePath',name='$correctFileName' where pootle_path='$path'"; > /dev/null 2>&1
-   check_command
-   if [ -f $PODIR/$filePath ]; then
-      logt 3 -n "Moving po file to $correctPath"
-      mv $PODIR/$filePath $PODIR/$correctFilePath
-      check_command
-   elif [ -f $PODIR/$correctFilePath ]; then
-      logt 3 "po file seems already ok"
-   else
-      logt 3 -n "Seems that no po file exist! Let's update from templates"
-      locale=$(get_locale_from_file_name $correctFileName)
-      project=$(echo $correctFilePath | cut -d '/' -f1)
-      #logt 4 -n "update_from_templates --project=$project --language=$locale $correctFileName"
-      $POOTLEDIR/manage.py update_from_templates --project="$project" --language="$locale" -v 0 > /dev/null 2>&1
-      check_command
-   fi
+function get_pootle_store_store_entries() {
+    project="$1"
+    local i=$(mysql $DB_NAME -s -e "select CONCAT(file,',',pootle_path) from pootle_store_store  where pootle_path like '%${project}%';")
+    echo -e "$i";
 }
 
-function fix_malformed_paths_having_dashes() {
-    malformedPathsHavingDashes=$(mysql $DB_NAME -s -e "select pootle_path from pootle_store_store where pootle_path like '%Language-%';" | grep properties)
-    for path in $malformedPathsHavingDashes; do
-        # path has the form /locale/project/Language-locale.properties
-        logt 2 "Fixing dashed path $path"
-        # correctPath has the form /locale/project/Language_locale.properties
-        correctPath=$(echo $path | sed 's/Language-/Language_/')
-        # filePath has the form /project/Language-locale.properties
-        filePath=$(echo $path | cut -d '/' -f3-)
-        # correctFilePath has the form /project/Language-locale.properties
-        correctFilePath=$(echo $filePath | sed 's/Language-/Language_/')
-        # correctFileName has the form Language_locale.properties
-        correctFileName=$(echo $correctFilePath | cut -d '/' -f2-)
-        fix_pootle_path $path $correctPath $filePath $correctFilePath $correctFileName
-    done;
+function get_pootle_app_directory_entries() {
+    project="$1"
+    local i=$(mysql $DB_NAME -s -e "select CONCAT(name,',',pootle_path) from pootle_app_directory where name='${project}';")
+    echo -e "$i";
 }
 
-function fix_malformed_paths_gnu() {
-    malformedPathsGnu=$(mysql $DB_NAME -s -e "select pootle_path  path from pootle_store_store where name not like 'Language%' and name not like '%.po';" | grep properties)
-    for path in $malformedPathsGnu; do
-        # path has the form /locale/project/locale.properties
-        logt 2 "Fixing GNU path $path"
-        # correctPath has the form /locale/project/Language_locale.properties
-        correctPath=$(echo $path | sed -r 's:(^.*/)([^\.]+\.properties)$:\1Language_\2:')
-        # filePath has the form /project/locale.properties
-        filePath=$(echo $path | cut -d '/' -f3-)
-        # correctFilePath has the form /project/Language-locale.properties
-        correctFilePath=$(echo $filePath | sed -r 's:(^.*/)([^\.]+\.properties)$:\1Language_\2:')
-        # correctFileName has the form Language_locale.properties
-        correctFileName=$(echo $correctFilePath | cut -d '/' -f2-)
-        fix_pootle_path $path $correctPath $filePath $correctFilePath $correctFileName
-    done;
+function get_pootle_app_translationproject_entries() {
+    project="$1"
+    local i=$(mysql $DB_NAME -s -e "select CONCAT(real_path,',',pootle_path) from pootle_app_translationproject where real_path='${project}';")
+    echo -e "$i";
 }
 
-function fix_malformed_paths() {
-    fix_malformed_paths_having_dashes
-    fix_malformed_paths_gnu
+function get_pootle_notifications_notice_entries() {
+    project="$1"
+    local i=$(mysql $DB_NAME -s -e "select message from pootle_notifications_notice where message like '%${project}%';")
+    echo -e "$i";
 }

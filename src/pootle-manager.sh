@@ -11,6 +11,7 @@ function load_api() {
 	. api/api-db.sh
 	. api/api-properties.sh
 	. api/api-version.sh
+	. api/api-pootle.sh
 
 	# Load APIs
 	. pootle-api/to_pootle.sh
@@ -81,6 +82,9 @@ main() {
 	fi
 	if [ $RESCAN_FILES ]; then
 	    uniformize_pootle_paths
+	fi
+	if [ $MOVE_PROJECT ]; then
+	    rename_pootle_project $2 $3
 	fi
 	[ ! $HELP ] &&	echo "$product [DONE]"
 }
