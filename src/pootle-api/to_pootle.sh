@@ -108,24 +108,25 @@ function rotate_working_branches() {
 function generate_addition() {
 	path="$1"
 	project="$2"
-	cd $path
-	files="$(ls ${FILE}${LANG_SEP}*.${PROP_EXT})"
+	cd $path > /dev/null 2>&1
+	files="$(ls ${FILE}${LANG_SEP}*.${PROP_EXT} 2>/dev/null)"
 	for file in $files; do
 		if [[ "$file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
 			git diff $LAST_BRANCH $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$project/$file
 			number_of_additions=$(cat "$TMP_PROP_IN_DIR/$project/$file" | wc -l)
+			color="$WHITE"
 			if [[ $number_of_additions -eq 0 ]]; then
 				rm "$TMP_PROP_IN_DIR/$project/$file"
-			else
-				logt 3 -n "${file}: $number_of_additions key(s) added "
-				check_command
+				color="$COLOROFF"
 			fi;
+			loglc 0 "$color" -n $(get_locale_from_file_name $file)"($number_of_additions) "
 		fi
 	done;
+	log ""
 }
 
 function generate_additions() {
-	logt 1 "Calculating commited translations from last update"
+	logt 1 "Calculating committed translations from last update"
 	old_dir=$pwd;
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
@@ -153,10 +154,11 @@ function post_new_translations() {
 	logt 2 "Creating session in Pootle"
 	start_pootle_session
 	for project in $(ls $TMP_PROP_IN_DIR); do
-		logt 3 "$project"
-		cd $TMP_PROP_IN_DIR/$project
-		for file in $(ls $TMP_PROP_IN_DIR/$project); do
-			locale=$(get_locale_from_filename $file)
+		logt 2 "Uploading translations for project $project"
+		cd $TMP_PROP_IN_DIR/$project > /dev/null 2>&1
+		files="$(ls ${FILE}${LANG_SEP}*.${PROP_EXT} 2>/dev/null)"
+		for file in $files; do
+			locale=$(get_locale_from_file_name $file)
 			post_file_batch "$project" "$locale"
 		done;
 	done;
@@ -189,7 +191,7 @@ function rescan_files() {
 }
 
 function uniformize_pootle_paths() {
-    backup_db
+    #backup_db
     logt 1 "Uniformizing wrong pootle paths"
     fix_malformed_paths
 }

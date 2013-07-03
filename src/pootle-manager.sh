@@ -28,6 +28,7 @@ function load_api() {
 	#  . project must exist in pootle
 	#  . portal/plugin sources are available and are under git control
 function src2pootle() {
+    loglc 1 $RED "Begin Sync[Liferay source code -> Pootle]"
 	display_projects
 	backup_db
 	prepare_input_dirs
@@ -35,16 +36,19 @@ function src2pootle() {
 	update_pootle_db
 	post_language_translations # bug #1949
 	rotate_working_branches
+	loglc 1 $RED "End Sync[Liferay source code -> Pootle]"
 }
 
 function pootle2src() {
-    #display_projects
-    #prepare_source_dirs
-	#prepare_output_dirs
-    #update_pootle_files
-	#ascii_2_native
-	#process_untranslated
+    loglc 1 $RED "Begin Sync[Pootle -> Liferay source code]"
+    display_projects
+    prepare_source_dirs
+	prepare_output_dirs
+    update_pootle_files
+	ascii_2_native
+	process_untranslated
 	do_commit
+	loglc 1 $RED "End Sync[Pootle -> Liferay source code]"
 }
 
 function display_projects() {
@@ -69,6 +73,7 @@ main() {
 		#$PO_COOKIES $SRC_PATH_PLUGIN_PREFIX \
 		#$SRC_PATH_PLUGIN_SUFFIX $FILE $PROP_EXT $LANG_SEP
 	if [ $UPDATE_REPOSITORY ]; then
+		src2pootle
 		pootle2src
 	fi
 	if [ $UPDATE_POOTLE_DB ]; then
