@@ -64,7 +64,6 @@ function rotate_working_branch() {
 
 function setup_working_branches() {
 	logt 1 "Setting up git branches for project(s)"
-	old_dir=$pwd;
 	for (( i=0; i<${#PATH_PROJECTS[@]}; i++ ));
 	do
 		projects=${PATH_PROJECTS[$i]}
@@ -74,12 +73,10 @@ function setup_working_branches() {
 		goto_master "$path";
 		create_working_branch "$path"
 	done;
-	cd $old_dir
 }
 
 function rotate_working_branches() {
 	logt 1 "Rotating git branches for project(s)"
-	old_dir=$pwd;
 	for (( i=0; i<${#PATH_PROJECTS[@]}; i++ ));
 	do
 		projects=${PATH_PROJECTS[$i]}
@@ -88,7 +85,6 @@ function rotate_working_branches() {
 		logt 3 "for projects:$projects"
  		rotate_working_branch "$path"
 	done;
-	cd $old_dir
 }
 
 function generate_addition() {
@@ -113,7 +109,6 @@ function generate_addition() {
 
 function generate_additions() {
 	logt 1 "Calculating committed translations from last update"
-	old_dir=$pwd;
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		projects=${PATH_PROJECTS[$i]}
@@ -131,12 +126,10 @@ function generate_additions() {
 			logt 3 "There is no '$LAST_BRANCH' branch, so I can't diff it with '$WORKING_BRANCH' to detect additions for projects $projects"
 		fi;
 	done;
-	cd $old_dir
 }
 
 function post_new_translations() {
 	logt 1 "Posting commited translations from last update"
-	old_dir=$pwd;
 	logt 2 "Creating session in Pootle"
 	start_pootle_session
 	for project in $(ls $TMP_PROP_IN_DIR); do
@@ -150,7 +143,6 @@ function post_new_translations() {
 	done;
 	logt 2 "Closing session in Pootle"
 	close_pootle_session
-	cd $old_dir
 }
 
 function post_language_translations() {

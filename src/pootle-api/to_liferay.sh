@@ -16,18 +16,15 @@ function prepare_output_dirs() {
 
 function prepare_source_dirs() {
 	logt 1 "Preparing project source dirs..."
-	old_dir=$pwd;
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		base_src_dir=${PATH_BASE_DIR[$i]}
         goto_master "$base_src_dir"
 	done;
-	cd $old_dir
 }
 
 function do_commit() {
     logt 1 "Committing results"
-	old_dir=$pwd;
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		base_src_dir=${PATH_BASE_DIR[$i]}
@@ -56,7 +53,6 @@ function do_commit() {
 		git checkout master > /dev/null 2>&1
 		check_command
 	done;
-	cd $old_dir
 }
 
 ## Pootle communication functions
@@ -320,7 +316,7 @@ function read_ext_language_file() {
     project="$1";
     language="$2";
     locale=$(get_locale_from_file_name $language)
-    langFile="conf/ext/$project/$language"
+    langFile="$HOME_DIR/conf/ext/$project/$language"
 	if [ -e $langFile ]; then
         prefix=$(get_ext_language_prefix $project $locale)
 	    read_locale_file $langFile $prefix
