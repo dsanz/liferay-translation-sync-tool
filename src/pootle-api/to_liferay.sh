@@ -86,7 +86,6 @@ function ascii_2_native() {
 	do
 		project=${PROJECT_NAMES[$i]}
 		logt 2 "$project: converting working dir properties to native"
-		#cp -R $PODIR/$project/*.properties $TMP_PROP_OUT_DIR/$project
 		languages=`ls "$TMP_PROP_OUT_DIR/$project"`
 		for language in $languages ; do
 		    if [[ $language != "Language.properties" ]]; then
