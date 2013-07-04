@@ -66,7 +66,7 @@ function fix_malformed_paths() {
 }
 
 function uniformize_pootle_paths() {
-    #backup_db
+    backup_db
     logt 1 "Uniformizing wrong pootle paths"
     fix_malformed_paths
 }

@@ -17,6 +17,8 @@ function load_api() {
 	. pootle-api/to_pootle.sh
 	. pootle-api/to_pootle-file_poster.sh
 	. pootle-api/to_liferay.sh
+
+    declare -xgr HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 }
 
 ####
