@@ -63,15 +63,17 @@ function update_pootle_files() {
 	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
 		project=${PROJECT_NAMES[$i]}
-		logt 2 "  $project"
+		logt 2 "$project"
 		logt 3 -n "Synchronizing pootle stores for all languages "
 		# Save all translations currently in database to the file system
 		$POOTLEDIR/manage.py sync_stores --project="$project" -v 0 > /dev/null 2>&1
 		check_command
 		logt 3 "Copying exported tranlsations into working dir"
 		for language in $(ls "$PODIR/$project"); do
-		    logt 0 -n  "$(get_locale_from_file_name $language) "
-    		cp -f  "$PODIR/$project/$language" "$TMP_PROP_OUT_DIR/$project/"
+		    if [[ "$language" =~ $lang_file_rexp ]]; then
+		        logt 0 -n  "$(get_locale_from_file_name $language) "
+    		    cp -f  "$PODIR/$project/$language" "$TMP_PROP_OUT_DIR/$project/"
+    		fi
 		done
 	    check_command
 	done
@@ -88,7 +90,7 @@ function ascii_2_native() {
 		logt 2 "$project: converting working dir properties to native"
 		languages=`ls "$TMP_PROP_OUT_DIR/$project"`
 		for language in $languages ; do
-		    if [[ $language != "Language.properties" ]]; then
+		    if [[ "$language" =~ $trans_file_rexp ]]; then
 			    pl="$TMP_PROP_OUT_DIR/$project/$language"
 			    logt 0 -n "$(get_locale_from_file_name $language) "
 			    [ -f $pl ] && native2ascii -reverse -encoding utf8 $pl "$pl.native"
@@ -114,7 +116,7 @@ function process_untranslated() {
         read_pootle_exported_template $project
 		for language in $languages; do
 		    locale=$(get_locale_from_file_name $language)
-		    if [[ "$locale" != "en" && "$language" != "Language.properties" ]]; then
+		    if [[ "$locale" != "en" && "$language" =~ $trans_file_rexp ]]; then
                 logt 2 "$project: $locale"
                 logt 3 "Reading $language file"
                 read_pootle_exported_language_file $project $language

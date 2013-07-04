@@ -8,6 +8,13 @@ declare -ga K;
 # regexp for separating key/value pairs
 declare -g kv_rexp="^([^=]+)=(.+)$"
 
+# regexp for locating translation files (does not include Language.properties)
+declare -g trans_file_rexp="Language_[^\.]+\.properties"
+
+# regexp for locating language files (includes Language.properties)
+declare -g lang_file_rexp="Language[^\.]*\.properties"
+
+
 #### Base functions
 
 # returns a key which can be used to access the associative array T
