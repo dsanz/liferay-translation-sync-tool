@@ -54,13 +54,14 @@ declare -xgr HOOK_SRC_PATH_PREFIX="${SRC_PLUGINS_BASE}hooks/"
 # master project list
 declare -xga PROJECT_NAMES
 declare -xga PROJECT_SRC
+declare -xga PROJECT_ANT
 # master path list
 declare -xga PATH_PROJECTS
 declare -xga PATH_BASE_DIR
 
 # first project is the Liferay portal itself
 PORTAL_PROJECT_ID=portal
-add_project "$PORTAL_PROJECT_ID" "$SRC_PORTAL_BASE$SRC_PORTAL_LANG_PATH"
+add_project "$PORTAL_PROJECT_ID" "$SRC_PORTAL_BASE$SRC_PORTAL_LANG_PATH" "$SRC_PORTAL_BASE/portal-impl"
 
 # now, some plugins
 add_projects "$PORTLET_LIST" $PORTLET_SUFFIX $PORTLET_SRC_PATH_PREFIX
@@ -73,6 +74,7 @@ compute_working_paths
 # make master lists readonly from now on
 declare -r PROJECT_NAMES
 declare -r PROJECT_SRC
+declare -r PROJECT_ANT
 declare -r PATH_PROJECTS
 declare -r PATH_BASE_DIR
 
@@ -84,3 +86,8 @@ declare -xgr LANG_SEP="_"
 # How DB dump/restore commands look like (depends on pootle installation)
 declare -xgr DB_NAME="pootle"
 declare -xgr DB_DUMP_COMMAND="mysqldump $DB_NAME "
+
+#ant
+ANT_BIN="/opt/apache-ant-1.9.1/bin/ant"
+export ANT_OPTS="-Xmx1024m -XX:MaxPermSize=512m"
+

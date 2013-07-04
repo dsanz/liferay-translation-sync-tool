@@ -25,33 +25,61 @@ function prepare_source_dirs() {
 
 function do_commit() {
     logt 1 "Committing results"
+    reuse_branch=$1
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		base_src_dir=${PATH_BASE_DIR[$i]}
 		cd $base_src_dir
-		logt 2 "$base_src_dir"
+		logt 2 "$base_src_dir, reusing branch $reuse_branch"
 		if something_changed; then
             if exists_branch "pootle_export" "$base_src_dir"; then
-                logt 3 -n "Cleaning old export branch: git branch -D pootle_export"
-                git branch -D pootle_export > /dev/null 2>&1
+                if $reuse_branch; then
+                    logt 3 "Reusing export branch"
+                    create_branch=false;
+                else
+                    logt 3 -n "Cleaning old export branch: git branch -D pootle_export"
+                    git checkout master > /dev/null 2>&1
+                    git branch -D pootle_export > /dev/null 2>&1
+                    check_command
+                    create_branch=true;
+                fi
+            else
+                create_branch=true;
+            fi
+
+            if $create_branch; then
+                logt 3 -n "Creating new export branch: git checkout -b pootle_export"
+                git checkout -b pootle_export > /dev/null 2>&1
                 check_command
             fi
-            logt 3 -n "Creating new export branch: git checkout -b pootle_export"
-            git checkout -b pootle_export > /dev/null 2>&1
-            check_command
             msg="Pootle export, created by $product"
             logt 3 -n "git commit -m $msg"
             git commit -m "$msg" > /dev/null 2>&1
             check_command
-            logt 3 -n "git push origin pootle_export"
-            git push -f origin pootle_export > /dev/null 2>&1
-            check_command
-            logt 3 -n "git checkout master"
-		    git checkout master > /dev/null 2>&1
-		    check_command
 		else
 		    logt 3 "No changes to commit!!"
 		fi
+	done;
+}
+
+function push_changes() {
+    logt 3 -n "git push origin pootle_export"
+    git push -f origin pootle_export > /dev/null 2>&1
+    check_command
+    logt 3 -n "git checkout master"
+	git checkout master > /dev/null 2>&1
+	check_command
+}
+
+function ant_build_lang() {
+    logt 1 "Running ant build-lang"
+	for (( i=0; i<${#PROJECT_ANT[@]}; i++ ));
+	do
+		ant_dir=${PROJECT_ANT[$i]}
+		cd $ant_dir
+		logt 2 -n "$ant_dir"
+        $ANT_BIN build-lang # > /dev/null 2>&1
+        check_command
 	done;
 }
 
