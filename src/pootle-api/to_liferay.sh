@@ -209,19 +209,19 @@ function refill_translations() {
     declare -A charc # colors
     declare -A chart # text legend
     charc["!"]=$RED; chart["!"]="uncovered case"
-    charc["o"]=$WHITE; chart["o"]="overriden from ext"
-    charc["e"]=$LILA; chart["e"]="English is ok"
-    charc["r"]=$YELLOW; chart["r"]="reverse-path (sources translated, pootle not)"
-    charc["a"]=$CYAN; chart["a"]="to be translated by ant"
-    charc["u"]=$BLUE; chart["u"]="untranslated, pick existing source value"
-    charc["x"]=$RED; chart["x"]="conflict, pootle wins, please review $copyingLogfile"
-    charc["·"]=$COLOROFF; chart["·"]="same, valid translation in pootle and master"
-    charc["p"]=$GREEN; chart["p"]="valid translation coming from pootle"
+    charc["o"]=$WHITE; chart["o"]="overriden from ext file"
+    charc["e"]=$RED; chart["e"]="English value is ok, was translated on purpose using Pootle"
+    charc["r"]=$YELLOW; chart["r"]="reverse-path (sources translated, pootle not). Will be published to Pootle"
+    charc["a"]=$CYAN; chart["a"]="ant build-lang will do (sources and pootle untranslated)"
+    charc["u"]=$BLUE; chart["u"]="untranslated, pick existing source value (Pootle untranslated, source auto-translated or auto-copied)"
+    charc["x"]=$LILA; chart["x"]="conflict/improvement Pootle wins (pootle and sources translated, different values). Review $copyingLogfile "
+    charc["·"]=$COLOROFF; chart["·"]="no-op (same, valid translation in pootle and sources)"
+    charc["p"]=$GREEN; chart["p"]="valid translation coming from pootle, sources untranslated"
     charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
 
-    logt 3 -n "Copying translations: "
+    logt 3 "Copying translations (see legend below)..."
     for char in ${!charc[@]}; do
-        loglc 0 ${charc[$char]} -n "'$char' ${chart[$char]}.  "
+        loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
     done;
     logt 0
     while read line; do
