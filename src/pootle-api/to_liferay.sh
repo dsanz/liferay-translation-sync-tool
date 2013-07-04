@@ -46,12 +46,12 @@ function do_commit() {
             logt 3 -n "git push origin pootle_export"
             git push -f origin pootle_export > /dev/null 2>&1
             check_command
+            logt 3 -n "git checkout master"
+		    git checkout master > /dev/null 2>&1
+		    check_command
 		else
 		    logt 3 "No changes to commit!!"
 		fi
-		logt 3 -n "git checkout master"
-		git checkout master > /dev/null 2>&1
-		check_command
 	done;
 }
 
