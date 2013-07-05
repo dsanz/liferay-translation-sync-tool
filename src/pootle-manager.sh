@@ -2,6 +2,7 @@
 
 # Author:		Milan Jaros, Daniel Sanz, Alberto Montero
 
+# single point for loading all functions defined in the (low-level) api files as well as user-level APIs
 function load_api() {
 	# Load base APIs
 	. api/api-base.sh
@@ -24,12 +25,20 @@ function load_api() {
 ####
 ## Top-level functions
 ####
-	# updates git branch, then updates pootle translations of each project so that:
-	#  . only keys contained in Language.properties are processed
-	#  . new/deleted keys in Language.properties are conveniently updated in pootle project
-	# preconditions:
-	#  . project must exist in pootle
-	#  . portal/plugin sources are available and are under git control
+
+# src2pootle implements the sync bewteen liferay source code and pootle storage
+# - backups everything
+# - pulls from upstream the master branch
+# - updates pootle from the template of each project (Language.properties) so that:
+#   . only keys contained in Language.properties are processed
+#   . new/deleted keys in Language.properties are conveniently updated in pootle project
+# - updates any translation committed to liferay source code since last src2pootle sync (pootle built-in
+#     'update-translation-projects' can't be used due to a pootle bug, we do this with curl
+# - rotates working branches to remember head of last sync
+
+# preconditions:
+#  . project must exist in pootle, same 'project code' than git source dir (for plugins)
+#  . portal/plugin sources are available and are under git control
 function src2pootle() {
     loglc 1 $RED "Begin Sync[Liferay source code -> Pootle]"
 	display_projects
@@ -42,6 +51,15 @@ function src2pootle() {
 	loglc 1 $RED "End Sync[Liferay source code -> Pootle]"
 }
 
+# pootle2src implements the sync between pootle and liferay source code repos
+# - tells pootle to update its files with the DB contents
+# - copy and convert those files to utf-8
+# - pulls from upstream the master branch
+# - process translations by comparing pootle export with contents in master, using a set of predefined rules
+# - makes a first commit of this
+# - runs ant build-lang for every project
+# - commits and pushes the result
+# all the process is logged
 function pootle2src() {
     loglc 1 $RED "Begin Sync[Pootle -> Liferay source code]"
     display_projects
@@ -66,6 +84,7 @@ function display_projects() {
 	done
 }
 
+# main function which loads api functions, then configuration, and then invokes logic according to arguments
 main() {
 	echo "$product [START]"
 	load_api
