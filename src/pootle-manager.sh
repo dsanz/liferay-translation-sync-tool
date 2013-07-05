@@ -50,7 +50,10 @@ function pootle2src() {
     update_pootle_files
 	ascii_2_native
 	process_untranslated
-	do_commit
+	do_commit false
+	ant_build_lang
+	do_commit true
+	push_changes
 	loglc 1 $RED "End Sync[Pootle -> Liferay source code]"
 }
 

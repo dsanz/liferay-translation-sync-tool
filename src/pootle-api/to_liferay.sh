@@ -25,33 +25,61 @@ function prepare_source_dirs() {
 
 function do_commit() {
     logt 1 "Committing results"
+    reuse_branch=$1
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		base_src_dir=${PATH_BASE_DIR[$i]}
 		cd $base_src_dir
-		logt 2 "$base_src_dir"
+		logt 2 "$base_src_dir, reusing branch $reuse_branch"
 		if something_changed; then
             if exists_branch "pootle_export" "$base_src_dir"; then
-                logt 3 -n "Cleaning old export branch: git branch -D pootle_export"
-                git branch -D pootle_export > /dev/null 2>&1
+                if $reuse_branch; then
+                    logt 3 "Reusing export branch"
+                    create_branch=false;
+                else
+                    logt 3 -n "Cleaning old export branch: git branch -D pootle_export"
+                    git checkout master > /dev/null 2>&1
+                    git branch -D pootle_export > /dev/null 2>&1
+                    check_command
+                    create_branch=true;
+                fi
+            else
+                create_branch=true;
+            fi
+
+            if $create_branch; then
+                logt 3 -n "Creating new export branch: git checkout -b pootle_export"
+                git checkout -b pootle_export > /dev/null 2>&1
                 check_command
             fi
-            logt 3 -n "Creating new export branch: git checkout -b pootle_export"
-            git checkout -b pootle_export > /dev/null 2>&1
-            check_command
             msg="Pootle export, created by $product"
             logt 3 -n "git commit -m $msg"
             git commit -m "$msg" > /dev/null 2>&1
             check_command
-            logt 3 -n "git push origin pootle_export"
-            git push -f origin pootle_export > /dev/null 2>&1
-            check_command
 		else
 		    logt 3 "No changes to commit!!"
 		fi
-		logt 3 -n "git checkout master"
-		git checkout master > /dev/null 2>&1
-		check_command
+	done;
+}
+
+function push_changes() {
+    logt 3 -n "git push origin pootle_export"
+    git push -f origin pootle_export > /dev/null 2>&1
+    check_command
+    logt 3 -n "git checkout master"
+	git checkout master > /dev/null 2>&1
+	check_command
+}
+
+function ant_build_lang() {
+    logt 1 "Running ant build-lang"
+	for (( i=0; i<${#PROJECT_ANT[@]}; i++ ));
+	do
+		ant_dir=${PROJECT_ANT[$i]}
+		cd $ant_dir
+		logt 2 -n "$ant_dir"
+        $ANT_BIN build-lang # > /dev/null 2>&1
+        check_command
 	done;
 }
 
@@ -63,15 +91,17 @@ function update_pootle_files() {
 	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
 		project=${PROJECT_NAMES[$i]}
-		logt 2 "  $project"
+		logt 2 "$project"
 		logt 3 -n "Synchronizing pootle stores for all languages "
 		# Save all translations currently in database to the file system
 		$POOTLEDIR/manage.py sync_stores --project="$project" -v 0 > /dev/null 2>&1
 		check_command
 		logt 3 "Copying exported tranlsations into working dir"
 		for language in $(ls "$PODIR/$project"); do
-		    logt 0 -n  "$(get_locale_from_file_name $language) "
-    		cp -f  "$PODIR/$project/$language" "$TMP_PROP_OUT_DIR/$project/"
+		    if [[ "$language" =~ $lang_file_rexp ]]; then
+		        logt 0 -n  "$(get_locale_from_file_name $language) "
+    		    cp -f  "$PODIR/$project/$language" "$TMP_PROP_OUT_DIR/$project/"
+    		fi
 		done
 	    check_command
 	done
@@ -86,10 +116,9 @@ function ascii_2_native() {
 	do
 		project=${PROJECT_NAMES[$i]}
 		logt 2 "$project: converting working dir properties to native"
-		#cp -R $PODIR/$project/*.properties $TMP_PROP_OUT_DIR/$project
 		languages=`ls "$TMP_PROP_OUT_DIR/$project"`
 		for language in $languages ; do
-		    if [[ $language != "Language.properties" ]]; then
+		    if [[ "$language" =~ $trans_file_rexp ]]; then
 			    pl="$TMP_PROP_OUT_DIR/$project/$language"
 			    logt 0 -n "$(get_locale_from_file_name $language) "
 			    [ -f $pl ] && native2ascii -reverse -encoding utf8 $pl "$pl.native"
@@ -115,7 +144,7 @@ function process_untranslated() {
         read_pootle_exported_template $project
 		for language in $languages; do
 		    locale=$(get_locale_from_file_name $language)
-		    if [[ "$locale" != "en" && "$language" != "Language.properties" ]]; then
+		    if [[ "$locale" != "en" && "$language" =~ $trans_file_rexp ]]; then
                 logt 2 "$project: $locale"
                 logt 3 "Reading $language file"
                 read_pootle_exported_language_file $project $language
@@ -208,19 +237,19 @@ function refill_translations() {
     declare -A charc # colors
     declare -A chart # text legend
     charc["!"]=$RED; chart["!"]="uncovered case"
-    charc["o"]=$WHITE; chart["o"]="overriden from ext"
-    charc["e"]=$LILA; chart["e"]="English is ok"
-    charc["r"]=$YELLOW; chart["r"]="reverse-path (sources translated, pootle not)"
-    charc["a"]=$CYAN; chart["a"]="to be translated by ant"
-    charc["u"]=$BLUE; chart["u"]="untranslated, pick existing source value"
-    charc["x"]=$RED; chart["x"]="conflict, pootle wins, please review $copyingLogfile"
-    charc["·"]=$COLOROFF; chart["·"]="same, valid translation in pootle and master"
-    charc["p"]=$GREEN; chart["p"]="valid translation coming from pootle"
+    charc["o"]=$WHITE; chart["o"]="overriden from ext file"
+    charc["e"]=$RED; chart["e"]="English value is ok, was translated on purpose using Pootle"
+    charc["r"]=$YELLOW; chart["r"]="reverse-path (sources translated, pootle not). Will be published to Pootle"
+    charc["a"]=$CYAN; chart["a"]="ant build-lang will do (sources and pootle untranslated)"
+    charc["u"]=$BLUE; chart["u"]="untranslated, pick existing source value (Pootle untranslated, source auto-translated or auto-copied)"
+    charc["x"]=$LILA; chart["x"]="conflict/improvement Pootle wins (pootle and sources translated, different values). Review $copyingLogfile "
+    charc["·"]=$COLOROFF; chart["·"]="no-op (same, valid translation in pootle and sources)"
+    charc["p"]=$GREEN; chart["p"]="valid translation coming from pootle, sources untranslated"
     charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
 
-    logt 3 -n "Copying translations: "
+    logt 3 "Copying translations (see legend below)..."
     for char in ${!charc[@]}; do
-        loglc 0 ${charc[$char]} -n "'$char' ${chart[$char]}.  "
+        loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
     done;
     logt 0
     while read line; do

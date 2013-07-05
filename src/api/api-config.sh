@@ -73,9 +73,11 @@ function get_project_language_path() {
 function add_project() {
 	project_name="$1"
 	source_path="$2"
+	ant_path="$3"
 
 	PROJECT_NAMES[${#PROJECT_NAMES[@]}]="$project_name"
 	PROJECT_SRC[${#PROJECT_SRC[@]}]="$source_path"
+	PROJECT_ANT[${#PROJECT_ANT[@]}]="$ant_path"
 }
 
 function add_projects() {
@@ -86,7 +88,7 @@ function add_projects() {
 	for plugin in $plugins;
 	do
 		pootle_project_id="$plugin$suffix"
-		add_project "$pootle_project_id" "${prefix}${pootle_project_id}${SRC_PLUGINS_LANG_PATH}"
+		add_project "$pootle_project_id" "${prefix}${pootle_project_id}${SRC_PLUGINS_LANG_PATH}" "${prefix}${pootle_project_id}"
 	done
 }
 
