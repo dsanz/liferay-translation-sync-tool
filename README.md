@@ -28,6 +28,7 @@ Portal - plugins setup
 - optionally, clone any other liferay repo for backporting translations
 - download a bundle
 - setup the bundle as target for compilation/deployment of portal & plugins repos
+- add a valid pair microsoft.translator.client.id, microsoft.translator.client.secret to portal-ext.properties
 - cd liferay-portal; ant compile
 - now, ant build-lang can be run from liferay-portal/portal-impl/ and each translatable plugin source root
 
