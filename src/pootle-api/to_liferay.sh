@@ -84,9 +84,14 @@ function ant_build_lang() {
 	for (( i=0; i<${#PROJECT_ANT[@]}; i++ ));
 	do
 		ant_dir=${PROJECT_ANT[$i]}
+		project=${PROJECT_NAMES[$i]}
+		logt 2 "$project"
+		logt 3 -n "cd $ant_dir"
 		cd $ant_dir
-		logt 2 -n "$ant_dir"
-        $ANT_BIN build-lang > /dev/null 2>&1
+		check_command
+		ant_log="$logbase/$project/ant-build-lang.log"
+		logt 3 -n "$ANT_BIN build-lang (all output redirected to $ant_log)"
+        $ANT_BIN build-lang > "$ant_log" 2>&1
         check_command
 	done;
 }
