@@ -172,6 +172,7 @@ function process_untranslated() {
                 clear_keys "$(get_exported_language_prefix $project $locale)"
                 clear_keys "$(get_previous_language_prefix $project $locale)"
                 clear_keys "$(get_store_language_prefix $project $locale)"
+                clear_keys "$(get_ext_language_prefix $project $locale)"
                 check_command
             fi
 		done
