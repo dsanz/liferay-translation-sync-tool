@@ -50,10 +50,9 @@ function pootle2src() {
     update_pootle_files
 	ascii_2_native
 	process_untranslated
-	do_commit false
+	do_commit false false "pootle exported keys"
 	ant_build_lang
-	do_commit true
-	push_changes
+	do_commit true true "ant build-lang"
 	loglc 1 $RED "End Sync[Pootle -> Liferay source code]"
 }
 
@@ -79,7 +78,7 @@ main() {
 		#$PO_COOKIES $SRC_PATH_PLUGIN_PREFIX \
 		#$SRC_PATH_PLUGIN_SUFFIX $FILE $PROP_EXT $LANG_SEP
 	if [ $UPDATE_REPOSITORY ]; then
-		src2pootle
+	#	src2pootle
 		pootle2src
 	fi
 	if [ $UPDATE_POOTLE_DB ]; then
