@@ -78,7 +78,7 @@ main() {
 		#$PO_COOKIES $SRC_PATH_PLUGIN_PREFIX \
 		#$SRC_PATH_PLUGIN_SUFFIX $FILE $PROP_EXT $LANG_SEP
 	if [ $UPDATE_REPOSITORY ]; then
-	#	src2pootle
+		src2pootle
 		pootle2src
 	fi
 	if [ $UPDATE_POOTLE_DB ]; then
