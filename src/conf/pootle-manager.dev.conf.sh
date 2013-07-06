@@ -1,12 +1,17 @@
 #!/bin/bash
 
+###
+### Configuration file for the DEV environment
+### please remember to export POOTLE_MANAGER_PROFILE="dev" for this file to be read by the script.
+###
+
 ## Configuration of directories
 ## base dirs
 # pootle installation
 declare -xgr POOTLEDIR="/var/www/Pootle"
 # translation files for Pootle DB update/sync
 declare -xgr PODIR="$POOTLEDIR/po"
-# base working dir for the scripts
+# base working dir for the scripts (everything will be created under this)
 declare -xgr BASE_DIR="/home/dsanz/"
 # temporal working dirs
 declare -xgr TMP_DIR="$BASE_DIR/po-lf"
@@ -14,7 +19,7 @@ declare -xgr TMP_PROP_IN_DIR="$TMP_DIR/prop_in"
 declare -xgr TMP_PROP_OUT_DIR="$TMP_DIR/prop_out"
 declare -xgr TMP_DB_BACKUP_DIR="$BASE_DIR/db-backups"
 declare -xgr LOG_DIR="$BASE_DIR/log"
-# source dirs
+# source dirs, under git control, where forked & cloned repos are
 declare -xgr SRC_BASE="$BASE_DIR/"
 declare -xgr SRC_PORTAL_BASE="${SRC_BASE}liferay-portal/"
 declare -xgr SRC_PORTAL_LANG_PATH="portal-impl/src/content/"
@@ -22,11 +27,13 @@ declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}liferay-plugins/"
 declare -xgr SRC_PLUGINS_LANG_PATH="/docroot/WEB-INF/src/content/"
 
 ## Configuration of credentials
+# a valid pootle user with administration privileges
 declare -xgr PO_USER="manager"
 declare -xgr PO_PASS="test"
 # db credentials are not required for now
 
 ## Configuration of servers
+# allows us to communicate with a living pootle server, installed under $POOTLE_DIR
 declare -xgr PO_HOST="localhost"
 declare -xgr PO_PORT="8080"
 declare -xgr PO_SRV="http://$PO_HOST:$PO_PORT"
@@ -51,7 +58,8 @@ declare -xgr HOOK_LIST="private-plugin-installer so-activities so"
 declare -xgr HOOK_SUFFIX="-hook"
 declare -xgr HOOK_SRC_PATH_PREFIX="${SRC_PLUGINS_BASE}hooks/"
 
-# master project list
+## master project list
+# contains all project code names, as seen by pootle and source dirs
 declare -xga PROJECT_NAMES
 declare -xga PROJECT_SRC
 declare -xga PROJECT_ANT
