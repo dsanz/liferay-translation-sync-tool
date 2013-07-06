@@ -266,7 +266,9 @@ function refill_translations() {
         loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
     done;
     logt 0
-    while read line; do
+    done=false;
+	until $done; do
+	    read line || done=true
 	    char="!"
 		if is_key_line "$line" ; then
 		    [[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"

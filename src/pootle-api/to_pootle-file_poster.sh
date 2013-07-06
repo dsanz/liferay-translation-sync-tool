@@ -27,7 +27,9 @@ function upload_submissions() {
 	path=$(get_pootle_path $project $locale)
 	filename=$(get_filename $locale)
 
-	while read line; do
+	done=false;
+	until $done; do
+	    read line || done=true
 	    if is_key_line "$line" ; then
 		    [[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
 			upload_submission "$key" "$value" "$storeId" "$path"
