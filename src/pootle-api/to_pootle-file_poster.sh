@@ -5,13 +5,19 @@ function upload_submission() {
 	value="$2"
 	storeId="$3"
 	path="$4"
-	index=$(get_index $storeId $key)
-	id=$(get_unitid $storeId $key)
-	sourcef=$(get_sourcef $storeId $key)
-	logt 4 -n "publishing translation '$key'"
-	#logt 4 -n "curl -s -b $PO_COOKIES -c $PO_COOKIES  -d csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7` -d id=$id -d path=$path -d pootle_path=$path -d source_f_0=$sourcef -d store=$path -d submit=Submit -d target_f_0=$value -d index=$index $PO_SRV$path/translate/?"
-	curl -s -b "$PO_COOKIES" -c "$PO_COOKIES"  -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "id=$id" -d "path=$path" -d  "pootle_path=$path" -d "source_f_0=$sourcef" -d  "store=$path" -d "submit=Submit" -d  "target_f_0=$value" -d "index=$index" "$PO_SRV$path/translate/?" > /dev/null
-	check_command
+
+    if is_translated_value "$value"; then
+	    logt 4 -n "publishing translation '$key': $value"
+	    index=$(get_index $storeId $key)
+	    id=$(get_unitid $storeId $key)
+	    sourcef=$(get_sourcef $storeId $key)
+
+	    #logt 4 -n "curl -s -b $PO_COOKIES -c $PO_COOKIES  -d csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7` -d id=$id -d path=$path -d pootle_path=$path -d source_f_0=$sourcef -d store=$path -d submit=Submit -d target_f_0=$value -d index=$index $PO_SRV$path/translate/?"
+	    curl -s -b "$PO_COOKIES" -c "$PO_COOKIES"  -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "id=$id" -d "path=$path" -d  "pootle_path=$path" -d "source_f_0=$sourcef" -d  "store=$path" -d "submit=Submit" -d  "target_f_0=$value" -d "index=$index" "$PO_SRV$path/translate/?" > /dev/null
+	    check_command
+	else
+	    logt 4 "Skipping untranslated key '$key': $value"
+	fi
 }
 
 function upload_submissions() {
@@ -22,12 +28,9 @@ function upload_submissions() {
 	filename=$(get_filename $locale)
 
 	while read line; do
-		key=$(echo $line | sed s/=.*//)
-		value=$(echo $line | sed -r s/^[^=]+=//)
-		if is_translated_value "$value"; then
-		    upload_submission "$key" "$value" "$storeId" "$path"
-		else
-		    logt 4 "Skipping untranslated key '$key': $value"
+	    if is_key_line "$line" ; then
+		    [[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
+			upload_submission "$key" "$value" "$storeId" "$path"
 		fi
 	done < $filename
 }

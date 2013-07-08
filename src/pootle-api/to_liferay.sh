@@ -24,13 +24,18 @@ function prepare_source_dirs() {
 }
 
 function do_commit() {
-    logt 1 "Committing results"
     reuse_branch=$1
+    push_changes=$2
+    commit_msg=$3
+    logt 1 "Committing results (reusing branch?=${reuse_branch}, will push?=$push_changes)"
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		base_src_dir=${PATH_BASE_DIR[$i]}
 		cd $base_src_dir
-		logt 2 "$base_src_dir, reusing branch $reuse_branch"
+		logt 2 "$base_src_dir,"
+        logt 3 -n "git checkout master"
+	    git checkout master > /dev/null 2>&1
+	    check_command
 		if something_changed; then
             if exists_branch "pootle_export" "$base_src_dir"; then
                 if $reuse_branch; then
@@ -52,10 +57,13 @@ function do_commit() {
                 git checkout -b pootle_export > /dev/null 2>&1
                 check_command
             fi
-            msg="Pootle export, created by $product"
-            logt 3 -n "git commit -m $msg"
-            git commit -m "$msg" > /dev/null 2>&1
+            msg="$commit_msg [by $product]"
+            logt 3 -n "git commit -a -m $msg"
+            git commit -a -m "$msg" > /dev/null 2>&1
             check_command
+            if $push_changes; then
+                push_changes
+            fi
 		else
 		    logt 3 "No changes to commit!!"
 		fi
@@ -76,9 +84,14 @@ function ant_build_lang() {
 	for (( i=0; i<${#PROJECT_ANT[@]}; i++ ));
 	do
 		ant_dir=${PROJECT_ANT[$i]}
+		project=${PROJECT_NAMES[$i]}
+		logt 2 "$project"
+		logt 3 -n "cd $ant_dir"
 		cd $ant_dir
-		logt 2 -n "$ant_dir"
-        $ANT_BIN build-lang # > /dev/null 2>&1
+		check_command
+		ant_log="$logbase/$project/ant-build-lang.log"
+		logt 3 -n "$ANT_BIN build-lang (all output redirected to $ant_log)"
+        $ANT_BIN build-lang > "$ant_log" 2>&1
         check_command
 	done;
 }
@@ -159,6 +172,7 @@ function process_untranslated() {
                 clear_keys "$(get_exported_language_prefix $project $locale)"
                 clear_keys "$(get_previous_language_prefix $project $locale)"
                 clear_keys "$(get_store_language_prefix $project $locale)"
+                clear_keys "$(get_ext_language_prefix $project $locale)"
                 check_command
             fi
 		done
