@@ -108,19 +108,24 @@ function read_locale_file() {
 	template=$3
 	logt 4 -n "Reading file $1        "
 	counter=0
-	while read line; do
-		printf "\b\b\b\b\b"
-		printf "%5s" "$(( 100 * (counter+1) / lines ))%"
-		(( counter++ ))
-		if is_key_line "$line" ; then
-			[[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
-			setTVal $2 "$key" "$value"
-			if [[ $template ]]; then
-				K[${#K[@]}]=$key
-			fi;
-		else
-			: #echo -n "."
-		fi
-	done < $1
+	done=false;
+	if [[ $lines -gt 0 ]]; then
+	    (( lines++ ))
+	    until $done; do
+            read line || done=true
+            printf "\b\b\b\b\b"
+            printf "%5s" "$(( 100 * (counter+1) / lines ))%"
+            (( counter++ ))
+            if is_key_line "$line" ; then
+                [[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
+                setTVal $2 "$key" "$value"
+                if [[ $template ]]; then
+                    K[${#K[@]}]=$key
+                fi;
+            else
+                : #echo -n "."
+            fi
+        done < $1
+	fi
 	logt 0;
 }

@@ -96,7 +96,9 @@ function rename_pootle_store_store_entries() {
     currentName="$1"
     newName="$2"
     entries="$(get_pootle_store_store_entries $currentName)"
-    while read line; do
+    done=false;
+	until $done; do
+	    read line || done=true
         regex="($currentName/[^\,]+),(.+)"
         [[ "$line" =~ $regex ]] && file="${BASH_REMATCH[1]}" && pootlePath="${BASH_REMATCH[2]}"
         newFile=$(echo $file | sed -r "s:$currentName(.*):$newName\1:")
@@ -115,7 +117,9 @@ function rename_pootle_app_directory_entries() {
     currentName="$1"
     newName="$2"
     entries="$(get_pootle_app_directory_entries $currentName)"
-    while read line; do
+    done=false;
+	until $done; do
+	    read line || done=true
         regex="$currentName,(.+)"
         [[ "$line" =~ $regex ]] && pootlePath="${BASH_REMATCH[1]}"
         newPootlePath=$(echo $pootlePath | sed -r "s:(.*)$currentName(.*):\1$newName\2:")
@@ -134,7 +138,9 @@ function rename_pootle_app_translationproject_entries() {
     currentName="$1"
     newName="$2"
     entries="$(get_pootle_app_translationproject_entries $currentName)"
-    while read line; do
+    done=false;
+	until $done; do
+	    read line || done=true
         regex="$currentName,(.+)"
         [[ "$line" =~ $regex ]] && pootlePath="${BASH_REMATCH[1]}"
         newPootlePath=$(echo $pootlePath | sed -r "s:(.*)$currentName(.*):\1$newName\2:")
@@ -162,7 +168,9 @@ function rename_pootle_notifications_notice_entries() {
     currentName="$1"
     newName="$2"
     entries="$(get_pootle_notifications_notice_entries $currentName)"
-    while read line; do
+    done=false;
+	until $done; do
+	    read line || done=true
         origLine="$line"
         regex="$currentName"
         while :; do

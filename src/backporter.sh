@@ -170,7 +170,9 @@ function backport() {
 	echo "  Writing into $file "
 
 	rm -f $file $file_hrr_improvements $file_hrr_changes
-	while read line; do
+	done=false;
+	until $done; do
+	    read line || done=true
 		result[$file]="$line"
 		result[$file_hrr_improvements]="$line"
 		result[$file_hrr_changes]="$line"
