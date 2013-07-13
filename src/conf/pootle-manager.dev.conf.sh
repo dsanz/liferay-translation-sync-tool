@@ -11,8 +11,8 @@
 declare -xgr POOTLEDIR="/var/www/Pootle"
 # translation files for Pootle DB update/sync
 declare -xgr PODIR="$POOTLEDIR/po"
-# base working dir for the scripts (everything will be created under this)
-declare -xgr BASE_DIR="/home/dsanz/"
+# base working dir for the scripts
+declare -xgr BASE_DIR="/home/dsanz"
 # temporal working dirs
 declare -xgr TMP_DIR="$BASE_DIR/po-lf"
 declare -xgr TMP_PROP_IN_DIR="$TMP_DIR/prop_in"
