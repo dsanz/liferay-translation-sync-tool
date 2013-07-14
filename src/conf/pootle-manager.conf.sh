@@ -22,8 +22,10 @@ declare -xgr LOG_DIR="$BASE_DIR/log"
 # source dirs, under git control, where forked & cloned repos are
 declare -xgr SRC_BASE="$BASE_DIR/"
 declare -xgr SRC_PORTAL_BASE="${SRC_BASE}liferay-portal/"
+declare -xgr SRC_PORTAL_EE_BASE="${SRC_BASE}liferay-portal-ee/"
 declare -xgr SRC_PORTAL_LANG_PATH="portal-impl/src/content/"
 declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}liferay-plugins/"
+declare -xgr SRC_PLUGINS_EE_BASE="${SRC_BASE}liferay-plugins-ee/"
 declare -xgr SRC_PLUGINS_LANG_PATH="/docroot/WEB-INF/src/content/"
 
 ## Configuration of credentials

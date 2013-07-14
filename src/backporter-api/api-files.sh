@@ -78,3 +78,12 @@ function prepare_dirs() {
 	compute_locales
 }
 
+function get_ee_target_dir() {
+    source_dir=$1
+    if [[ $(echo $source_dir | grep "$SRC_PORTAL_BASE") != "" ]]; then
+        sedExpr="'s/$SRC_PORTAL_BASE/$SRC_PORTAL_EE_BASE/'"
+    else
+        sedExpr="'s/$SRC_PLUGINS_BASE/$SRC_PLUGINS_EE_BASE/'"
+    fi
+    echo $source_dir | sed $sedExpr
+}
