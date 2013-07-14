@@ -4,8 +4,8 @@
 declare -a L;
 
 function compute_locales() {
-	for language_file in $(ls $target_dir/${FILE}${file_sep}*.$PROP_EXT); do
-		locale=$(echo $language_file | sed -r "s:$target_dir\/${FILE}${file_sep}([^\.]+).$PROP_EXT:\1:")
+	for language_file in $(ls $target_dir/${FILE}${LANG_SEP}*.$PROP_EXT); do
+		locale=$(echo $language_file | sed -r "s:$target_dir\/${FILE}${LANG_SEP}([^\.]+).$PROP_EXT:\1:")
 		L[${#L[@]}]=$locale
 	done
 	locales="${L[@]}"
@@ -47,7 +47,7 @@ function set_english_paths() {
 
 # sets source and target paths for Language_$1.properties files
 function set_lang_paths() {
-	lang_file="${FILE}${file_sep}$1.${PROP_EXT}";
+	lang_file="${FILE}${LANG_SEP}$1.${PROP_EXT}";
 	source_lang_path=$source_dir/$lang_file
 	target_lang_path=$target_dir/$lang_file
 }
