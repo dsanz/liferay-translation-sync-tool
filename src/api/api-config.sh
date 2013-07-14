@@ -105,6 +105,8 @@ function resolve_params() {
 			export RESCAN_FILES=1
 		elif [ "$param" = "--moveproject" ] || [ "$param" = "-m" ]; then
 			export MOVE_PROJECT=1
+		elif [ "$param" = "--backport" ] || [ "$param" = "-b" ]; then
+			export BACKPORT=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else

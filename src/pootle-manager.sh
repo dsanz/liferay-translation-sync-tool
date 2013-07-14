@@ -126,16 +126,16 @@ main() {
 	if [ $UPDATE_REPOSITORY ]; then
 		src2pootle
 		pootle2src
-	fi
-	if [ $UPDATE_POOTLE_DB ]; then
+	elif [ $UPDATE_POOTLE_DB ]; then
 		src2pootle
-	fi
-	if [ $RESCAN_FILES ]; then
+	elif [ $RESCAN_FILES ]; then
 	    uniformize_pootle_paths
-	fi
-	if [ $MOVE_PROJECT ]; then
+	elif [ $MOVE_PROJECT ]; then
 	    rename_pootle_project $2 $3
+	elif [ $BACKPORT ]; then
+	    backport
 	fi
+
 	[ ! $HELP ] &&	echo "$product [DONE]"
 }
 
