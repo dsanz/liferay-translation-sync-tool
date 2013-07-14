@@ -6,6 +6,7 @@
 . api/api-properties.sh
 . backporter-api/api-properties.sh
 . backporter-api/api-git.sh
+. backporter-api/api-files.sh
 
 # L contains all locales in target_dir
 declare -a L;
@@ -38,44 +39,6 @@ declare product="Liferay translation backporter v$version"
 
 #### Top level functions
 
-function set_base_paths() {
-	source_dir=$1
-	target_dir=$2
-	if ! [[ ($source_dir == *$translations_dir*) || -f $source_dir/$english_file ]]; then
-		source_dir=$source_dir$translations_dir
-	fi;
-	if ! [[ $target_dir == *$translations_dir* || -f $target_dir/$english_file ]]; then
-		target_dir=$target_dir$translations_dir
-	fi;
-	echo "  - Source dir set to $source_dir"
-	echo "  - Target dir set to $target_dir"
-}
-
-# sets source and target paths for Language.properties files
-function set_english_paths() {
-	source_english_path=$source_dir/$english_file
-	target_english_path=$target_dir/$english_file
-}
-
-# sets source and target paths for Language_$1.properties files
-function set_lang_paths() {
-	lang_file="${file_prefix}${file_sep}$1.${file_ext}";
-	source_lang_path=$source_dir/$lang_file
-	target_lang_path=$target_dir/$lang_file
-}
-
-function prepare_dirs() {
-	echo
-	echo "Preparing working dirs"
-	set_base_paths $1 $2
-	if [[ $use_git == 0 ]]; then
-		echo "  - Using git"
-		check_git;
-	else
-		echo "  - Not using git"
-	fi
-	compute_locales
-}
 
 function backport() {
 	now="$(date +%s%N)"
@@ -200,20 +163,6 @@ function echo_legend() {
 	echo "   R: No action, key translated in newer and older, translations are different but same english meaning. Human review required (refinement, echoed to $file_hrr_improvements)"
 	echo "   .: No action, key translated in newer and older, same english meaning and translation"
 	echo "   x: No action, uncovered case"
-}
-
-function read_english_files() {
-	echo
-	echo "Reading english files"
-	set_english_paths
-	read_locale_file $source_english_path $new_english
-	read_locale_file $target_english_path $old_english true
-}
-
-function read_lang_files() {
-	set_lang_paths $1
-	read_locale_file $source_lang_path $new_lang
-	read_locale_file $target_lang_path $old_lang
 }
 
 function compute_locales() {
