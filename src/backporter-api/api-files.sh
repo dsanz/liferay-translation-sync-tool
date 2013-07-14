@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# L contains all locales in target_dir
+declare -a L;
+
+function compute_locales() {
+	for language_file in $(ls $target_dir/${file_prefix}${file_sep}*.$file_ext); do
+		locale=$(echo $language_file | sed -r "s:$target_dir\/${file_prefix}${file_sep}([^\.]+).$file_ext:\1:")
+		L[${#L[@]}]=$locale
+	done
+	locales="${L[@]}"
+	echo "  - Locales in target dir: '$locales'"
+}
+
 function read_english_files() {
 	echo
 	echo "Reading english files"

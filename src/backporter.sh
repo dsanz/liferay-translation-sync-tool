@@ -8,9 +8,6 @@
 . backporter-api/api-git.sh
 . backporter-api/api-files.sh
 
-# L contains all locales in target_dir
-declare -a L;
-
 declare file_prefix="Language";
 declare file_ext="properties";
 declare file_sep="_";
@@ -27,11 +24,7 @@ declare source_lang_path;
 declare target_lang_path;
 
 # git stuff
-declare do_commit=1
-declare use_git=0
 declare pwd=$(pwd)
-declare result_branch="translations_backport"
-declare refspec="origin/$result_branch"
 
 declare version="0.7"
 declare product="Liferay translation backporter v$version"
@@ -164,14 +157,7 @@ function echo_legend() {
 	echo "   x: No action, uncovered case"
 }
 
-function compute_locales() {
-	for language_file in $(ls $target_dir/${file_prefix}${file_sep}*.$file_ext); do
-		locale=$(echo $language_file | sed -r "s:$target_dir\/${file_prefix}${file_sep}([^\.]+).$file_ext:\1:")
-		L[${#L[@]}]=$locale
-	done
-	locales="${L[@]}"
-	echo "  - Locales in target dir: '$locales'"
-}
+
 
 function usage() {
 	echo "Usage: $0 <source-dir> <target-dir> [-ng]"

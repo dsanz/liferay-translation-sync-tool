@@ -3,6 +3,11 @@
 declare -A commit
 declare -A branch
 
+declare use_git=0
+declare result_branch="translations_backport"
+declare refspec="origin/$result_branch"
+declare do_commit=1
+
 function update_to_head() {
 	if is_git_dir "$1"; then
 		branch[$1]=$(git branch 2>/dev/null| sed -n '/^\*/s/^\* //p')
