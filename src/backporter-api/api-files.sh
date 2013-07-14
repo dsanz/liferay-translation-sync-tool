@@ -14,6 +14,8 @@ declare lang_file;
 
 declare english_file="${FILE}.${PROP_EXT}";
 
+#declare translations_dir="/portal-impl/src/content"
+
 function compute_locales() {
 	for language_file in $(ls $target_dir/${FILE}${LANG_SEP}*.$PROP_EXT); do
 		locale=$(echo $language_file | sed -r "s:$target_dir\/${FILE}${LANG_SEP}([^\.]+).$PROP_EXT:\1:")
@@ -40,12 +42,12 @@ function read_lang_files() {
 function set_base_paths() {
 	source_dir=$1
 	target_dir=$2
-	if ! [[ ($source_dir == *$translations_dir*) || -f $source_dir/$english_file ]]; then
-		source_dir=$source_dir$translations_dir
-	fi;
-	if ! [[ $target_dir == *$translations_dir* || -f $target_dir/$english_file ]]; then
-		target_dir=$target_dir$translations_dir
-	fi;
+#	if ! [[ ($source_dir == *$translations_dir*) || -f $source_dir/$english_file ]]; then
+#		source_dir=$source_dir$translations_dir
+#	fi;
+#	if ! [[ $target_dir == *$translations_dir* || -f $target_dir/$english_file ]]; then
+#		target_dir=$target_dir$translations_dir
+#	fi;
 	echo "  - Source dir set to $source_dir"
 	echo "  - Target dir set to $target_dir"
 }

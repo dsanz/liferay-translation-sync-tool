@@ -9,7 +9,6 @@
 . backporter-api/api-git.sh
 . backporter-api/api-files.sh
 
-declare translations_dir="/portal-impl/src/content"
 declare backported_postfix=".backported"
 
 #### Top level functions
@@ -139,8 +138,6 @@ function echo_legend() {
 	echo "   .: No action, key translated in newer and older, same english meaning and translation"
 	echo "   x: No action, uncovered case"
 }
-
-
 
 function usage() {
 	echo "Usage: $0 <source-dir> <target-dir> [-ng]"
