@@ -1,20 +1,13 @@
 #!/bin/bash
 
-# Author:		Milan Jaros, Daniel Sanz, Alberto Montero
+# Author:		Daniel Sanz
 
 . api/api-git.sh
 . api/api-properties.sh
+. backporter-api/api-properties.sh
 
 # L contains all locales in target_dir
 declare -a L;
-# key prefix for new (source) english key names
-declare new_english="N";
-# key prefix for old (target) english key names
-declare old_english="O";
-# key prefix for new (source) language key names
-declare new_lang="n";
-# key prefix for old (target) language key names
-declare old_lang="o";
 
 declare file_prefix="Language";
 declare file_ext="properties";
@@ -41,22 +34,6 @@ declare -A commit
 declare -A branch
 declare version="0.7"
 declare product="Liferay translation backporter v$version"
-
-
-#### Core API functions
-
-function english_value_changed() {
-	value_changed $new_english $old_english $1
-}
-function lang_value_changed() {
-	value_changed $new_lang $old_lang $1
-}
-function exists_in_new() {
-	exists_key $new_english $1
-}
-function exists_in_old() {
-	exists_key $old_english $1
-}
 
 #### Top level functions
 
