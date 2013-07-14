@@ -4,6 +4,7 @@
 
 . api/api-git.sh
 . api/api-properties.sh
+. api/api-version.sh
 . backporter-api/api-properties.sh
 . backporter-api/api-git.sh
 . backporter-api/api-files.sh
@@ -15,9 +16,6 @@ declare english_file="${FILE}.${PROP_EXT}";
 declare source_dir
 declare target_dir
 declare lang_file;
-
-declare version="0.7"
-declare product="Liferay translation backporter v$version"
 
 #### Top level functions
 
