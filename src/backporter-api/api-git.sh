@@ -1,5 +1,8 @@
 #!/bin/bash
 
+declare -A commit
+declare -A branch
+
 function update_to_head() {
 	if is_git_dir "$1"; then
 		branch[$1]=$(git branch 2>/dev/null| sed -n '/^\*/s/^\* //p')

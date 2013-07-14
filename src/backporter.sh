@@ -32,8 +32,7 @@ declare use_git=0
 declare pwd=$(pwd)
 declare result_branch="translations_backport"
 declare refspec="origin/$result_branch"
-declare -A commit
-declare -A branch
+
 declare version="0.7"
 declare product="Liferay translation backporter v$version"
 
