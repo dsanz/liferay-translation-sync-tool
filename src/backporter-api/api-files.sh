@@ -3,6 +3,13 @@
 # L contains all locales in target_dir
 declare -a L;
 
+# useful paths for backporting
+declare source_english_path;    # location of Language.properties in source branch
+declare target_english_path;    # location of Language.properties in target branch
+declare source_lang_path;       # location of Language_*.properties in source branch
+declare target_lang_path;       # location of Language_*.properties in target branch
+
+
 function compute_locales() {
 	for language_file in $(ls $target_dir/${FILE}${LANG_SEP}*.$PROP_EXT); do
 		locale=$(echo $language_file | sed -r "s:$target_dir\/${FILE}${LANG_SEP}([^\.]+).$PROP_EXT:\1:")

@@ -8,6 +8,8 @@ declare result_branch="translations_backport"
 declare refspec="origin/$result_branch"
 declare do_commit=1
 
+declare pwd=$(pwd)
+
 function update_to_head() {
 	if is_git_dir "$1"; then
 		branch[$1]=$(git branch 2>/dev/null| sed -n '/^\*/s/^\* //p')
