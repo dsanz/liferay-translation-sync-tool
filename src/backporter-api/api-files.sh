@@ -12,6 +12,7 @@ declare source_dir
 declare target_dir
 declare lang_file;
 
+declare english_file="${FILE}.${PROP_EXT}";
 
 function compute_locales() {
 	for language_file in $(ls $target_dir/${FILE}${LANG_SEP}*.$PROP_EXT); do
