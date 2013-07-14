@@ -127,12 +127,3 @@ function echo_legend() {
 	echo "   x: No action, uncovered case"
 }
 
-function usage() {
-	echo "Usage: $0 <source-dir> <target-dir> [-ng]"
-	echo "   <source-dir> and <target-dir> must either:"
-	echo "      - Contain language files (Language.properties et al), or"
-	echo "      - Point to the source root (backporter will add 'src/portal-impl/content' to the paths)"
-	echo "   Translations will be backported from source to target. Only language files in target are backported"
-	echo "   -ng disables git"
-	exit 1
-}
