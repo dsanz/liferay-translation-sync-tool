@@ -2,7 +2,7 @@
 
 ###
 ### Configuration file for the DEV environment
-### for this file to be read by the script, variable POOTLE_MANAGER_PROFILE has not to be defined
+### please remember to export POOTLE_MANAGER_PROFILE="pro" for this file to be read by the script.
 ###
 
 ## Configuration of directories
@@ -11,8 +11,8 @@
 declare -xgr POOTLEDIR="/var/www/Pootle"
 # translation files for Pootle DB update/sync
 declare -xgr PODIR="$POOTLEDIR/po"
-# base working dir for the scripts
-declare -xgr BASE_DIR="/home/dsanz"
+# base working dir for the scripts (everything will be created under this)
+declare -xgr BASE_DIR="/opt/pootle-manager"
 # temporal working dirs
 declare -xgr TMP_DIR="$BASE_DIR/po-lf"
 declare -xgr TMP_PROP_IN_DIR="$TMP_DIR/prop_in"
@@ -28,15 +28,15 @@ declare -xgr SRC_PLUGINS_LANG_PATH="/docroot/WEB-INF/src/content/"
 
 ## Configuration of credentials
 # a valid pootle user with administration privileges
-declare -xgr PO_USER="manager"
-declare -xgr PO_PASS="test"
+declare -xgr PO_USER="pootle"
+declare -xgr PO_PASS="xxxxx"    # set only in production machine
 # db credentials are not required for now
 
 ## Configuration of servers
 # allows us to communicate with a living pootle server, installed under $POOTLE_DIR
-declare -xgr PO_HOST="localhost"
-declare -xgr PO_PORT="8080"
-declare -xgr PO_SRV="http://$PO_HOST:$PO_PORT"
+declare -xgr PO_HOST="translate.liferay.com"
+declare -xgr PO_PORT="80"
+declare -xgr PO_SRV="http://$PO_HOST:$PO_PORT/pootle"
 declare -xgr PO_COOKIES="$TMP_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
 
 ## Git branches management
