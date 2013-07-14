@@ -8,6 +8,9 @@ declare source_english_path;    # location of Language.properties in source bran
 declare target_english_path;    # location of Language.properties in target branch
 declare source_lang_path;       # location of Language_*.properties in source branch
 declare target_lang_path;       # location of Language_*.properties in target branch
+declare source_dir
+declare target_dir
+declare lang_file;
 
 
 function compute_locales() {

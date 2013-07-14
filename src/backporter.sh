@@ -13,9 +13,6 @@ declare translations_dir="/portal-impl/src/content"
 declare backported_postfix=".backported"
 
 declare english_file="${FILE}.${PROP_EXT}";
-declare source_dir
-declare target_dir
-declare lang_file;
 
 #### Top level functions
 
