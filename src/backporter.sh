@@ -30,7 +30,7 @@ function main() {
     	backport $locale
     done
     echo_legend
-    commit_result
+    commit_result $2
     echo
     echo "Backport finished in $SECONDS s."
 }
