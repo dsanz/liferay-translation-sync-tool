@@ -8,13 +8,12 @@
 . backporter-api/api-git.sh
 . backporter-api/api-files.sh
 
-declare file_prefix="Language";
 declare file_ext="properties";
 declare file_sep="_";
 declare translations_dir="/portal-impl/src/content"
 declare backported_postfix=".backported"
 
-declare english_file="${file_prefix}.${file_ext}";
+declare english_file="${FILE}.${file_ext}";
 declare source_dir
 declare target_dir
 declare lang_file;
