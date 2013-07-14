@@ -1,25 +1,23 @@
 #!/bin/bash
 
 # L contains all locales in target_dir
-declare -a L;
+declare -ag L;
 
 # useful paths for backporting
-declare source_english_path;    # location of Language.properties in source branch
-declare target_english_path;    # location of Language.properties in target branch
-declare source_lang_path;       # location of Language_*.properties in source branch
-declare target_lang_path;       # location of Language_*.properties in target branch
-declare source_dir
-declare target_dir
-declare lang_file;
-
-declare english_file="${FILE}.${PROP_EXT}";
+declare -g source_english_path;    # location of Language.properties in source branch
+declare -g target_english_path;    # location of Language.properties in target branch
+declare -g source_lang_path;       # location of Language_*.properties in source branch
+declare -g target_lang_path;       # location of Language_*.properties in target branch
+declare -g source_dir
+declare -g target_dir
+declare -g lang_file;
 
 #declare translations_dir="/portal-impl/src/content"
 
 function compute_locales() {
-	for language_file in $(ls $target_dir/${FILE}${LANG_SEP}*.$PROP_EXT); do
-		locale=$(echo $language_file | sed -r "s:$target_dir\/${FILE}${LANG_SEP}([^\.]+).$PROP_EXT:\1:")
-		L[${#L[@]}]=$locale
+    cd $target_dir
+	for language_file in $(ls ${FILE}${LANG_SEP}*.$PROP_EXT); do
+		L[${#L[@]}]=$(get_locale_from_file_name $language_file)
 	done
 	locales="${L[@]}"
 	echo "  - Locales in target dir: '$locales'"
@@ -54,15 +52,15 @@ function set_base_paths() {
 
 # sets source and target paths for Language.properties files
 function set_english_paths() {
-	source_english_path=$source_dir/$english_file
-	target_english_path=$target_dir/$english_file
+	source_english_path="$source_dir/${FILE}.${PROP_EXT}"
+	target_english_path="$target_dir/${FILE}.${PROP_EXT}"
 }
 
 # sets source and target paths for Language_$1.properties files
 function set_lang_paths() {
 	lang_file="${FILE}${LANG_SEP}$1.${PROP_EXT}";
-	source_lang_path=$source_dir/$lang_file
-	target_lang_path=$target_dir/$lang_file
+	source_lang_path="$source_dir/$lang_file"
+	target_lang_path="$target_dir/$lang_file"
 }
 
 function prepare_dirs() {
@@ -81,9 +79,9 @@ function prepare_dirs() {
 function get_ee_target_dir() {
     source_dir=$1
     if [[ $(echo $source_dir | grep "$SRC_PORTAL_BASE") != "" ]]; then
-        sedExpr="'s/$SRC_PORTAL_BASE/$SRC_PORTAL_EE_BASE/'"
+        sedExpr="s:$SRC_PORTAL_BASE:$SRC_PORTAL_EE_BASE:"
     else
-        sedExpr="'s/$SRC_PLUGINS_BASE/$SRC_PLUGINS_EE_BASE/'"
+        sedExpr="s:$SRC_PLUGINS_BASE:$SRC_PLUGINS_EE_BASE:"
     fi
-    echo $source_dir | sed $sedExpr
+    echo "$source_dir" | sed "$sedExpr"
 }

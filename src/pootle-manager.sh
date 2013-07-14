@@ -88,7 +88,7 @@ function display_projects() {
 	done
 }
 
-function backport() {
+function backport_all() {
     loglc 1 $RED "Begin backport process"
     display_projects
 
@@ -96,6 +96,7 @@ function backport() {
     for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
 		project=${PROJECT_NAMES[$i]}
 		logt 2 -n "$project"
+		use_git=0
 		source_dir="$(get_project_language_path $project)"
 		target_dir=$(get_ee_target_dir $source_dir)
 		backport_project "$source_dir" "$target_dir"
@@ -133,7 +134,7 @@ main() {
 	elif [ $MOVE_PROJECT ]; then
 	    rename_pootle_project $2 $3
 	elif [ $BACKPORT ]; then
-	    backport
+	    backport_all
 	fi
 
 	[ ! $HELP ] &&	echo "$product [DONE]"

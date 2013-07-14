@@ -1,26 +1,28 @@
 #!/bin/bash
 
-declare -A commit
-declare -A branch
+declare -Ag commit
+declare -Ag branch
 
-declare use_git=0
-declare result_branch="translations_backport"
-declare refspec="origin/$result_branch"
-declare do_commit=1
+declare -g use_git=0
+declare -g result_branch="translations_backport"
+declare -g refspec="origin/$result_branch"
+declare -g do_commit=1
 
 declare pwd=$(pwd)
 
 function update_to_head() {
 	if is_git_dir "$1"; then
-		branch[$1]=$(git branch 2>/dev/null| sed -n '/^\*/s/^\* //p')
-		cd $pwd
-		cd $1
+	    echo "Updating to HEAD $1"
+		cd "$1"
+		echo $(git branch 2>/dev/null | sed -n '/^\*/s/^\* //p')
+		branch["$1"]=$(git branch 2>/dev/null | sed -n '/^\*/s/^\* //p')
 		echo "  - Updating ${branch[$1]} branch from upstream"
 		git pull upstream ${branch[$1]} > /dev/null 2>&1
-		commit[$1]=$(git rev-parse HEAD)
+		commit["$1"]=$(git rev-parse HEAD)
 	else
 		echo "  - $1 is not under GIT, unable to update"
 	fi
+	cd $pwd
 }
 
 function check_git() {

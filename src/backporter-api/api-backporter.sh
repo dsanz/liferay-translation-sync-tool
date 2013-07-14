@@ -1,6 +1,6 @@
 #!/bin/bash
 
-declare backported_postfix=".backported"
+declare -g backported_postfix=".backported"
 
 function backport() {
 	now="$(date +%s%N)"
@@ -134,8 +134,8 @@ function backport_project() {
     prepare_dirs $1 $2
     read_english_files
     for locale in "${L[@]}"; do
+        echo_legend
     	backport $locale
     done
-    echo_legend
 }
 
