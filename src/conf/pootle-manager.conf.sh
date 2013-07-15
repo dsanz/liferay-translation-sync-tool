@@ -46,7 +46,7 @@ declare -xgr LAST_BRANCH="to-pootle-current"
 ## List of projects we know about
 declare -xgr PORTLET_LIST="akismet calendar chat contacts ddl-form digg events-display google-maps knowledge-base mail\
  marketplace microblogs opensocial plugins-security-manager polls private-messaging social-coding social-networking\
- so tasks twitter vimeo weather web-form wiki-navigation wsrp wysiwyg youtube"
+ so tasks twitter vimeo weather web-form wiki-navigation wsrp youtube"
 declare -xgr PORTLET_SUFFIX="-portlet"
 declare -xgr PORTLET_SRC_PATH_PREFIX="${SRC_PLUGINS_BASE}portlets/"
 

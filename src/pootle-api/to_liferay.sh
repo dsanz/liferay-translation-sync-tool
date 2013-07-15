@@ -61,12 +61,12 @@ function do_commit() {
             logt 3 -n "git commit -a -m $msg"
             git commit -a -m "$msg" > /dev/null 2>&1
             check_command
-            if $push_changes; then
-                push_changes
-            fi
 		else
 		    logt 3 "No changes to commit!!"
 		fi
+		if $push_changes; then
+            push_changes
+        fi
 	done;
 }
 
