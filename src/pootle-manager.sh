@@ -13,11 +13,15 @@ function load_api() {
 	. api/api-properties.sh
 	. api/api-version.sh
 	. api/api-pootle.sh
+	. backporter-api/api-files.sh
+	. backporter-api/api-git.sh
+	. backporter-api/api-properties.sh
 
 	# Load APIs
 	. pootle-api/to_pootle.sh
 	. pootle-api/to_pootle-file_poster.sh
 	. pootle-api/to_liferay.sh
+	. backporter-api/api-backporter.sh
 
     declare -xgr HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 }
@@ -84,6 +88,29 @@ function display_projects() {
 	done
 }
 
+function backport() {
+    loglc 1 $RED "Begin backport process"
+    display_projects
+
+    # backport on a project basis
+    for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
+		project=${PROJECT_NAMES[$i]}
+		logt 2 -n "$project"
+		source_dir="$(get_project_language_path $project)"
+		target_dir=$(get_ee_target_dir $source_dir)
+		backport_project "$source_dir" "$target_dir"
+	done;
+
+    # but commit result on a portal/plugins base paths basis
+	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
+	do
+		base_src_dir=${PATH_BASE_DIR[$i]}
+		commit_result $base_src_dir
+    done
+
+    loglc 1 $RED "End backport process"
+}
+
 # main function which loads api functions, then configuration, and then invokes logic according to arguments
 main() {
 	echo "$product [START]"
@@ -99,16 +126,16 @@ main() {
 	if [ $UPDATE_REPOSITORY ]; then
 		src2pootle
 		pootle2src
-	fi
-	if [ $UPDATE_POOTLE_DB ]; then
+	elif [ $UPDATE_POOTLE_DB ]; then
 		src2pootle
-	fi
-	if [ $RESCAN_FILES ]; then
+	elif [ $RESCAN_FILES ]; then
 	    uniformize_pootle_paths
-	fi
-	if [ $MOVE_PROJECT ]; then
+	elif [ $MOVE_PROJECT ]; then
 	    rename_pootle_project $2 $3
+	elif [ $BACKPORT ]; then
+	    backport
 	fi
+
 	[ ! $HELP ] &&	echo "$product [DONE]"
 }
 
