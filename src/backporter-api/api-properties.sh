@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # key prefix for new (source) english key names
-declare new_english="N";
+declare -g new_english="N";
 # key prefix for old (target) english key names
-declare old_english="O";
+declare -g old_english="O";
 # key prefix for new (source) language key names
-declare new_lang="n";
+declare -g new_lang="n";
 # key prefix for old (target) language key names
-declare old_lang="o";
+declare -g old_lang="o";
 
 function english_value_changed() {
 	value_changed $new_english $old_english $1

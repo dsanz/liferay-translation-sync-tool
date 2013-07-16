@@ -88,24 +88,37 @@ function display_projects() {
 	done
 }
 
-function backport() {
+function backport_all() {
     loglc 1 $RED "Begin backport process"
     display_projects
 
-    # backport on a project basis
+    use_git=0
+    do_commit=0
+
+    # prepare git for all base-paths
+    logt 1 "Preparing involved directories"
+	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
+	do
+		base_src_dir=${PATH_BASE_DIR[$i]}
+		check_git "$base_src_dir" "$(get_ee_target_dir $base_src_dir)";
+    done
+
+    # backport is done on a project basis
+    logt 1 "Backporting"
     for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
 		project=${PROJECT_NAMES[$i]}
-		logt 2 -n "$project"
+		logt 2 "$project"
 		source_dir="$(get_project_language_path $project)"
 		target_dir=$(get_ee_target_dir $source_dir)
 		backport_project "$source_dir" "$target_dir"
 	done;
 
-    # but commit result on a portal/plugins base paths basis
+    # commit result is again done on a base-path basis
+    logt 1 "Committing backport process results"
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		base_src_dir=${PATH_BASE_DIR[$i]}
-		commit_result $base_src_dir
+		commit_result $(get_ee_target_dir $base_src_dir)
     done
 
     loglc 1 $RED "End backport process"
@@ -133,7 +146,7 @@ main() {
 	elif [ $MOVE_PROJECT ]; then
 	    rename_pootle_project $2 $3
 	elif [ $BACKPORT ]; then
-	    backport
+	    backport_all
 	fi
 
 	[ ! $HELP ] &&	echo "$product [DONE]"
