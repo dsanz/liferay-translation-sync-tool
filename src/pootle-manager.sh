@@ -92,6 +92,8 @@ function backport_all() {
     loglc 1 $RED "Begin backport process"
     display_projects
 
+    use_git=0
+    do_commit=0
     # backport on a project basis
     for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
 		project=${PROJECT_NAMES[$i]}
@@ -106,7 +108,7 @@ function backport_all() {
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		base_src_dir=${PATH_BASE_DIR[$i]}
-		commit_result $base_src_dir
+		commit_result $(get_ee_target_dir $base_src_dir)
     done
 
     loglc 1 $RED "End backport process"
