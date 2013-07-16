@@ -96,6 +96,7 @@ function backport_all() {
     do_commit=0
 
     # prepare git for all base-paths
+    logt 1 "Preparing involved directories"
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		base_src_dir=${PATH_BASE_DIR[$i]}
@@ -103,15 +104,17 @@ function backport_all() {
     done
 
     # backport is done on a project basis
+    logt 1 "Backporting"
     for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
 		project=${PROJECT_NAMES[$i]}
-		logt 2 -n "$project"
+		logt 2 "$project"
 		source_dir="$(get_project_language_path $project)"
 		target_dir=$(get_ee_target_dir $source_dir)
 		backport_project "$source_dir" "$target_dir"
 	done;
 
     # commit result is again done on a base-path basis
+    logt 1 "Committing backport process results"
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		base_src_dir=${PATH_BASE_DIR[$i]}
