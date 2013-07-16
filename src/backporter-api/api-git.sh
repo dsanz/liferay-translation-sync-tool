@@ -41,7 +41,7 @@ function commit_result() {
 		result_branch="${result_branch}_${branch[$source_dir]}_to_${branch[$target_dir]}_$(date +%Y%m%d%H%M%S)"
 		refspec="origin/$result_branch"
 		echo "  - Working on branch $result_branch"
-		cd $2
+		cd $1
 		if [[ $(git branch | grep "$result_branch" | wc -l) -eq 1 ]]; then
 			echo "  - Deleting old branch $result_branch"
 			git branch -D $result_branch  > /dev/null 2>&1
