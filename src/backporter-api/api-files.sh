@@ -67,12 +67,6 @@ function prepare_dirs() {
 	echo
 	echo "Preparing working dirs"
 	set_base_paths $1 $2
-	if [[ $use_git == 0 ]]; then
-		echo "  - Using git"
-		check_git;
-	else
-		echo "  - Not using git"
-	fi
 	compute_locales
 }
 

@@ -94,17 +94,24 @@ function backport_all() {
 
     use_git=0
     do_commit=0
-    # backport on a project basis
+
+    # prepare git for all base-paths
+	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
+	do
+		base_src_dir=${PATH_BASE_DIR[$i]}
+		check_git "$base_src_dir" "$(get_ee_target_dir $base_src_dir)";
+    done
+
+    # backport is done on a project basis
     for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
 		project=${PROJECT_NAMES[$i]}
 		logt 2 -n "$project"
-		use_git=0
 		source_dir="$(get_project_language_path $project)"
 		target_dir=$(get_ee_target_dir $source_dir)
 		backport_project "$source_dir" "$target_dir"
 	done;
 
-    # but commit result on a portal/plugins base paths basis
+    # commit result is again done on a base-path basis
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		base_src_dir=${PATH_BASE_DIR[$i]}

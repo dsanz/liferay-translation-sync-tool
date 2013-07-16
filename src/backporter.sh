@@ -25,6 +25,7 @@ function main() {
     test $# -eq 2 || test $# -eq 3 || usage;
     [[ $3 == "-ng" ]] && use_git=1
     prepare_dirs $1 $2
+    check_git $1 $2
     read_english_files
     for locale in "${L[@]}"; do
     	backport $locale

@@ -26,12 +26,17 @@ function update_to_head() {
 }
 
 function check_git() {
-	update_to_head $source_dir
-	update_to_head $target_dir
+    if [[ $use_git == 0 ]]; then
+		echo "  - Using git"
+	    update_to_head $1
+	    update_to_head $2
 
-	do_commit=$(is_git_dir $target_dir)
-	if [[ do_commit ]]; then
-		echo "  - Backported files will be commited to $target_dir"
+	    do_commit=$(is_git_dir $2)
+	    if [[ do_commit ]]; then
+    		echo "  - Backported files will be commited to $target_dir"
+    	fi
+   	else
+		echo "  - Not using git"
 	fi
 }
 
