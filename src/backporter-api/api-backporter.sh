@@ -32,12 +32,12 @@ function backport() {
 				if is_translated $new_lang $key; then			#	key is translated in the newer version :)
 					if is_translated $old_lang $key; then		#		key is also translated in the old version
 						if english_value_changed $key; then		#			english original changed amongst versions 	> there is a semantic change, human review required
-							result[$file_hrr_changes]="${key}=${T[$new_lang,$key]}"
+							result[$file_hrr_changes]="${key}=${T[$new_lang$key]}"
 							char="r"
 							(( changes++ ))
 						else									#			english unchanged amongst versions
 							if lang_value_changed $key; then	#				translation changed amongst version		> there is a refinement, human review requirement
-								result[$file_hrr_improvements]="${key}=${T[$new_lang,$key]}"
+								result[$file_hrr_improvements]="${key}=${T[$new_lang$key]}"
 								char="R"
 								(( improvements++ ))
 							else								#				translation unchanged amongst version		> none to do
@@ -46,11 +46,11 @@ function backport() {
 						fi
 					else										#		key is not translated in the old version		> lets try to backport it
 						if english_value_changed $key; then		#			english original changed amongst versions 	> there is a semantic change, human review required
-							result[$file_hrr_changes]="${key}=${T[$new_lang,$key]}"
+							result[$file_hrr_changes]="${key}=${T[$new_lang$key]}"
 							char="r"
 							(( changes++ ))
 						else									#			english unchanged amongst versions 			> backport it!
-							result[$file]="${key}=${T[$new_lang,$key]}"
+							result[$file]="${key}=${T[$new_lang$key]}"
 							char="B"
 							(( backports++ ))
 						fi
@@ -58,7 +58,7 @@ function backport() {
 				else											#	key is untranslated in the newer version			> almost none to do :(
 					if is_automatic_copy $old_lang $key; then	#		old translation is a mere copy
 						if is_automatic_translation $new_lang $key; then #	new translation is automatic				> lets backport
-							result[$file]="${key}=${T[$new_lang,$key]}"
+							result[$file]="${key}=${T[$new_lang$key]}"
 							char="b"
 							(( backports++ ))
 						else
@@ -105,6 +105,7 @@ function backport() {
 	seconds="$((now/1000000000))"
 	milliseconds="$((now/1000000))"
 	printf "   - Backport took %02d.%03d seconds\n" "$((seconds))" "${milliseconds}"
+	unset result;
 }
 
 function clear_translations() {
@@ -134,8 +135,13 @@ function backport_project() {
     prepare_dirs $1 $2
     read_english_files
     for locale in "${L[@]}"; do
-        echo_legend
-    	backport $locale
+        if [[ $locale == "ja" ]]; then
+            echo_legend
+    	    backport $locale
+    	fi;
     done
+    echo "unsetting locale set"
+    unset L;
+    declare -ag L;
 }
 
