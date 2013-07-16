@@ -55,16 +55,18 @@ function commit_result() {
 		message="Translations backported from ${branch[$source_dir]}:${commit[$source_dir]} to ${branch[$target_dir]}:${commit[$target_dir]}, by $product"
 		git checkout -b $result_branch > /dev/null 2>&1
 		echo "  - Commiting translation files to $result_branch"
-		git commit -m "$message" Language*.properties > /dev/null 2>&1
+		git commit -a -m "$message" > /dev/null 2>&1
 		echo "  - Commiting review files to $result_branch"
-		git add Language*.properties.review*
-		git commit -m "$message [human review required]" Language*.properties.review* > /dev/null 2>&1
+		for reviewFile in $(git status --porcelain -uall | grep ".review." | cut -f2- -d' '); do
+		    git add $reviewFile
+		done
+		git commit -a -m "$message [human review required]" > /dev/null 2>&1
 		if [[ $(git branch -r | grep "$refspec" | wc -l) -eq 1 ]]; then
 			echo "  - Deleting remote branch $refspec"
 			git push origin :"$refspec"  > /dev/null 2>&1
 		fi
 		echo "  - Pushing to remote branch"
-		git push origin "$result_branch" > /dev/null 2>&1
+		git push origin -f "$result_branch" > /dev/null 2>&1
 		git checkout "${branch[$target_dir]}" > /dev/null 2>&1
 	else
 		echo "Resulting files won't be committed"
