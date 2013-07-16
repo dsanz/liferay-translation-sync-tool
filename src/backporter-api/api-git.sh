@@ -34,7 +34,7 @@ function check_git() {
 
 	    do_commit=$(is_git_dir $2)
 	    if [[ do_commit ]]; then
-    		logt 3 "Backported files will be commited to $target_dir"
+    		logt 3 "Backported files will be commited to $2"
     	fi
    	else
 		logt 3 "Not using git"
@@ -42,12 +42,14 @@ function check_git() {
 }
 
 function commit_result() {
+    source_dir=$1
+    target_dir=$2
 	if [[ $do_commit -eq 0 ]]; then
-		logt 2 "Committing files (base: $1)"
+		logt 2 "Committing files (base: $target_dir)"
 		result_branch="${result_branch}_${branch[$source_dir]}_to_${branch[$target_dir]}_$(date +%Y%m%d%H%M%S)"
 		refspec="origin/$result_branch"
 		logt 3 "Working on branch $result_branch"
-		cd $1
+		cd $target_dir
 		if [[ $(git branch | grep "$result_branch" | wc -l) -eq 1 ]]; then
 			logt 4 -n "Deleting old branch $result_branch"
 			git branch -D $result_branch  > /dev/null 2>&1
