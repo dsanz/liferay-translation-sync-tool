@@ -139,16 +139,14 @@ function echo_legend() {
     done;
 }
 
-# as opposed to the entry-point, standalone function, a batch backpor function does not cover all the functionality
+# as opposed to the entry-point, standalone function, a batch backport function does not cover all the functionality
 # because it'll be invoked from another function that controls the process and is in charge of setting work dirs as
 # well as committing results and changing branches
 function backport_project() {
     prepare_dirs $1 $2
     read_english_files
     for locale in "${L[@]}"; do
-        if [[ $locale == "ja" ]]; then
     	    backport $locale
-    	fi;
     done
     logt 3 "Garbage collection (project)"
     unset L;

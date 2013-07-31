@@ -46,25 +46,25 @@ function commit_result() {
     target_dir=$2
 	if [[ $do_commit -eq 0 ]]; then
 		logt 2 "Committing files (base: $target_dir)"
-		result_branch="${result_branch}_${branch[$source_dir]}_to_${branch[$target_dir]}_$(date +%Y%m%d%H%M%S)"
-		refspec="origin/$result_branch"
-		logt 3 "Working on branch $result_branch"
+		result_branch_name="${result_branch}_${branch[$source_dir]}_to_${branch[$target_dir]}_$(date +%Y%m%d%H%M%S)"
+		refspec="origin/$result_branch_name"
+		logt 3 "Working on branch $result_branch_name"
 		cd $target_dir
-		if [[ $(git branch | grep "$result_branch" | wc -l) -eq 1 ]]; then
-			logt 4 -n "Deleting old branch $result_branch"
-			git branch -D $result_branch  > /dev/null 2>&1
+		if [[ $(git branch | grep "$result_branch_name" | wc -l) -eq 1 ]]; then
+			logt 4 -n "Deleting old branch $result_branch_name"
+			git branch -D $result_branch_name  > /dev/null 2>&1
             check_command
 		fi;
-		logt 4 -n "Creating branch $result_branch"
+		logt 4 -n "Creating branch $result_branch_name"
 		message="Translations backported from ${branch[$source_dir]}:${commit[$source_dir]} to ${branch[$target_dir]}:${commit[$target_dir]}, by $product"
-		git checkout -b $result_branch > /dev/null 2>&1
+		git checkout -b $result_branch_name > /dev/null 2>&1
 		check_command
 
-		logt 4 -n "Commiting translation files to $result_branch"
+		logt 4 -n "Commiting translation files to $result_branch_name"
 		git commit -a -m "$message" > /dev/null 2>&1
 		check_command
 
-		logt 4 -n "Commiting review files to $result_branch"
+		logt 4 -n "Commiting review files to $result_branch_name"
 		for reviewFile in $(git status --porcelain -uall | grep ".review." | cut -f2- -d' '); do
 		    git add $reviewFile
 		done
@@ -77,7 +77,7 @@ function commit_result() {
 			check_command
 		fi
 		logt 4 -n "Pushing to remote branch"
-		git push origin -f "$result_branch" > /dev/null 2>&1
+		git push origin -f "$result_branch_name" > /dev/null 2>&1
 		check_command
 
 		git checkout "${branch[$target_dir]}" > /dev/null 2>&1
