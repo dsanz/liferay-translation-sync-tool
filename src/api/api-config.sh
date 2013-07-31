@@ -107,6 +107,8 @@ function resolve_params() {
 			export MOVE_PROJECT=1
 		elif [ "$param" = "--backport" ] || [ "$param" = "-b" ]; then
 			export BACKPORT=1
+		elif [ "$param" = "--upload" ] || [ "$param" = "-u" ]; then
+			export UPLOAD=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else
