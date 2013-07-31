@@ -124,6 +124,12 @@ function backport_all() {
     loglc 1 $RED "End backport process"
 }
 
+function upload_translations() {
+    loglc 1 $RED  "Uploading $2 translations for project $1"
+    post_file $1 $2
+    loglc 1 $RED "Upload finished"
+}
+
 # main function which loads api functions, then configuration, and then invokes logic according to arguments
 main() {
 	echo "$product [START]"
@@ -145,6 +151,8 @@ main() {
 	    uniformize_pootle_paths
 	elif [ $MOVE_PROJECT ]; then
 	    rename_pootle_project $2 $3
+    elif [ $UPLOAD ]; then
+	    upload_translations $2 $3
 	elif [ $BACKPORT ]; then
 	    backport_all
 	fi
