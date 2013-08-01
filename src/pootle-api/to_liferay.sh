@@ -279,7 +279,7 @@ function refill_translations() {
 			    value=$(getTVal $extPrefix $key)
 			    char="o"
 			elif [[ "$valueExp" == "$valueTpl" ]]; then                     # ok, no overriding. Now, is exported value = template value?
-			    valueStore=${T["storePrefix$key"]}                          #   then let's see if translators wrote the template value by hand in the text box
+			    valueStore=${T["$storePrefix$key"]}                         #   then let's see if translators wrote the template value by hand in the text box
 			    if [[ "$valueStore" == "$valueTpl" ]]; then                 #   was it translated that way on purpose?
 			        char="e"                                                #       use the template value. English is ok in this case.
 			        value=$valueTpl
