@@ -46,9 +46,9 @@ declare -xgr WORKING_BRANCH="to-pootle-working"
 declare -xgr LAST_BRANCH="to-pootle-current"
 
 ## List of projects we know about
-declare -xgr PORTLET_LIST="akismet calendar chat contacts ddl-form digg events-display google-maps knowledge-base mail\
- marketplace microblogs opensocial plugins-security-manager polls private-messaging social-coding social-networking\
- so tasks twitter vimeo weather web-form wiki-navigation wsrp youtube"
+declare -xgr PORTLET_LIST="akismet calendar chat contacts ddl-form events-display google-maps knowledge-base mail\
+ marketplace microblogs opensocial plugins-security-manager private-messaging social-coding social-networking\
+ so tasks twitter vimeo web-form wiki-navigation wsrp youtube"
 declare -xgr PORTLET_SUFFIX="-portlet"
 declare -xgr PORTLET_SRC_PATH_PREFIX="${SRC_PLUGINS_BASE}portlets/"
 
@@ -56,7 +56,7 @@ declare -xgr THEME_LIST="noir"
 declare -xgr THEME_SUFFIX="-theme"
 declare -xgr THEME_SRC_PATH_PREFIX="${SRC_PLUGINS_BASE}themes/"
 
-declare -xgr HOOK_LIST="private-plugin-installer so-activities so"
+declare -xgr HOOK_LIST="so-activities so"
 declare -xgr HOOK_SUFFIX="-hook"
 declare -xgr HOOK_SRC_PATH_PREFIX="${SRC_PLUGINS_BASE}hooks/"
 
