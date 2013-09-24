@@ -131,6 +131,16 @@ function upload_translations() {
     loglc 1 $RED "Upload finished"
 }
 
+function add_project_in_pootle() {
+    projectCode="$1"
+    projectName="$2"
+
+    logt 1 "Provisioning new project '$projectCode' ($projectName) in pootle"
+    create_pootle_project $projectCode "$projectName"
+    initialize_project_files $projectCode "$projectName"
+    notify_pootle $projectCode
+}
+
 # main function which loads api functions, then configuration, and then invokes logic according to arguments
 main() {
 	echo "$product [START]"
@@ -154,6 +164,8 @@ main() {
 	    rename_pootle_project $2 $3
     elif [ $UPLOAD ]; then
 	    upload_translations $2 $3
+    elif [ $NEW_PROJECT ]; then
+	    add_project_in_pootle $2 $3
 	elif [ $BACKPORT ]; then
 	    backport_all
 	fi

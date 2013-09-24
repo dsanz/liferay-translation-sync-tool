@@ -1,15 +1,5 @@
 #!/bin/sh
 
-function add_project_in_Pootle() {
-    projectCode="$1"
-    projectName="$2"
-
-    logt 1 "Provisioning new project '$projectCode' ($projectName) in pootle"
-    create_pootle_project $projectCode "$projectName"
-    initialize_project_files $projectCode "$projectName"
-    notify_pootle $projectCode
-}
-
 function create_pootle_project() {
     projectCode="$1"
     projectName="$2"
