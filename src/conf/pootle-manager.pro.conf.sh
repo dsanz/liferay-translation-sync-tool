@@ -70,7 +70,7 @@ declare -xga PATH_PROJECTS
 declare -xga PATH_BASE_DIR
 
 # first project is the Liferay portal itself
-PORTAL_PROJECT_ID=portal
+declare -xga PORTAL_PROJECT_ID=portal
 add_project "$PORTAL_PROJECT_ID" "$SRC_PORTAL_BASE$SRC_PORTAL_LANG_PATH" "$SRC_PORTAL_BASE/portal-impl"
 
 # now, some plugins
