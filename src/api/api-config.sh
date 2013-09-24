@@ -94,7 +94,7 @@ function add_projects() {
 
 function get_locales_from_source() {
     source_dir=$(get_project_language_path $1)
-    echo $(ls -l $source_dir/Language_* | cut -f 1 -d . | cut -f 2- -d)
+    echo $(ls -l $source_dir/Language_* | cut -f 1 -d . | cut -f 2- -d _)
 }
 
 # $1 - This parameter must contain $@ (parameters to resolve).
