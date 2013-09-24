@@ -135,10 +135,14 @@ function add_project_in_pootle() {
     projectCode="$1"
     projectName="$2"
 
-    logt 1 "Provisioning new project '$projectCode' ($projectName) in pootle"
-    create_pootle_project $projectCode "$projectName"
-    initialize_project_files $projectCode "$projectName"
-    notify_pootle $projectCode
+    if is_pootle_server_up; then
+        logt 1 "Provisioning new project '$projectCode' ($projectName) in pootle"
+        create_pootle_project $projectCode "$projectName"
+        initialize_project_files $projectCode "$projectName"
+        notify_pootle $projectCode
+    else
+        logt 1 "Unable to create Pootle project '$projectCode' : pootle server is down. Please start it, then rerun this command"
+    fi;
 }
 
 # main function which loads api functions, then configuration, and then invokes logic according to arguments
