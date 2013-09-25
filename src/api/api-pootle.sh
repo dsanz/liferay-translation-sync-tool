@@ -194,6 +194,10 @@ function is_pootle_server_up() {
     wget -q --delete-after $PO_SRV
 }
 
+function exists_project_in_pootle() {
+    wget --spider "$PO_PROJECTS_URL/$1" 2>&1 | grep 200 > /dev/null
+}
+
 function rename_pootle_project() {
     currentName="$1"
     newName="$2"

@@ -92,11 +92,16 @@ function add_projects() {
 	done
 }
 
+function get_locales_from_source() {
+    source_dir=$(get_project_language_path $1)
+    echo $(ls -l $source_dir/Language_* | cut -f 1 -d . | cut -f 2- -d _)
+}
+
 # $1 - This parameter must contain $@ (parameters to resolve).
 function resolve_params() {
 	params="$@"
 	[ "$params" = "" ] && export HELP=1
-	for param in $params ; do
+	for param in $1 ; do
 		if [ "$param" = "--pootle2repo" ] || [ "$param" = "-r" ]; then
 			export UPDATE_REPOSITORY=1
 		elif [ "$param" = "--repo2pootle" ] || [ "$param" = "-p" ]; then
@@ -109,11 +114,12 @@ function resolve_params() {
 			export BACKPORT=1
 		elif [ "$param" = "--upload" ] || [ "$param" = "-u" ]; then
 			export UPLOAD=1
+		elif [ "$param" = "--newproject" ] || [ "$param" = "-np" ]; then
+			export NEW_PROJECT=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else
-			echo_red "PAY ATTENTION! You've used unknown parameter."
-			any_key
+			logt 1 "PAY ATTENTION! You've used unknown parameter."
 		fi
 	done
 	if [ $HELP ]; then

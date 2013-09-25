@@ -39,6 +39,7 @@ declare -xgr PO_PASS="test"
 declare -xgr PO_HOST="localhost"
 declare -xgr PO_PORT="8080"
 declare -xgr PO_SRV="http://$PO_HOST:$PO_PORT"
+declare -xgr PO_PROJECTS_URL="$PO_SRV/projects"
 declare -xgr PO_COOKIES="$TMP_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
 
 ## Git branches management
@@ -70,7 +71,7 @@ declare -xga PATH_PROJECTS
 declare -xga PATH_BASE_DIR
 
 # first project is the Liferay portal itself
-PORTAL_PROJECT_ID=portal
+declare -xga PORTAL_PROJECT_ID=portal
 add_project "$PORTAL_PROJECT_ID" "$SRC_PORTAL_BASE$SRC_PORTAL_LANG_PATH" "$SRC_PORTAL_BASE/portal-impl"
 
 # now, some plugins

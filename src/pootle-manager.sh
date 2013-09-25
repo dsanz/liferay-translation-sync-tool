@@ -21,6 +21,7 @@ function load_api() {
 	. pootle-api/to_pootle.sh
 	. pootle-api/to_pootle-file_poster.sh
 	. pootle-api/to_liferay.sh
+	. pootle-api/provisioning-api.sh
 	. backporter-api/api-backporter.sh
 
     declare -xgr HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
@@ -130,6 +131,24 @@ function upload_translations() {
     loglc 1 $RED "Upload finished"
 }
 
+function add_project_in_pootle() {
+    projectCode="$1"
+    projectName="$2"
+     logt 1 "HEY"
+    if is_pootle_server_up; then
+        if exists_project_in_pootle "$1"; then
+            logt 1 "Pootle project '$projectCode' already exists. Aborting..."
+        else
+            logt 1 "Provisioning new project '$projectCode' ($projectName) in pootle"
+            create_pootle_project $projectCode "$projectName"
+            initialize_project_files $projectCode "$projectName"
+            notify_pootle $projectCode
+        fi
+    else
+        logt 1 "Unable to create Pootle project '$projectCode' : pootle server is down. Please start it, then rerun this command"
+    fi;
+}
+
 # main function which loads api functions, then configuration, and then invokes logic according to arguments
 main() {
 	echo "$product [START]"
@@ -153,6 +172,8 @@ main() {
 	    rename_pootle_project $2 $3
     elif [ $UPLOAD ]; then
 	    upload_translations $2 $3
+    elif [ $NEW_PROJECT ]; then
+	    add_project_in_pootle $2 "$3"
 	elif [ $BACKPORT ]; then
 	    backport_all
 	fi
@@ -160,4 +181,4 @@ main() {
 	[ ! $HELP ] &&	echo "$product [DONE]"
 }
 
-main $@
+main "$@"
