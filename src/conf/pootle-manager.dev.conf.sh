@@ -39,6 +39,7 @@ declare -xgr PO_PASS="test"
 declare -xgr PO_HOST="localhost"
 declare -xgr PO_PORT="8080"
 declare -xgr PO_SRV="http://$PO_HOST:$PO_PORT"
+declare -xgr PO_PROJECTS_URL="$PO_SRV/projects"
 declare -xgr PO_COOKIES="$TMP_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
 
 ## Git branches management

@@ -134,12 +134,16 @@ function upload_translations() {
 function add_project_in_pootle() {
     projectCode="$1"
     projectName="$2"
-
+     logt 1 "HEY"
     if is_pootle_server_up; then
-        logt 1 "Provisioning new project '$projectCode' ($projectName) in pootle"
-        create_pootle_project $projectCode "$projectName"
-        initialize_project_files $projectCode "$projectName"
-        notify_pootle $projectCode
+        if exists_project_in_pootle "$1"; then
+            logt 1 "Pootle project '$projectCode' already exists. Aborting..."
+        else
+            logt 1 "Provisioning new project '$projectCode' ($projectName) in pootle"
+            create_pootle_project $projectCode "$projectName"
+            initialize_project_files $projectCode "$projectName"
+            notify_pootle $projectCode
+        fi
     else
         logt 1 "Unable to create Pootle project '$projectCode' : pootle server is down. Please start it, then rerun this command"
     fi;
@@ -169,7 +173,7 @@ main() {
     elif [ $UPLOAD ]; then
 	    upload_translations $2 $3
     elif [ $NEW_PROJECT ]; then
-	    add_project_in_pootle $2 $3
+	    add_project_in_pootle $2 "$3"
 	elif [ $BACKPORT ]; then
 	    backport_all
 	fi
@@ -177,4 +181,4 @@ main() {
 	[ ! $HELP ] &&	echo "$product [DONE]"
 }
 
-main $@
+main "$@"

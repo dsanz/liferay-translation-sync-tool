@@ -39,6 +39,7 @@ declare -xgr PO_PASS="xxxxx"    # set only in production machine
 declare -xgr PO_HOST="translate.liferay.com"
 declare -xgr PO_PORT="80"
 declare -xgr PO_SRV="http://$PO_HOST:$PO_PORT/pootle"
+declare -xgr PO_PROJECTS_URL="$PO_SRV/projects"
 declare -xgr PO_COOKIES="$TMP_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
 
 ## Git branches management
