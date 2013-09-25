@@ -101,7 +101,7 @@ function get_locales_from_source() {
 function resolve_params() {
 	params="$@"
 	[ "$params" = "" ] && export HELP=1
-	for param in $params ; do
+	for param in $1 ; do
 		if [ "$param" = "--pootle2repo" ] || [ "$param" = "-r" ]; then
 			export UPDATE_REPOSITORY=1
 		elif [ "$param" = "--repo2pootle" ] || [ "$param" = "-p" ]; then
@@ -119,8 +119,7 @@ function resolve_params() {
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else
-			echo_red "PAY ATTENTION! You've used unknown parameter."
-			any_key
+			logt 1 "PAY ATTENTION! You've used unknown parameter."
 		fi
 	done
 	if [ $HELP ]; then
