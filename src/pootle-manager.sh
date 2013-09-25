@@ -134,7 +134,7 @@ function upload_translations() {
 function add_project_in_pootle() {
     projectCode="$1"
     projectName="$2"
-     logt 1 "HEY"
+
     if is_pootle_server_up; then
         if exists_project_in_pootle "$1"; then
             logt 1 "Pootle project '$projectCode' already exists. Aborting..."
