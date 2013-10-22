@@ -114,6 +114,8 @@ function resolve_params() {
 			export BACKPORT=1
 		elif [ "$param" = "--upload" ] || [ "$param" = "-u" ]; then
 			export UPLOAD=1
+		elif [ "$param" = "--uploadDerived" ] || [ "$param" = "-U" ]; then
+			export UPLOAD_DERIVED=1
 		elif [ "$param" = "--newproject" ] || [ "$param" = "-np" ]; then
 			export NEW_PROJECT=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
