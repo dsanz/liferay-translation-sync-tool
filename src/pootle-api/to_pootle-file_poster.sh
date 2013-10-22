@@ -73,7 +73,7 @@ function upload_submissions() {
 function post_file() {
 	project="$1"
 	locale="$2"
-	logt 2 "Posting '$locale' translations for project $2"
+	logt 2 "Posting '$locale' translations for $project"
 	start_pootle_session
 	upload_submissions "$1" "$2" true
 	close_pootle_session
