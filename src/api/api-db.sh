@@ -46,7 +46,7 @@ function get_targetf() {
 }
 
 function export_targets() {
-    mysql pootle -s -e "select concat(unitid,\"=\",target_f) from pootle_store_unit where store_id=\"$1\";" > $2
+    mysql $DB_NAME -s -e "set names utf8; select concat(unitid,\"=\",target_f) from pootle_store_unit where store_id=\"$1\";" > $2
 }
 
 # given a locale name such as "pt_BR" returns the file name "Language_pt_BR.properties"

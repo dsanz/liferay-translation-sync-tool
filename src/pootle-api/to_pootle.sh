@@ -149,3 +149,44 @@ function post_language_translations() {
 	generate_additions
 	post_new_translations
 }
+
+# given a project and a language, reads the Language_xx.properties file
+# present in current directory puts it into array T using the locale as prefix
+function read_derived_language_file() {
+    project="$1";
+    locale="$2";
+    langFile="$FILE$LANG_SEP$locale.$PROP_EXT"
+	prefix=$(get_derived_language_prefix $project $locale)
+	read_locale_file $langFile $prefix
+}
+
+function get_derived_language_prefix() {
+    echo d$1$2
+}
+
+function post_derived_translations() {
+    project="$1"
+    derived_locale="$2"
+    parent_locale="$3"
+
+    prepare_output_dir $project
+    logt 2 "Reading language files"
+    logt 3 "Reading $derived_locale file"
+    read_derived_language_file $project $derived_locale
+    logt 3 "Reading pootle store for parent language $parent_locale in project $project"
+    read_pootle_store $project $parent_locale true
+
+    storeId=$(get_store_id $project $derived_locale)
+    path=$(get_pootle_path $project $derived_locale)
+
+    logt 2 "Uploading..."
+    start_pootle_session
+    for key in "${K[@]}"; do
+        valueDerived=${T["d$project$derived_locale$key"]}
+		valueParent=${T["s$project$parent_locale$key"]}
+        if [[ "$valueDerived" != "$valueParent" ]]; then
+	        upload_submission "$key" "$valueDerived" "$storeId" "$path"
+		fi;
+	done;
+    close_pootle_session
+}

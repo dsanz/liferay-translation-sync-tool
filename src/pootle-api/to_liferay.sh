@@ -3,14 +3,18 @@
 
 ## basic functions
 
+function prepare_output_dir() {
+    project="$1"
+	logt 2 "$project: cleaning output working dirs"
+	clean_dir "$TMP_PROP_OUT_DIR/$project"
+}
+
 # creates temporary working dirs for working with pootle output
 function prepare_output_dirs() {
 	logt 1 "Preparing project output working dirs..."
 	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
-		project=${PROJECT_NAMES[$i]}
-		logt 2 "$project: cleaning output working dirs"
-		clean_dir "$TMP_PROP_OUT_DIR/$project"
+		prepare_output_dir "${PROJECT_NAMES[$i]}"
 	done
 }
 
@@ -201,7 +205,7 @@ function read_pootle_store() {
     langFile="$TMP_PROP_OUT_DIR/$project/$language.store"
     dump_store "$project" "$language" "$langFile"
 	prefix=$(get_store_language_prefix $project $locale)
-	read_locale_file $langFile $prefix
+	read_locale_file $langFile $prefix $3
 }
 
 function get_store_language_prefix() {
