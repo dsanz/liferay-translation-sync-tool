@@ -151,8 +151,8 @@ function ascii_2_native() {
 function process_translations() {
 	logt 1 "Processing translations"
 	logt 2 "Legend:"
-	declare -A charc # colors
-    declare -A chart # text legend
+	declare -gA charc # colors
+    declare -gA chart # text legend
     charc["!"]=$RED; chart["!"]="uncovered case"
     charc["o"]=$WHITE; chart["o"]="overriden from ext file"
     charc["e"]=$RED; chart["e"]="English value is ok, was translated on purpose using Pootle"
