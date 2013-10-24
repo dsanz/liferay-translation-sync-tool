@@ -325,7 +325,7 @@ function refill_translations() {
 			result=$line                                                   #    get the whole line
 		fi
 		echo "$result" >> $workingfile
-		echo "[${char}]___${result}" >> $copyingLogfile
+		echo "[${char}]___${key}" >> $copyingLogfile
 		loglc 0 ${charc[$char]} -n "$char"
 	done < $target_lang_path
 
