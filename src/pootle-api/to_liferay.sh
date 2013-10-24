@@ -150,6 +150,23 @@ function ascii_2_native() {
 # this way, untranslated keys will have the Automatic Copy/Translation tag
 function process_translations() {
 	logt 1 "Processing translations"
+	logt 2 "Legend:"
+	declare -A charc # colors
+    declare -A chart # text legend
+    charc["!"]=$RED; chart["!"]="uncovered case"
+    charc["o"]=$WHITE; chart["o"]="overriden from ext file"
+    charc["e"]=$RED; chart["e"]="English value is ok, was translated on purpose using Pootle"
+    charc["r"]=$YELLOW; chart["r"]="reverse-path (sources translated, pootle is untranslated). Will be published to Pootle"
+    charc["a"]=$CYAN; chart["a"]="ant build-lang will do (sources and pootle untranslated)"
+    charc["u"]=$BLUE; chart["u"]="untranslated, pick existing source value (Pootle untranslated, source auto-translated or auto-copied)"
+    charc["x"]=$LILA; chart["x"]="conflict/improvement Pootle wins (pootle and sources translated, different values). Review $copyingLogfile "
+    charc["·"]=$COLOROFF; chart["·"]="no-op (same, valid translation in pootle and sources)"
+    charc["p"]=$GREEN; chart["p"]="valid translation coming from pootle, sources untranslated"
+    charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
+    for char in ${!charc[@]}; do
+        loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
+    done;
+
 	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
 		project=${PROJECT_NAMES[$i]}
@@ -252,23 +269,8 @@ function refill_translations() {
 
     declare -A R  # reverse translations
     declare -A C  # conflicts
-    declare -A charc # colors
-    declare -A chart # text legend
-    charc["!"]=$RED; chart["!"]="uncovered case"
-    charc["o"]=$WHITE; chart["o"]="overriden from ext file"
-    charc["e"]=$RED; chart["e"]="English value is ok, was translated on purpose using Pootle"
-    charc["r"]=$YELLOW; chart["r"]="reverse-path (sources translated, pootle is untranslated). Will be published to Pootle"
-    charc["a"]=$CYAN; chart["a"]="ant build-lang will do (sources and pootle untranslated)"
-    charc["u"]=$BLUE; chart["u"]="untranslated, pick existing source value (Pootle untranslated, source auto-translated or auto-copied)"
-    charc["x"]=$LILA; chart["x"]="conflict/improvement Pootle wins (pootle and sources translated, different values). Review $copyingLogfile "
-    charc["·"]=$COLOROFF; chart["·"]="no-op (same, valid translation in pootle and sources)"
-    charc["p"]=$GREEN; chart["p"]="valid translation coming from pootle, sources untranslated"
-    charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
 
-    logt 3 "Copying translations (see legend below)..."
-    for char in ${!charc[@]}; do
-        loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
-    done;
+    logt 3 "Copying translations..."
     logt 0
     done=false;
 	until $done; do
