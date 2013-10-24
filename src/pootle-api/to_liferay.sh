@@ -148,7 +148,7 @@ function ascii_2_native() {
 
 # Pootle exports all untranslated keys, assigning them the english value. This function restores the values in old version of Language_*.properties
 # this way, untranslated keys will have the Automatic Copy/Translation tag
-function process_untranslated() {
+function process_translations() {
 	logt 1 "Processing untranslated keys"
 	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do

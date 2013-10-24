@@ -74,7 +74,7 @@ function pootle2src() {
     update_pootle_files
 	ascii_2_native
 	restore_file_ownership
-	process_untranslated
+	process_translations
 	do_commit false false "pootle exported keys"
 	ant_build_lang
 	do_commit true true "ant build-lang"
