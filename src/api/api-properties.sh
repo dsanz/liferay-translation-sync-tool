@@ -129,3 +129,7 @@ function read_locale_file() {
 	fi
 	logt 0;
 }
+
+function restore_file_ownership() {
+    chown apache:apache -R $PODIR
+}

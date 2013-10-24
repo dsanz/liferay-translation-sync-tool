@@ -53,6 +53,7 @@ function src2pootle() {
 	update_pootle_db
 	post_language_translations # bug #1949
 	rotate_working_branches
+    restore_file_ownership
 	loglc 1 $RED "End Sync[Liferay source code -> Pootle]"
 }
 
@@ -72,6 +73,7 @@ function pootle2src() {
 	prepare_output_dirs
     update_pootle_files
 	ascii_2_native
+	restore_file_ownership
 	process_untranslated
 	do_commit false false "pootle exported keys"
 	ant_build_lang
