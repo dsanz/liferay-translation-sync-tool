@@ -69,7 +69,7 @@ function src2pootle() {
 function pootle2src() {
     loglc 1 $RED "Begin Sync[Pootle -> Liferay source code]"
     display_projects
-    prepare_source_dirs
+    #prepare_source_dirs
 	prepare_output_dirs
     update_pootle_files
 	ascii_2_native
@@ -175,7 +175,7 @@ main() {
 		#$PO_COOKIES $SRC_PATH_PLUGIN_PREFIX \
 		#$SRC_PATH_PLUGIN_SUFFIX $FILE $PROP_EXT $LANG_SEP
 	if [ $UPDATE_REPOSITORY ]; then
-		src2pootle
+		#src2pootle
 		pootle2src
 	elif [ $UPDATE_POOTLE_DB ]; then
 		src2pootle
