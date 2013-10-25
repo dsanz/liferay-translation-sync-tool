@@ -349,7 +349,6 @@ function refill_translations() {
     if [[ ${#Cp[@]} -gt 0 ]]; then
         logt 3 "Conflicts warning:"
         logt 4 "Conflicts are keys having correct, different translations both in pootle and in liferay sources. During pootle2src, the pootle value will be considered the correct one"
-        logt 4 ""
         logt 4 "Please compare contents of following files:"
         logt 5 "$conflictsLogPootle"
         logt 5 "$conflictsLogLiferay"
