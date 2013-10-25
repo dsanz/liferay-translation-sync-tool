@@ -38,7 +38,7 @@ COLOROFF="\033[1;0m"; GREEN="\033[1;32m"; RED="\033[1;31m"; LILA="\033[1;35m"
 YELLOW="\033[1;33m"; BLUE="\033[1;34m"; WHITE="\033[1;37m"; CYAN="\033[1;36m"
 
 function baselog() {
-    echo -n "$1" | tee -a $logfile
+    printf "$1" # >> $logfile
 }
 
 # given a length for indentation, a color, an optional "-n" and a message, logs coloured
@@ -55,12 +55,10 @@ function loglc() {
     fi;
     prefix="";
     [[ $length -gt 0 ]] && prefix="["$(date +%T.%3N)"]"$(printf "%${length}s")
-    echo -ne "$LILA"
-    baselog "$prefix"
-    echo -ne "$color";
-    baselog "$@";
-    echo -ne "$COLOROFF";
-    $newline && echo | tee -a $logfile
+
+    character=""
+    $newline && character="\n"
+    baselog "$LILA$prefix$color$@$COLOROFF$character";
 }
 
 # logs a message using length 0 and the specified color
@@ -98,7 +96,7 @@ function set_log_dir() {
 	logbase="$LOG_DIR/$dirname/$subdirname/"
 	logfile="$logbase$filename";
 	# this can't be logged because log is not ready yet
-	echo -e "$LILA[$(date +%T.%3N)]${COLOROFF}$CYAN  Preparing log file $logfile"
+	printf "$LILA[$(date +%T.%3N)]${COLOROFF}$CYAN  Preparing log file $logfile\n"
 	# logbase dir has to be created prior to check_dir call
 	mkdir -p $logbase
 	check_dir $logbase

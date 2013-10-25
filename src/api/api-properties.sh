@@ -107,15 +107,11 @@ function read_locale_file() {
 	lines=$(wc -l "$1" | cut -d' ' -f1)
 	template=$3
 	logt 4 -n "Reading file $1        "
-	counter=0
 	done=false;
+	before=$(date +%s%N)
 	if [[ $lines -gt 0 ]]; then
-	    (( lines++ ))
 	    until $done; do
             read line || done=true
-            printf "\b\b\b\b\b"
-            printf "%5s" "$(( 100 * (counter+1) / lines ))%"
-            (( counter++ ))
             if is_key_line "$line" ; then
                 [[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
                 setTVal $2 "$key" "$value"
@@ -127,7 +123,8 @@ function read_locale_file() {
             fi
         done < $1
 	fi
-	logt 0;
+	after=$(date +%s%N)
+	loglc 0 $GREEN "[$lines lines read in $(echo "scale=3;($after - $before)/(1*10^09)" | bc) s.] "
 }
 
 function restore_file_ownership() {

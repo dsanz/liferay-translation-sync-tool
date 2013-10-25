@@ -164,7 +164,7 @@ function add_project_in_pootle() {
 
 # main function which loads api functions, then configuration, and then invokes logic according to arguments
 main() {
-	echo "$product [START]"
+	printf "[START]\n"
 	load_api
 	load_config
 	resolve_params $@
@@ -193,7 +193,7 @@ main() {
 	    backport_all
 	fi
 
-	[ ! $HELP ] &&	echo "$product [DONE]"
+	[ ! $HELP ] &&	printf "$product [DONE]\n"
 }
 
 main "$@"

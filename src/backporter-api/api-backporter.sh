@@ -90,9 +90,9 @@ function backport() {
 		else
 			char="#"
 		fi
-		echo ${result[$file]} >> $file
-		echo ${result[$file_hrr_improvements]} >> $file_hrr_improvements
-		echo ${result[$file_hrr_changes]} >> $file_hrr_changes
+		printf "${result[$file]}" >> $file
+		printf "${result[$file_hrr_improvements]}" >> $file_hrr_improvements
+		printf "${result[$file_hrr_changes]}" >> $file_hrr_changes
 		loglc 0 ${charc[$char]} -n "$char"
 	done < $target_lang_path
 	log

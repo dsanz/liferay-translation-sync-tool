@@ -151,6 +151,8 @@ function ascii_2_native() {
 function process_translations() {
 	logt 1 "Processing translations"
 	logt 2 "Legend:"
+	unset charc
+    unset chart
 	declare -gA charc # colors
     declare -gA chart # text legend
     charc["!"]=$RED; chart["!"]="uncovered case"
@@ -324,8 +326,8 @@ function refill_translations() {
 			char="#"
 			result=$line                                                   #    get the whole line
 		fi
-		echo "$result" >> $workingfile
-		echo "[${char}]___${key}" >> $copyingLogfile
+		printf "%s\n" "$result" >> $workingfile
+		printf "%s\n" "[${char}]___${key}" >> $copyingLogfile
 		loglc 0 ${charc[$char]} -n "$char"
 	done < $target_lang_path
 
