@@ -270,7 +270,7 @@ function refill_translations() {
     extPrefix=$(get_ext_language_prefix $project $locale)
 
     declare -A R  # reverse translations
-    declare -A C  # conflicts
+    declare -A Cp  # conflicts
 
     logt 3 "Copying translations..."
     logt 0
@@ -313,7 +313,7 @@ function refill_translations() {
                 if is_translated_value "$valuePrev"; then                   #   is the master value translated?
                     if [[ "$valuePrev" != "$value" ]]; then                 #      is this translation different than the one pootle exported?
                         char="x"                                            #           ok, we have a conflict, pootle wins. Let user know
-                        C[$key]="$value"                                    #           take note for logging purposes
+                        Cp[$key]="$value"                                    #           take note for logging purposes
                     else                                                    #      ok, translation in master is just like the exported by pootle.
                         char="·"                                            #           no-op, already translated both in pootle and master
                     fi
@@ -341,16 +341,16 @@ function refill_translations() {
 	    done;
 	    close_pootle_session
     fi
-    if [[ ${#C[@]} -gt 0 ]]; then
+    if [[ ${#Cp[@]} -gt 0 ]]; then
         logt 3 "Conflicts are keys having correct, different translations both in pootle and in sources. Please check following keys:"
-        for key in "${!C[@]}"; do
+        for key in "${!Cp[@]}"; do
             loglc 0 $RED -n "$key "
 	    done;
     fi
     log
 	set +f
 	unset R
-	unset C
+	unset Cp
 	logt 3 "Moving processed file to source dir"
 	logt 4 -n "Moving to $srcfile"
 	mv $workingfile $srcfile
