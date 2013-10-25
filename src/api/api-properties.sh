@@ -21,7 +21,7 @@ declare -g lang_file_rexp="Language[^\.]*\.properties"
 # $1 is the key prefix
 # $2 is the language key we want to access
 function getTKey() {
-    echo $1$2
+    printf "%s" $1$2
 }
 
 # returns a value obtained from accessing the array T using the given key
@@ -29,7 +29,7 @@ function getTKey() {
 # $2 is the language key we want to access
 function getTVal() {
     k="$1$2"
-    echo ${T[$k]}
+    printf "%s" ${T[$k]}
 }
 
 # sets the specified value into array T under given key
