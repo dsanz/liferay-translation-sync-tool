@@ -259,6 +259,9 @@ function refill_translations() {
     srcfile=$(get_project_language_path $project)/$language
     workingfile="${srcfile}.final"
     copyingLogfile="$logbase/$project/$language"
+    conflictsLogPootle="$logbase/$project/$language.conflicts.pootle"
+    conflictsLogLiferay="$logbase/$project/$language.conflicts.liferay"
+
     [[ -f $workingfile ]] && rm $workingfile # when debugging we don't run all sync stages so we can have this file from a previous run
     target_lang_path="$TMP_PROP_OUT_DIR/$project/$language"
 
@@ -270,7 +273,8 @@ function refill_translations() {
     extPrefix=$(get_ext_language_prefix $project $locale)
 
     declare -A R  # reverse translations
-    declare -A Cp  # conflicts
+    declare -A Cp  # conflicts - pootle value
+    declare -A Cl  # conflicts - liferay source value
 
     logt 3 "Copying translations..."
     logt 0
@@ -313,7 +317,8 @@ function refill_translations() {
                 if is_translated_value "$valuePrev"; then                   #   is the master value translated?
                     if [[ "$valuePrev" != "$value" ]]; then                 #      is this translation different than the one pootle exported?
                         char="x"                                            #           ok, we have a conflict, pootle wins. Let user know
-                        Cp[$key]="$value"                                    #           take note for logging purposes
+                        Cp[$key]="$value"                                   #           take note for logging purposes
+                        Cl[$key]="$valuePrev"
                     else                                                    #      ok, translation in master is just like the exported by pootle.
                         char="·"                                            #           no-op, already translated both in pootle and master
                     fi
@@ -342,15 +347,24 @@ function refill_translations() {
 	    close_pootle_session
     fi
     if [[ ${#Cp[@]} -gt 0 ]]; then
-        logt 3 "Conflicts are keys having correct, different translations both in pootle and in sources. Please check following keys:"
+        logt 3 "Conflicts warning:"
+        logt 4 "Conflicts are keys having correct, different translations both in pootle and in liferay sources. During pootle2src, the pootle value will be considered the correct one"
+        logt 4 ""
+        logt 4 "Please compare contents of following files:"
+        logt 5 "$conflictsLogPootle"
+        logt 5 "$conflictsLogLiferay"
+        logt 4 -n "Generating conflict files"
         for key in "${!Cp[@]}"; do
-            loglc 0 $RED -n "$key "
+            printf "%s=%s" "$key" "${Cp[$key]}" >> $conflictsLogPootle
+            printf "%s=%s" "$key" "${Cl[$key]}" >> $conflictsLogLiferay
 	    done;
+	    check_command
     fi
     log
 	set +f
 	unset R
 	unset Cp
+	unset Cl
 	logt 3 "Moving processed file to source dir"
 	logt 4 -n "Moving to $srcfile"
 	mv $workingfile $srcfile
