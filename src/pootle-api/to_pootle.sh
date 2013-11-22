@@ -157,7 +157,7 @@ function read_derived_language_file() {
     locale="$2";
     langFile="$FILE$LANG_SEP$locale.$PROP_EXT"
 	prefix=$(get_derived_language_prefix $project $locale)
-	read_locale_file $langFile $prefix
+	read_locale_file $langFile $prefix "$3"
 }
 
 function get_derived_language_prefix() {
@@ -172,9 +172,9 @@ function post_derived_translations() {
     prepare_output_dir $project
     logt 2 "Reading language files"
     logt 3 "Reading $derived_locale file"
-    read_derived_language_file $project $derived_locale
+    read_derived_language_file $project $derived_locale true
     logt 3 "Reading pootle store for parent language $parent_locale in project $project"
-    read_pootle_store $project $parent_locale true
+    read_pootle_store $project $parent_locale
 
     storeId=$(get_store_id $project $derived_locale)
     path=$(get_pootle_path $project $derived_locale)
