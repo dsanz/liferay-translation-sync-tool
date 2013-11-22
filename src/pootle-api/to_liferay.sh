@@ -148,8 +148,27 @@ function ascii_2_native() {
 
 # Pootle exports all untranslated keys, assigning them the english value. This function restores the values in old version of Language_*.properties
 # this way, untranslated keys will have the Automatic Copy/Translation tag
-function process_untranslated() {
-	logt 1 "Processing untranslated keys"
+function process_translations() {
+	logt 1 "Processing translations"
+	logt 2 "Legend:"
+	unset charc
+    unset chart
+	declare -gA charc # colors
+    declare -gA chart # text legend
+    charc["!"]=$RED; chart["!"]="uncovered case"
+    charc["o"]=$WHITE; chart["o"]="overriden from ext file"
+    charc["e"]=$RED; chart["e"]="English value is ok, was translated on purpose using Pootle"
+    charc["r"]=$YELLOW; chart["r"]="reverse-path (sources translated, pootle is untranslated). Will be published to Pootle"
+    charc["a"]=$CYAN; chart["a"]="ant build-lang will do (sources and pootle untranslated)"
+    charc["u"]=$BLUE; chart["u"]="untranslated, pick existing source value (Pootle untranslated, source auto-translated or auto-copied)"
+    charc["x"]=$LILA; chart["x"]="conflict/improvement Pootle wins (pootle and sources translated, different values). Review $copyingLogfile "
+    charc["·"]=$COLOROFF; chart["·"]="no-op (same, valid translation in pootle and sources)"
+    charc["p"]=$GREEN; chart["p"]="valid translation coming from pootle, sources untranslated"
+    charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
+    for char in ${!charc[@]}; do
+        loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
+    done;
+
 	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
 		project=${PROJECT_NAMES[$i]}
@@ -240,6 +259,9 @@ function refill_translations() {
     srcfile=$(get_project_language_path $project)/$language
     workingfile="${srcfile}.final"
     copyingLogfile="$logbase/$project/$language"
+    conflictsLogPootle="$logbase/$project/$language.conflicts.pootle"
+    conflictsLogLiferay="$logbase/$project/$language.conflicts.liferay"
+
     [[ -f $workingfile ]] && rm $workingfile # when debugging we don't run all sync stages so we can have this file from a previous run
     target_lang_path="$TMP_PROP_OUT_DIR/$project/$language"
 
@@ -251,24 +273,10 @@ function refill_translations() {
     extPrefix=$(get_ext_language_prefix $project $locale)
 
     declare -A R  # reverse translations
-    declare -A C  # conflicts
-    declare -A charc # colors
-    declare -A chart # text legend
-    charc["!"]=$RED; chart["!"]="uncovered case"
-    charc["o"]=$WHITE; chart["o"]="overriden from ext file"
-    charc["e"]=$RED; chart["e"]="English value is ok, was translated on purpose using Pootle"
-    charc["r"]=$YELLOW; chart["r"]="reverse-path (sources translated, pootle is untranslated). Will be published to Pootle"
-    charc["a"]=$CYAN; chart["a"]="ant build-lang will do (sources and pootle untranslated)"
-    charc["u"]=$BLUE; chart["u"]="untranslated, pick existing source value (Pootle untranslated, source auto-translated or auto-copied)"
-    charc["x"]=$LILA; chart["x"]="conflict/improvement Pootle wins (pootle and sources translated, different values). Review $copyingLogfile "
-    charc["·"]=$COLOROFF; chart["·"]="no-op (same, valid translation in pootle and sources)"
-    charc["p"]=$GREEN; chart["p"]="valid translation coming from pootle, sources untranslated"
-    charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
+    declare -A Cp  # conflicts - pootle value
+    declare -A Cl  # conflicts - liferay source value
 
-    logt 3 "Copying translations (see legend below)..."
-    for char in ${!charc[@]}; do
-        loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
-    done;
+    logt 3 "Copying translations..."
     logt 0
     done=false;
 	until $done; do
@@ -309,7 +317,8 @@ function refill_translations() {
                 if is_translated_value "$valuePrev"; then                   #   is the master value translated?
                     if [[ "$valuePrev" != "$value" ]]; then                 #      is this translation different than the one pootle exported?
                         char="x"                                            #           ok, we have a conflict, pootle wins. Let user know
-                        C[$key]="$value"                                    #           take note for logging purposes
+                        Cp[$key]="$value"                                   #           take note for logging purposes
+                        Cl[$key]="$valuePrev"
                     else                                                    #      ok, translation in master is just like the exported by pootle.
                         char="·"                                            #           no-op, already translated both in pootle and master
                     fi
@@ -322,8 +331,8 @@ function refill_translations() {
 			char="#"
 			result=$line                                                   #    get the whole line
 		fi
-		echo "$result" >> $workingfile
-		echo "[${char}]___${result}" >> $copyingLogfile
+		printf "%s\n" "$result" >> $workingfile
+		printf "%s\n" "[${char}]___${key}" >> $copyingLogfile
 		loglc 0 ${charc[$char]} -n "$char"
 	done < $target_lang_path
 
@@ -337,16 +346,24 @@ function refill_translations() {
 	    done;
 	    close_pootle_session
     fi
-    if [[ ${#C[@]} -gt 0 ]]; then
-        logt 3 "Conflicts are keys having correct, different translations both in pootle and in sources. Please check following keys:"
-        for key in "${!C[@]}"; do
-            loglc 0 $RED -n "$key "
+    if [[ ${#Cp[@]} -gt 0 ]]; then
+        logt 3 "Conflicts warning:"
+        logt 4 "Conflicts are keys having correct, different translations both in pootle and in liferay sources. During pootle2src, the pootle value will be considered the correct one"
+        logt 4 "Please compare contents of following files:"
+        logt 5 "$conflictsLogPootle"
+        logt 5 "$conflictsLogLiferay"
+        logt 4 -n "Generating conflict files"
+        for key in "${!Cp[@]}"; do
+            printf "%s=%s" "$key" "${Cp[$key]}" >> $conflictsLogPootle
+            printf "%s=%s" "$key" "${Cl[$key]}" >> $conflictsLogLiferay
 	    done;
+	    check_command
     fi
     log
 	set +f
 	unset R
-	unset C
+	unset Cp
+	unset Cl
 	logt 3 "Moving processed file to source dir"
 	logt 4 -n "Moving to $srcfile"
 	mv $workingfile $srcfile

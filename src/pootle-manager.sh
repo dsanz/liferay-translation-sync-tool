@@ -53,6 +53,7 @@ function src2pootle() {
 	update_pootle_db
 	post_language_translations # bug #1949
 	rotate_working_branches
+    restore_file_ownership
 	loglc 1 $RED "End Sync[Liferay source code -> Pootle]"
 }
 
@@ -68,11 +69,12 @@ function src2pootle() {
 function pootle2src() {
     loglc 1 $RED "Begin Sync[Pootle -> Liferay source code]"
     display_projects
-    prepare_source_dirs
+    #prepare_source_dirs
 	prepare_output_dirs
     update_pootle_files
 	ascii_2_native
-	process_untranslated
+	restore_file_ownership
+	process_translations
 	do_commit false false "pootle exported keys"
 	ant_build_lang
 	do_commit true true "ant build-lang"
@@ -162,7 +164,7 @@ function add_project_in_pootle() {
 
 # main function which loads api functions, then configuration, and then invokes logic according to arguments
 main() {
-	echo "$product [START]"
+	printf "[START]\n"
 	load_api
 	load_config
 	resolve_params $@
@@ -173,7 +175,7 @@ main() {
 		#$PO_COOKIES $SRC_PATH_PLUGIN_PREFIX \
 		#$SRC_PATH_PLUGIN_SUFFIX $FILE $PROP_EXT $LANG_SEP
 	if [ $UPDATE_REPOSITORY ]; then
-		src2pootle
+		#src2pootle
 		pootle2src
 	elif [ $UPDATE_POOTLE_DB ]; then
 		src2pootle
@@ -191,7 +193,7 @@ main() {
 	    backport_all
 	fi
 
-	[ ! $HELP ] &&	echo "$product [DONE]"
+	[ ! $HELP ] &&	printf "$product [DONE]\n"
 }
 
 main "$@"

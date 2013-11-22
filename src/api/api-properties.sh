@@ -21,7 +21,7 @@ declare -g lang_file_rexp="Language[^\.]*\.properties"
 # $1 is the key prefix
 # $2 is the language key we want to access
 function getTKey() {
-    echo $1$2
+    printf "%s" $1$2
 }
 
 # returns a value obtained from accessing the array T using the given key
@@ -29,7 +29,7 @@ function getTKey() {
 # $2 is the language key we want to access
 function getTVal() {
     k="$1$2"
-    echo ${T[$k]}
+    printf "%s" ${T[$k]}
 }
 
 # sets the specified value into array T under given key
@@ -107,15 +107,11 @@ function read_locale_file() {
 	lines=$(wc -l "$1" | cut -d' ' -f1)
 	template=$3
 	logt 4 -n "Reading file $1        "
-	counter=0
 	done=false;
+	before=$(date +%s%N)
 	if [[ $lines -gt 0 ]]; then
-	    (( lines++ ))
 	    until $done; do
             read line || done=true
-            printf "\b\b\b\b\b"
-            printf "%5s" "$(( 100 * (counter+1) / lines ))%"
-            (( counter++ ))
             if is_key_line "$line" ; then
                 [[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
                 setTVal $2 "$key" "$value"
@@ -127,5 +123,10 @@ function read_locale_file() {
             fi
         done < $1
 	fi
-	logt 0;
+	after=$(date +%s%N)
+	loglc 0 $GREEN "[$lines lines read in $(echo "scale=3;($after - $before)/(1*10^09)" | bc) s.] "
+}
+
+function restore_file_ownership() {
+    chown apache:apache -R $PODIR
 }
