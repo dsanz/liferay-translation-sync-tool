@@ -156,6 +156,7 @@ function add_project_in_pootle() {
             create_pootle_project $projectCode "$projectName"
             initialize_project_files $projectCode "$projectName"
             notify_pootle $projectCode
+            restore_file_ownership
         fi
     else
         logt 1 "Unable to create Pootle project '$projectCode' : pootle server is down. Please start it, then rerun this command"

@@ -58,7 +58,7 @@ declare -xgr THEME_LIST="noir"
 declare -xgr THEME_SUFFIX="-theme"
 declare -xgr THEME_SRC_PATH_PREFIX="${SRC_PLUGINS_BASE}themes/"
 
-declare -xgr HOOK_LIST="so-activities so"
+declare -xgr HOOK_LIST="so-activities so shibboleth"
 declare -xgr HOOK_SUFFIX="-hook"
 declare -xgr HOOK_SRC_PATH_PREFIX="${SRC_PLUGINS_BASE}hooks/"
 

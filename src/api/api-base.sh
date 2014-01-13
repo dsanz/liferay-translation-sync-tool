@@ -38,7 +38,7 @@ COLOROFF="\033[1;0m"; GREEN="\033[1;32m"; RED="\033[1;31m"; LILA="\033[1;35m"
 YELLOW="\033[1;33m"; BLUE="\033[1;34m"; WHITE="\033[1;37m"; CYAN="\033[1;36m"
 
 function baselog() {
-    printf "$1" # >> $logfile
+    printf "$1" >> $logfile
 }
 
 # given a length for indentation, a color, an optional "-n" and a message, logs coloured
