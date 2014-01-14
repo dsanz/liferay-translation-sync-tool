@@ -285,59 +285,61 @@ function refill_translations() {
 	        done=true;
 	        format="%s"
 	    fi;
-	    char="!"
-		if is_key_line "$line" ; then
-		    [[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
-		    valueTpl=${T["$templatePrefix$key"]}
-		    valueExp=${T["$exportedPrefix$key"]}                            # get translation exported by pootle
+	    if [ ! "$line" == "" ]; then
+	        char="!"
+		    if is_key_line "$line" ; then
+    		    [[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
+    		    valueTpl=${T["$templatePrefix$key"]}
+    		    valueExp=${T["$exportedPrefix$key"]}                            # get translation exported by pootle
 
-			if exists_ext_value $extPrefix $key; then                       # has translation to be overriden?
-			    value=$(getTVal $extPrefix $key)
-			    char="o"
-			elif [[ "$valueExp" == "$valueTpl" ]]; then                     # ok, no overriding. Now, is exported value = template value?
-			    valueStore=${T["$storePrefix$key"]}                         #   then let's see if translators wrote the template value by hand in the text box
-			    if [[ "$valueStore" == "$valueTpl" ]]; then                 #   was it translated that way on purpose?
-			        char="e"                                                #       use the template value. English is ok in this case.
-			        value=$valueTpl
-			    else                                                        #   otherwise, key is really untranslated in pootle
-			        valuePrev=${T["$previousPrefix$key"]}                   #       let's look for the current key translation in master
-			        if is_translated_value "$valuePrev"; then               #       is the key translated in master? [shouldn't happen unless we run -r before a -p]
-			            if [[ "$valuePrev" != "$valueTpl" ]]; then          #           ok, key is already translated in master. is that value different from the template?
-                            char="r"                                        #               ok, then master is translated but Pootle not, hmmm! we have a reverse-path
-                            value="$valuePrev"                              #               let's keep`the value in master as a good default.
-                            R[$key]="$value";                               #               and memorize it so that Pootle can be properly updated later
-			            else                                                #           ok, value in master is just like the template
-                            char="a"                                        #               discard it! ant build-lang will do
-                    	    value=""
-                    	fi
-			        else                                                    #       value in master is not translated. This means an auto-copy or auto-translation
-			            char="u"                                            #           let's reuse it, we are saving build-lang work. don't do same work twice
-			            value=$valuePrev
-			        fi;
-			    fi
-			else                                                            # ok, no overriding, and value is not the english one: it's supposed to be a valid translation!!
-			    value=${T["$exportedPrefix$key"]}                           #   get translation exported by pootle
-		        valuePrev=${T["$previousPrefix$key"]}                       #   get the translation from master
-                if is_translated_value "$valuePrev"; then                   #   is the master value translated?
-                    if [[ "$valuePrev" != "$value" ]]; then                 #      is this translation different than the one pootle exported?
-                        char="x"                                            #           ok, we have a conflict, pootle wins. Let user know
-                        Cp[$key]="$value"                                   #           take note for logging purposes
-                        Cl[$key]="$valuePrev"
-                    else                                                    #      ok, translation in master is just like the exported by pootle.
-                        char="·"                                            #           no-op, already translated both in pootle and master
+			    if exists_ext_value $extPrefix $key; then                       # has translation to be overriden?
+    			    value=$(getTVal $extPrefix $key)
+    			    char="o"
+    			elif [[ "$valueExp" == "$valueTpl" ]]; then                     # ok, no overriding. Now, is exported value = template value?
+    			    valueStore=${T["$storePrefix$key"]}                         #   then let's see if translators wrote the template value by hand in the text box
+    			    if [[ "$valueStore" == "$valueTpl" ]]; then                 #   was it translated that way on purpose?
+    			        char="e"                                                #       use the template value. English is ok in this case.
+    			        value=$valueTpl
+    			    else                                                        #   otherwise, key is really untranslated in pootle
+    			        valuePrev=${T["$previousPrefix$key"]}                   #       let's look for the current key translation in master
+    			        if is_translated_value "$valuePrev"; then               #       is the key translated in master? [shouldn't happen unless we run -r before a -p]
+    			            if [[ "$valuePrev" != "$valueTpl" ]]; then          #           ok, key is already translated in master. is that value different from the template?
+                                char="r"                                        #               ok, then master is translated but Pootle not, hmmm! we have a reverse-path
+                                value="$valuePrev"                              #               let's keep`the value in master as a good default.
+                                R[$key]="$value";                               #               and memorize it so that Pootle can be properly updated later
+    			            else                                                #           ok, value in master is just like the template
+                                char="a"                                        #               discard it! ant build-lang will do
+                        	    value=""
+                        	fi
+    			        else                                                    #       value in master is not translated. This means an auto-copy or auto-translation
+    			            char="u"                                            #           let's reuse it, we are saving build-lang work. don't do same work twice
+    			            value=$valuePrev
+    			        fi;
+    			    fi
+    			else                                                            # ok, no overriding, and value is not the english one: it's supposed to be a valid translation!!
+    			    value=${T["$exportedPrefix$key"]}                           #   get translation exported by pootle
+    		        valuePrev=${T["$previousPrefix$key"]}                       #   get the translation from master
+                    if is_translated_value "$valuePrev"; then                   #   is the master value translated?
+                        if [[ "$valuePrev" != "$value" ]]; then                 #      is this translation different than the one pootle exported?
+                            char="x"                                            #           ok, we have a conflict, pootle wins. Let user know
+                            Cp[$key]="$value"                                   #           take note for logging purposes
+                            Cl[$key]="$valuePrev"
+                        else                                                    #      ok, translation in master is just like the exported by pootle.
+                            char="·"                                            #           no-op, already translated both in pootle and master
+                        fi
+                    else                                                        #   master value is NOT translated but auto-translated/auto-copied
+                        char="p"                                                #      ok, translated in pootle, but not in master. OK!!
                     fi
-                else                                                        #   master value is NOT translated but auto-translated/auto-copied
-                    char="p"                                                #      ok, translated in pootle, but not in master. OK!!
-                fi
-			fi
-			result="${key}=${value}"
-		else                                                               # is it a comment line?
-			char="#"
-			result=$line                                                   #    get the whole line
-		fi
-		printf "$format" "$result" >> $workingfile
-		printf "$format"  "[${char}]___${key}" >> $copyingLogfile
-		loglc 0 "${charc[$char]}" -n "$char"
+    			fi
+    			result="${key}=${value}"
+    		else                                                               # is it a comment line?
+    			char="#"
+    			result="$line"                                                 #    get the whole line
+    		fi
+    		printf "$format" "$result" >> $workingfile
+    		printf "$format"  "[${char}]___${key}" >> $copyingLogfile
+		    loglc 0 "${charc[$char]}" -n "$char"
+		fi;
 	done < $target_lang_path
 
     logt 0

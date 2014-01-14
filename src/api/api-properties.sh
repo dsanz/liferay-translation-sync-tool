@@ -5,8 +5,8 @@ declare -gA T;
 # K contains all keys in the template file
 declare -ga K;
 
-# regexp for separating key/value pairs
-declare -g kv_rexp="^([^=]+)=(.+)$"
+# regexp for separating key/value pairs (don't look for an /n at the end)
+declare -g kv_rexp="^([^=]+)=(.+)"
 
 # regexp for locating translation files (does not include Language.properties)
 declare -g trans_file_rexp="Language_[^\.]+\.properties"
