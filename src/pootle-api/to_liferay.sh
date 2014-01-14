@@ -279,8 +279,12 @@ function refill_translations() {
     logt 3 "Copying translations..."
     logt 0
     done=false;
+    format="%s\n";
 	until $done; do
-	    read line || done=true
+	    if ! read line; then
+	        done=true;
+	        format="%s"
+	    fi;
 	    char="!"
 		if is_key_line "$line" ; then
 		    [[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
@@ -331,9 +335,9 @@ function refill_translations() {
 			char="#"
 			result=$line                                                   #    get the whole line
 		fi
-		printf "%s\n" "$result" >> $workingfile
-		printf "%s\n" "[${char}]___${key}" >> $copyingLogfile
-		loglc 0 ${charc[$char]} -n "$char"
+		printf "$format" "$result" >> $workingfile
+		printf "$format"  "[${char}]___${key}" >> $copyingLogfile
+		loglc 0 "${charc[$char]}" -n "$char"
 	done < $target_lang_path
 
     logt 0
