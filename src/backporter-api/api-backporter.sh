@@ -5,14 +5,14 @@ declare -g backported_postfix=".backported"
 declare -Ag charc # colors
 declare -Ag chart # text legend
 
-charc["x"]=$BLUE; chart["x"]="No action, key doesn't exist in newer version"
-charc["t"]=$LILA; chart["t"]="No action, key is automatic translated in older version and untranslated in newer one"
-charc["c"]=$COLOROFF; chart["c"]="No action, key is automatic copied both in older and newer versions"
-charc["b"]=$YELLOW; chart["b"]="Backport!, key is automatic copied in older and automatic translated in newer one."
-charc["B"]=$WHITE; chart["B"]="Backport!, key untranslated in older and translated in newer one, same english meaning"
-charc["r"]=$CYAN; chart["r"]="No action, key translated in newer, but different english meaning. Human review required (semantic change, echoed to $file_hrr_changes)"
-charc["R"]=$GREEN; chart["R"]="No action, key translated in newer and older, translations are different but same english meaning. Human review required (refinement, echoed to $file_hrr_improvements)"
-charc["·"]=$LILA; chart["·"]="No action, key translated in newer and older, same english meaning and translation"
+charc["x"]=$BLUE; chart["x"]="No action, key doesn't exist in source branch"
+charc["t"]=$LILA; chart["t"]="No action, key is automatic translated in target branch and untranslated in source branch"
+charc["c"]=$COLOROFF; chart["c"]="No action, key is automatic copied both in source and target branches"
+charc["b"]=$YELLOW; chart["b"]="Backport!, key is automatic copied in target branch and automatic translated in source branch."
+charc["B"]=$WHITE; chart["B"]="Backport!, key untranslated in target and translated in source, same english meaning"
+charc["r"]=$CYAN; chart["r"]="No action, key translated in source, but different english meaning. Human review required (semantic change, echoed to $file_hrr_changes)"
+charc["R"]=$GREEN; chart["R"]="No action, key translated both in source and target, translations are different but same english meaning. Human review required (refinement, echoed to $file_hrr_improvements)"
+charc["·"]=$LILA; chart["·"]="No action, key translated both in source and target, same english meaning and translation"
 charc["!"]=$RED; chart["!"]="No action, uncovered case"
 charc["#"]=$COLOROFF; chart["#"]="No action, line is a comment"
 
