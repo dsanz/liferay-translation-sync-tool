@@ -35,8 +35,12 @@ function backport() {
     logt 3 "Writing into $file "
 	rm -f $file $file_hrr_improvements $file_hrr_changes
 	done=false;
+	format="%s\n";
 	until $done; do
-	    read line || done=true
+	    if ! read line; then
+	        done=true;
+	        format="%s"
+	    fi;
 		result[$file]="$line"
 		result[$file_hrr_improvements]="$line"
 		result[$file_hrr_changes]="$line"
@@ -90,10 +94,11 @@ function backport() {
 		else
 			char="#"
 		fi
-		printf "${result[$file]}" >> $file
-		printf "${result[$file_hrr_improvements]}" >> $file_hrr_improvements
-		printf "${result[$file_hrr_changes]}" >> $file_hrr_changes
-		loglc 0 ${charc[$char]} -n "$char"
+
+		printf "$format" "${result[$file]}" >> $file
+		printf "$format" "${result[$file_hrr_improvements]}" >> $file_hrr_improvements
+		printf "$format" "${result[$file_hrr_changes]}" >> $file_hrr_changes
+		loglc 0 "${charc[$char]}" -n "$char"
 	done < $target_lang_path
 	log
 
@@ -120,7 +125,7 @@ function backport() {
 	now="$(($(date +%s%N)-now))"
 	seconds="$((now/1000000000))"
 	milliseconds="$((now/1000000))"
-	printf -v stats "Backport took %02d.%03d seconds\n" "$((seconds))" "${milliseconds}"
+	printf -v stats "Backport took %02d.%03d seconds" "$((seconds))" "${milliseconds}"
 	logt 4 "- $stats"
 	unset result;
 }
@@ -143,13 +148,19 @@ function echo_legend() {
 # because it'll be invoked from another function that controls the process and is in charge of setting work dirs as
 # well as committing results and changing branches
 function backport_project() {
-    prepare_dirs $1 $2
-    read_english_files
-    for locale in "${L[@]}"; do
-    	    backport $locale
-    done
-    logt 3 "Garbage collection (project)"
-    unset L;
-    declare -ag L;
+    if [ ! -d $1 ]; then
+        logt 3 "Unable to backport, source dir '$1' does not exist"
+    elif [ ! -d $2 ]; then
+        logt 3 "Unable to backport, destination dir '$2' does not exist"
+    else
+        prepare_dirs $1 $2
+        read_english_files
+        for locale in "${L[@]}"; do
+       	    backport $locale
+        done
+        logt 3 "Garbage collection (project)"
+        unset L;
+        declare -ag L;
+    fi;
 }
 
