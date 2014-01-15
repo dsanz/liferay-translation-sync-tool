@@ -10,17 +10,19 @@ charc["t"]=$LILA; chart["t"]="No action, key is automatic translated in target b
 charc["c"]=$COLOROFF; chart["c"]="No action, key is automatic copied both in source and target branches"
 charc["b"]=$YELLOW; chart["b"]="Backport!, key is automatic copied in target branch and automatic translated in source branch."
 charc["B"]=$WHITE; chart["B"]="Backport!, key untranslated in target and translated in source, same english meaning"
-charc["r"]=$CYAN; chart["r"]="No action, key translated in source, but different english meaning. Human review required (semantic change, echoed to $file_hrr_changes)"
-charc["R"]=$GREEN; chart["R"]="No action, key translated both in source and target, translations are different but same english meaning. Human review required (refinement, echoed to $file_hrr_improvements)"
+charc["r"]=$CYAN; chart["r"]="No action, key translated in source, but different english meaning. Human review required (semantic change)"
+charc["R"]=$GREEN; chart["R"]="No action, key translated both in source and target, translations are different but same english meaning. Human review required (refinement)"
 charc["·"]=$LILA; chart["·"]="No action, key translated both in source and target, same english meaning and translation"
 charc["!"]=$RED; chart["!"]="No action, uncovered case"
 charc["#"]=$COLOROFF; chart["#"]="No action, line is a comment"
 
 function backport() {
 	now="$(date +%s%N)"
-	logt 2 "Backporting to '$1'"
+	project="$1"
+	locale="$2"
+	logt 2 "Backporting $project ($locale)"
 	clear_translations
-	read_lang_files $1
+	read_lang_files $locale
 	file="${target_lang_path}${backported_postfix}"
 	file_hrr_improvements="${target_lang_path}.review.improvements"
 	file_hrr_changes="${target_lang_path}.review.changes"
@@ -29,9 +31,6 @@ function backport() {
 	improvements=0
 	changes=0
 	deprecations=0
-    chart["r"]="No action, key translated in newer, but different english meaning. Human review required (semantic change, echoed to $file_hrr_changes)"
-    chart["R"]="No action, key translated in newer and older, translations are different but same english meaning. Human review required (refinement, echoed to $file_hrr_improvements)"
-    echo_legend
     logt 3 "Writing into $file "
 	rm -f $file $file_hrr_improvements $file_hrr_changes
 	done=false;
@@ -107,7 +106,7 @@ function backport() {
 		mv $file $target_lang_path
 		file=$target_lang_path
 	fi
-	logt 3 "Summary of '$1' backport process:"
+	logt 3 "Summary of $project ($locale) backport process:"
 	logt 4 "- $backports keys backported"
 	logt 4 "- $deprecations keys are in $target_english_path but not in $source_english_path"
 	if [[ $improvements -eq 0 ]]; then
@@ -148,15 +147,17 @@ function echo_legend() {
 # because it'll be invoked from another function that controls the process and is in charge of setting work dirs as
 # well as committing results and changing branches
 function backport_project() {
-    if [ ! -d $1 ]; then
-        logt 3 "Unable to backport, source dir '$1' does not exist"
-    elif [ ! -d $2 ]; then
-        logt 3 "Unable to backport, destination dir '$2' does not exist"
+    project="$1"
+    if [ ! -d $2 ]; then
+        logt 3 "Unable to backport, source dir '$2' does not exist"
+    elif [ ! -d $3 ]; then
+        logt 3 "Unable to backport, destination dir '$3' does not exist"
     else
-        prepare_dirs $1 $2
+        prepare_dirs $2 $3
         read_english_files
+        echo_legend
         for locale in "${L[@]}"; do
-       	    backport $locale
+       	    backport "$project" "$locale"
         done
         logt 3 "Garbage collection (project)"
         unset L;

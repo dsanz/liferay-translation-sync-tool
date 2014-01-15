@@ -113,7 +113,7 @@ function backport_all() {
 		logt 2 "$project"
 		source_dir="$(get_project_language_path $project)"
 		target_dir=$(get_ee_target_dir $source_dir)
-		backport_project "$source_dir" "$target_dir"
+		backport_project "$project" "$source_dir" "$target_dir"
 	done;
 
     # commit result is again done on a base-path basis
