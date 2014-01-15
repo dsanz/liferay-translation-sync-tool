@@ -5,8 +5,14 @@ declare -gA T;
 # K contains all keys in the template file
 declare -ga K;
 
-# regexp for separating key/value pairs (don't look for an /n at the end)
+# regexp for separating key/value pairs (don't look for an /n at the end). Only works when value is not empty
 declare -g kv_rexp="^([^=]+)=(.+)"
+
+# regexp with matches the key in a key/value pair text line. Works even if value is empty
+declare -g k_rexp="^([^=]+)="
+
+# regexp with matches the value in a key/value pair text line. Works even if value is empty
+declare -g v_rexp="^[^=]+=(.*)"
 
 # regexp for locating translation files (does not include Language.properties)
 declare -g trans_file_rexp="Language_[^\.]+\.properties"
@@ -113,7 +119,9 @@ function read_locale_file() {
 	    until $done; do
             read line || done=true
             if is_key_line "$line" ; then
-                [[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
+                # can't use [[ "$line" =~ $kv_rexp ]] because when reading a dumped store we can have empty keys
+                [[ "$line" =~ $k_rexp ]] && key="${BASH_REMATCH[1]}"
+                [[ "$line" =~ $v_rexp ]] && value="${BASH_REMATCH[1]}"
                 setTVal $2 "$key" "$value"
                 if [[ $template ]]; then
                     K[${#K[@]}]=$key
