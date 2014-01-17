@@ -101,5 +101,6 @@ declare -xgr DB_DUMP_COMMAND="mysqldump $DB_NAME "
 
 #ant
 ANT_BIN="/opt/apache-ant-1.9.1/bin/ant"
+export JAVA_HOME="/usr"
 export ANT_OPTS="-Xmx1024m -XX:MaxPermSize=512m"
 
