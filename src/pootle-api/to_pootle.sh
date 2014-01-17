@@ -107,14 +107,41 @@ function generate_addition() {
 	log ""
 }
 
+function create_branch_at_child_of_last_export_commit() {
+    # assume we are now in master
+    src_dir="$1"
+    logt 3 "Creating branch at child of last export commit"
+    logt 4 "Searching git history for last export commit"
+    cd $src_dir
+    child_of_last_export="HEAD"
+    last_export_commit=$(git log -n 1 --grep "$product_name" --after 2012 --format=format:"%H")
+    if [[ $last_export_commit == "" ]]; then
+        logt 5 "I couldn't find a previous export commit"
+    else
+        child_of_last_export=$(git rev-list --children --after 2012 HEAD | grep "^$last_export_commit" | cut -f 2 -d ' ')
+    fi;
+    last_export_msg=$(git show --pretty=oneline --abbrev-commit ${child_of_last_export}^ | head -n 1)
+    logt 4 "Using $child_of_last_export as reference (parent commit is: $last_export_msg)"
+    logt 4 "Setting up $LAST_BRANCH branch pointing to $child_of_last_export"
+    if exists_branch $LAST_BRANCH $base_src_dir; then
+        logt 5 -n "git branch -D $LAST_BRANCH";
+        git branch -D $LAST_BRANCH
+        check_command
+    fi;
+    logt 5 -n "git branch $LAST_BRANCH $child_of_last_export";
+    git branch $LAST_BRANCH $child_of_last_export
+    check_command
+}
+
 function generate_additions() {
-	logt 1 "Calculating committed translations from last update"
+	logt 1 "Calculating committed translations from last export commit"
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		projects=${PATH_PROJECTS[$i]}
 		base_src_dir=${PATH_BASE_DIR[$i]}
 		cd $base_src_dir
 		logt 2 "$base_src_dir"
+        create_branch_at_child_of_last_export_commit "$base_src_dir"
 		if exists_branch $LAST_BRANCH $base_src_dir; then
 			git checkout $WORKING_BRANCH > /dev/null 2>&1
 			for project in $projects; do

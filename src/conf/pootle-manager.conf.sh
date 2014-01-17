@@ -43,7 +43,7 @@ declare -xgr PO_COOKIES="$TMP_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
 
 ## Git branches management
 declare -xgr WORKING_BRANCH="to-pootle-working"
-declare -xgr LAST_BRANCH="to-pootle-current"
+declare -xgr LAST_BRANCH="child-of-latest-export-to-liferay"
 declare -xgr EXPORT_BRANCH="pootle-export"
 
 ## List of projects we know about
