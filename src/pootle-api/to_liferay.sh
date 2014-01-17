@@ -41,11 +41,11 @@ function do_commit() {
 	    git checkout master > /dev/null 2>&1
 	    check_command
 
-	    added_language_files=$(git status -uall --porcelain | grep "\?\?" | grep $FILE | cut -f 2 -d' ')
+	    added_language_files=$(git status -uall --porcelain | grep "??" | grep $FILE | cut -f 2 -d' ')
 	    if [[ $added_language_files != "" ]]; then
 	        logt 3 "Adding untracked files"
 	        for untracked in $added_language_files; do
-                logt 4 "git add $untracked"
+                logt 4 -n "git add $untracked"
                 git add "$untracked"
                 check_command
             done
