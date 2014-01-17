@@ -40,15 +40,27 @@ function do_commit() {
         logt 3 -n "git checkout master"
 	    git checkout master > /dev/null 2>&1
 	    check_command
+
+	    added_language_files=$(git status -uall --porcelain | grep "\?\?" | grep $FILE | cut -f 2 -d' ')
+	    if [[ $added_language_files != "" ]]; then
+	        logt 3 "Adding untracked files"
+	        for untracked in $added_language_files; do
+                logt 4 "git add $untracked"
+                git add "$untracked"
+                check_command
+            done
+	    else
+	        logt 3 "No untracked files to add"
+	    fi;
 		if something_changed; then
-            if exists_branch "pootle_export" "$base_src_dir"; then
+            if exists_branch "$EXPORT_BRANCH" "$base_src_dir"; then
                 if $reuse_branch; then
                     logt 3 "Reusing export branch"
                     create_branch=false;
                 else
-                    logt 3 -n "Cleaning old export branch: git branch -D pootle_export"
+                    logt 3 -n "Cleaning old export branch: git branch -D $EXPORT_BRANCH"
                     git checkout master > /dev/null 2>&1
-                    git branch -D pootle_export > /dev/null 2>&1
+                    git branch -D "$EXPORT_BRANCH" > /dev/null 2>&1
                     check_command
                     create_branch=true;
                 fi
@@ -57,8 +69,8 @@ function do_commit() {
             fi
 
             if $create_branch; then
-                logt 3 -n "Creating new export branch: git checkout -b pootle_export"
-                git checkout -b pootle_export > /dev/null 2>&1
+                logt 3 -n "Creating new export branch: git checkout -b $EXPORT_BRANCH"
+                git checkout -b "$EXPORT_BRANCH" > /dev/null 2>&1
                 check_command
             fi
             msg="$commit_msg [by $product]"
@@ -75,8 +87,8 @@ function do_commit() {
 }
 
 function push_changes() {
-    logt 3 -n "git push origin pootle_export"
-    git push -f origin pootle_export > /dev/null 2>&1
+    logt 3 -n "git push origin $EXPORT_BRANCH"
+    git push -f origin "$EXPORT_BRANCH" > /dev/null 2>&1
     check_command
     logt 3 -n "git checkout master"
 	git checkout master > /dev/null 2>&1

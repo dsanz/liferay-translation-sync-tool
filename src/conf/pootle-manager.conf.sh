@@ -44,6 +44,7 @@ declare -xgr PO_COOKIES="$TMP_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
 ## Git branches management
 declare -xgr WORKING_BRANCH="to-pootle-working"
 declare -xgr LAST_BRANCH="to-pootle-current"
+declare -xgr EXPORT_BRANCH="pootle-export"
 
 ## List of projects we know about
 declare -xgr PORTLET_LIST="akismet calendar chat contacts ddl-form digg events-display google-maps knowledge-base mail\
