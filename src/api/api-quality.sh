@@ -65,4 +65,5 @@ function check_same_translation() {
             fi
         done
     done;
+    log ""
 }
