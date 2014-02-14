@@ -164,6 +164,17 @@ function add_project_in_pootle() {
     fi;
 }
 
+function check_quality() {
+    loglc 1 $RED "Begin Quality Checks"
+    display_projects
+    prepare_source_dirs
+	prepare_output_dirs
+    update_pootle_files
+	ascii_2_native
+	run_quality_checks
+	loglc 1 $RED "End Quality Checks"
+}
+
 # main function which loads api functions, then configuration, and then invokes logic according to arguments
 main() {
 	printf "[START]\n"
@@ -193,6 +204,8 @@ main() {
 	    add_project_in_pootle $2 "$3"
 	elif [ $BACKPORT ]; then
 	    backport_all
+    elif [ $QA_CHECK ]; then
+	    check_quality
 	fi
 
 	[ ! $HELP ] &&	printf "$product [DONE]\n"
