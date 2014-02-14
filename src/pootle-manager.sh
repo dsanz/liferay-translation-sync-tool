@@ -13,6 +13,7 @@ function load_api() {
 	. api/api-properties.sh
 	. api/api-version.sh
 	. api/api-pootle.sh
+	. api/api-quality.sh
 	. backporter-api/api-files.sh
 	. backporter-api/api-git.sh
 	. backporter-api/api-properties.sh
