@@ -167,7 +167,6 @@ function add_project_in_pootle() {
 function check_quality() {
     loglc 1 $RED "Begin Quality Checks"
     display_projects
-    prepare_source_dirs
 	prepare_output_dirs
     update_pootle_files
 	ascii_2_native
