@@ -50,7 +50,7 @@ function check_same_translation() {
     exportedPrefix=$(get_exported_language_prefix $project $locale)
     numberOfKeys=${#K[@]}
     logt 4 "Keyset has $numberOfKeys keys "
-    perProjectLogfile="$logbase/$project/same_translations.log"
+    perProjectLogfile="$logbase/$project/same_translations_$locale.log"
     logt 4 "Please see $perProjectLogfile"
     for (( i=0; i<${numberOfKeys}; i++ )); do
         key_i=${K[$i]}
