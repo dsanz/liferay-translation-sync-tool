@@ -118,6 +118,8 @@ function resolve_params() {
 			export UPLOAD_DERIVED=1
 		elif [ "$param" = "--newproject" ] || [ "$param" = "-np" ]; then
 			export NEW_PROJECT=1
+		elif [ "$param" = "--qualityCheck" ] || [ "$param" = "-q" ]; then
+			export QA_CHECK=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else

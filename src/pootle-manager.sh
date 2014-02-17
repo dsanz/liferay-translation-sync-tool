@@ -13,6 +13,7 @@ function load_api() {
 	. api/api-properties.sh
 	. api/api-version.sh
 	. api/api-pootle.sh
+	. api/api-quality.sh
 	. backporter-api/api-files.sh
 	. backporter-api/api-git.sh
 	. backporter-api/api-properties.sh
@@ -163,6 +164,16 @@ function add_project_in_pootle() {
     fi;
 }
 
+function check_quality() {
+    loglc 1 $RED "Begin Quality Checks"
+    display_projects
+	prepare_output_dirs
+    update_pootle_files
+	ascii_2_native
+	run_quality_checks
+	loglc 1 $RED "End Quality Checks"
+}
+
 # main function which loads api functions, then configuration, and then invokes logic according to arguments
 main() {
 	printf "[START]\n"
@@ -192,6 +203,8 @@ main() {
 	    add_project_in_pootle $2 "$3"
 	elif [ $BACKPORT ]; then
 	    backport_all
+    elif [ $QA_CHECK ]; then
+	    check_quality
 	fi
 
 	[ ! $HELP ] &&	printf "$product [DONE]\n"
