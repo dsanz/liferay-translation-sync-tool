@@ -12,7 +12,7 @@ function backup_db() {
 
 	logt 2 "Dumping Pootle DB into $dumpfilepath"
 	logt 3 -n "Running dump command ";
-	$DB_DUMP_COMMAND > $dumpfilepath;
+	$DB_DUMP_COMMAND $DB_NAME > $dumpfilepath;
 	check_command;
 
     logt 2 "Compressing po/ dir into $fsfilepath"
