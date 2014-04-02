@@ -208,6 +208,10 @@ main() {
 	fi
 
 	[ ! $HELP ] &&	printf "$product [DONE]\n"
+
+	if [[ -z ${LR_TRANS_MGR_TAIL_LOG+x} ]]; then
+		kill $tail_log_pid
+	fi;
 }
 
 main "$@"

@@ -102,6 +102,13 @@ function set_log_dir() {
 	check_dir $logbase
 
 	if [[ -z ${LR_TRANS_MGR_TAIL_LOG+x} ]]; then
-		tail -F  $logfile &
+		tail -F  $logfile &  tail_log_pid=$!
+        trap "terminate" EXIT SIGTERM
 	fi;
+}
+
+function terminate() {
+	printf "\n$LILA[$(date +%T.%3N)]${COLOROFF} Killing tail (pid $tail_log_pid)"
+	kill $tail_log_pid;
+	exit 0
 }
