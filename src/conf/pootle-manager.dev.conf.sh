@@ -8,11 +8,11 @@
 ## Configuration of directories
 ## base dirs
 # pootle installation
-declare -xgr POOTLEDIR="/var/www/Pootle"
+declare -xgr POOTLEDIR="/opt/Pootle-2.1.6"
 # translation files for Pootle DB update/sync
 declare -xgr PODIR="$POOTLEDIR/po"
 # base working dir for the scripts
-declare -xgr BASE_DIR="/home/dsanz"
+declare -xgr BASE_DIR="/var/tmp"
 # temporal working dirs
 declare -xgr TMP_DIR="$BASE_DIR/po-lf"
 declare -xgr TMP_PROP_IN_DIR="$TMP_DIR/prop_in"
@@ -20,12 +20,12 @@ declare -xgr TMP_PROP_OUT_DIR="$TMP_DIR/prop_out"
 declare -xgr TMP_DB_BACKUP_DIR="$BASE_DIR/db-backups"
 declare -xgr LOG_DIR="$BASE_DIR/log"
 # source dirs, under git control, where forked & cloned repos are
-declare -xgr SRC_BASE="$BASE_DIR/"
-declare -xgr SRC_PORTAL_BASE="${SRC_BASE}liferay-portal/"
-declare -xgr SRC_PORTAL_EE_BASE="${SRC_BASE}liferay-portal-ee/"
+declare -xgr SRC_BASE="/home/dsanz/projects/"
+declare -xgr SRC_PORTAL_BASE="${SRC_BASE}/trunk/src-portal/portal/"
+declare -xgr SRC_PORTAL_EE_BASE="${SRC_BASE}/portal-ee/liferay-portal-ee"
 declare -xgr SRC_PORTAL_LANG_PATH="portal-impl/src/content/"
-declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}liferay-plugins/"
-declare -xgr SRC_PLUGINS_EE_BASE="${SRC_BASE}liferay-plugins-ee/"
+declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}/trunk/src-plugins/plugins/"
+declare -xgr SRC_PLUGINS_EE_BASE="${SRC_BASE}/portal-ee/liferay-plugins-ee"
 declare -xgr SRC_PLUGINS_LANG_PATH="/docroot/WEB-INF/src/content/"
 
 ## Configuration of credentials
@@ -40,7 +40,7 @@ declare -xgr PO_HOST="localhost"
 declare -xgr PO_PORT="8080"
 declare -xgr PO_SRV="http://$PO_HOST:$PO_PORT"
 declare -xgr PO_PROJECTS_URL="$PO_SRV/projects"
-declare -xgr PO_COOKIES="$TMP_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
+declare -xgr PO_COOKIES="$BASE_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
 
 ## Git branches management
 declare -xgr WORKING_BRANCH="to-pootle-working"
@@ -98,9 +98,9 @@ declare -xgr LANG_SEP="_"
 
 # How DB dump/restore commands look like (depends on pootle installation)
 declare -xgr DB_NAME="pootle"
-declare -xgr DB_DUMP_COMMAND="mysqldump $DB_NAME "
+declare -xgr DB_DUMP_COMMAND="mysqldump -u root -ptest $DB_NAME "
 
 #ant
-ANT_BIN="/opt/apache-ant-1.9.1/bin/ant"
+ANT_BIN="ant"
 export ANT_OPTS="-Xmx1024m -XX:MaxPermSize=512m"
 
