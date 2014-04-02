@@ -100,4 +100,8 @@ function set_log_dir() {
 	# logbase dir has to be created prior to check_dir call
 	mkdir -p $logbase
 	check_dir $logbase
+
+	if [[ -z ${LR_TRANS_MGR_TAIL_LOG+x} ]]; then
+		tail -F  $logfile &
+	fi;
 }
