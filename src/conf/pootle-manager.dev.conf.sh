@@ -98,6 +98,7 @@ declare -xgr LANG_SEP="_"
 
 # How DB dump/restore commands look like (depends on pootle installation)
 declare -xgr DB_NAME="pootle"
+declare -xgr MYSQL_COMMAND="mysql"
 declare -xgr DB_DUMP_COMMAND="mysqldump -u root -ptest $DB_NAME "
 
 #ant

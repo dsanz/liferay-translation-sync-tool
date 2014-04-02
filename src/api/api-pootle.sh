@@ -8,7 +8,7 @@ function fix_pootle_path() {
    correctFileName="$5"
 
    logt 3 -n "Updating (pootle_path,file,name) columns in 'pootle_store_store' database table.";
-   mysql $DB_NAME -s -e "update pootle_store_store set pootle_path='$correctPath',file='$correctFilePath',name='$correctFileName' where pootle_path='$path'"; > /dev/null 2>&1
+   $MYSQL_COMMAND $DB_NAME -s -e "update pootle_store_store set pootle_path='$correctPath',file='$correctFilePath',name='$correctFileName' where pootle_path='$path'"; > /dev/null 2>&1
    check_command
    if [ -f $PODIR/$filePath ]; then
       logt 3 -n "Moving po file to $correctPath"
@@ -27,7 +27,7 @@ function fix_pootle_path() {
 }
 
 function fix_malformed_paths_having_dashes() {
-    malformedPathsHavingDashes=$(mysql $DB_NAME -s -e "select pootle_path from pootle_store_store where pootle_path like '%Language-%';" | grep properties)
+    malformedPathsHavingDashes=$($MYSQL_COMMAND $DB_NAME -s -e "select pootle_path from pootle_store_store where pootle_path like '%Language-%';" | grep properties)
     for path in $malformedPathsHavingDashes; do
         # path has the form /locale/project/Language-locale.properties
         logt 2 "Fixing dashed path $path"
@@ -44,7 +44,7 @@ function fix_malformed_paths_having_dashes() {
 }
 
 function fix_malformed_paths_gnu() {
-    malformedPathsGnu=$(mysql $DB_NAME -s -e "select pootle_path  path from pootle_store_store where name not like 'Language%' and name not like '%.po';" | grep properties)
+    malformedPathsGnu=$($MYSQL_COMMAND $DB_NAME -s -e "select pootle_path  path from pootle_store_store where name not like 'Language%' and name not like '%.po';" | grep properties)
     for path in $malformedPathsGnu; do
         # path has the form /locale/project/locale.properties
         logt 2 "Fixing GNU path $path"
@@ -105,7 +105,7 @@ function rename_pootle_store_store_entries() {
         newPootlePath=$(echo $pootlePath | sed -r "s:(.*)$currentName(.*):\1$newName\2:")
         sql="update pootle_store_store set file=\"$newFile\", pootle_path=\"$newPootlePath\" where file=\"$file\";"
         logt 4 -n "$sql"
-        mysql $DB_NAME -e "$sql" > /dev/null 2>&1
+        $MYSQL_COMMAND $DB_NAME -e "$sql" > /dev/null 2>&1
         check_command
         #logt 4 "Current file=$file, pootle_path=$pootlePath"
         #logt 4 "New     file=$newFile, pootle_path=$newPootlePath"
@@ -125,7 +125,7 @@ function rename_pootle_app_directory_entries() {
         newPootlePath=$(echo $pootlePath | sed -r "s:(.*)$currentName(.*):\1$newName\2:")
         sql="update pootle_app_directory set name=\"$newName\", pootle_path=\"$newPootlePath\" where pootle_path=\"$pootlePath\";"
         logt 4 -n "$sql"
-        mysql $DB_NAME -e "$sql" > /dev/null 2>&1
+        $MYSQL_COMMAND $DB_NAME -e "$sql" > /dev/null 2>&1
         check_command
         #logt 4 "Current file=$currentName, pootle_path=$pootlePath"
         #logt 4 "New     file=$newName, pootle_path=$newPootlePath"
@@ -146,7 +146,7 @@ function rename_pootle_app_translationproject_entries() {
         newPootlePath=$(echo $pootlePath | sed -r "s:(.*)$currentName(.*):\1$newName\2:")
         sql="update pootle_app_translationproject set real_path=\"$newName\", pootle_path=\"$newPootlePath\" where pootle_path=\"$pootlePath\";"
         logt 4 -n "$sql"
-        mysql $DB_NAME -e "$sql" > /dev/null 2>&1
+        $MYSQL_COMMAND $DB_NAME -e "$sql" > /dev/null 2>&1
         check_command
         #logt 4 "Current file=$currentName, pootle_path=$pootlePath"
         #logt 4 "New     file=$newName, pootle_path=$newPootlePath"
@@ -159,7 +159,7 @@ function rename_pootle_app_project_entries() {
     newName="$2"
     sql="update pootle_app_project set code=\"$newName\" where code=\"$currentName\";"
     logt 4 -n "$sql"
-    mysql $DB_NAME -e "$sql" > /dev/null 2>&1
+    $MYSQL_COMMAND $DB_NAME -e "$sql" > /dev/null 2>&1
     check_command
 }
 
@@ -183,7 +183,7 @@ function rename_pootle_notifications_notice_entries() {
         done;
         sql="update pootle_notifications_notice set message='$newLine' where message='$origLine';"
         logt 4 -n "$sql"
-        mysql $DB_NAME -e "$sql" > /dev/null 2>&1
+        $MYSQL_COMMAND $DB_NAME -e "$sql" > /dev/null 2>&1
         check_command
         #logt 4 "Current line=$origLine"
         #logt 4 "New     line=$newLine"
