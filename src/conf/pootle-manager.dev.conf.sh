@@ -32,7 +32,9 @@ declare -xgr SRC_PLUGINS_LANG_PATH="/docroot/WEB-INF/src/content/"
 # a valid pootle user with administration privileges
 declare -xgr PO_USER="manager"
 declare -xgr PO_PASS="test"
-# db credentials are not required for now
+# db credentials
+declare -xgr DB_USER="root"
+declare -xgr DB_PASS="test"
 
 ## Configuration of servers
 # allows us to communicate with a living pootle server, installed under $POOTLE_DIR
