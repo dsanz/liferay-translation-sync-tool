@@ -2,7 +2,7 @@
 
 ###
 ### Configuration file for the DEV environment
-### for this file to be read by the script, variable POOTLE_MANAGER_PROFILE has not to be defined
+### for this file to be read by the script, variable LR_TRANS_MGR_PROFILE has not to be defined
 ###
 
 ## Configuration of directories

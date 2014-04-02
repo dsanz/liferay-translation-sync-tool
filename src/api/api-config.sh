@@ -141,8 +141,8 @@ function resolve_params() {
 }
 
 function load_config() {
-	if [[ -n "$POOTLE_MANAGER_PROFILE" ]]; then
-		pmp="pootle-manager.$POOTLE_MANAGER_PROFILE.conf.sh"
+	if [[ -n "$LR_TRANS_MGR_PROFILE" ]]; then
+		pmp="pootle-manager.$LR_TRANS_MGR_PROFILE.conf.sh"
 		msg="Loaded configuration profile '$pmp'"
 	else
 		pmp="pootle-manager.conf.sh"

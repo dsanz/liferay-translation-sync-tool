@@ -2,7 +2,7 @@
 
 ###
 ### Configuration file for the DEV environment
-### please remember to export POOTLE_MANAGER_PROFILE="dev" for this file to be read by the script.
+### please remember to export LR_TRANS_MGR_PROFILE="dev" for this file to be read by the script.
 ###
 
 ## Configuration of directories
