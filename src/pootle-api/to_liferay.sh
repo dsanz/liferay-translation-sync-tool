@@ -36,7 +36,7 @@ function do_commit() {
 	do
 		base_src_dir=${PATH_BASE_DIR[$i]}
 		cd $base_src_dir
-		logt 2 "$base_src_dir,"
+		logt 2 "$base_src_dir"
 		logt 3 -n "git checkout master"
 		git checkout master > /dev/null 2>&1
 		check_command
@@ -125,7 +125,7 @@ function update_pootle_files() {
 		# Save all translations currently in database to the file system
 		$POOTLEDIR/manage.py sync_stores --project="$project" -v 0 > /dev/null 2>&1
 		check_command
-		logt 3 "Copying exported tranlsations into working dir"
+		logt 3 "Copying exported translations into working dir"
 		for language in $(ls "$PODIR/$project"); do
 			if [[ "$language" =~ $lang_file_rexp ]]; then
 				logt 0 -n  "$(get_locale_from_file_name $language) "
