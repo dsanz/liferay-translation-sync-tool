@@ -2,17 +2,17 @@
 
 ###
 ### Configuration file for the DEV environment
-### please remember to export POOTLE_MANAGER_PROFILE="dev" for this file to be read by the script.
+### please remember to export LR_TRANS_MGR_PROFILE="dev" for this file to be read by the script.
 ###
 
 ## Configuration of directories
 ## base dirs
 # pootle installation
-declare -xgr POOTLEDIR="/var/www/Pootle"
+declare -xgr POOTLEDIR="/opt/Pootle-2.1.6"
 # translation files for Pootle DB update/sync
 declare -xgr PODIR="$POOTLEDIR/po"
 # base working dir for the scripts
-declare -xgr BASE_DIR="/home/dsanz"
+declare -xgr BASE_DIR="/var/tmp"
 # temporal working dirs
 declare -xgr TMP_DIR="$BASE_DIR/po-lf"
 declare -xgr TMP_PROP_IN_DIR="$TMP_DIR/prop_in"
@@ -20,19 +20,21 @@ declare -xgr TMP_PROP_OUT_DIR="$TMP_DIR/prop_out"
 declare -xgr TMP_DB_BACKUP_DIR="$BASE_DIR/db-backups"
 declare -xgr LOG_DIR="$BASE_DIR/log"
 # source dirs, under git control, where forked & cloned repos are
-declare -xgr SRC_BASE="$BASE_DIR/"
-declare -xgr SRC_PORTAL_BASE="${SRC_BASE}liferay-portal/"
-declare -xgr SRC_PORTAL_EE_BASE="${SRC_BASE}liferay-portal-ee/"
+declare -xgr SRC_BASE="/home/dsanz/projects/"
+declare -xgr SRC_PORTAL_BASE="${SRC_BASE}/trunk/src-portal/portal/"
+declare -xgr SRC_PORTAL_EE_BASE="${SRC_BASE}/portal-ee/liferay-portal-ee"
 declare -xgr SRC_PORTAL_LANG_PATH="portal-impl/src/content/"
-declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}liferay-plugins/"
-declare -xgr SRC_PLUGINS_EE_BASE="${SRC_BASE}liferay-plugins-ee/"
+declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}/trunk/src-plugins/plugins/"
+declare -xgr SRC_PLUGINS_EE_BASE="${SRC_BASE}/portal-ee/liferay-plugins-ee"
 declare -xgr SRC_PLUGINS_LANG_PATH="/docroot/WEB-INF/src/content/"
 
 ## Configuration of credentials
 # a valid pootle user with administration privileges
 declare -xgr PO_USER="manager"
 declare -xgr PO_PASS="test"
-# db credentials are not required for now
+# db credentials
+declare -xgr DB_USER="root"
+declare -xgr DB_PASS="test"
 
 ## Configuration of servers
 # allows us to communicate with a living pootle server, installed under $POOTLE_DIR
@@ -40,7 +42,7 @@ declare -xgr PO_HOST="localhost"
 declare -xgr PO_PORT="8080"
 declare -xgr PO_SRV="http://$PO_HOST:$PO_PORT"
 declare -xgr PO_PROJECTS_URL="$PO_SRV/projects"
-declare -xgr PO_COOKIES="$TMP_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
+declare -xgr PO_COOKIES="$BASE_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
 
 ## Git branches management
 declare -xgr WORKING_BRANCH="to-pootle-working"
@@ -98,9 +100,10 @@ declare -xgr LANG_SEP="_"
 
 # How DB dump/restore commands look like (depends on pootle installation)
 declare -xgr DB_NAME="pootle"
-declare -xgr DB_DUMP_COMMAND="mysqldump $DB_NAME "
+declare -xgr MYSQL_COMMAND="mysql -u$DB_USER -p$DB_PASS"
+declare -xgr MYSQL_DUMP_COMMAND="mysqldump -u$DB_USER -p$DB_PASS"
 
 #ant
-ANT_BIN="/opt/apache-ant-1.9.1/bin/ant"
+ANT_BIN="ant"
 export ANT_OPTS="-Xmx1024m -XX:MaxPermSize=512m"
 

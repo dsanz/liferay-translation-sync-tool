@@ -15,8 +15,8 @@ declare -g lang_file;
 #declare translations_dir="/portal-impl/src/content"
 
 function compute_locales() {
-    cd $target_dir
-    logt 4 -n "Computing locales for $target_dir"
+	cd $target_dir
+	logt 4 -n "Computing locales for $target_dir"
 	for language_file in $(ls ${FILE}${LANG_SEP}*.$PROP_EXT); do
 		L[${#L[@]}]=$(get_locale_from_file_name $language_file)
 	done
@@ -33,7 +33,7 @@ function read_english_files() {
 }
 
 function read_lang_files() {
-    logt 3 "Reading translation files"
+	logt 3 "Reading translation files"
 	set_lang_paths $1
 	read_locale_file $source_lang_path $new_lang
 	read_locale_file $target_lang_path $old_lang
@@ -42,12 +42,12 @@ function read_lang_files() {
 function set_base_paths() {
 	source_dir=$1
 	target_dir=$2
-#	if ! [[ ($source_dir == *$translations_dir*) || -f $source_dir/$english_file ]]; then
-#		source_dir=$source_dir$translations_dir
-#	fi;
-#	if ! [[ $target_dir == *$translations_dir* || -f $target_dir/$english_file ]]; then
-#		target_dir=$target_dir$translations_dir
-#	fi;
+	#	if ! [[ ($source_dir == *$translations_dir*) || -f $source_dir/$english_file ]]; then
+	#		source_dir=$source_dir$translations_dir
+	#	fi;
+	#	if ! [[ $target_dir == *$translations_dir* || -f $target_dir/$english_file ]]; then
+	#		target_dir=$target_dir$translations_dir
+	#	fi;
 	logt 4 "Source dir: $source_dir"
 	logt 4 "Target dir: $target_dir"
 }
@@ -72,11 +72,11 @@ function prepare_dirs() {
 }
 
 function get_ee_target_dir() {
-    source_dir=$1
-    if [[ $(echo $source_dir | grep "$SRC_PORTAL_BASE") != "" ]]; then
-        sedExpr="s:$SRC_PORTAL_BASE:$SRC_PORTAL_EE_BASE:"
-    else
-        sedExpr="s:$SRC_PLUGINS_BASE:$SRC_PLUGINS_EE_BASE:"
-    fi
-    echo "$source_dir" | sed "$sedExpr"
+	source_dir=$1
+	if [[ $(echo $source_dir | grep "$SRC_PORTAL_BASE") != "" ]]; then
+		sedExpr="s:$SRC_PORTAL_BASE:$SRC_PORTAL_EE_BASE:"
+	else
+		sedExpr="s:$SRC_PLUGINS_BASE:$SRC_PLUGINS_EE_BASE:"
+	fi
+	echo "$source_dir" | sed "$sedExpr"
 }

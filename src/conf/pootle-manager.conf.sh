@@ -1,8 +1,8 @@
 #!/bin/bash
 
 ###
-### Configuration file for the DEV environment
-### for this file to be read by the script, variable POOTLE_MANAGER_PROFILE has not to be defined
+### Configuration file documentation
+### for this file to be read by the script, variable LR_TRANS_MGR_PROFILE has not to be defined
 ###
 
 ## Configuration of directories
@@ -32,7 +32,9 @@ declare -xgr SRC_PLUGINS_LANG_PATH="/docroot/WEB-INF/src/content/"
 # a valid pootle user with administration privileges
 declare -xgr PO_USER="manager"
 declare -xgr PO_PASS="test"
-# db credentials are not required for now
+# db credentials
+declare -xgr DB_USER="root"
+declare -xgr DB_PASS="test"
 
 ## Configuration of servers
 # allows us to communicate with a living pootle server, installed under $POOTLE_DIR
@@ -96,7 +98,8 @@ declare -xgr LANG_SEP="_"
 
 # How DB dump/restore commands look like (depends on pootle installation)
 declare -xgr DB_NAME="pootle"
-declare -xgr DB_DUMP_COMMAND="mysqldump $DB_NAME "
+declare -xgr MYSQL_COMMAND="mysql -u$DB_USER -p$DB_PASS"
+declare -xgr MYSQL_DUMP_COMMAND="mysqldump -u$DB_USER -p$DB_PASS"
 
 #ant
 ANT_BIN="/opt/apache-ant-1.9.1/bin/ant"

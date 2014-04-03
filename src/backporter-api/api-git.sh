@@ -12,7 +12,7 @@ declare pwd=$(pwd)
 
 function update_to_head() {
 	if is_git_dir "$1"; then
-	    logt 3 "Updating to HEAD $1"
+		logt 3 "Updating to HEAD $1"
 		cd "$1"
 		branch["$1"]=$(git branch 2>/dev/null | sed -n '/^\*/s/^\* //p')
 		logt 4 -n "git pull upstream ${branch[$1]}"
@@ -26,24 +26,24 @@ function update_to_head() {
 }
 
 function check_git() {
-    logt 2 "Checking branches for backporting [$1 --> $2]"
-    if [[ $use_git == 0 ]]; then
+	logt 2 "Checking branches for backporting [$1 --> $2]"
+	if [[ $use_git == 0 ]]; then
 		logt 3 "Using git..."
-	    update_to_head $1
-	    update_to_head $2
+		update_to_head $1
+		update_to_head $2
 
-	    do_commit=$(is_git_dir $2)
-	    if [[ do_commit ]]; then
-    		logt 3 "Backported files will be commited to $2"
-    	fi
-   	else
+		do_commit=$(is_git_dir $2)
+		if [[ do_commit ]]; then
+			logt 3 "Backported files will be commited to $2"
+		fi
+	else
 		logt 3 "Not using git"
 	fi
 }
 
 function commit_result() {
-    source_dir=$1
-    target_dir=$2
+	source_dir=$1
+	target_dir=$2
 	if [[ $do_commit -eq 0 ]]; then
 		logt 2 "Committing files (base: $target_dir)"
 		result_branch_name="${result_branch}_${branch[$source_dir]}_to_${branch[$target_dir]}_$(date +%Y%m%d%H%M%S)"
@@ -53,7 +53,7 @@ function commit_result() {
 		if [[ $(git branch | grep "$result_branch_name" | wc -l) -eq 1 ]]; then
 			logt 4 -n "Deleting old branch $result_branch_name"
 			git branch -D $result_branch_name  > /dev/null 2>&1
-            check_command
+			check_command
 		fi;
 		logt 4 -n "Creating branch $result_branch_name"
 		message="Translations backported from ${branch[$source_dir]}:${commit[$source_dir]} to ${branch[$target_dir]}:${commit[$target_dir]}, by $product"
@@ -66,7 +66,7 @@ function commit_result() {
 
 		logt 4 -n "Commiting review files to $result_branch_name"
 		for reviewFile in $(git status --porcelain -uall | grep ".review." | cut -f2- -d' '); do
-		    git add $reviewFile
+			git add $reviewFile
 		done
 		git commit -a -m "$message [human review required]" > /dev/null 2>&1
 		check_command
