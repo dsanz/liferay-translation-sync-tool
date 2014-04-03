@@ -38,8 +38,8 @@ function load_api() {
 # - updates pootle from the template of each project (Language.properties) so that:
 #   . only keys contained in Language.properties are processed
 #   . new/deleted keys in Language.properties are conveniently updated in pootle project
-# - updates any translation committed to liferay source code since last src2pootle sync (pootle built-in
-#     'update-translation-projects' can't be used due to a pootle bug, we do this with curl
+# - updates any translation committed to liferay source code since last pootle2src sync (pootle built-in
+#     'update-translation-projects' can't be used due to a pootle bug, we do this with curl)
 # - rotates working branches to remember head of last sync
 
 # preconditions:
