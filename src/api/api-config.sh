@@ -93,8 +93,8 @@ function add_projects() {
 }
 
 function get_locales_from_source() {
-    source_dir=$(get_project_language_path $1)
-    echo $(ls -l $source_dir/Language_* | cut -f 1 -d . | cut -f 2- -d _)
+	source_dir=$(get_project_language_path $1)
+	echo $(ls -l $source_dir/Language_* | cut -f 1 -d . | cut -f 2- -d _)
 }
 
 # $1 - This parameter must contain $@ (parameters to resolve).
@@ -106,7 +106,7 @@ function resolve_params() {
 			export UPDATE_REPOSITORY=1
 		elif [ "$param" = "--repo2pootle" ] || [ "$param" = "-p" ]; then
 			export UPDATE_POOTLE_DB=1
-	    elif [ "$param" = "--rescanfile" ] || [ "$param" = "-s" ]; then
+		elif [ "$param" = "--rescanfile" ] || [ "$param" = "-s" ]; then
 			export RESCAN_FILES=1
 		elif [ "$param" = "--moveproject" ] || [ "$param" = "-m" ]; then
 			export MOVE_PROJECT=1
