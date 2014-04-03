@@ -35,6 +35,9 @@ declare -xgr PO_PASS="test"
 # db credentials
 declare -xgr DB_USER="root"
 declare -xgr DB_PASS="test"
+# fs credentials
+declare -xgr FS_UID="apache"
+declare -xgr FS_GID="apache"
 
 ## Configuration of servers
 # allows us to communicate with a living pootle server, installed under $POOTLE_DIR
