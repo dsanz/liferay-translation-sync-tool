@@ -173,6 +173,8 @@ function post_derived_translations() {
 	logt 3 "Reading pootle store for parent language $parent_locale in project $project"
 	read_pootle_store $project $parent_locale
 
+	# TODO: try to read Language.properties to avoid uploading untranslated keys
+	# best way to achieve this is calling upload_submissions with a filtered version of derived file
 	storeId=$(get_store_id $project $derived_locale)
 	path=$(get_pootle_path $project $derived_locale)
 
