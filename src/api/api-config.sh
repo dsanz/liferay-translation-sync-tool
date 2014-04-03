@@ -159,7 +159,8 @@ function print_help() {
 			"Updates the set of translatable keys in Pootle from Language.properties file in master branch. Updates all translations that have been committed to master since last invocation to this action"
 
 	print_action "-s, --rescanfile"\
-		"Instructs Pootle to rescan filesystem to update the filenames in the DB. This basically avoids doing the same using the UI (saving a lot of time)"
+		"Instructs Pootle to rescan filesystem to update the filenames in the DB. This basically avoids doing the same using the UI (saving a lot of time).\
+In addition, corrects any filename not matching Language_<locale>.properties naming convention"
 
 	print_action "-m, --moveproject <currentCode> <newCode>"\
 		"Changes the project code in Pootle. This operation is not supported by Pootle. Truly useful in case a plugin name changes"\
