@@ -21,19 +21,19 @@ function usage() {
 }
 
 function main() {
-    echo "$product"
-    test $# -eq 2 || test $# -eq 3 || usage;
-    [[ $3 == "-ng" ]] && use_git=1
-    prepare_dirs $1 $2
-    check_git $1 $2
-    read_english_files
-    for locale in "${L[@]}"; do
-    	backport $locale
-    done
-    echo_legend
-    commit_result $1 $2
-    echo
-    echo "Backport finished in $SECONDS s."
+	echo "$product"
+	test $# -eq 2 || test $# -eq 3 || usage;
+	[[ $3 == "-ng" ]] && use_git=1
+	prepare_dirs $1 $2
+	check_git $1 $2
+	read_english_files
+	for locale in "${L[@]}"; do
+		backport $locale
+	done
+	echo_legend
+	commit_result $1 $2
+	echo
+	echo "Backport finished in $SECONDS s."
 }
 
 main $@
@@ -52,7 +52,7 @@ function test_old_keys() {
 		fi;
 		echo -n " - is_automatic_copy: "
 		if is_automatic_copy $old_lang $key; then
-		echo "yes"
+			echo "yes"
 		else
 			echo "no"
 		fi;

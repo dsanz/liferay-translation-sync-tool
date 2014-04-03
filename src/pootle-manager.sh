@@ -25,7 +25,7 @@ function load_api() {
 	. pootle-api/provisioning-api.sh
 	. backporter-api/api-backporter.sh
 
-    declare -xgr HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
+	declare -xgr HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 }
 
 ####
@@ -46,7 +46,7 @@ function load_api() {
 #  . project must exist in pootle, same 'project code' than git source dir (for plugins)
 #  . portal/plugin sources are available and are under git control
 function src2pootle() {
-    loglc 1 $RED "Begin Sync[Liferay source code -> Pootle]"
+	loglc 1 $RED "Begin Sync[Liferay source code -> Pootle]"
 	display_projects
 	backup_db
 	prepare_input_dirs
@@ -54,7 +54,7 @@ function src2pootle() {
 	update_pootle_db
 	post_language_translations # bug #1949
 	rotate_working_branches
-    restore_file_ownership
+	restore_file_ownership
 	loglc 1 $RED "End Sync[Liferay source code -> Pootle]"
 }
 
@@ -68,11 +68,11 @@ function src2pootle() {
 # - commits and pushes the result
 # all the process is logged
 function pootle2src() {
-    loglc 1 $RED "Begin Sync[Pootle -> Liferay source code]"
-    display_projects
-    prepare_source_dirs
+	loglc 1 $RED "Begin Sync[Pootle -> Liferay source code]"
+	display_projects
+	prepare_source_dirs
 	prepare_output_dirs
-    update_pootle_files
+	update_pootle_files
 	ascii_2_native
 	restore_file_ownership
 	process_translations
@@ -83,8 +83,8 @@ function pootle2src() {
 }
 
 function display_projects() {
-    logt 1 "Working project list"
-    for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
+	logt 1 "Working project list"
+	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
 		project=${PROJECT_NAMES[$i]}
 		project=$(printf "%-35s%s" "$project")
 		logt 2 -n "$project"
@@ -93,23 +93,23 @@ function display_projects() {
 }
 
 function backport_all() {
-    loglc 1 $RED "Begin backport process"
-    display_projects
+	loglc 1 $RED "Begin backport process"
+	display_projects
 
-    use_git=0
-    do_commit=0
+	use_git=0
+	do_commit=0
 
-    # prepare git for all base-paths
-    logt 1 "Preparing involved directories"
+	# prepare git for all base-paths
+	logt 1 "Preparing involved directories"
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		base_src_dir=${PATH_BASE_DIR[$i]}
 		check_git "$base_src_dir" "$(get_ee_target_dir $base_src_dir)";
-    done
+	done
 
-    # backport is done on a project basis
-    logt 1 "Backporting"
-    for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
+	# backport is done on a project basis
+	logt 1 "Backporting"
+	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
 		project=${PROJECT_NAMES[$i]}
 		logt 2 "$project"
 		source_dir="$(get_project_language_path $project)"
@@ -117,58 +117,58 @@ function backport_all() {
 		backport_project "$project" "$source_dir" "$target_dir"
 	done;
 
-    # commit result is again done on a base-path basis
-    logt 1 "Committing backport process results"
+	# commit result is again done on a base-path basis
+	logt 1 "Committing backport process results"
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		base_src_dir=${PATH_BASE_DIR[$i]}
 		commit_result  "$base_src_dir" "$(get_ee_target_dir $base_src_dir)"
-    done
+	done
 
-    loglc 1 $RED "End backport process"
+	loglc 1 $RED "End backport process"
 }
 
 function upload_translations() {
-    loglc 1 $RED  "Uploading $2 translations for project $1"
-    backup_db
-    post_file $1 $2
-    loglc 1 $RED "Upload finished"
+	loglc 1 $RED  "Uploading $2 translations for project $1"
+	backup_db
+	post_file $1 $2
+	loglc 1 $RED "Upload finished"
 }
 
 function upload_derived_translations() {
-    project="$1"
-    derived_locale="$2"
-    parent_locale="$3"
-    loglc 1 $RED  "Uploading $derived_locale (derived language) translations for project $project"
-    backup_db
-    post_derived_translations $project $derived_locale $parent_locale
-    loglc 1 $RED "Upload finished"
+	project="$1"
+	derived_locale="$2"
+	parent_locale="$3"
+	loglc 1 $RED  "Uploading $derived_locale (derived language) translations for project $project"
+	backup_db
+	post_derived_translations $project $derived_locale $parent_locale
+	loglc 1 $RED "Upload finished"
 }
 
 function add_project_in_pootle() {
-    projectCode="$1"
-    projectName="$2"
+	projectCode="$1"
+	projectName="$2"
 
-    if is_pootle_server_up; then
-        if exists_project_in_pootle "$1"; then
-            logt 1 "Pootle project '$projectCode' already exists. Aborting..."
-        else
-            logt 1 "Provisioning new project '$projectCode' ($projectName) in pootle"
-            create_pootle_project $projectCode "$projectName"
-            initialize_project_files $projectCode "$projectName"
-            notify_pootle $projectCode
-            restore_file_ownership
-        fi
-    else
-        logt 1 "Unable to create Pootle project '$projectCode' : pootle server is down. Please start it, then rerun this command"
-    fi;
+	if is_pootle_server_up; then
+		if exists_project_in_pootle "$1"; then
+			logt 1 "Pootle project '$projectCode' already exists. Aborting..."
+		else
+			logt 1 "Provisioning new project '$projectCode' ($projectName) in pootle"
+			create_pootle_project $projectCode "$projectName"
+			initialize_project_files $projectCode "$projectName"
+			notify_pootle $projectCode
+			restore_file_ownership
+		fi
+	else
+		logt 1 "Unable to create Pootle project '$projectCode' : pootle server is down. Please start it, then rerun this command"
+	fi;
 }
 
 function check_quality() {
-    loglc 1 $RED "Begin Quality Checks"
-    display_projects
+	loglc 1 $RED "Begin Quality Checks"
+	display_projects
 	prepare_output_dirs
-    update_pootle_files
+	update_pootle_files
 	ascii_2_native
 	run_quality_checks
 	loglc 1 $RED "End Quality Checks"
@@ -182,29 +182,29 @@ main() {
 	resolve_params $@
 	# Simple configuration test
 	#verify_params 19 "Configuration load failed. You should fill in all variables in pootle-manager.conf.sh." \
-		#$POOTLEDIR $PODIR $TMP_DIR $TMP_PROP_IN_DIR $TMP_PROP_OUT_DIR \
-		#$PO_USER $PO_PASS $PO_HOST $PO_PORT $PO_SRV \
-		#$PO_COOKIES $SRC_PATH_PLUGIN_PREFIX \
-		#$SRC_PATH_PLUGIN_SUFFIX $FILE $PROP_EXT $LANG_SEP
+	#$POOTLEDIR $PODIR $TMP_DIR $TMP_PROP_IN_DIR $TMP_PROP_OUT_DIR \
+	#$PO_USER $PO_PASS $PO_HOST $PO_PORT $PO_SRV \
+	#$PO_COOKIES $SRC_PATH_PLUGIN_PREFIX \
+	#$SRC_PATH_PLUGIN_SUFFIX $FILE $PROP_EXT $LANG_SEP
 	if [ $UPDATE_REPOSITORY ]; then
 		#src2pootle
 		pootle2src
 	elif [ $UPDATE_POOTLE_DB ]; then
 		src2pootle
 	elif [ $RESCAN_FILES ]; then
-	    uniformize_pootle_paths
+		uniformize_pootle_paths
 	elif [ $MOVE_PROJECT ]; then
-	    rename_pootle_project $2 $3
-    elif [ $UPLOAD ]; then
-	    upload_translations $2 $3
+		rename_pootle_project $2 $3
+	elif [ $UPLOAD ]; then
+		upload_translations $2 $3
 	elif [ $UPLOAD_DERIVED ]; then
-	    upload_derived_translations $2 $3 $4
-    elif [ $NEW_PROJECT ]; then
-	    add_project_in_pootle $2 "$3"
+		upload_derived_translations $2 $3 $4
+	elif [ $NEW_PROJECT ]; then
+		add_project_in_pootle $2 "$3"
 	elif [ $BACKPORT ]; then
-	    backport_all
-    elif [ $QA_CHECK ]; then
-	    check_quality
+		backport_all
+	elif [ $QA_CHECK ]; then
+		check_quality
 	fi
 
 	[ ! $HELP ] &&	printf "$product [DONE]\n"
