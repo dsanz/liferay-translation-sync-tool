@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###
-### Configuration file for the DEV environment
+### Configuration file documentation
 ### for this file to be read by the script, variable LR_TRANS_MGR_PROFILE has not to be defined
 ###
 
