@@ -174,8 +174,8 @@ function check_quality() {
 
 # main function which loads api functions, then configuration, and then invokes logic according to arguments
 main() {
-	printf "[START]\n"
 	load_api
+	echo "[START] $product"
 	load_config
 	resolve_params $@
 	# Simple configuration test
@@ -205,11 +205,11 @@ main() {
 		check_quality
 	fi
 
-	[ ! $HELP ] &&	printf "$product [DONE]\n"
-
 	if [[ -z ${LR_TRANS_MGR_TAIL_LOG+x} ]]; then
 		kill $tail_log_pid
 	fi;
+
+	[ ! $HELP ] &&	echo "[DONE] $product"
 }
 
 main "$@"
