@@ -218,6 +218,6 @@ function rename_pootle_project() {
 		logt 3 -n "mv $PODIR/$currentName $PODIR/$newName"
 		mv $PODIR/$currentName $PODIR/$newName > /dev/null 2>&1
 		check_command
-		logt 1 "Pootle project renamed. Please start up Pootle server and check $PO_SRV/$newName"
+		logt 1 "Pootle project renamed. Please start up Pootle server and check $PO_SRV/projects/$newName"
 	fi
 }
