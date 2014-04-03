@@ -15,7 +15,11 @@ function backup_db() {
 	$MYSQL_DUMP_COMMAND $DB_NAME > $dumpfilepath;
 	check_command;
 
-    logt 2 "Compressing po/ dir into $fsfilepath"
+	logt 3 -n "Compressing db dump";
+	bzip2 $dumpfilepath > /dev/null 2>&1;
+	check_command;
+
+	logt 2 "Compressing po/ dir into $fsfilepath"
 	logt 3 -n "Running tar command: tar czvf $fsfilepath $PODIR";
 	tar czvf $fsfilepath $PODIR > /dev/null 2>&1;
 	check_command;
