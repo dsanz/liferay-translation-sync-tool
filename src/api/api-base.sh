@@ -108,7 +108,7 @@ function set_log_dir() {
 }
 
 function terminate() {
-	printf "\n$LILA[$(date +%T.%3N)]${COLOROFF} Killing tail (pid $tail_log_pid)"
+	printf "\n$LILA[$(date +%T.%3N)]${COLOROFF} Killing tail (pid $tail_log_pid)\n"
 	kill $tail_log_pid;
 	exit 0
 }
