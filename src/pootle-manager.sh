@@ -40,7 +40,6 @@ function load_api() {
 #   . new/deleted keys in Language.properties are conveniently updated in pootle project
 # - updates any translation committed to liferay source code since last pootle2src sync (pootle built-in
 #     'update-translation-projects' can't be used due to a pootle bug, we do this with curl)
-# - rotates working branches to remember head of last sync
 
 # preconditions:
 #  . project must exist in pootle, same 'project code' than git source dir (for plugins)
@@ -53,7 +52,6 @@ function src2pootle() {
 	setup_working_branches
 	update_pootle_db
 	post_language_translations # bug #1949
-	rotate_working_branches
 	restore_file_ownership
 	loglc 1 $RED "End Sync[Liferay source code -> Pootle]"
 }

@@ -44,24 +44,6 @@ function create_working_branch() {
 	check_command
 }
 
-function rotate_working_branch() {
-	path="$1"
-	cd $path
-	git checkout master > /dev/null 2>&1
-	# check if old branch exists
-	if exists_branch $LAST_BRANCH $path; then
-		logt 4 -n "git branch -D $LAST_BRANCH "
-		git branch -D $LAST_BRANCH > /dev/null 2>&1
-		check_command
-	else
-		logt 4 "branch '$LAST_BRANCH' does not exist, will be created now"
-	fi;
-	logt 4 -n "git branch -m $WORKING_BRANCH $LAST_BRANCH "
-	git branch -m $WORKING_BRANCH $LAST_BRANCH > /dev/null 2>&1
-	check_command
-	logt 4 "Contents in '$LAST_BRANCH' will be used as reference of last successful Pootle update"
-}
-
 function setup_working_branches() {
 	logt 1 "Setting up git branches for project(s)"
 	for (( i=0; i<${#PATH_PROJECTS[@]}; i++ ));
@@ -72,18 +54,6 @@ function setup_working_branches() {
 		logt 3 "for projects:$projects"
 		goto_master "$path";
 		create_working_branch "$path"
-	done;
-}
-
-function rotate_working_branches() {
-	logt 1 "Rotating git branches for project(s)"
-	for (( i=0; i<${#PATH_PROJECTS[@]}; i++ ));
-	do
-		projects=${PATH_PROJECTS[$i]}
-		path=${PATH_BASE_DIR[$i]}
-		logt 2 "$path"
-		logt 3 "for projects:$projects"
-		rotate_working_branch "$path"
 	done;
 }
 
