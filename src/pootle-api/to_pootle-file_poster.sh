@@ -84,6 +84,6 @@ function post_file() {
 function post_file_batch() {
 	project="$1"
 	locale="$2"
-	logt 2 "Posting '$locale' translations for project $2"
+	logt 2 "Posting '$locale' translations for project $1"
 	upload_submissions "$project" "$locale"
 }
