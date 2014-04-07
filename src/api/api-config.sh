@@ -219,8 +219,8 @@ function load_config() {
 		pmp="pootle-manager.$LR_TRANS_MGR_PROFILE.conf.sh"
 		msg="Loaded configuration profile '$pmp'"
 	else
-		pmp="pootle-manager.conf.sh"
-		msg="Loaded default config profile '$pmp'"
+		echo "I don't know which configuration profile I have to load. Please define LR_TRANS_MGR_PROFILE to match some conf/pootle-manager.\$LR_TRANS_MGR_PROFILE.conf file "
+		exit 1
 	fi;
 
 	. "conf/${pmp}"
