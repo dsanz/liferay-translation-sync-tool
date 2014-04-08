@@ -8,14 +8,6 @@ function get_param() {
 	echo  $1
 }
 
-# Verify parameters
-# $1 - How many parameters should be passed on, otherwise fail...
-# $2 - Message to be displayed if verification failed
-# $* - Parameters to be verified
-function verify_params() {
-	[ "$#" -lt $(($1 + 2)) ] && echo_red "$2" && exit 1
-}
-
 # Given a project, returns the root dir where sources are supposed to be
 function get_src_base_dir() {
 	project="$1"
