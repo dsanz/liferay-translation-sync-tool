@@ -144,7 +144,7 @@ function print_help() {
 	echo "	LR_TRANS_MGR_TAIL_LOG	if defined, tool invocation will do tail on log file. This will allow you to track the execution"
 	echo
 	echo -e "${YELLOW}Configuration$COLOROFF"
-	echo "	Tool reads conf/pootle-manager.\$LR_TRANS_MGR_PROFILE.conf file. Variables are documented in conf/pootle-manager.conf file"
+	echo "	Tool reads conf/manager.\$LR_TRANS_MGR_PROFILE.conf.sh file. Variables are documented in conf/manager.conf file"
 	echo
 	echo -e "${YELLOW}Logs$COLOROFF"
 	echo "	Tool output is written into log file. Filename is shown in the console  "
@@ -216,10 +216,10 @@ function print_action() {
 
 function load_config() {
 	if [[ -n "$LR_TRANS_MGR_PROFILE" ]]; then
-		pmp="pootle-manager.$LR_TRANS_MGR_PROFILE.conf.sh"
+		pmp="manager.$LR_TRANS_MGR_PROFILE.conf.sh"
 		msg="Loaded configuration profile '$pmp'"
 	else
-		echo "I don't know which configuration profile I have to load. Please define LR_TRANS_MGR_PROFILE to match some conf/pootle-manager.\$LR_TRANS_MGR_PROFILE.conf file "
+		echo "I don't know which configuration profile I have to load. Please define LR_TRANS_MGR_PROFILE to match some conf/manager.\$LR_TRANS_MGR_PROFILE.conf.sh file "
 		exit 1
 	fi;
 
