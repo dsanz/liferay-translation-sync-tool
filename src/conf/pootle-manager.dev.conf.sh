@@ -8,11 +8,11 @@
 ## Configuration of directories
 ## base dirs
 # pootle installation
-declare -xgr POOTLEDIR="/opt/Pootle-2.1.6"
+declare -xgr POOTLEDIR="/usr/local/lib/python2.7/dist-packages/django/conf/project_template"
 declare -xgr POOTLE_PYTHONPATH="/opt/Pootle-2.1.6"
 declare -xgr POOTLE_SETTINGS="pootle.settings"
 # translation files for Pootle DB update/sync
-declare -xgr PODIR="$POOTLEDIR/po"
+declare -xgr PODIR="/opt/Pootle-2.1.6/po"
 # base working dir for the scripts
 declare -xgr BASE_DIR="/var/tmp"
 # temporal working dirs
