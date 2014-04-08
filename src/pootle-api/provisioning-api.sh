@@ -21,9 +21,7 @@ function create_pootle_project() {
 function notify_pootle() {
 	projectCode="$1"
 	logt 2 "Notifying pootle about the new project"
-	logt 3 -n "manage.py update_translation_projects --project=$projectCode"
-	$POOTLEDIR/manage.py update_translation_projects --project=$projectCode  > /dev/null 2>&1
-	check_command
+	call_manage "update_translation_projects" "--project=$projectCode"
 }
 
 function initialize_project_files() {

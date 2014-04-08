@@ -15,9 +15,8 @@ function update_pootle_db() {
 		cp "$src_dir/${FILE}.$PROP_EXT" "$PODIR/$project"
 		check_command
 		# Update database as well as file system to reflect the latest version of translation templates
-		logt 4 -n "Updating Pootle templates (this may take a while...)"
-		$POOTLEDIR/manage.py update_from_templates --project="$project" -v 0 > /dev/null 2>&1
-		check_command
+		logt 4 "Updating Pootle templates (this may take a while...)"
+		call_manage "update_from_templates" "--project=$project" "-v 0"
 	done
 }
 
