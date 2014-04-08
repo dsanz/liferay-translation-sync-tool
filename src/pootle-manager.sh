@@ -174,16 +174,10 @@ function check_quality() {
 
 # main function which loads api functions, then configuration, and then invokes logic according to arguments
 main() {
-	printf "[START]\n"
 	load_api
+	echo "[START] $product"
 	load_config
 	resolve_params $@
-	# Simple configuration test
-	#verify_params 19 "Configuration load failed. You should fill in all variables in pootle-manager.conf.sh." \
-	#$POOTLEDIR $PODIR $TMP_DIR $TMP_PROP_IN_DIR $TMP_PROP_OUT_DIR \
-	#$PO_USER $PO_PASS $PO_HOST $PO_PORT $PO_SRV \
-	#$PO_COOKIES $SRC_PATH_PLUGIN_PREFIX \
-	#$SRC_PATH_PLUGIN_SUFFIX $FILE $PROP_EXT $LANG_SEP
 	if [ $UPDATE_REPOSITORY ]; then
 		#src2pootle
 		pootle2src
@@ -205,11 +199,11 @@ main() {
 		check_quality
 	fi
 
-	[ ! $HELP ] &&	printf "$product [DONE]\n"
-
 	if [[ -z ${LR_TRANS_MGR_TAIL_LOG+x} ]]; then
 		kill $tail_log_pid
 	fi;
+
+	[ ! $HELP ] &&	echo "[DONE] $product"
 }
 
 main "$@"

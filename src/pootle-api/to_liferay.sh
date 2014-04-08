@@ -121,10 +121,9 @@ function update_pootle_files() {
 	do
 		project=${PROJECT_NAMES[$i]}
 		logt 2 "$project"
-		logt 3 -n "Synchronizing pootle stores for all languages "
+		logt 3 "Synchronizing pootle stores for all languages "
 		# Save all translations currently in database to the file system
-		$POOTLEDIR/manage.py sync_stores --project="$project" -v 0 > /dev/null 2>&1
-		check_command
+		call_manage "sync_stores" "--project=$project" "-v 0"
 		logt 3 "Copying exported translations into working dir"
 		for language in $(ls "$PODIR/$project"); do
 			if [[ "$language" =~ $lang_file_rexp ]]; then

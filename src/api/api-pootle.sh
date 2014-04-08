@@ -1,5 +1,23 @@
 #!/bin/bash
 
+function call_manage() {
+	command="$1"
+	shift 1
+	args="$@"
+
+	python_path_arg=""
+	[[ ! -z $POOTLE_PYTHONPATH ]] && python_path_arg="--pythonpath=$POOTLE_PYTHONPATH"
+
+	settings_arg="";
+	[[ ! -z $POOTLE_SETTINGS ]] && settings_arg="--settings=$POOTLE_SETTINGS"
+
+
+	invoke="python $MANAGE_DIR/manage.py $command $args $python_path_arg $settings_arg"
+	logt 5 -n $invoke
+	$invoke > /dev/null 2>&1
+	check_command
+}
+
 function fix_pootle_path() {
 	path="$1"
 	correctPath="$2"
@@ -20,9 +38,7 @@ function fix_pootle_path() {
 		logt 3 -n "Seems that no po file exist! Let's update from templates"
 		locale=$(get_locale_from_file_name $correctFileName)
 		project=$(echo $correctFilePath | cut -d '/' -f1)
-		#logt 4 -n "update_from_templates --project=$project --language=$locale $correctFileName"
-		$POOTLEDIR/manage.py update_from_templates --project="$project" --language="$locale" -v 0 > /dev/null 2>&1
-		check_command
+		call_manage "update_from_templates" "--project=$project" "--language=$locale" "-v 0"
 	fi
 }
 
@@ -218,6 +234,6 @@ function rename_pootle_project() {
 		logt 3 -n "mv $PODIR/$currentName $PODIR/$newName"
 		mv $PODIR/$currentName $PODIR/$newName > /dev/null 2>&1
 		check_command
-		logt 1 "Pootle project renamed. Please start up Pootle server and check $PO_SRV/$newName"
+		logt 1 "Pootle project renamed. Please start up Pootle server and check $PO_SRV/projects/$newName"
 	fi
 }

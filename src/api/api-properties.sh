@@ -136,5 +136,8 @@ function read_locale_file() {
 }
 
 function restore_file_ownership() {
-	chown apache:apache -R $PODIR
+	logt 3 "Restoring PO/ file ownership"
+	logt -n 4 "chown ${FS_UID}:${FS_GID} -R $PODIR"
+	chown ${FS_UID}:${FS_GID} -R $PODIR
+	check_command
 }

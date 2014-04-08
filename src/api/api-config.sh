@@ -8,14 +8,6 @@ function get_param() {
 	echo  $1
 }
 
-# Verify parameters
-# $1 - How many parameters should be passed on, otherwise fail...
-# $2 - Message to be displayed if verification failed
-# $* - Parameters to be verified
-function verify_params() {
-	[ "$#" -lt $(($1 + 2)) ] && echo_red "$2" && exit 1
-}
-
 # Given a project, returns the root dir where sources are supposed to be
 function get_src_base_dir() {
 	project="$1"
@@ -144,7 +136,7 @@ function print_help() {
 	echo "	LR_TRANS_MGR_TAIL_LOG	if defined, tool invocation will do tail on log file. This will allow you to track the execution"
 	echo
 	echo -e "${YELLOW}Configuration$COLOROFF"
-	echo "	Tool reads conf/pootle-manager.\$LR_TRANS_MGR_PROFILE.conf file. Variables are documented in conf/pootle-manager.conf file"
+	echo "	Tool reads conf/manager.\$LR_TRANS_MGR_PROFILE.conf.sh file. Variables are documented in conf/manager.conf file"
 	echo
 	echo -e "${YELLOW}Logs$COLOROFF"
 	echo "	Tool output is written into log file. Filename is shown in the console  "
@@ -159,7 +151,8 @@ function print_help() {
 			"Updates the set of translatable keys in Pootle from Language.properties file in master branch. Updates all translations that have been committed to master since last invocation to this action"
 
 	print_action "-s, --rescanfile"\
-		"Instructs Pootle to rescan filesystem to update the filenames in the DB. This basically avoids doing the same using the UI (saving a lot of time)"
+		"Instructs Pootle to rescan filesystem to update the filenames in the DB. This basically avoids doing the same using the UI (saving a lot of time).\
+In addition, corrects any filename not matching Language_<locale>.properties naming convention"
 
 	print_action "-m, --moveproject <currentCode> <newCode>"\
 		"Changes the project code in Pootle. This operation is not supported by Pootle. Truly useful in case a plugin name changes"\
@@ -215,11 +208,11 @@ function print_action() {
 
 function load_config() {
 	if [[ -n "$LR_TRANS_MGR_PROFILE" ]]; then
-		pmp="pootle-manager.$LR_TRANS_MGR_PROFILE.conf.sh"
+		pmp="manager.$LR_TRANS_MGR_PROFILE.conf.sh"
 		msg="Loaded configuration profile '$pmp'"
 	else
-		pmp="pootle-manager.conf.sh"
-		msg="Loaded default config profile '$pmp'"
+		echo "I don't know which configuration profile I have to load. Please define LR_TRANS_MGR_PROFILE to match some conf/manager.\$LR_TRANS_MGR_PROFILE.conf.sh file "
+		exit 1
 	fi;
 
 	. "conf/${pmp}"
