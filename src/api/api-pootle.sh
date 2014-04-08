@@ -12,10 +12,9 @@ function call_manage() {
 	[[ ! -z $POOTLE_SETTINGS ]] && settings_arg="--settings=$POOTLE_SETTINGS"
 
 
-	invoke="$POOTLEDIR/manage.py $command $args $python_path_arg $settings_arg > /dev/null 2>&1"
-	logt 5 -n $infoke
-
-	$invoke
+	invoke="python $POOTLEDIR/manage.py $command $args $python_path_arg $settings_arg"
+	logt 5 -n $invoke
+	$invoke > /dev/null 2>&1
 	check_command
 }
 
@@ -39,9 +38,7 @@ function fix_pootle_path() {
 		logt 3 -n "Seems that no po file exist! Let's update from templates"
 		locale=$(get_locale_from_file_name $correctFileName)
 		project=$(echo $correctFilePath | cut -d '/' -f1)
-		#logt 4 -n "update_from_templates --project=$project --language=$locale $correctFileName"
-		$POOTLEDIR/manage.py update_from_templates --project="$project" --language="$locale" -v 0 > /dev/null 2>&1
-		check_command
+		call_manage "update_from_templates" "--project=$project" "--language=$locale" "-v 0"
 	fi
 }
 
