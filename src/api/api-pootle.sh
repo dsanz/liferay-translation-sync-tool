@@ -12,7 +12,7 @@ function call_manage() {
 	[[ ! -z $POOTLE_SETTINGS ]] && settings_arg="--settings=$POOTLE_SETTINGS"
 
 
-	invoke="python $POOTLEDIR/manage.py $command $args $python_path_arg $settings_arg"
+	invoke="python $MANAGE_DIR/manage.py $command $args $python_path_arg $settings_arg"
 	logt 5 -n $invoke
 	$invoke > /dev/null 2>&1
 	check_command

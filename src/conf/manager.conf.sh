@@ -8,11 +8,11 @@
 ## Configuration of directories
 ## base dirs
 # pootle installation
-declare -xgr POOTLEDIR="/var/www/Pootle"
+declare -xgr MANAGE_DIR="/var/www/Pootle"
 declare -xgr POOTLE_PYTHONPATH=""
 declare -xgr POOTLE_SETTINGS=""
 # translation files for Pootle DB update/sync
-declare -xgr PODIR="$POOTLEDIR/po"
+declare -xgr PODIR="$MANAGE_DIR/po"
 # base working dir for the scripts
 declare -xgr BASE_DIR="/home/dsanz"
 # temporal working dirs
