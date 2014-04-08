@@ -9,6 +9,8 @@
 ## base dirs
 # pootle installation
 declare -xgr POOTLEDIR="/opt/Pootle-2.1.6"
+declare -xgr POOTLE_PYTHONPATH="/opt/Pootle-2.1.6"
+declare -xgr POOTLE_SETTINGS="pootle.settings"
 # translation files for Pootle DB update/sync
 declare -xgr PODIR="$POOTLEDIR/po"
 # base working dir for the scripts

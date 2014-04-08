@@ -1,5 +1,24 @@
 #!/bin/bash
 
+function call_manage() {
+	command="$1"
+	shift 1
+	args="$@"
+
+	python_path_arg=""
+	[[ ! -z $POOTLE_PYTHONPATH ]] && python_path_arg="--pythonpath=$POOTLE_PYTHONPATH"
+
+	settings_arg="";
+	[[ ! -z $POOTLE_SETTINGS ]] && settings_arg="--settings=$POOTLE_SETTINGS"
+
+
+	invoke="$POOTLEDIR/manage.py $command $args $python_path_arg $settings_arg > /dev/null 2>&1"
+	logt 5 -n $infoke
+
+	$invoke
+	check_command
+}
+
 function fix_pootle_path() {
 	path="$1"
 	correctPath="$2"
