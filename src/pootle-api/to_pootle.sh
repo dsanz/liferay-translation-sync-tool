@@ -94,7 +94,7 @@ function create_branch_at_child_of_last_export_commit() {
 	logt 4 "Setting up $LAST_BRANCH branch pointing to $child_of_last_export"
 	if exists_branch $LAST_BRANCH $base_src_dir; then
 		logt 5 -n "git branch -D $LAST_BRANCH";
-		git branch -D $LAST_BRANCH
+		git branch -D $LAST_BRANCH  > /dev/null 2>&1
 		check_command
 	fi;
 	logt 5 -n "git branch $LAST_BRANCH $child_of_last_export";
