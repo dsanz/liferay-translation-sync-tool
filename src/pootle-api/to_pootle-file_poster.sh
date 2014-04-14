@@ -23,8 +23,7 @@ function upload_submission() {
 		id=$(get_unitid $storeId $key)
 		sourcef=$(get_sourcef $storeId $key)
 
-		#logt 4 -n "curl -s -b $PO_COOKIES -c $PO_COOKIES  -d csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7` -d id=$id -d path=$path -d pootle_path=$path -d source_f_0=$sourcef -d store=$path -d submit=Submit -d target_f_0=$value -d index=$index $PO_SRV$path/translate/?"
-		status_code=$(curl -o /dev/null -w "%{http_code}" -s -b "$PO_COOKIES" -c "$PO_COOKIES"  -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "id=$id" -d "path=$path" -d  "pootle_path=$path" -d "source_f_0=$sourcef" -d  "store=$path" -d "submit=Submit" -d  "target_f_0=$value" -d "index=$index" "$PO_SRV$path/translate/?" 2> /dev/null)
+		status_code=$(curl $CURL_OPTS -w "%{http_code}" -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "id=$id" -d "path=$path" -d  "pootle_path=$path" -d "source_f_0=$sourcef" -d  "store=$path" -d "submit=Submit" -d  "target_f_0=$value" -d "index=$index" "$PO_SRV$path/translate/?" 2> /dev/null)
 		[[ $status_code == "200" ]]
 		check_command
 	else

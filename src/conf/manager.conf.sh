@@ -36,6 +36,8 @@ declare -xgr PO_COOKIES="$TMP_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
 # a valid pootle user with administration privileges
 declare -xgr PO_USER="manager"
 declare -xgr PO_PASS="test"
+# common options for all curl invocations along the scripts
+declare -xgr CURL_OPTS="-s -L -k -o /dev/null -b $PO_COOKIES -c $PO_COOKIES"
 
 ## 1.3 Pootle database
 ##

@@ -98,7 +98,7 @@ function rescan_files() {
 			locale=$(get_locale_from_file_name $language)
 			path=$(get_path $project $locale)
 			logt 3 -n "$locale, posting to $path"
-			curl -s -b "$PO_COOKIES" -c "$PO_COOKIES"  -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "scan_files=Rescan project files"  "$PO_SRV$path/admin_files.html" > /dev/null
+			curl $CURL_OPTS -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "scan_files=Rescan project files"  "$PO_SRV$path/admin_files.html"
 			check_command
 		done
 	done
