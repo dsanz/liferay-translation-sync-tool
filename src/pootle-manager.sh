@@ -4,6 +4,9 @@
 
 # single point for loading all functions defined in the (low-level) api files as well as user-level APIs
 function load_api() {
+	# load environment from an explicitly git-ignored file
+	[[ -f setEnv.sh ]] && . setEnv.sh
+
 	# Load base APIs
 	. api/api-base.sh
 	. api/api-config.sh
