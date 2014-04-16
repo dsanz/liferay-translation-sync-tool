@@ -92,7 +92,7 @@ declare -xgr LANG_SEP="_"
 ##
 # Portlets
 declare -xgr PORTLET_LIST="akismet calendar chat contacts ddl-form\
- digg events-display google-maps knowledge-base mail marketplace microblogs\
+ events-display google-maps knowledge-base mail marketplace microblogs\
  opensocial plugins-security-manager polls private-messaging social-coding\
  social-networking so tasks twitter vimeo weather web-form wiki-navigation wsrp\
  youtube"
