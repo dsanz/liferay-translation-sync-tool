@@ -147,7 +147,7 @@ declare -r PATH_BASE_DIR
 
 ## ant
 ##
-ANT_BIN="/opt/apache-ant-1.9.0/ant"
+ANT_BIN="/opt/apache-ant-1.9.0/bin/ant"
 export ANT_OPTS="-Xmx1024m -XX:MaxPermSize=512m"
 
 ##
