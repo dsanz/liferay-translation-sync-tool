@@ -94,10 +94,19 @@ declare -xgr LANG_SEP="_"
 ## 3.1 List of plugins
 ##
 # Portlets
-declare -xgr PORTLET_LIST="akismet calendar chat contacts ddl-form\
- events-display google-maps knowledge-base mail marketplace microblogs\
- opensocial private-messaging social-coding\
- social-networking so tasks twitter vimeo web-form wiki-navigation wsrp\
+declare -xgr PORTLET_LIST="akismet\
+ calendar chat contacts\
+ ddl-form\
+ events-display\
+ google-maps\
+ knowledge-base\
+ mail marketplace microblogs\
+ opensocial\
+ private-messaging\
+ social-coding social-networking so\
+ tasks twitter\
+ vimeo\
+ web-form wiki-navigation wsrp\
  youtube"
 declare -xgr PORTLET_SUFFIX="-portlet"
 declare -xgr PORTLET_SRC_PATH_PREFIX="${SRC_PLUGINS_BASE}portlets/"
