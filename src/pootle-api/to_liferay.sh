@@ -38,16 +38,16 @@ function do_commit() {
 		cd $base_src_dir
 		logt 2 "$base_src_dir"
 
+		logt 3 "Adding untracked files"
 		added_language_files=$(git status -uall --porcelain | grep "??" | grep $FILE | cut -f 2 -d' ')
 		if [[ $added_language_files != "" ]]; then
-			logt 3 "Adding untracked files"
 			for untracked in $added_language_files; do
 				logt 4 -n "git add $untracked"
 				git add "$untracked"
 				check_command
 			done
 		else
-			logt 3 "No untracked files to add"
+			logt 4 "No untracked files to add"
 		fi;
 		if something_changed; then
 			if exists_branch "$EXPORT_BRANCH" "$base_src_dir"; then
@@ -78,7 +78,8 @@ function do_commit() {
 				check_command
 			fi
 			msg="$commit_msg [by $product]"
-			logt 3 -n "git commit -a -m $msg"
+			logt 3 "Committing..."
+			logt 4 -n "git commit -a -m $msg"
 			git commit -a -m "$msg" > /dev/null 2>&1
 			check_command
 		else
