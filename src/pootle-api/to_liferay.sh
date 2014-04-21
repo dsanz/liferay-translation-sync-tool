@@ -37,9 +37,6 @@ function do_commit() {
 		base_src_dir=${PATH_BASE_DIR[$i]}
 		cd $base_src_dir
 		logt 2 "$base_src_dir"
-		logt 3 -n "git checkout master"
-		git checkout master > /dev/null 2>&1
-		check_command
 
 		added_language_files=$(git status -uall --porcelain | grep "??" | grep $FILE | cut -f 2 -d' ')
 		if [[ $added_language_files != "" ]]; then
@@ -56,10 +53,13 @@ function do_commit() {
 			if exists_branch "$EXPORT_BRANCH" "$base_src_dir"; then
 				if $reuse_branch; then
 					logt 3 "Reusing export branch"
+					logt 4 -n "git checkout $EXPORT_BRANCH"
+					git checkout "$EXPORT_BRANCH" > /dev/null 2>&1
+					check_command
 					create_branch=false;
 				else
-					logt 3 -n "Cleaning old export branch: git branch -D $EXPORT_BRANCH"
-					git checkout master > /dev/null 2>&1
+					logt 3 "Deleting old export branch"
+					logt 4 -n "git branch -D $EXPORT_BRANCH"
 					git branch -D "$EXPORT_BRANCH" > /dev/null 2>&1
 					check_command
 					create_branch=true;
@@ -69,7 +69,11 @@ function do_commit() {
 			fi
 
 			if $create_branch; then
-				logt 3 -n "Creating new export branch: git checkout -b $EXPORT_BRANCH"
+				logt 3 "Creating new export branch from master"
+				logt 4 -n "git checkout master"
+				git checkout master > /dev/null 2>&1
+				check_command
+				logt 4 -n "git checkout -b $EXPORT_BRANCH"
 				git checkout -b "$EXPORT_BRANCH" > /dev/null 2>&1
 				check_command
 			fi
