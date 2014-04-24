@@ -96,6 +96,9 @@ function resolve_params() {
 	for param in $1 ; do
 		if [ "$param" = "--pootle2repo" ] || [ "$param" = "-r" ]; then
 			export UPDATE_REPOSITORY=1
+		elif [ "$param" = "--repo2pootle2repo" ] || [ "$param" = "-R" ]; then
+			export UPDATE_POOTLE_DB=1
+			export UPDATE_REPOSITORY=1
 		elif [ "$param" = "--repo2pootle" ] || [ "$param" = "-p" ]; then
 			export UPDATE_POOTLE_DB=1
 		elif [ "$param" = "--rescanfile" ] || [ "$param" = "-s" ]; then
@@ -149,6 +152,9 @@ function print_help() {
 
 	print_action "-p, --repo2pootle"\
 			"Updates the set of translatable keys in Pootle from Language.properties file in master branch. Updates all translations that have been committed to master since last invocation to this action"
+
+	print_action "-R, --repo2pootle2repo"\
+			"Runs with -p, then with -r"
 
 	print_action "-s, --rescanfile"\
 		"Instructs Pootle to rescan filesystem to update the filenames in the DB. This basically avoids doing the same using the UI (saving a lot of time).\

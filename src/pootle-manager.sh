@@ -182,7 +182,9 @@ main() {
 	load_config
 	resolve_params $@
 	if [ $UPDATE_REPOSITORY ]; then
-		#src2pootle
+		if [ $UPDATE_POOTLE_DB ]; then
+			src2pootle
+		fi
 		pootle2src
 	elif [ $UPDATE_POOTLE_DB ]; then
 		src2pootle
