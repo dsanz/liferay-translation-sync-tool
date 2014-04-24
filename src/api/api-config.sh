@@ -138,7 +138,7 @@ function print_help() {
 	echo -e "$WHITE.: $product :.$COLOROFF"
 	echo
 
-	echo "$product_name is a tool that syncrhonizes translations from Liferay source code repository from/to a Pootle installation"
+	echo "$product_name is a tool that syncrhonizes translations from Liferay source code repository from/to a Pootle 2.1.6 installation"
 	echo "Tool is invoked with one action at a time. Each action might have additional arguments."
 	echo
 	echo -e "${YELLOW}Environment variables$COLOROFF"
