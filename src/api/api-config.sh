@@ -136,7 +136,7 @@ function print_help() {
 	echo
 	echo -e "${YELLOW}Environment variables$COLOROFF"
 	echo "	LR_TRANS_MGR_PROFILE	configuration profile to load (see Configuration section)."
-	echo "	LR_TRANS_MGR_TAIL_LOG	if defined, tool invocation will do tail on log file. This will allow you to track the execution"
+	echo "	LR_TRANS_MGR_TAIL_LOG	if defined, tool invocation will do tail on log file. This allows to track the execution in real time"
 	echo
 	echo -e "${YELLOW}Configuration$COLOROFF"
 	echo "	Tool reads conf/manager.\$LR_TRANS_MGR_PROFILE.conf.sh file. Variables are documented in conf/manager.conf file"
@@ -148,13 +148,16 @@ function print_help() {
 	echo -e "${YELLOW}Actions$COLOROFF"
 
 	print_action "-r, --pootle2repo"\
-			"Exports pootle data into Language*.properties files, and commits them into a branch named \$EXPORT_BRANCH"
+		"Exports translations from Pootle to Liferay source code. First, saves pootle data into Language*.properties files, makes some processing to the files, then commits them \
+into a branch named \$EXPORT_BRANCH and pushes it to the configured remote repository. To push the changes to the liferay repository, A PR has to be issued to the branch maintainer. \
+$EXPORT_BRANCH is created from a fresh copy of master"
 
 	print_action "-p, --repo2pootle"\
-			"Updates the set of translatable keys in Pootle from Language.properties file in master branch. Updates all translations that have been committed to master since last invocation to this action"
+		"Updates in Pootle the set of translatable available in the Language.properties files from a fresh copy of master branch. After that, updates all translations that have been \
+committed to master since last commit done by the tool as a result of -r action. This allows developers to commit translations directly on master w/o using Pootle."
 
 	print_action "-R, --repo2pootle2repo"\
-			"Runs with -p, then with -r"
+		"Runs a complete roundrtip from with -p, then with -r"
 
 	print_action "-s, --rescanfile"\
 		"Instructs Pootle to rescan filesystem to update the filenames in the DB. This basically avoids doing the same using the UI (saving a lot of time).\
@@ -166,7 +169,9 @@ In addition, corrects any filename not matching Language_<locale>.properties nam
 		"newCode: project new code, such as 'knowledge-base-portlet'"
 
 	print_action "-b, --backport"\
-		"Backports translations from source to destination branches. This option works just with branches, there is no Pootle communication. Results are committed"
+		"Backports translations from source to destination branch. This option works just with branches, there is no communication with the Pootle server nor filesystem. It's recommended \
+to run with -R prior to make any backport. Results are committed and pushed to a remote branch created from the tip of the destination branch, which name contains a timestamp. Source \
+and target directories are defined by $SRC_PORTAL_BASE and $SRC_PORTAL_EE_BASE for portal, and $SRC_PLUGINS_BASE and SRC_PLUGINS_EE_BASE for plugins respectively."
 
 	print_action "-u, --upload <projectCode> <locale>"\
 			"Uploads translations for a given project and language. Translations are read from Language_<locale>.properties file in the pwd. \
