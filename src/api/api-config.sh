@@ -133,6 +133,8 @@ function resolve_params() {
 # add -c option to clean all branches related to tool operation
 # add option to restore a pootle backup (stop server, mysql, filesystem, start server)
 # add option to clean old logs/backups
+# add --only-portal --only-plugins options to work on a subset of the projects
+# add --language to work just for one language
 
 function print_help() {
 	echo -e "$WHITE.: $product :.$COLOROFF"
