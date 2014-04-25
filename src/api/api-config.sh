@@ -128,7 +128,6 @@ function resolve_params() {
 }
 
 # TODO: add parameters so that scripts can be run without external management via ssh
-# -b:  allow to specify source and dest branches for backport (this avoids manual checkouts prior to backport)
 # -u and -U: allow to specify an URL for Language file download (ie github)
 # add -c option to clean all branches related to tool operation
 # add option to restore a pootle backup (stop server, mysql, filesystem, start server)
