@@ -102,7 +102,7 @@ function set_log_dir() {
 	check_dir $logbase
 
 	if [[ "${LR_TRANS_MGR_TAIL_LOG}x" == "1x" ]]; then
-		printf "$LILA[$(date +%T.%3N)]${COLOROFF}$CYAN Running tail on logfile"
+		printf "$LILA[$(date +%T.%3N)]${COLOROFF}$CYAN Running tail on logfile\n"
 		tail -F  $logfile &  tail_log_pid=$!
 		trap "terminate" EXIT SIGTERM
 	fi;
