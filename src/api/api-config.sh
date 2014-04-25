@@ -177,10 +177,13 @@ In addition, corrects any filename not matching Language_<locale>.properties nam
 		"currentCode: project current code, such as 'knowledge-portlet'"\
 		"newCode: project new code, such as 'knowledge-base-portlet'"
 
-	print_action "-b, --backport"\
-		"Backports translations from source to destination branch. This option works just with branches, there is no communication with the Pootle server nor filesystem. It's recommended \
+	print_action "-b, --backport [<sourceBranch> <targetBranch>]"\
+		"Backports translations from source to destination branch. This action just works with branches, there is no communication with the Pootle server nor filesystem. It's recommended \
 to run with -R prior to make any backport. Results are committed and pushed to a remote branch created from the tip of the destination branch, which name contains a timestamp. Source \
-and target directories are defined by $SRC_PORTAL_BASE and $SRC_PORTAL_EE_BASE for portal, and $SRC_PLUGINS_BASE and SRC_PLUGINS_EE_BASE for plugins respectively."
+and target directories are defined in \$SRC_PORTAL_BASE and \$SRC_PORTAL_EE_BASE for portal, and \$SRC_PLUGINS_BASE and \$SRC_PLUGINS_EE_BASE for plugins respectively. Source and target branches \
+are optional arguments but have to be provided together to take effect"\
+		"sourceBranch: (optional) branch to be checkout in \$SRC_PORTAL_BASE and \$SRC_PLUGINS_BASE prior to start the backport"\
+ 		"targetBranch: (optional) branch to be checkout in \$SRC_PORTAL_EE_BASE and \$SRC_PLUGINS_EE_BASE prior to start the backport. This branch will act as base for the resulting commits"\
 
 	print_action "-u, --upload <projectCode> <locale>"\
 			"Uploads translations for a given project and language. Translations are read from Language_<locale>.properties file in the pwd. \

@@ -12,10 +12,9 @@ declare pwd=$(pwd)
 
 function update_to_head() {
 	if is_git_dir "$1"; then
-		logt 3 "Updating to HEAD $1"
 		cd "$1"
 		branch["$1"]=$(git branch 2>/dev/null | sed -n '/^\*/s/^\* //p')
-		logt 4 -n "git pull upstream ${branch[$1]}"
+		logt 5 -n "git pull upstream ${branch[$1]}"
 		git pull upstream ${branch[$1]} > /dev/null 2>&1
 		check_command
 		commit["$1"]=$(git rev-parse HEAD)
@@ -25,12 +24,34 @@ function update_to_head() {
 	cd $pwd
 }
 
+function checkout_branch() {
+	logt 5 -n "Checking out $3 branch $2"
+	cd $1 > /dev/null 2>&1
+	git checkout $2 > /dev/null 2>&1
+	check_command
+}
+
 function check_git() {
 	logt 2 "Checking branches for backporting [$1 --> $2]"
 	if [[ $use_git == 0 ]]; then
 		logt 3 "Using git..."
-		update_to_head $1
-		update_to_head $2
+		if [ -n "$3" ] && [ -n "$4" ]; then
+			logt 4 "You specified both source and target branches"
+			checkout_branch "$1" "$3" "source"
+			checkout_branch "$2" "$4" "target"
+		else
+			logt 4 "You didn't specify source nor target branches. Updating current branches heads"
+			update_to_head $1
+			update_to_head $2
+		fi;
+
+		cd $1;
+		local source_branch=$(git branch 2>/dev/null| sed -n '/^\*/s/^\* //p')
+		cd $2;
+		local target_branch=$(git branch 2>/dev/null| sed -n '/^\*/s/^\* //p')
+		logt 3 "Will use following branches:"
+		logt 4 "Source branch $source_branch on $1"
+		logt 4 "Target branch $target_branch on $2"
 
 		do_commit=$(is_git_dir $2)
 		if [[ do_commit ]]; then

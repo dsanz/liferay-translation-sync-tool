@@ -99,13 +99,15 @@ function backport_all() {
 
 	use_git=0
 	do_commit=0
+	source_branch="$1"
+	target_branch="$2"
 
 	# prepare git for all base-paths
 	logt 1 "Preparing involved directories"
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		base_src_dir=${PATH_BASE_DIR[$i]}
-		check_git "$base_src_dir" "$(get_ee_target_dir $base_src_dir)";
+		check_git "$base_src_dir" "$(get_ee_target_dir $base_src_dir)" "$source_branch" "$target_branch"
 	done
 
 	# backport is done on a project basis
@@ -199,7 +201,7 @@ main() {
 	elif [ $NEW_PROJECT ]; then
 		add_project_in_pootle $2 "$3"
 	elif [ $BACKPORT ]; then
-		backport_all
+		backport_all $2 $3
 	elif [ $QA_CHECK ]; then
 		check_quality
 	fi
