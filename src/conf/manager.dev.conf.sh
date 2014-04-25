@@ -65,11 +65,11 @@ declare -xgr LOG_DIR="$BASE_DIR/log"
 # Those are required both for backport and for writing pootle export results.
 # EE repos are useful only for backport. CE repos are used for pootle sync
 declare -xgr SRC_BASE="/home/dsanz/projects/"
-declare -xgr SRC_PORTAL_BASE="${SRC_BASE}liferay-portal/"
-declare -xgr SRC_PORTAL_EE_BASE="${SRC_BASE}liferay-portal-ee/"
+declare -xgr SRC_PORTAL_BASE="${SRC_BASE}trunk/src-portal/portal/"
+declare -xgr SRC_PORTAL_EE_BASE="${SRC_BASE}portal-ee/liferay-portal-ee/"
 declare -xgr SRC_PORTAL_LANG_PATH="portal-impl/src/content/"
-declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}liferay-plugins/"
-declare -xgr SRC_PLUGINS_EE_BASE="${SRC_BASE}liferay-plugins-ee/"
+declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}trunk/src-plugins/plugins/"
+declare -xgr SRC_PLUGINS_EE_BASE="${SRC_BASE}portal-ee/liferay-plugins-ee/"
 declare -xgr SRC_PLUGINS_LANG_PATH="/docroot/WEB-INF/src/content/"
 
 # Git branches management
