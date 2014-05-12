@@ -53,7 +53,7 @@ function restore_backup() {
 
 	logt 2  "Restoring pootle filesystem"
 	clean_dir $PODIR
-	logt 3  "Decompressing filesystem backup"
+	logt 3 -n "Decompressing filesystem backup"
 	tar xf $fsfilepath -C $PODIR > /dev/null 2>&1;
 	check_command;
 
@@ -64,12 +64,15 @@ function restore_backup() {
 function clean_tables() {
 	logt 3 "Cleaning DB tables";
 	drop_table_sentences=$($MYSQL_DUMP_COMMAND $DB_NAME --add-drop-table --no-data | grep "^DROP")
-	for drop_table in $drop_table_sentences;
-	do
-		logt 4 -n "$drop_table"
-		$MYSQL_COMMAND $DB_NAME -s -e "$drop_table";
-		check_command
-	done
+	done=false;
+	until $done; do
+		read drop_table || done=true
+		if [[ "$drop_table" != "" ]]; then
+			logt 4 -n "$drop_table"
+			$MYSQL_COMMAND $DB_NAME -s -e "$drop_table" > /dev/null 2>&1
+			check_command
+		fi;
+	done <<< "$drop_table_sentences";
 }
 
 # given the storeId and the language key (unitId) returns the index of that translation unit in the DB
