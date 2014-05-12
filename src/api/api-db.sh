@@ -2,13 +2,13 @@
 
 function backup_db() {
 	logt 1  "Backing up pootle data..."
-	dirname=$(date +%Y-%m);
-	filePrefix=$(date +%F_%H-%M-%S)
-	dumpfilename="$filePrefix-pootle.sql"
-	dumpfilepath="$TMP_DB_BACKUP_DIR/$dirname/$dumpfilename";
-	fsfilename="$filePrefix-po.tgz"
-	fsfilepath="$TMP_DB_BACKUP_DIR/$dirname/$fsfilename";
-	check_dir "$TMP_DB_BACKUP_DIR/$dirname"
+	base_dir=$(date +%Y-%m);
+	backup_dir=$(date +%F_%H-%M-%S)
+	dumpfilename="pootle.sql"
+	dumpfilepath="$TMP_DB_BACKUP_DIR/$base_dir/$backup_dir/$dumpfilename";
+	fsfilename="po.tgz"
+	fsfilepath="$TMP_DB_BACKUP_DIR/$base_dir/$backup_dir/$fsfilename";
+	check_dir "$TMP_DB_BACKUP_DIR/$base_dir/$backup_dir"
 
 	logt 2 "Dumping Pootle DB into $dumpfilepath"
 	logt 3 -n "Running dump command ";
@@ -23,6 +23,8 @@ function backup_db() {
 	logt 3 -n "Running tar command: tar czvf $fsfilepath $PODIR";
 	tar czvf $fsfilepath $PODIR > /dev/null 2>&1;
 	check_command;
+
+	logt 2 "Backup ID: $backup_dir"
 }
 
 # given the storeId and the language key (unitId) returns the index of that translation unit in the DB
