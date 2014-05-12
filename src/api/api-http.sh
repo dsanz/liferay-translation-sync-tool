@@ -18,3 +18,7 @@ function start_pootle_session() {
 	curl $CURL_OPTS -d "username=$PO_USER;password=$PO_PASS;csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" "$PO_SRV/accounts/login"
 	check_command
 }
+
+function is_pootle_server_up() {
+	wget -q --delete-after $PO_SRV
+}

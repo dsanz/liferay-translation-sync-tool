@@ -2,13 +2,13 @@
 
 function backup_db() {
 	logt 1  "Backing up pootle data..."
-	dirname=$(date +%Y-%m);
-	filePrefix=$(date +%F_%H-%M-%S)
-	dumpfilename="$filePrefix-pootle.sql"
-	dumpfilepath="$TMP_DB_BACKUP_DIR/$dirname/$dumpfilename";
-	fsfilename="$filePrefix-po.tgz"
-	fsfilepath="$TMP_DB_BACKUP_DIR/$dirname/$fsfilename";
-	check_dir "$TMP_DB_BACKUP_DIR/$dirname"
+	base_dir=$(date +%Y-%m);
+	backup_dir=$(date +%F_%H-%M-%S)
+	dumpfilename="pootle.sql"
+	dumpfilepath="$TMP_DB_BACKUP_DIR/$base_dir/$backup_dir/$dumpfilename";
+	fsfilename="po.tgz"
+	fsfilepath="$TMP_DB_BACKUP_DIR/$base_dir/$backup_dir/$fsfilename";
+	check_dir "$TMP_DB_BACKUP_DIR/$base_dir/$backup_dir"
 
 	logt 2 "Dumping Pootle DB into $dumpfilepath"
 	logt 3 -n "Running dump command ";
@@ -21,8 +21,58 @@ function backup_db() {
 
 	logt 2 "Compressing po/ dir into $fsfilepath"
 	logt 3 -n "Running tar command: tar czvf $fsfilepath $PODIR";
-	tar czvf $fsfilepath $PODIR > /dev/null 2>&1;
+	old_pwd=$(pwd)
+	cd $PODIR
+	tar czvf $fsfilepath * > /dev/null 2>&1;
+	cd $old_pwd
 	check_command;
+
+	logt 2 "Backup ID: $backup_dir"
+}
+
+function restore_backup() {
+	backup_dir="$1"
+	logt 1  "Restoring pootle data from backup ID: $backup_dir"
+	base_dir=$(echo "$backup_dir" | cut -d "-" -f 1-2)
+	dumpfilename="pootle.sql"
+	bzippeddumpfilename="pootle.sql.bz2"
+	dumpfilepath="$TMP_DB_BACKUP_DIR/$base_dir/$backup_dir/$dumpfilename";
+	bzippeddumpfilepath="$TMP_DB_BACKUP_DIR/$base_dir/$backup_dir/$bzippeddumpfilename";
+	fsfilename="po.tgz"
+	fsfilepath="$TMP_DB_BACKUP_DIR/$base_dir/$backup_dir/$fsfilename";
+
+	logt 2  "Restoring pootle database"
+	logt 3 -n "Decompressing db dump";
+	bunzip2 -k $bzippeddumpfilepath > /dev/null 2>&1;
+	check_command;
+
+	clean_tables
+	logt 3 -n "Restoring DB dump";
+	cat $dumpfilepath | $MYSQL_COMMAND $DB_NAME
+	check_command;
+
+	logt 2  "Restoring pootle filesystem"
+	clean_dir $PODIR
+	logt 3 -n "Decompressing filesystem backup"
+	tar xf $fsfilepath -C $PODIR > /dev/null 2>&1;
+	check_command;
+
+	logt 2 "Cleaning files"
+	rm $dumpfilepath;
+}
+
+function clean_tables() {
+	logt 3 "Cleaning DB tables";
+	drop_table_sentences=$($MYSQL_DUMP_COMMAND $DB_NAME --add-drop-table --no-data | grep "^DROP")
+	done=false;
+	until $done; do
+		read drop_table || done=true
+		if [[ "$drop_table" != "" ]]; then
+			logt 4 -n "$drop_table"
+			$MYSQL_COMMAND $DB_NAME -s -e "$drop_table" > /dev/null 2>&1
+			check_command
+		fi;
+	done <<< "$drop_table_sentences";
 }
 
 # given the storeId and the language key (unitId) returns the index of that translation unit in the DB
