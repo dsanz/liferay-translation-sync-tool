@@ -206,10 +206,6 @@ function rename_pootle_notifications_notice_entries() {
 	done <<< "$entries"
 }
 
-function is_pootle_server_up() {
-	wget -q --delete-after $PO_SRV
-}
-
 function exists_project_in_pootle() {
 	wget --spider "$PO_PROJECTS_URL/$1" 2>&1 | grep 200 > /dev/null
 }
