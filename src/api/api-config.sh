@@ -115,6 +115,8 @@ function resolve_params() {
 			export NEW_PROJECT=1
 		elif [ "$param" = "--qualityCheck" ] || [ "$param" = "-q" ]; then
 			export QA_CHECK=1
+		elif [ "$param" = "--restoreBackup" ] || [ "$param" = "-B" ]; then
+			export RESTORE_BACKUP=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else
@@ -208,6 +210,9 @@ Future version are expected to read a Language.properties file as well to match 
 
 	print_action "-q, --qualityCheck"\
 			"Run a set of checks over pootle exported files. Log files contain the results"
+
+	print_action "-B, --restoreBackup <backupID>" "Restores a Pootle data backup given its ID. The backup id is provided in the logs whenever the invoked action requires a backup"\
+			"backupID: the backup ID which will be used to locate backup files to be restored"
 
 	print_action "-h, --help" "Prints this help and exits"
 

@@ -30,7 +30,7 @@ function backup_db() {
 	logt 2 "Backup ID: $backup_dir"
 }
 
-function restore_db() {
+function restore_backup() {
 	backup_dir="$1"
 	logt 1  "Restoring pootle data from backup ID: $backup_dir"
 	base_dir=$(echo "$backup_dir" | cut -d "-" -f 1-2)

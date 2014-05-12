@@ -204,6 +204,8 @@ main() {
 		backport_all $2 $3
 	elif [ $QA_CHECK ]; then
 		check_quality
+	elif [ $RESTORE_BACKUP ]; then
+		restore_backup $2;
 	fi
 
 	if [[ -z ${LR_TRANS_MGR_TAIL_LOG+x} ]]; then
