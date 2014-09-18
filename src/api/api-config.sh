@@ -232,6 +232,12 @@ function print_action() {
 	echo
 }
 
+function set_colors() {
+	# some colours
+	COLOROFF="\033[1;0m"; GREEN="\033[1;32m"; RED="\033[1;31m"; LILA="\033[1;35m"
+	YELLOW="\033[1;33m"; BLUE="\033[1;34m"; WHITE="\033[1;37m"; CYAN="\033[1;36m"
+}
+
 function load_config() {
 	if [[ -n "$LR_TRANS_MGR_PROFILE" ]]; then
 		pmp="manager.$LR_TRANS_MGR_PROFILE.conf.sh"
@@ -240,6 +246,8 @@ function load_config() {
 		echo "I don't know which configuration profile I have to load. Please define LR_TRANS_MGR_PROFILE to match some conf/manager.\$LR_TRANS_MGR_PROFILE.conf.sh file "
 		exit 1
 	fi;
+
+	set_colors
 
 	. "conf/${pmp}"
 
