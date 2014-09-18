@@ -43,8 +43,8 @@ declare -xgr DB_USER="root"
 declare -xgr DB_PASS="test"
 # How DB dump/restore commands look like (depends on pootle installation)
 declare -xgr DB_NAME="pootle"
-declare -xgr MYSQL_COMMAND="mysql -u$DB_USER -p$DB_PASS"
-declare -xgr MYSQL_DUMP_COMMAND="mysqldump -u$DB_USER -p$DB_PASS"
+declare -xgr MYSQL_COMMAND="mysql -u$DB_USER"
+declare -xgr MYSQL_DUMP_COMMAND="mysqldump -u$DB_USER"
 
 ################################################################################
 ### Section 2: Dirs and files required to work
