@@ -146,6 +146,7 @@ function print_help() {
 	echo -e "${YELLOW}Environment variables$COLOROFF"
 	echo "	LR_TRANS_MGR_PROFILE	configuration profile to load (see Configuration section)."
 	echo "	LR_TRANS_MGR_TAIL_LOG	if value is 1, tool invocation will do tail on log file. This allows to track the execution in real time"
+	echo "  LR_TRANS_MGR_COLOR_LOG	if value is 1, tool logs will be coloured"
 	echo
 	echo -e "${YELLOW}Configuration$COLOROFF"
 	echo "	Tool reads conf/manager.\$LR_TRANS_MGR_PROFILE.conf.sh file. Variables are documented in conf/manager.conf file"
