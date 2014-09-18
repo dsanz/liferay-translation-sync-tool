@@ -99,7 +99,14 @@ function set_log_dir() {
 
 	if [[ "${LR_TRANS_MGR_TAIL_LOG}x" == "1x" ]]; then
 		printf "$LILA[$(date +%T.%3N)]${COLOROFF}$CYAN Running tail on logfile\n"
-		tail -F  $logfile &  tail_log_pid=$!
+		#if [[ "${LR_TRANS_MGR_COLOR_LOG}x" == "1x" ]]; then
+			# even if we have colored logs, standard output will be uncolored
+		#	( ( tail -F  $logfile &  echo $! >pid ) | sed -r 's/\x1B\[1;([0-9]+)m//g' & )
+			# get the PID of tail not sed!!!
+		#	tail_log_pid=$(<pid)
+		#else
+			tail -F  $logfile &  tail_log_pid=$!
+		#fi;
 		trap "terminate" EXIT SIGTERM
 	fi;
 }
