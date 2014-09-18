@@ -33,10 +33,6 @@ function clean_dir() {
 	check_command
 }
 
-# some colours
-COLOROFF="\033[1;0m"; GREEN="\033[1;32m"; RED="\033[1;31m"; LILA="\033[1;35m"
-YELLOW="\033[1;33m"; BLUE="\033[1;34m"; WHITE="\033[1;37m"; CYAN="\033[1;36m"
-
 function baselog() {
 	printf "$1" >> $logfile
 }
@@ -103,7 +99,14 @@ function set_log_dir() {
 
 	if [[ "${LR_TRANS_MGR_TAIL_LOG}x" == "1x" ]]; then
 		printf "$LILA[$(date +%T.%3N)]${COLOROFF}$CYAN Running tail on logfile\n"
-		tail -F  $logfile &  tail_log_pid=$!
+		#if [[ "${LR_TRANS_MGR_COLOR_LOG}x" == "1x" ]]; then
+			# even if we have colored logs, standard output will be uncolored
+		#	( ( tail -F  $logfile &  echo $! >pid ) | sed -r 's/\x1B\[1;([0-9]+)m//g' & )
+			# get the PID of tail not sed!!!
+		#	tail_log_pid=$(<pid)
+		#else
+			tail -F  $logfile &  tail_log_pid=$!
+		#fi;
 		trap "terminate" EXIT SIGTERM
 	fi;
 }

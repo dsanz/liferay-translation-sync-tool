@@ -146,6 +146,7 @@ function print_help() {
 	echo -e "${YELLOW}Environment variables$COLOROFF"
 	echo "	LR_TRANS_MGR_PROFILE	configuration profile to load (see Configuration section)."
 	echo "	LR_TRANS_MGR_TAIL_LOG	if value is 1, tool invocation will do tail on log file. This allows to track the execution in real time"
+	echo " 	LR_TRANS_MGR_COLOR_LOG	if value is 1, tool logs will be coloured"
 	echo
 	echo -e "${YELLOW}Configuration$COLOROFF"
 	echo "	Tool reads conf/manager.\$LR_TRANS_MGR_PROFILE.conf.sh file. Variables are documented in conf/manager.conf file"
@@ -232,6 +233,13 @@ function print_action() {
 	echo
 }
 
+function set_colors() {
+	if [[ "${LR_TRANS_MGR_COLOR_LOG}x" == "1x" ]]; then
+		COLOROFF="\033[1;0m"; GREEN="\033[1;32m"; RED="\033[1;31m"; LILA="\033[1;35m"
+		YELLOW="\033[1;33m"; BLUE="\033[1;34m"; WHITE="\033[1;37m"; CYAN="\033[1;36m"
+	fi
+}
+
 function load_config() {
 	if [[ -n "$LR_TRANS_MGR_PROFILE" ]]; then
 		pmp="manager.$LR_TRANS_MGR_PROFILE.conf.sh"
@@ -240,6 +248,8 @@ function load_config() {
 		echo "I don't know which configuration profile I have to load. Please define LR_TRANS_MGR_PROFILE to match some conf/manager.\$LR_TRANS_MGR_PROFILE.conf.sh file "
 		exit 1
 	fi;
+
+	set_colors
 
 	. "conf/${pmp}"
 
