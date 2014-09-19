@@ -19,6 +19,10 @@ function get_src_base_dir() {
 	echo $result
 }
 
+
+# Given a project name and a base src dir (where project sources are), creates/
+# updates the entry in PATH_BASE_DIR array for the given src dir, and adds the
+# project name to the PATH_PROJECTS
 function add_base_path() {
 	project=$1
 	base_src_dir=$2
@@ -37,6 +41,8 @@ function add_base_path() {
 	PATH_PROJECTS[$idx]=" $project"${PATH_PROJECTS[$idx]}
 }
 
+# fills the PATH_BASE_DIR and PATH_PROJECTS arrays.
+# Once all projects are added to toe PROJECT_* arrays, this function has to be called.
 function compute_working_paths() {
 	local i;
 	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
@@ -45,6 +51,7 @@ function compute_working_paths() {
 	done
 }
 
+# given a project name, returns the path where the Language* files are stored
 function get_project_language_path() {
 	project="$1"
 	local j;
@@ -62,6 +69,10 @@ function get_project_language_path() {
 	echo "$result"
 }
 
+# Adds a new project to the PROJECT_* arrays. Requires 3 parameters
+#  - project name
+#  - source base path: root of source code for that project
+#  - ant path: path where ant build-lang has to be invoked
 function add_project() {
 	project_name="$1"
 	source_path="$2"
@@ -72,6 +83,10 @@ function add_project() {
 	PROJECT_ANT[${#PROJECT_ANT[@]}]="$ant_path"
 }
 
+# adds a bunch of projects to the PROJECT_* arrays. Requires 3 parameters:
+#  - project names list: a space-separated string of project names
+#  - suffix: to be added to the project name, used to indicate the Liferay plugin type (hook, portlet, theme)
+#  - prefix: path to be prefixed to the source base
 function add_projects() {
 	plugins="$1"
 	suffix="$2"

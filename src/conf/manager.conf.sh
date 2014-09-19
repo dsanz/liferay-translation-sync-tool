@@ -123,10 +123,18 @@ declare -xgr HOOK_SRC_PATH_PREFIX="${SRC_PLUGINS_BASE}hooks/"
 ##
 # contains all project code names, as seen by pootle and source dirs
 declare -xga PROJECT_NAMES
+# contains an entry for each project, storing the project bsae source dir
 declare -xga PROJECT_SRC
+# contains an entry for each project, storing the ant dir where buils-lang target
+# is to be invoked
 declare -xga PROJECT_ANT
-# master path lists
+
+# master path lists (computed from the PROJECT_NAMES and PROJECT_SRC arrays)
+# contains an entry for each different base source dir, storing the list of
+# projects associated with that dir
 declare -xga PATH_PROJECTS
+# contains a set of different src base dir. The intent is to be used for git operations,
+# which affects all projects living in that basedir
 declare -xga PATH_BASE_DIR
 
 ## 3.3 project lists initialization
