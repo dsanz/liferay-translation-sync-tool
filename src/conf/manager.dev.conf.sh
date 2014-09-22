@@ -70,7 +70,7 @@ declare -xgr SRC_PORTAL_EE_BASE="${SRC_BASE}portal-ee/liferay-portal-ee/"
 declare -xgr SRC_PORTAL_LANG_PATH="portal-impl/src/content/"
 declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}trunk/src-plugins/plugins/"
 declare -xgr SRC_PLUGINS_EE_BASE="${SRC_BASE}portal-ee/liferay-plugins-ee/"
-declare -xgr SRC_PLUGINS_LANG_PATH="/docroot/WEB-INF/src/content/"
+declare -xgr SRC_PLUGINS_LANG_PATH="docroot/WEB-INF/src/content/"
 
 # Git branches management
 declare -xgr WORKING_BRANCH="to-pootle-working"
@@ -133,7 +133,7 @@ declare -xga PATH_BASE_DIR
 ##
 # first project is the Liferay portal itself
 PORTAL_PROJECT_ID=portal
-add_project "$PORTAL_PROJECT_ID" "$SRC_PORTAL_BASE" "SRC_PORTAL_LANG_PATH" "/portal-impl"
+add_project "$PORTAL_PROJECT_ID" "$SRC_PORTAL_BASE" "$SRC_PORTAL_LANG_PATH" "/portal-impl"
 # now, some plugins
 add_projects "$PORTLET_LIST" "$PORTLET" "$SRC_PLUGINS_BASE" "$SRC_PLUGINS_LANG_PATH"
 add_projects "$HOOK_LIST" "$HOOK" "$SRC_PLUGINS_BASE" "$SRC_PLUGINS_LANG_PATH"
