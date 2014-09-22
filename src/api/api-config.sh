@@ -19,32 +19,7 @@ function get_src_base_dir() {
 	echo $result
 }
 
-function add_base_path() {
-	project=$1
-	base_src_dir=$2
-	idx=-1;
-	local j;
-	for (( j=0; j<${#PATH_BASE_DIR[@]}; j++ ));
-	do
-		if [[ "${PATH_BASE_DIR[$j]}" == "$base_src_dir" ]]; then
-			idx=$j;
-		fi;
-	done;
-	if [[ $idx == -1 ]]; then
-		idx=${#PATH_BASE_DIR[@]};
-	fi;
-	PATH_BASE_DIR[$idx]="$base_src_dir"
-	PATH_PROJECTS[$idx]=" $project"${PATH_PROJECTS[$idx]}
-}
-
-function compute_working_paths() {
-	local i;
-	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
-	do
-		add_base_path "${PROJECT_NAMES[$i]}" "$(get_src_base_dir ${PROJECT_NAMES[$i]})"
-	done
-}
-
+# given a project name, returns the path where the Language* files are stored
 function get_project_language_path() {
 	project="$1"
 	local j;
@@ -62,25 +37,98 @@ function get_project_language_path() {
 	echo "$result"
 }
 
+# Adds a new project to the project arrays. Requires 4 parameters
+#  - project name (eg "sibboleth-hook")
+#  - source base path: root of source code for that project (git root dir)
+#  - lang rel path: path where Language.properties file lives, relative to $2
+#  - ant rel path: path where ant build-lang has to be invoked, relative to $2
 function add_project() {
 	project_name="$1"
-	source_path="$2"
-	ant_path="$3"
+	source_base_path="$2"
+	lang_rel_path="$3"
+	ant_rel_path="$4"
 
 	PROJECT_NAMES[${#PROJECT_NAMES[@]}]="$project_name"
-	PROJECT_SRC[${#PROJECT_SRC[@]}]="$source_path"
-	PROJECT_ANT[${#PROJECT_ANT[@]}]="$ant_path"
+	PROJECT_SRC[${#PROJECT_SRC[@]}]="$source_base_path$lang_rel_path"
+	PROJECT_ANT[${#PROJECT_ANT[@]}]="$source_base_path$ant_rel_path"
+
+	local idx=-1;
+	local j;
+	for (( j=0; j<${#PATH_BASE_DIR[@]}; j++ ));
+	do
+		if [[ "${PATH_BASE_DIR[$j]}" == "$source_base_path" ]]; then
+			idx=$j;
+		fi;
+	done;
+	if [[ $idx == -1 ]]; then
+		idx=${#PATH_BASE_DIR[@]};
+	fi;
+
+	PATH_BASE_DIR[$idx]="$source_base_path"
+	PATH_PROJECTS[$idx]=" $project_name"${PATH_PROJECTS[$idx]}
 }
 
-function add_projects() {
-	plugins="$1"
-	suffix="$2"
-	prefix="$3"
+# adds a bunch of projects to the project arrays. This function is specific for
+# adding liferay plugins stored in the same git repo. Requires 4 parameters:
+#  - project names list: a space-separated string of project names, w/o suffix
+#  - type: indicate the Liferay plugin type ("hook", "portlet", "theme")
+#  - source_base_path: root of source code for the plugins SDK/repo
+#  - lang_rel_path: path where Language.properties file lives (relative to ${3}/project_rel_path/project_name).
+#  - [optional] project_rel_path: relative to $3, indicates the dir where project is stored. If not specified, Liferay SDK dir layout will be used
+# Function will compute the actual paths for each individual project as they are laid out in a SDK/plugins git repo
+function add_projects_Liferay_plugins() {
+	project_names="$1"
+	type="$2"
+	project_type="-$type"
 
-	for plugin in $plugins;
+
+	if [ -z ${5+x} ]; then
+		# project_rel_path has not been passed, use the type
+		project_rel_path_fragment="${type}s/";
+	else
+		# project_rel_path has been passed. Check if it's empty
+		project_rel_path_fragment="$5";
+		if [[ $5 != "" ]]; then
+			project_rel_path_fragment="${5}/";
+		fi;
+	fi;
+
+
+	source_base_path="$3"
+	lang_rel_path_fragment="$4"
+
+	for name in $project_names;
 	do
-		pootle_project_id="$plugin$suffix"
-		add_project "$pootle_project_id" "${prefix}${pootle_project_id}${SRC_PLUGINS_LANG_PATH}" "${prefix}${pootle_project_id}"
+		# project name is made up from the name + project_type (eg "mail" + "-portlet")
+		project_name="$name$project_type"
+		# project base path locates the project inside source_base_path (e.g "portlets/mail-portlet/")
+		project_base_path="$project_rel_path_fragment${project_name}/"
+		# ant path is assumed to be the project base path. Works for our SDK plugins
+		# lang_rel_path is prefixed with the project dir
+		lang_rel_path="$project_base_path$lang_rel_path_fragment"
+		add_project "$project_name" "${source_base_path}" "$lang_rel_path" "$project_base_path"
+	done
+}
+
+# adds a bunch of projects to the project arrays. This function is generic and allows to
+# add any project set stored in the same git repo. Requires 3 parameters:
+#  - project names list: a space-separated string of project names, w/o suffix
+#  - source_base_path: root of source code for the plugins SDK/repo
+#  - lang_rel_path: path where Language.properties file lives (relative to ${2}/).
+# Function assumes thst ant path is the root of each project
+function add_projects() {
+	project_names="$1"
+	source_base_path="$2"
+	lang_rel_path_fragment="$3"
+
+	for project_name in $project_names;
+	do
+		# project base path locates the project inside source_base_path (e.g "portlets/mail-portlet/")
+		project_base_path="$project_rel_path_fragment${project_name}/"
+		# ant path is assumed to be the project base path. Works for our SDK plugins
+		# lang_rel_path is prefixed with the project dir
+		lang_rel_path="$project_name/$lang_rel_path_fragment"
+		add_project "$project_name" "${source_base_path}" "$lang_rel_path" "$project_name"
 	done
 }
 
@@ -117,6 +165,8 @@ function resolve_params() {
 			export QA_CHECK=1
 		elif [ "$param" = "--restoreBackup" ] || [ "$param" = "-B" ]; then
 			export RESTORE_BACKUP=1
+		elif [ "$param" = "--listProjects" ] || [ "$param" = "-l" ]; then
+			export LIST_PROJECTS=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else
@@ -213,6 +263,8 @@ Future version are expected to read a Language.properties file as well to match 
 
 	print_action "-B, --restoreBackup <backupID>" "Restores a Pootle data backup given its ID. The backup id is provided in the logs whenever the invoked action requires a backup"\
 			"backupID: the backup ID which will be used to locate backup files to be restored"
+
+	print_action "-l, --listProjects" "List all projects configured for the $LR_TRANS_MGR_PROFILE profile "
 
 	print_action "-h, --help" "Prints this help and exits"
 
