@@ -37,9 +37,9 @@ function get_project_language_path() {
 	echo "$result"
 }
 
-# Adds a new project to the PROJECT_* arrays. Requires 4 parameters
-#  - project name
-#  - source base path: root of source code for that project
+# Adds a new project to the project arrays. Requires 4 parameters
+#  - project name (eg "sibboleth-hook")
+#  - source base path: root of source code for that project (git root dir)
 #  - lang rel path: path where Language.properties file lives, relative to $2
 #  - ant rel path: path where ant build-lang has to be invoked, relative to $2
 function add_project() {
@@ -68,23 +68,30 @@ function add_project() {
 	PATH_PROJECTS[$idx]=" $project_name"${PATH_PROJECTS[$idx]}
 }
 
-# adds a bunch of projects to the PROJECT_* arrays. Requires 3 parameters:
+# adds a bunch of projects to the project arrays. Requires 4 parameters:
 #  - project names list: a space-separated string of project names, w/o suffix
-#  - suffix: to be added to the project name, used to indicate the Liferay plugin type (hook, portlet, theme)
-#  - source_base_path: root of source code for that set of projects
-#  - lang rel path: path where Language.properties file lives, relative to $3
+#  - type: indicate the Liferay plugin type ("hook", "portlet", "theme")
+#  - source_base_path: root of source code for the plugins SDK/repo
+#  - lang_rel_path: path where Language.properties file lives (relative to ${3}/project_type/project_name).
+# Function will compute the actual paths for each individual project
 function add_projects() {
 	project_names="$1"
-	suffix="$2"
+	type="$2"
+	project_type="-$type"
+	project_rel_path_fragment="${type}s/"
 	source_base_path="$3"
-	lang_rel_path="$4"
+	lang_rel_path_fragment="$4"
 
 	for name in $project_names;
 	do
-		project_name="$name$suffix"
-		# ant path is assumed to be the project name. Works for our SDK plugins
-		ant_rel_path="${project_name}"
-		add_project "$project_name" "${source_base_path}" "$lang_rel_path" "$ant_rel_path"
+		# project name is made up from the name + project_type (eg "mail" + "-portlet")
+		project_name="$name$project_type"
+		# project base path locates the project inside source_base_path (e.g "portlets/mail-portlet/")
+		project_base_path="$project_rel_path_fragment${project_name}/"
+		# ant path is assumed to be the project base path. Works for our SDK plugins
+		# lang_rel_path is prefixed with the project dir
+		lang_rel_path="$project_base_path$lang_rel_path_fragment"
+		add_project "$project_name" "${source_base_path}" "$lang_rel_path" "$project_base_path"
 	done
 }
 
