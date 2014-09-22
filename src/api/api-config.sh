@@ -19,38 +19,6 @@ function get_src_base_dir() {
 	echo $result
 }
 
-
-# Given a project name and a base src dir (where project sources are), creates/
-# updates the entry in PATH_BASE_DIR array for the given src dir, and adds the
-# project name to the PATH_PROJECTS
-function add_base_path() {
-	project=$1
-	base_src_dir=$2
-	idx=-1;
-	local j;
-	for (( j=0; j<${#PATH_BASE_DIR[@]}; j++ ));
-	do
-		if [[ "${PATH_BASE_DIR[$j]}" == "$base_src_dir" ]]; then
-			idx=$j;
-		fi;
-	done;
-	if [[ $idx == -1 ]]; then
-		idx=${#PATH_BASE_DIR[@]};
-	fi;
-	PATH_BASE_DIR[$idx]="$base_src_dir"
-	PATH_PROJECTS[$idx]=" $project"${PATH_PROJECTS[$idx]}
-}
-
-# fills the PATH_BASE_DIR and PATH_PROJECTS arrays.
-# Once all projects are added to toe PROJECT_* arrays, this function has to be called.
-#function compute_working_paths() {
-#	local i;
-	#for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
-	#do
-#		add_base_path "${PROJECT_NAMES[$i]}" "$(get_src_base_dir ${PROJECT_NAMES[$i]})"
-	#done
-#}
-
 # given a project name, returns the path where the Language* files are stored
 function get_project_language_path() {
 	project="$1"
@@ -83,7 +51,21 @@ function add_project() {
 	PROJECT_NAMES[${#PROJECT_NAMES[@]}]="$project_name"
 	PROJECT_SRC[${#PROJECT_SRC[@]}]="$source_base_path$lang_rel_path"
 	PROJECT_ANT[${#PROJECT_ANT[@]}]="$source_base_path$ant_rel_path"
-	add_base_path "$project_name" "$source_base_path"
+
+	local idx=-1;
+	local j;
+	for (( j=0; j<${#PATH_BASE_DIR[@]}; j++ ));
+	do
+		if [[ "${PATH_BASE_DIR[$j]}" == "$source_base_path" ]]; then
+			idx=$j;
+		fi;
+	done;
+	if [[ $idx == -1 ]]; then
+		idx=${#PATH_BASE_DIR[@]};
+	fi;
+
+	PATH_BASE_DIR[$idx]="$source_base_path"
+	PATH_PROJECTS[$idx]=" $project_name"${PATH_PROJECTS[$idx]}
 }
 
 # adds a bunch of projects to the PROJECT_* arrays. Requires 3 parameters:
