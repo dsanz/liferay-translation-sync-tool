@@ -68,13 +68,14 @@ function add_project() {
 	PATH_PROJECTS[$idx]=" $project_name"${PATH_PROJECTS[$idx]}
 }
 
-# adds a bunch of projects to the project arrays. Requires 4 parameters:
+# adds a bunch of projects to the project arrays. This function is specific for
+# adding liferay plugins stored in the same git repo. Requires 4 parameters:
 #  - project names list: a space-separated string of project names, w/o suffix
 #  - type: indicate the Liferay plugin type ("hook", "portlet", "theme")
 #  - source_base_path: root of source code for the plugins SDK/repo
 #  - lang_rel_path: path where Language.properties file lives (relative to ${3}/project_type/project_name).
 # Function will compute the actual paths for each individual project
-function add_projects() {
+function add_projects_Liferay_plugins() {
 	project_names="$1"
 	type="$2"
 	project_type="-$type"
