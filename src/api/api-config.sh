@@ -77,7 +77,7 @@ function add_projects() {
 	project_names="$1"
 	suffix="$2"
 	source_base_path="$3"
-	lang_rel_path="$3"
+	lang_rel_path="$4"
 
 	for name in $project_names;
 	do
