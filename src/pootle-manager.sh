@@ -85,16 +85,6 @@ function pootle2src() {
 
 function display_projects() {
 	logt 1 "Working project list by git root (${#PROJECT_NAMES[@]} projects, ${#PATH_PROJECTS[@]} git roots) "
-#	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
-#		project=${PROJECT_NAMES[$i]}
-#		project=$(printf "%-35s%s" "$project")
-#		logt 2 -n "$project"
-#		project_src="$(get_project_language_path $project)"
-#		log -n $project_src
-#		[ -d $project_src ]
-#		check_command
-#	done
-#	logt 1 "Base paths and projects"
 	for (( i=0; i<${#PATH_PROJECTS[@]}; i++ ));  do
 		project_list="$(echo ${PATH_PROJECTS[$i]} | sed 's: :\n:g' | sort)"
 		projects=$(echo "$project_list" | wc -l)
@@ -108,9 +98,6 @@ function display_projects() {
 			check_command
 		done <<< "$project_list"
 	done;
-
-
-
 }
 
 function backport_all() {
