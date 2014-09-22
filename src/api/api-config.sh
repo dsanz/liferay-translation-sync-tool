@@ -43,13 +43,13 @@ function add_base_path() {
 
 # fills the PATH_BASE_DIR and PATH_PROJECTS arrays.
 # Once all projects are added to toe PROJECT_* arrays, this function has to be called.
-function compute_working_paths() {
-	local i;
-	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
-	do
-		add_base_path "${PROJECT_NAMES[$i]}" "$(get_src_base_dir ${PROJECT_NAMES[$i]})"
-	done
-}
+#function compute_working_paths() {
+#	local i;
+	#for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
+	#do
+#		add_base_path "${PROJECT_NAMES[$i]}" "$(get_src_base_dir ${PROJECT_NAMES[$i]})"
+	#done
+#}
 
 # given a project name, returns the path where the Language* files are stored
 function get_project_language_path() {
@@ -69,33 +69,40 @@ function get_project_language_path() {
 	echo "$result"
 }
 
-# Adds a new project to the PROJECT_* arrays. Requires 3 parameters
+# Adds a new project to the PROJECT_* arrays. Requires 4 parameters
 #  - project name
 #  - source base path: root of source code for that project
-#  - ant path: path where ant build-lang has to be invoked
+#  - lang rel path: path where Language.properties file lives, relative to $2
+#  - ant rel path: path where ant build-lang has to be invoked, relative to $2
 function add_project() {
 	project_name="$1"
-	source_path="$2"
-	ant_path="$3"
+	source_base_path="$2"
+	lang_rel_path="$3"
+	ant_rel_path="$4"
 
 	PROJECT_NAMES[${#PROJECT_NAMES[@]}]="$project_name"
-	PROJECT_SRC[${#PROJECT_SRC[@]}]="$source_path"
-	PROJECT_ANT[${#PROJECT_ANT[@]}]="$ant_path"
+	PROJECT_SRC[${#PROJECT_SRC[@]}]="$source_base_path$lang_rel_path"
+	PROJECT_ANT[${#PROJECT_ANT[@]}]="$source_base_path$ant_rel_path"
+	add_base_path "$project_name" "$source_base_path"
 }
 
 # adds a bunch of projects to the PROJECT_* arrays. Requires 3 parameters:
-#  - project names list: a space-separated string of project names
+#  - project names list: a space-separated string of project names, w/o suffix
 #  - suffix: to be added to the project name, used to indicate the Liferay plugin type (hook, portlet, theme)
-#  - prefix: path to be prefixed to the source base
+#  - source_base_path: root of source code for that set of projects
+#  - lang rel path: path where Language.properties file lives, relative to $3
 function add_projects() {
-	plugins="$1"
+	project_names="$1"
 	suffix="$2"
-	prefix="$3"
+	source_base_path="$3"
+	lang_rel_path="$3"
 
-	for plugin in $plugins;
+	for name in $project_names;
 	do
-		pootle_project_id="$plugin$suffix"
-		add_project "$pootle_project_id" "${prefix}${pootle_project_id}${SRC_PLUGINS_LANG_PATH}" "${prefix}${pootle_project_id}"
+		project_name="$name$suffix"
+		# ant path is assumed to be the project name. Works for our SDK plugins
+		ant_rel_path="${project_name}"
+		add_project "$project_name" "${source_base_path}" "$lang_rel_path" "$ant_rel_path"
 	done
 }
 
