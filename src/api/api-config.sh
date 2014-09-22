@@ -73,13 +73,27 @@ function add_project() {
 #  - project names list: a space-separated string of project names, w/o suffix
 #  - type: indicate the Liferay plugin type ("hook", "portlet", "theme")
 #  - source_base_path: root of source code for the plugins SDK/repo
-#  - lang_rel_path: path where Language.properties file lives (relative to ${3}/project_type/project_name).
+#  - lang_rel_path: path where Language.properties file lives (relative to ${3}/project_rel_path/project_name).
+#  - [optional] project_rel_path: relative to $3, indicates the dir where project is stored. If not specified, Liferay SDK dir layout will be used
 # Function will compute the actual paths for each individual project as they are laid out in a SDK/plugins git repo
 function add_projects_Liferay_plugins() {
 	project_names="$1"
 	type="$2"
 	project_type="-$type"
-	project_rel_path_fragment="${type}s/"
+
+
+	if [ -z ${5+x} ]; then
+		# project_rel_path has not been passed, use the type
+		project_rel_path_fragment="${type}s/";
+	else
+		# project_rel_path has been passed. Check if it's empty
+		project_rel_path_fragment="$5";
+		if [[ $5 != "" ]]; then
+			project_rel_path_fragment="${5}/";
+		fi;
+	fi;
+
+
 	source_base_path="$3"
 	lang_rel_path_fragment="$4"
 
