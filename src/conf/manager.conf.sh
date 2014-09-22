@@ -102,8 +102,30 @@ declare -xgr LANG_SEP="_"
 ## Section 3: Translation projects
 ##
 
+## 3.0 Master lists
+##
+# contains all project code names, as seen by pootle and source dirs
+declare -xga PROJECT_NAMES
+# contains an entry for each project, storing the project bsae source dir
+declare -xga PROJECT_SRC
+# contains an entry for each project, storing the ant dir where buils-lang target
+# is to be invoked
+declare -xga PROJECT_ANT
+# contains an entry for each different base source dir, storing the list of
+# projects associated with that dir
+declare -xga PATH_PROJECTS
+# contains a set of different src base dir. The intent is to be used for git operations,
+# which affects all projects living in that basedir
+declare -xga PATH_BASE_DIR
+
 ## 3.1 List of plugins from the Liferay plugins repo
 ##
+# plugin type constants
+declare -xgr PORTLET="portlet"
+declare -xgr THEME="theme"
+declare -xgr HOOK="hook"
+declare -xgr WEB="web"
+
 # Portlets
 declare -xgr PORTLET_LIST="akismet\
  calendar chat contacts\
@@ -119,29 +141,11 @@ declare -xgr PORTLET_LIST="akismet\
  vimeo\
  web-form wiki-navigation wsrp\
  youtube"
-declare -xgr PORTLET="portlet"
 # Themes
 declare -xgr THEME_LIST="noir"
-declare -xgr THEME="theme"
 # Hooks
 declare -xgr HOOK_LIST="so-activities so shibboleth"
-declare -xgr HOOK="hook"
 
-## 3.2 Master lists
-##
-# contains all project code names, as seen by pootle and source dirs
-declare -xga PROJECT_NAMES
-# contains an entry for each project, storing the project bsae source dir
-declare -xga PROJECT_SRC
-# contains an entry for each project, storing the ant dir where buils-lang target
-# is to be invoked
-declare -xga PROJECT_ANT
-# contains an entry for each different base source dir, storing the list of
-# projects associated with that dir
-declare -xga PATH_PROJECTS
-# contains a set of different src base dir. The intent is to be used for git operations,
-# which affects all projects living in that basedir
-declare -xga PATH_BASE_DIR
 
 ## 3.3 project lists initialization
 ##
