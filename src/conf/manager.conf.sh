@@ -146,6 +146,16 @@ declare -xgr THEME_LIST="noir"
 # Hooks
 declare -xgr HOOK_LIST="so-activities so shibboleth"
 
+## 3.2 List of apps for content targeting
+##
+declare -xgr APPS_CT_MODULE_LIST="content-targeting-api\
+ report-campaign-content report-campaign-tracking-action report-user-segment-content\
+ rule-age rule-browser rule-device rule-facebook rule-gender rule-ip-geocode rule-organization-member\
+ rule-os rule-role rule-site-member rule-score-points rule-time rule-user-group-member rule-user-logged rule-visited\
+ tracking-action-content tracking-action-form tracking-action-link tracking-action-page tracking-action-youtube"
+declare -xgr APPS_CT_WEB_LIST="content-targeting"
+declare -xgr APPS_CT_HOOK_LIST="analytics\
+ simulator"
 
 ## 3.3 project lists initialization
 ##
@@ -157,6 +167,11 @@ add_projects_Liferay_plugins "$PORTLET_LIST" "$PORTLET" "$SRC_PLUGINS_BASE" "$SR
 add_projects_Liferay_plugins "$HOOK_LIST" "$HOOK" "$SRC_PLUGINS_BASE" "$SRC_PLUGINS_LANG_PATH"
 # no translatable themes so far...
 #add_projects_Liferay_plugins "$THEME_LIST" "$THEME" "$SRC_PLUGINS_BASE" "$SRC_PLUGINS_LANG_PATH"
+
+# content targeting apps
+add_projects "$APPS_CT_MODULE_LIST" "$SRC_APPS_CT_BASE" "$SRC_APPS_CT_LANG_PATH"
+add_projects_Liferay_plugins "$APPS_CT_HOOK_LIST" "$HOOK"  "$SRC_APPS_CT_BASE"  "$SRC_PLUGINS_LANG_PATH"
+add_projects_Liferay_plugins "$APPS_CT_WEB_LIST" "$WEB"  "$SRC_APPS_CT_BASE"  "$SRC_PLUGINS_LANG_PATH"
 
 # make master lists readonly from now on
 declare -r PROJECT_NAMES

@@ -64,13 +64,24 @@ declare -xgr LOG_DIR="$BASE_DIR/log"
 ##   (under git control, where forked & cloned repos are)
 # Those are required both for backport and for writing pootle export results.
 # EE repos are useful only for backport. CE repos are used for pootle sync
-declare -xgr SRC_BASE="/home/dsanz/projects/"
-declare -xgr SRC_PORTAL_BASE="${SRC_BASE}trunk/src-portal/portal/"
-declare -xgr SRC_PORTAL_EE_BASE="${SRC_BASE}portal-ee/liferay-portal-ee/"
-declare -xgr SRC_PORTAL_LANG_PATH="portal-impl/src/content/"
-declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}trunk/src-plugins/plugins/"
-declare -xgr SRC_PLUGINS_EE_BASE="${SRC_BASE}portal-ee/liferay-plugins-ee/"
-declare -xgr SRC_PLUGINS_LANG_PATH="docroot/WEB-INF/src/content/"
+
+# general variables
+declare -xgr SRC_BASE="$BASE_DIR/"
+declare -xgr SRC_CONTENT="src/content/"
+
+# liferay portal
+declare -xgr SRC_PORTAL_BASE="${SRC_BASE}liferay-portal/"
+declare -xgr SRC_PORTAL_EE_BASE="${SRC_BASE}liferay-portal-ee/"
+declare -xgr SRC_PORTAL_LANG_PATH="portal-impl/$SRC_CONTENT"
+
+# liferay plugns
+declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}liferay-plugins/"
+declare -xgr SRC_PLUGINS_EE_BASE="${SRC_BASE}liferay-plugins-ee/"
+declare -xgr SRC_PLUGINS_LANG_PATH="docroot/WEB-INF/$SRC_CONTENT"
+
+# liferay apps for content targeting
+declare -xgr SRC_APPS_CT_BASE="${SRC_BASE}liferay-apps-content-targeting/"
+declare -xgr SRC_APPS_CT_LANG_PATH="$SRC_CONTENT"
 
 # Git branches management
 declare -xgr WORKING_BRANCH="to-pootle-working"
@@ -88,32 +99,7 @@ declare -xgr LANG_SEP="_"
 ## Section 3: Translation projects
 ##
 
-## 3.1 List of plugins
-##
-# Portlets
-declare -xgr PORTLET_LIST="akismet\
- calendar chat contacts\
- ddl-form\
- events-display\
- google-maps\
- knowledge-base\
- mail marketplace microblogs\
- opensocial\
- private-messaging\
- social-coding social-networking so\
- tasks twitter\
- vimeo\
- web-form wiki-navigation wsrp\
- youtube"
-declare -xgr PORTLET="portlet"
-# Themes
-declare -xgr THEME_LIST="noir"
-declare -xgr THEME="theme"
-# Hooks
-declare -xgr HOOK_LIST="so-activities so shibboleth"
-declare -xgr HOOK="hook"
-
-## 3.2 Master lists
+## 3.0 Master lists
 ##
 # contains all project code names, as seen by pootle and source dirs
 declare -xga PROJECT_NAMES
@@ -129,6 +115,45 @@ declare -xga PATH_PROJECTS
 # which affects all projects living in that basedir
 declare -xga PATH_BASE_DIR
 
+## 3.1 List of plugins from the Liferay plugins repo
+##
+# plugin type constants
+declare -xgr PORTLET="portlet"
+declare -xgr THEME="theme"
+declare -xgr HOOK="hook"
+declare -xgr WEB="web"
+
+# Portlets
+declare -xgr PORTLET_LIST="akismet\
+ calendar chat contacts\
+ ddl-form\
+ events-display\
+ google-maps\
+ knowledge-base\
+ mail marketplace microblogs\
+ opensocial\
+ private-messaging\
+ social-coding social-networking so\
+ tasks twitter\
+ vimeo\
+ web-form wiki-navigation wsrp\
+ youtube"
+# Themes
+declare -xgr THEME_LIST="noir"
+# Hooks
+declare -xgr HOOK_LIST="so-activities so shibboleth"
+
+## 3.2 List of apps for content targeting
+##
+declare -xgr APPS_CT_MODULE_LIST="content-targeting-api\
+ report-campaign-content report-campaign-tracking-action report-user-segment-content\
+ rule-age rule-browser rule-device rule-facebook rule-gender rule-ip-geocode rule-organization-member\
+ rule-os rule-role rule-site-member rule-score-points rule-time rule-user-group-member rule-user-logged rule-visited\
+ tracking-action-content tracking-action-form tracking-action-link tracking-action-page tracking-action-youtube"
+declare -xgr APPS_CT_WEB_LIST="content-targeting"
+declare -xgr APPS_CT_HOOK_LIST="analytics\
+ simulator"
+
 ## 3.3 project lists initialization
 ##
 # first project is the Liferay portal itself
@@ -139,6 +164,11 @@ add_projects_Liferay_plugins "$PORTLET_LIST" "$PORTLET" "$SRC_PLUGINS_BASE" "$SR
 add_projects_Liferay_plugins "$HOOK_LIST" "$HOOK" "$SRC_PLUGINS_BASE" "$SRC_PLUGINS_LANG_PATH"
 # no translatable themes so far...
 #add_projects_Liferay_plugins "$THEME_LIST" "$THEME" "$SRC_PLUGINS_BASE" "$SRC_PLUGINS_LANG_PATH"
+
+# content targeting apps
+add_projects "$APPS_CT_MODULE_LIST" "$SRC_APPS_CT_BASE" "$SRC_APPS_CT_LANG_PATH"
+add_projects_Liferay_plugins "$APPS_CT_HOOK_LIST" "$HOOK"  "$SRC_APPS_CT_BASE"  "$SRC_PLUGINS_LANG_PATH"
+add_projects_Liferay_plugins "$APPS_CT_WEB_LIST" "$WEB"  "$SRC_APPS_CT_BASE"  "$SRC_PLUGINS_LANG_PATH"
 
 # make master lists readonly from now on
 declare -r PROJECT_NAMES
