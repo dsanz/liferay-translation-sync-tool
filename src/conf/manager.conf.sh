@@ -109,15 +109,15 @@ declare -xgr PORTLET_LIST="akismet\
  web-form wiki-navigation wsrp\
  youtube"
 declare -xgr PORTLET_SUFFIX="-portlet"
-declare -xgr PORTLET_SRC_PATH_PREFIX="${SRC_PLUGINS_BASE}portlets/"
+declare -xgr PORTLET_SRC_PATH_PREFIX="portlets/"
 # Themes
 declare -xgr THEME_LIST="noir"
 declare -xgr THEME_SUFFIX="-theme"
-declare -xgr THEME_SRC_PATH_PREFIX="${SRC_PLUGINS_BASE}themes/"
+declare -xgr THEME_SRC_PATH_PREFIX="themes/"
 # Hooks
 declare -xgr HOOK_LIST="so-activities so shibboleth"
 declare -xgr HOOK_SUFFIX="-hook"
-declare -xgr HOOK_SRC_PATH_PREFIX="${SRC_PLUGINS_BASE}hooks/"
+declare -xgr HOOK_SRC_PATH_PREFIX="hooks/"
 
 ## 3.2 Master lists
 ##
@@ -141,8 +141,7 @@ declare -xga PATH_BASE_DIR
 ##
 # first project is the Liferay portal itself
 PORTAL_PROJECT_ID=portal
-add_project "$PORTAL_PROJECT_ID" "$SRC_PORTAL_BASE$SRC_PORTAL_LANG_PATH"\
- "$SRC_PORTAL_BASE/portal-impl"
+add_project "$PORTAL_PROJECT_ID" "$SRC_PORTAL_BASE$" "SRC_PORTAL_LANG_PATH" "/portal-impl"
 # now, some plugins
 #add_projects "$PORTLET_LIST" $PORTLET_SUFFIX $PORTLET_SRC_PATH_PREFIX
 #add_projects "$HOOK_LIST" $HOOK_SUFFIX $HOOK_SRC_PATH_PREFIX
