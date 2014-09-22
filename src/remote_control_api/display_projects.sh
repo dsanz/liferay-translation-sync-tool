@@ -1,5 +1,5 @@
 #!/bin/bash
 
-. ./base_env.sh
+. remote_control_api/base_env.sh
 
 run_sync_tool "-l"
