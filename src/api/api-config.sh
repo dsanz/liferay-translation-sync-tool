@@ -128,6 +128,8 @@ function resolve_params() {
 			export QA_CHECK=1
 		elif [ "$param" = "--restoreBackup" ] || [ "$param" = "-B" ]; then
 			export RESTORE_BACKUP=1
+		elif [ "$param" = "--listProjects" ] || [ "$param" = "-l" ]; then
+			export LIST_PROJECTS=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else
@@ -224,6 +226,8 @@ Future version are expected to read a Language.properties file as well to match 
 
 	print_action "-B, --restoreBackup <backupID>" "Restores a Pootle data backup given its ID. The backup id is provided in the logs whenever the invoked action requires a backup"\
 			"backupID: the backup ID which will be used to locate backup files to be restored"
+
+	print_action "-l, --listProjects" "List all projects configured for the $LR_TRANS_MGR_PROFILE profile "
 
 	print_action "-h, --help" "Prints this help and exits"
 
