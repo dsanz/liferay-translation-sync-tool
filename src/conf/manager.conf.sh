@@ -67,13 +67,24 @@ declare -xgr LOG_DIR="$BASE_DIR/log"
 ##   (under git control, where forked & cloned repos are)
 # Those are required both for backport and for writing pootle export results.
 # EE repos are useful only for backport. CE repos are used for pootle sync
+
+# general variables
 declare -xgr SRC_BASE="$BASE_DIR/"
+declare -xgr SRC_CONTENT="src/content/"
+
+# liferay portal
 declare -xgr SRC_PORTAL_BASE="${SRC_BASE}liferay-portal/"
 declare -xgr SRC_PORTAL_EE_BASE="${SRC_BASE}liferay-portal-ee/"
-declare -xgr SRC_PORTAL_LANG_PATH="portal-impl/src/content/"
+declare -xgr SRC_PORTAL_LANG_PATH="portal-impl/$SRC_CONTENT"
+
+# liferay plugns
 declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}liferay-plugins/"
 declare -xgr SRC_PLUGINS_EE_BASE="${SRC_BASE}liferay-plugins-ee/"
-declare -xgr SRC_PLUGINS_LANG_PATH="docroot/WEB-INF/src/content/"
+declare -xgr SRC_PLUGINS_LANG_PATH="docroot/WEB-INF/$SRC_CONTENT"
+
+# liferay apps for content targeting
+declare -xgr SRC_APPS_CT_BASE="${SRC_BASE}liferay-apps-content-targeting/"
+declare -xgr SRC_APPS_CT_LANG_PATH="$SRC_CONTENT"
 
 # Git branches management
 declare -xgr WORKING_BRANCH="to-pootle-working"
@@ -91,7 +102,7 @@ declare -xgr LANG_SEP="_"
 ## Section 3: Translation projects
 ##
 
-## 3.1 List of plugins
+## 3.1 List of plugins from the Liferay plugins repo
 ##
 # Portlets
 declare -xgr PORTLET_LIST="akismet\
