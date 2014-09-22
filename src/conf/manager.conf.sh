@@ -148,11 +148,6 @@ add_project "$PORTAL_PROJECT_ID" "$SRC_PORTAL_BASE$" "SRC_PORTAL_LANG_PATH" "/po
 # no translatable themes so far...
 #add_projects "$THEME_LIST" $THEME_SUFFIX $THEME_SRC_PATH_PREFIX
 
-## 3.4 path lists initialization
-##
-# now that PROJECTS is filled, create the paths
-compute_working_paths
-
 # make master lists readonly from now on
 declare -r PROJECT_NAMES
 declare -r PROJECT_SRC
