@@ -105,43 +105,40 @@ declare -xgr PORTLET_LIST="akismet\
  vimeo\
  web-form wiki-navigation wsrp\
  youtube"
-declare -xgr PORTLET_SUFFIX="-portlet"
-declare -xgr PORTLET_SRC_PATH_PREFIX="${SRC_PLUGINS_BASE}portlets/"
+declare -xgr PORTLET="portlet"
 # Themes
 declare -xgr THEME_LIST="noir"
-declare -xgr THEME_SUFFIX="-theme"
-declare -xgr THEME_SRC_PATH_PREFIX="${SRC_PLUGINS_BASE}themes/"
+declare -xgr THEME="theme"
 # Hooks
 declare -xgr HOOK_LIST="so-activities so shibboleth"
-declare -xgr HOOK_SUFFIX="-hook"
-declare -xgr HOOK_SRC_PATH_PREFIX="${SRC_PLUGINS_BASE}hooks/"
+declare -xgr HOOK="hook"
 
 ## 3.2 Master lists
 ##
 # contains all project code names, as seen by pootle and source dirs
 declare -xga PROJECT_NAMES
+# contains an entry for each project, storing the project bsae source dir
 declare -xga PROJECT_SRC
+# contains an entry for each project, storing the ant dir where buils-lang target
+# is to be invoked
 declare -xga PROJECT_ANT
-# master path lists
+# contains an entry for each different base source dir, storing the list of
+# projects associated with that dir
 declare -xga PATH_PROJECTS
+# contains a set of different src base dir. The intent is to be used for git operations,
+# which affects all projects living in that basedir
 declare -xga PATH_BASE_DIR
 
 ## 3.3 project lists initialization
 ##
 # first project is the Liferay portal itself
 PORTAL_PROJECT_ID=portal
-add_project "$PORTAL_PROJECT_ID" "$SRC_PORTAL_BASE$SRC_PORTAL_LANG_PATH"\
- "$SRC_PORTAL_BASE/portal-impl"
+add_project "$PORTAL_PROJECT_ID" "$SRC_PORTAL_BASE" "SRC_PORTAL_LANG_PATH" "/portal-impl"
 # now, some plugins
-add_projects "$PORTLET_LIST" $PORTLET_SUFFIX $PORTLET_SRC_PATH_PREFIX
-add_projects "$HOOK_LIST" $HOOK_SUFFIX $HOOK_SRC_PATH_PREFIX
+add_projects "$PORTLET_LIST" "$PORTLET" "$SRC_PLUGINS_BASE" "$SRC_PLUGINS_LANG_PATH"
+add_projects "$HOOK_LIST" "$HOOK" "$SRC_PLUGINS_BASE" "$SRC_PLUGINS_LANG_PATH"
 # no translatable themes so far...
-#add_projects "$THEME_LIST" $THEME_SUFFIX $THEME_SRC_PATH_PREFIX
-
-## 3.4 path lists initialization
-##
-# now that PROJECTS is filled, create the paths
-compute_working_paths
+#add_projects "$THEME_LIST" "$THEME" "$SRC_PLUGINS_BASE" "$SRC_PLUGINS_LANG_PATH"
 
 # make master lists readonly from now on
 declare -r PROJECT_NAMES
