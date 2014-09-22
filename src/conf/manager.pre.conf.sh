@@ -6,6 +6,21 @@
 ###
 
 ################################################################################
+### Section 0: Environment
+###
+
+## ant
+ANT_BIN="/opt/apache-ant-1.9.0/bin/ant"
+export ANT_OPTS="-Xmx1024m -XX:MaxPermSize=512m"
+
+## java
+export JAVA_HOME="/usr/lib/jvm/jre-1.6.0-openjdk.x86_64/"
+
+## working dirs
+# all temp/work dirs are under BASE_DIR
+declare -xgr BASE_DIR="/opt"
+
+################################################################################
 ### Section 1: Pootle server installation
 ###
 
@@ -52,8 +67,6 @@ declare -xgr MYSQL_DUMP_COMMAND="mysqldump -u$DB_USER"
 
 ## 2.1 Working dirs
 ##
-# all temp/work dirs are under BASE_DIR
-declare -xgr BASE_DIR="/opt"
 declare -xgr TMP_DIR="$BASE_DIR/po-lf"
 declare -xgr TMP_PROP_IN_DIR="$TMP_DIR/prop_in"
 declare -xgr TMP_PROP_OUT_DIR="$TMP_DIR/prop_out"
@@ -176,17 +189,3 @@ declare -r PROJECT_SRC
 declare -r PROJECT_ANT
 declare -r PATH_PROJECTS
 declare -r PATH_BASE_DIR
-
-################################################################################
-### Section 4: Environment
-###
-
-## ant
-##
-ANT_BIN="/opt/apache-ant-1.9.0/bin/ant"
-export ANT_OPTS="-Xmx1024m -XX:MaxPermSize=512m"
-
-##
-## java
-export JAVA_HOME="/usr/lib/jvm/jre-1.6.0-openjdk.x86_64/"
-
