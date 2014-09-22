@@ -128,8 +128,6 @@ declare -xga PROJECT_SRC
 # contains an entry for each project, storing the ant dir where buils-lang target
 # is to be invoked
 declare -xga PROJECT_ANT
-
-# master path lists (computed from the PROJECT_NAMES and PROJECT_SRC arrays)
 # contains an entry for each different base source dir, storing the list of
 # projects associated with that dir
 declare -xga PATH_PROJECTS
