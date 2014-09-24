@@ -41,9 +41,9 @@ declare -xgr FS_GID="apache"
 ## 1.2 Pootle server http access
 ##           (allows us to communicate with a living pootle server)
 # server URL
-declare -xgr PO_HOST="localhost"
-declare -xgr PO_PORT="80"
-declare -xgr PO_SRV="http://$PO_HOST:$PO_PORT/pootle"
+declare -xgr PO_HOST="lrdcom-vm-108.liferay.com"
+declare -xgr PO_PORT="443"
+declare -xgr PO_SRV="https://$PO_HOST:$PO_PORT/pootle"
 declare -xgr PO_COOKIES="$BASE_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
 # a valid pootle user with administration privileges
 declare -xgr PO_USER="manager"
