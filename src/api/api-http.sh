@@ -20,5 +20,5 @@ function start_pootle_session() {
 }
 
 function is_pootle_server_up() {
-	wget -q --delete-after $PO_SRV
+	wget -q --delete-after "$PO_SRV/accounts/login"
 }
