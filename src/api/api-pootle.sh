@@ -207,7 +207,7 @@ function rename_pootle_notifications_notice_entries() {
 }
 
 function exists_project_in_pootle() {
-	wget --spider "$PO_PROJECTS_URL/$1" 2>&1 | grep 200 > /dev/null
+	wget --spider "$PO_SRV/projects/$1" 2>&1 | grep 200 > /dev/null
 }
 
 function rename_pootle_project() {
