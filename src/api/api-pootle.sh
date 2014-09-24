@@ -13,7 +13,7 @@ function call_manage() {
 
 
 	invoke="python $MANAGE_DIR/manage.py $command $args $python_path_arg $settings_arg"
-	logt 5 -n $invoke
+	logt 5 -n "$invoke"
 	$invoke > /dev/null 2>&1
 	check_command
 }
