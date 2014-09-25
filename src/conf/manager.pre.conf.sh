@@ -10,7 +10,7 @@
 ###
 
 ## ant
-ANT_BIN="/opt/apache-ant-1.9.0/bin/ant"
+ANT_BIN="/opt/apache-ant-1.9.4/bin/ant"
 export ANT_OPTS="-Xmx1024m -XX:MaxPermSize=512m"
 
 ## java
