@@ -14,7 +14,7 @@ ANT_BIN="/opt/apache-ant-1.9.0/bin/ant"
 export ANT_OPTS="-Xmx1024m -XX:MaxPermSize=512m"
 
 ## java
-export JAVA_HOME="/usr/lib/jvm/jre-1.6.0-openjdk.x86_64/"
+export JAVA_HOME="/opt/jdk1.7.0_67/"
 
 ## working dirs
 # all temp/work dirs are under BASE_DIR
