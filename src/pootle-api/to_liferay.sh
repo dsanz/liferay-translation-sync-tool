@@ -144,6 +144,8 @@ function update_pootle_files() {
 
 # Pootle exports its translations into ascii-encoded properties files. This converts them to UTF-8
 function ascii_2_native() {
+}
+function ascii_2_native_orig() {
 	logt 1 "Converting properties files to native ..."
 	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
 	do
