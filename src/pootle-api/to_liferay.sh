@@ -154,7 +154,7 @@ function ascii_2_native() {
 			if [[ "$language" =~ $trans_file_rexp ]]; then
 				pl="$TMP_PROP_OUT_DIR/$project/$language"
 				logt 0 -n "$(get_locale_from_file_name $language) "
-				[ -f $pl ] && native2ascii -reverse -encoding utf8 $pl "$pl.native"
+				[ -f $pl ] && $JAVA_HOME/bin/native2ascii -reverse -encoding utf8 $pl "$pl.native"
 				[ -f "$pl.native" ] && mv --force "$pl.native" $pl
 			fi
 		done
