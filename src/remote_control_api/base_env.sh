@@ -4,5 +4,7 @@ export HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 
 
 function run_sync_tool() {
-  $BASH_HOME/bash $SYNC_TOOL_HOME/pootle-manager.sh $@
+  echo "Running sync tool: $BASH_HOME/bash $SYNC_TOOL_HOME/pootle-manager.sh $@"
+  cd $SYNC_TOOL_HOME
+  $BASH_HOME/bash pootle-manager.sh $@ 2>&1
 }

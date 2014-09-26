@@ -1,5 +1,5 @@
-#!/bin/bash
+export HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 
-. remote_control_api/base_env.sh
+. $HOME_DIR/base_env.sh
 
 run_sync_tool "-R"
