@@ -145,7 +145,7 @@ declare -xgr PORTLET_LIST="akismet\
  knowledge-base\
  mail marketplace microblogs\
  opensocial\
- private-messaging push-notifications\\
+ private-messaging push-notifications\
  social-coding social-networking so\
  tasks twitter\
  vimeo\
