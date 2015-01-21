@@ -5,7 +5,7 @@ export HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 # source code repos
 export BASE_DIR="/opt"
 
-exportSRC_BASE="$BASE_DIR/"
+export SRC_BASE="$BASE_DIR/"
 
 # liferay portal
 export SRC_PORTAL_BASE="${SRC_BASE}liferay-portal/"
