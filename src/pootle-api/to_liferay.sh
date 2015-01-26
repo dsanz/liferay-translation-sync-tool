@@ -100,7 +100,19 @@ function push_changes() {
 	check_command
 }
 
+function ant_all() {
+	logt 1 "Running ant all for portal master"
+	logt 3 -n "cd $SRC_PORTAL_BASE"
+	cd ${SRC_PORTAL_BASE}
+	check_command
+	ant_log="$logbase/$PORTAL_PROJECT_ID/ant-all.log"
+	logt 2 -n "$ANT_BIN all (all output redirected to $ant_log)"
+	$ANT_BIN all > "$ant_log" 2>&1
+	check_command
+}
+
 function ant_build_lang() {
+	ant_all
 	logt 1 "Running ant build-lang"
 	for (( i=0; i<${#PROJECT_ANT[@]}; i++ ));
 	do
