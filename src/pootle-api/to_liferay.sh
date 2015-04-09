@@ -77,7 +77,7 @@ function do_commit() {
 				git checkout -b "$EXPORT_BRANCH" > /dev/null 2>&1
 				check_command
 			fi
-			msg="$commit_msg [by $product]"
+			msg="$LPS_CODE $commit_msg [by $product]"
 			logt 3 "Committing..."
 			logt 4 -n "git commit -a -m $msg"
 			git commit -a -m "$msg" > /dev/null 2>&1
