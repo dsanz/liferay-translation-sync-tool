@@ -29,9 +29,9 @@ function prepare_source_dirs() {
 
 function do_commit() {
 	reuse_branch=$1
-	push_changes=$2
+	submit_pr=$2
 	commit_msg=$3
-	logt 1 "Committing results (reusing branch?=${reuse_branch}, will push?=$push_changes)"
+	logt 1 "Committing results (reusing branch?=${reuse_branch}, will submit pr?=$submit_pr)"
 	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
 	do
 		base_src_dir=${PATH_BASE_DIR[$i]}
@@ -85,15 +85,17 @@ function do_commit() {
 		else
 			logt 3 "No changes to commit!!"
 		fi
-		if $push_changes; then
-			push_changes
+		if $submit_pr; then
+			submit_pull_request
 		fi
 	done;
 }
 
-function push_changes() {
-	logt 3 -n "git push origin $EXPORT_BRANCH"
-	git push -f origin "$EXPORT_BRANCH" > /dev/null 2>&1
+function submit_pull_request() {
+	logt 3 -n "Deleting remote branch origin/$EXPORT_BRANCH"
+	git push origin ":$EXPORT_BRANCH" > /dev/null 2>&1
+	logt 3 -n "Sending pull request to $PR_REVIEWER"
+	gh pr --submit "$PR_REVIEWER" > /dev/null 2>&1
 	check_command
 	logt 3 -n "git checkout master"
 	git checkout master > /dev/null 2>&1
