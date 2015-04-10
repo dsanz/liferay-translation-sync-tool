@@ -106,6 +106,12 @@ declare -xgr WORKING_BRANCH="to-pootle-working"
 declare -xgr LAST_BRANCH="child-of-latest-export-to-liferay"
 declare -xgr EXPORT_BRANCH="pootle-export"
 
+# Git commit msg
+declare -xgr LPS_CODE="LPS-00000"
+
+# GitHub pull request reviewer
+declare -xgr PR_REVIEWER="dsanz"
+
 ## 2.3 File naming
 ##
 # How does language file look like (e.g. Language.properties)
