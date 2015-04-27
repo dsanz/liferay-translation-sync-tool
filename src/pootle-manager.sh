@@ -17,6 +17,7 @@ function load_api() {
 	. api/api-version.sh
 	. api/api-pootle.sh
 	. api/api-quality.sh
+	. api/api-mail.sh
 	. backporter-api/api-files.sh
 	. backporter-api/api-git.sh
 	. backporter-api/api-properties.sh
@@ -220,6 +221,8 @@ main() {
 	if [[ -z ${LR_TRANS_MGR_TAIL_LOG+x} ]]; then
 		kill $tail_log_pid
 	fi;
+
+	send_email $logfile
 
 	[ ! $HELP ] &&	echo "[DONE] $product"
 }
