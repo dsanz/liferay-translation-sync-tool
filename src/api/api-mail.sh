@@ -8,7 +8,8 @@ function send_email() {
 	echo "MIME-Version: 1.0" ;
 	echo "Content-Type: text/html;charset=\"UTF-8\"" ;
 	echo "Content-Transfer-Encoding: quoted-printable";
+	echo
 	echo "Command: $command"
 	echo "Log: ";
-	cat $logfile)|sendmail -t
+	cat $logfile | $ANSI2HTML_BIN --bg=dark)|sendmail -t
 }

@@ -28,6 +28,8 @@ export BC_BIN="$BC_HOME/bc/bc"
 ## hub (git + hub = github)
 export HUB_BIN="$HUB_HOME/hub"
 
+## ansi2html
+export ANSI2HTML_BIN="$ANSI2HTML_HOME/ansi2html.sh"
 
 ################################################################################
 ### Section 1: Pootle server installation
