@@ -8,18 +8,26 @@
 ################################################################################
 ### Section 0: Environment
 ###
-
-## ant
-##
-ANT_BIN="ant"
-export ANT_OPTS="-Xmx1024m -XX:MaxPermSize=512m"
-
-## java
-#export JAVA_HOME="/usr/lib/jvm/jre-1.6.0-openjdk.x86_64/"
+### Note: setEnv script should have defined some *_HOME variables.
 
 ## working dirs
 # all temp/work dirs are under BASE_DIR
 declare -xgr BASE_DIR="/opt"
+
+## ant
+##
+export ANT_BIN="$ANT_HOME/ant"
+export ANT_OPTS="-Xmx1024m -XX:MaxPermSize=512m"
+
+## java
+export NATIVE2ASCII_BIN="$JAVA_HOME/bin/native2ascii"
+
+## bc
+export BC_BIN="$BC_HOME/bc/bc"
+
+## hub (git + hub = github)
+export HUB_BIN="$HUB_HOME/hub"
+
 
 ################################################################################
 ### Section 1: Pootle server installation
@@ -99,18 +107,21 @@ declare -xgr SRC_PLUGINS_LANG_PATH="docroot/WEB-INF/$SRC_CONTENT"
 declare -xgr SRC_APPS_CT_BASE="${SRC_BASE}liferay-apps-content-targeting/"
 declare -xgr SRC_APPS_CT_LANG_PATH="$SRC_CONTENT"
 
+## 2.3 Git & github
+##
+
 # Git branches management
 declare -xgr WORKING_BRANCH="to-pootle-working"
 declare -xgr LAST_BRANCH="child-of-latest-export-to-liferay"
 declare -xgr EXPORT_BRANCH="pootle-export"
 
-# Git commit msg
+# Git commit msg (all commits to portal master require an LPS number)
 declare -xgr LPS_CODE="LPS-00000"
 
 # GitHub pull request reviewer
 declare -xgr PR_REVIEWER="dsanz"
 
-## 2.3 File naming
+## 2.4 File naming
 ##
 # How does language file look like (e.g. Language.properties)
 declare -xgr FILE="Language"
