@@ -94,8 +94,10 @@ function do_commit() {
 function submit_pull_request() {
 	logt 3 -n "Deleting remote branch origin/$EXPORT_BRANCH"
 	git push origin ":$EXPORT_BRANCH" > /dev/null 2>&1
+	logt 3 -n "Pushing remote branch origin/$EXPORT_BRANCH"
+	git push origin "$EXPORT_BRANCH" > /dev/null 2>&1
 	logt 3 -n "Sending pull request to $PR_REVIEWER"
-	gh pr --submit "$PR_REVIEWER" > /dev/null 2>&1
+	$HUB_BIN pull-request -m "Translations from pootle. Automatic PR sent by $product" -b "$PR_REVIEWER":master -h $EXPORT_BRANCH > /dev/null 2>&1
 	check_command
 	logt 3 -n "git checkout master"
 	git checkout master > /dev/null 2>&1
@@ -171,7 +173,7 @@ function ascii_2_native_orig() {
 			if [[ "$language" =~ $trans_file_rexp ]]; then
 				pl="$TMP_PROP_OUT_DIR/$project/$language"
 				logt 0 -n "$(get_locale_from_file_name $language) "
-				[ -f $pl ] && $JAVA_HOME/bin/native2ascii -reverse -encoding utf8 $pl "$pl.native"
+				[ -f $pl ] && NATIVE2ASCII_BIN -reverse -encoding utf8 $pl "$pl.native"
 				[ -f "$pl.native" ] && mv --force "$pl.native" $pl
 			fi
 		done

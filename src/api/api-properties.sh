@@ -132,7 +132,7 @@ function read_locale_file() {
 		done < $1
 	fi
 	after=$(date +%s%N)
-	loglc 0 $GREEN "[$lines lines read in $(echo "scale=3;($after - $before)/(1*10^09)" | bc) s.] "
+	loglc 0 $GREEN "[$lines lines read in $(echo "scale=3;($after - $before)/(1*10^09)" | $BC_BIN) s.] "
 }
 
 function restore_file_ownership() {
