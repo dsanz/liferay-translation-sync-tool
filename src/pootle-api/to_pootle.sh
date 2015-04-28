@@ -85,7 +85,11 @@ function create_branch_at_child_of_last_export_commit() {
 	child_of_last_export="HEAD"
 	last_export_commit=$(git log -n 1 --grep "$product_name" --after 2012 --format=format:"%H")
 	if [[ $last_export_commit == "" ]]; then
-		logt 5 "I couldn't find a previous export commit"
+		logt 5 "I couldn't find a previous export commit containing $product_name"
+		last_export_commit=$(git log -n 1 --grep "$old_product_name" --after 2012 --format=format:"%H")
+	fi;
+	if [[ $last_export_commit == "" ]]; then
+		logt 5 "I couldn't find a previous export commit containing $old_product_name"
 	else
 		child_of_last_export=$(git rev-list --children --after 2012 HEAD | grep "^$last_export_commit" | cut -f 2 -d ' ')
 	fi;
