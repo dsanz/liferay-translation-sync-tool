@@ -1,7 +1,9 @@
-liferay-pootle-manager
-======================
+Liferay Translation Manager
+===========================
 
-Scripts for automating integration between pootle and liferay, and many more!
+Scripts for automating integration between pootle and liferay, and backporting translations to maintenance branches.
+
+Following points have been replaced for an installation script which does everything and will be part of the tool
 
 Git installation on CentOS
 - https://gist.github.com/eddarmitage/2001099
