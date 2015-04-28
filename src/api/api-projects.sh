@@ -1,3 +1,11 @@
+function add_git_root() {
+	git_root_dir=$1
+	pr_reviewer=$2
+
+	GIT_ROOTS["$git_root_dir"]=$git_root_dir;
+	PR_REVIEWER["$git_root_dir"]=$pr_reviewer;
+}
+
 # given a project name, returns the path where the Language* files are stored
 function get_project_language_path() {
 	project="$1"
