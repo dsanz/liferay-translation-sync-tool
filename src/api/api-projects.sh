@@ -35,24 +35,11 @@ function add_project() {
 	lang_rel_path="$3"
 	ant_rel_path="$4"
 
-	PROJECT_NAMES[${#PROJECT_NAMES[@]}]="$project_name"
-	PROJECT_SRC[${#PROJECT_SRC[@]}]="$source_base_path$lang_rel_path"
-	PROJECT_ANT[${#PROJECT_ANT[@]}]="$source_base_path$ant_rel_path"
-
-	local idx=-1;
-	local j;
-	for (( j=0; j<${#PATH_BASE_DIR[@]}; j++ ));
-	do
-		if [[ "${PATH_BASE_DIR[$j]}" == "$source_base_path" ]]; then
-			idx=$j;
-		fi;
-	done;
-	if [[ $idx == -1 ]]; then
-		idx=${#PATH_BASE_DIR[@]};
-	fi;
-
-	PATH_BASE_DIR[$idx]="$source_base_path"
-	PATH_PROJECTS[$idx]=" $project_name"${PATH_PROJECTS[$idx]}
+	PROJECT_NAMES["$project_name"]="$project_name"
+	PROJECT_SRC["$project_name"]="$source_base_path$lang_rel_path"
+	PROJECT_ANT["$project_name"]="$source_base_path$ant_rel_path"
+	PATH_BASE_DIR["$source_base_path"]="$source_base_path"
+	PATH_PROJECTS["$source_base_path"]=" $project_name"${PATH_PROJECTS["$source_base_path"]}
 }
 
 # adds a bunch of projects to the project arrays. This function is specific for
