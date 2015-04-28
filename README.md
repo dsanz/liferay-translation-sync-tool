@@ -1,5 +1,5 @@
-Liferay Translation Manager
-===========================
+Liferay Translation Sync Tool
+=============================
 
 Scripts for automating integration between pootle and liferay, and backporting translations to maintenance branches.
 
