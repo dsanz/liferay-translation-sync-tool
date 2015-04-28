@@ -1,14 +1,3 @@
-# Given a project, returns the root dir where sources are supposed to be
-function get_src_base_dir() {
-	project="$1"
-	if [[ $project == $PORTAL_PROJECT_ID ]]; then
-		result=$SRC_PORTAL_BASE;
-	else
-		result=$SRC_PLUGINS_BASE;
-	fi;
-	echo $result
-}
-
 # given a project name, returns the path where the Language* files are stored
 function get_project_language_path() {
 	project="$1"
