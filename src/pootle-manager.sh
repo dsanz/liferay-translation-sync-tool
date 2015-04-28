@@ -18,6 +18,7 @@ function load_api() {
 	. api/api-pootle.sh
 	. api/api-quality.sh
 	. api/api-mail.sh
+	. api/api-projects.sh
 	. backporter-api/api-files.sh
 	. backporter-api/api-git.sh
 	. backporter-api/api-properties.sh
