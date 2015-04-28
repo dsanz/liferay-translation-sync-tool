@@ -222,7 +222,7 @@ main() {
 		kill $tail_log_pid
 	fi;
 
-	send_email $logfile
+	send_email $logfile $@
 
 	[ ! $HELP ] &&	echo "[DONE] $product"
 }
