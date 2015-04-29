@@ -11,6 +11,6 @@ function send_email() {
 		--header "Subject: $product $(date)" \
 		--add-header "Content-Type: text/html ; charset=\"UTF-8\"" \
 		--add-header "MIME-Version: 1.0" \
-		--body /tmp/body.html \
+		--attach-type "text/html" --attach /tmp/body.html \
 		--attach /tmp/log.tgz > /dev/null 2>&1
 }
