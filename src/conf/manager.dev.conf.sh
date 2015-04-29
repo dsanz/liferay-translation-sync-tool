@@ -143,7 +143,7 @@ declare -xgA PROJECT_SRC_LANG_BASE
 declare -xgA PROJECT_ANT_BUILD_LANG_DIR
 # contains an entry for each different base source dir, storing the list of
 # projects associated with that dir
-declare -xgA PATH_PROJECTS
+declare -xgA PROJECTS_BY_GIT_ROOT
 # contains an entry for each git repo we are working with. It stores the root dir for each repo.
 declare -xgA GIT_ROOTS
 
@@ -208,5 +208,5 @@ add_projects_Liferay_plugins "$HOOK_LIST" "$HOOK" "$SRC_PLUGINS_BASE" "$SRC_PLUG
 declare -r PROJECT_NAMES
 declare -r PROJECT_SRC_LANG_BASE
 declare -r PROJECT_ANT_BUILD_LANG_DIR
-declare -r PATH_PROJECTS
+declare -r PROJECTS_BY_GIT_ROOT
 declare -r GIT_ROOTS

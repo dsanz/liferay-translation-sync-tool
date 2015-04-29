@@ -21,7 +21,7 @@ function add_project() {
 	PROJECT_SRC_LANG_BASE["$project_name"]="$git_root_dir$lang_rel_path"
 	PROJECT_ANT_BUILD_LANG_DIR["$project_name"]="$git_root_dir$ant_rel_path"
 	GIT_ROOTS["$git_root_dir"]="$git_root_dir"
-	PATH_PROJECTS["$git_root_dir"]=" $project_name"${PATH_PROJECTS["$git_root_dir"]}
+	PROJECTS_BY_GIT_ROOT["$git_root_dir"]=" $project_name"${PROJECTS_BY_GIT_ROOT["$git_root_dir"]}
 }
 
 # adds a bunch of projects to the project arrays. This function is specific for
