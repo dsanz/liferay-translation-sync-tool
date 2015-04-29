@@ -86,7 +86,7 @@ function pootle2src() {
 }
 
 function display_projects() {
-	logt 1 "Working project list by git root (${#PROJECT_NAMES[@]} projects, ${#PROJECTS_BY_GIT_ROOT[@]} git roots) "
+	logt 1 "Working project list by git root (${#PROJECT_NAMES[@]} projects, ${#GIT_ROOTS[@]} git roots) "
 	for git_root in "${!GIT_ROOTS[@]}"; do
 		project_list="$(echo ${PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 		projects=$(echo "$project_list" | wc -l)
