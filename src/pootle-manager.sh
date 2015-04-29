@@ -94,7 +94,7 @@ function display_projects() {
 		while read project; do
 			project=$(printf "%-35s%s" "$project")
 			logt 3 -n "$project"
-			project_src="${PROJECT_SRC["$project"]"
+			project_src="${PROJECT_SRC["$project"]}"
 			log -n $project_src
 			[ -d $project_src ]
 			check_command
