@@ -5,10 +5,8 @@
 
 function update_pootle_db() {
 	logt 1 "Updating pootle database..."
-	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
-	do
-		project=${PROJECT_NAMES[$i]}
-		src_dir=${PROJECT_SRC[$i]}
+	for project in "${!PROJECT_NAMES[@]}"; do
+		src_dir=${PROJECT_SRC["$project"]}
 		logt 2 "$project: "
 		logt 3 "Updating the set of translatable keys"
 		logt 4 -n "Copying project files "

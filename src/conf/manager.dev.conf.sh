@@ -138,7 +138,7 @@ declare -xgr LANG_SEP="_"
 # contains all project code names, as seen by pootle and source dirs
 declare -xgA PROJECT_NAMES
 # contains an entry for each project, storing the project bsae source dir
-declare -xga PROJECT_SRC
+declare -xgA PROJECT_SRC
 # contains an entry for each project, storing the ant dir where buils-lang target
 # is to be invoked
 declare -xga PROJECT_ANT
