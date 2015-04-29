@@ -118,7 +118,7 @@ function generate_additions() {
 			git checkout $WORKING_BRANCH > /dev/null 2>&1
 			for project in $projects; do
 				logt 3 "$project"
-				path=$(get_project_language_path "$project")
+				path="${PROJECT_SRC["$project"]}"
 				generate_addition "$path" "$project"
 			done;
 		else

@@ -299,7 +299,7 @@ function refill_translations() {
 	path=$(get_pootle_path $project $locale)
 
 	# involved file paths
-	srcfile=$(get_project_language_path $project)/$language
+	srcfile="${PROJECT_SRC["$project"]}/$language"
 	workingfile="${srcfile}.final"
 	copyingLogfile="$logbase/$project/$language"
 	conflictsLogPootle="$logbase/$project/$language.conflicts.pootle"
@@ -478,7 +478,7 @@ function read_previous_language_file() {
 	project="$1";
 	language="$2";
 	locale=$(get_locale_from_file_name $language)
-	sources=$(get_project_language_path $project)
+	sources="${PROJECT_SRC["$project"]}"
 	langFile="$sources/$language"
 	git checkout $LAST_BRANCH > /dev/null 2>&1   # just in case we have run with -p. Now we are in the las update branch
 	prefix=$(get_previous_language_prefix $project $locale)

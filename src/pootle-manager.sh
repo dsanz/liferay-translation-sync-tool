@@ -123,7 +123,7 @@ function backport_all() {
 	logt 1 "Backporting"
 	for project in "${!PROJECT_NAMES[@]}"; do
 		logt 2 "$project"
-		source_dir="$(get_project_language_path $project)"
+		source_dir="${PROJECT_SRC["$project"]}"
 		target_dir=$(get_ee_target_dir $source_dir)
 		backport_project "$project" "$source_dir" "$target_dir"
 	done;

@@ -6,13 +6,6 @@ function add_git_root() {
 	PR_REVIEWER["$git_root_dir"]=$pr_reviewer;
 }
 
-# given a project name, returns the path where the Language* files are stored
-function get_project_language_path() {
-	project="$1"
-	result="${PROJECT_SRC["$project"]}";
-	echo "$result"
-}
-
 # Adds a new project to the project arrays. Requires 4 parameters
 #  - project name (eg "sibboleth-hook")
 #  - source base path: root of source code for that project (git root dir)
