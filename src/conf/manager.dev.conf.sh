@@ -141,7 +141,7 @@ declare -xgA PROJECT_NAMES
 declare -xgA PROJECT_SRC_LANG_BASE
 # contains an entry for each project, storing the ant dir where buils-lang target
 # is to be invoked
-declare -xga PROJECT_ANT
+declare -xgA PROJECT_ANT
 # contains an entry for each different base source dir, storing the list of
 # projects associated with that dir
 declare -xga PATH_PROJECTS

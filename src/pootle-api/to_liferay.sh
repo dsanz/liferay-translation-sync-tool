@@ -126,10 +126,8 @@ function ant_all() {
 function ant_build_lang() {
 	ant_all
 	logt 1 "Running ant build-lang"
-	for (( i=0; i<${#PROJECT_ANT[@]}; i++ ));
-	do
-		ant_dir=${PROJECT_ANT[$i]}
-		project=${PROJECT_NAMES[$i]}
+	for project in "${!PROJECT_NAMES[@]}"; do
+		ant_dir="${PROJECT_ANT[$project]}"
 		logt 2 "$project"
 		logt 3 -n "cd $ant_dir"
 		cd $ant_dir
