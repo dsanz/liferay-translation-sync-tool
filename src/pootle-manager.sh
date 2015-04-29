@@ -113,9 +113,7 @@ function backport_all() {
 
 	# prepare git for all base-paths
 	logt 1 "Preparing involved directories"
-	for (( i=0; i<${#GIT_ROOTS[@]}; i++ ));
-	do
-		base_src_dir=${GIT_ROOTS[$i]}
+	for base_src_dir in "${!GIT_ROOTS[@]}"; do
 		check_git "$base_src_dir" "$(get_ee_target_dir $base_src_dir)" "$source_branch" "$target_branch"
 	done
 
@@ -130,9 +128,7 @@ function backport_all() {
 
 	# commit result is again done on a base-path basis
 	logt 1 "Committing backport process results"
-	for (( i=0; i<${#GIT_ROOTS[@]}; i++ ));
-	do
-		base_src_dir=${GIT_ROOTS[$i]}
+	for base_src_dir in "${!GIT_ROOTS[@]}"; do
 		commit_result  "$base_src_dir" "$(get_ee_target_dir $base_src_dir)"
 	done
 

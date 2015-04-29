@@ -22,9 +22,7 @@ function prepare_output_dirs() {
 
 function prepare_source_dirs() {
 	logt 1 "Preparing project source dirs..."
-	for (( i=0; i<${#GIT_ROOTS[@]}; i++ ));
-	do
-		base_src_dir=${GIT_ROOTS[$i]}
+	for base_src_dir in "${!GIT_ROOTS[@]}"; do
 		goto_master "$base_src_dir"
 	done;
 }
@@ -34,9 +32,7 @@ function do_commit() {
 	submit_pr=$2
 	commit_msg=$3
 	logt 1 "Committing results (reusing branch?=${reuse_branch}, will submit pr?=$submit_pr)"
-	for (( i=0; i<${#GIT_ROOTS[@]}; i++ ));
-	do
-		base_src_dir=${GIT_ROOTS[$i]}
+	for base_src_dir in "${!GIT_ROOTS[@]}"; do
 		cd $base_src_dir
 		logt 2 "$base_src_dir"
 

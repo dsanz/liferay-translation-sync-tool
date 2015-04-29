@@ -147,7 +147,7 @@ declare -xgA PROJECT_ANT_BUILD_LANG_DIR
 declare -xga PATH_PROJECTS
 # contains a set of different src base dir. The intent is to be used for git operations,
 # which affects all projects living in that basedir
-declare -xga GIT_ROOTS
+declare -xgA GIT_ROOTS
 
 ## 3.1 List of plugins from the Liferay plugins repo
 ##
