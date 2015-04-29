@@ -145,8 +145,7 @@ declare -xgA PROJECT_ANT_BUILD_LANG_DIR
 # contains an entry for each different base source dir, storing the list of
 # projects associated with that dir
 declare -xga PATH_PROJECTS
-# contains a set of different src base dir. The intent is to be used for git operations,
-# which affects all projects living in that basedir
+# contains an entry for each git repo we are working with. It stores the root dir for each repo.
 declare -xgA GIT_ROOTS
 
 ## 3.1 List of plugins from the Liferay plugins repo
