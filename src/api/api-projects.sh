@@ -9,18 +9,7 @@ function add_git_root() {
 # given a project name, returns the path where the Language* files are stored
 function get_project_language_path() {
 	project="$1"
-	local j;
-	for (( j=0; j<${#PROJECT_NAMES[@]}; j++ ));
-	do
-		if [[ "${PROJECT_NAMES[$j]}" == "$project" ]]; then
-			idx=$j;
-		fi;
-	done;
-	if [[ $idx == -1 ]]; then
-		result=""
-	else
-		result="${PROJECT_SRC[$idx]}";
-	fi;
+	result="${PROJECT_SRC["$project"]}";
 	echo "$result"
 }
 
