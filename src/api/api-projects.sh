@@ -20,7 +20,7 @@ function add_project() {
 	PROJECT_NAMES["$project_name"]="$project_name"
 	PROJECT_SRC_LANG_BASE["$project_name"]="$git_root_dir$lang_rel_path"
 	PROJECT_ANT_BUILD_LANG_DIR["$project_name"]="$git_root_dir$ant_rel_path"
-	PATH_BASE_DIR["$git_root_dir"]="$git_root_dir"
+	GIT_ROOTS["$git_root_dir"]="$git_root_dir"
 	PATH_PROJECTS["$git_root_dir"]=" $project_name"${PATH_PROJECTS["$git_root_dir"]}
 }
 

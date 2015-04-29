@@ -47,7 +47,7 @@ function setup_working_branches() {
 	for (( i=0; i<${#PATH_PROJECTS[@]}; i++ ));
 	do
 		projects=${PATH_PROJECTS[$i]}
-		path=${PATH_BASE_DIR[$i]}
+		path=${GIT_ROOTS[$i]}
 		logt 2 "$path"
 		logt 3 "for projects:$projects"
 		goto_master "$path";
@@ -107,10 +107,10 @@ function create_branch_at_child_of_last_export_commit() {
 
 function generate_additions() {
 	logt 1 "Calculating committed translations from last export commit"
-	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
+	for (( i=0; i<${#GIT_ROOTS[@]}; i++ ));
 	do
 		projects=${PATH_PROJECTS[$i]}
-		base_src_dir=${PATH_BASE_DIR[$i]}
+		base_src_dir=${GIT_ROOTS[$i]}
 		cd $base_src_dir
 		logt 2 "$base_src_dir"
 		create_branch_at_child_of_last_export_commit "$base_src_dir"

@@ -90,7 +90,7 @@ function display_projects() {
 	for (( i=0; i<${#PATH_PROJECTS[@]}; i++ ));  do
 		project_list="$(echo ${PATH_PROJECTS[$i]} | sed 's: :\n:g' | sort)"
 		projects=$(echo "$project_list" | wc -l)
-		logt 2 "${PATH_BASE_DIR[$i]} ($projects projects)"
+		logt 2 "${GIT_ROOTS[$i]} ($projects projects)"
 		while read project; do
 			project=$(printf "%-35s%s" "$project")
 			logt 3 -n "$project"
@@ -113,9 +113,9 @@ function backport_all() {
 
 	# prepare git for all base-paths
 	logt 1 "Preparing involved directories"
-	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
+	for (( i=0; i<${#GIT_ROOTS[@]}; i++ ));
 	do
-		base_src_dir=${PATH_BASE_DIR[$i]}
+		base_src_dir=${GIT_ROOTS[$i]}
 		check_git "$base_src_dir" "$(get_ee_target_dir $base_src_dir)" "$source_branch" "$target_branch"
 	done
 
@@ -130,9 +130,9 @@ function backport_all() {
 
 	# commit result is again done on a base-path basis
 	logt 1 "Committing backport process results"
-	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
+	for (( i=0; i<${#GIT_ROOTS[@]}; i++ ));
 	do
-		base_src_dir=${PATH_BASE_DIR[$i]}
+		base_src_dir=${GIT_ROOTS[$i]}
 		commit_result  "$base_src_dir" "$(get_ee_target_dir $base_src_dir)"
 	done
 
