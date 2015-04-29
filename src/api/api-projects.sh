@@ -19,7 +19,7 @@ function add_project() {
 
 	PROJECT_NAMES["$project_name"]="$project_name"
 	PROJECT_SRC_LANG_BASE["$project_name"]="$source_base_path$lang_rel_path"
-	PROJECT_ANT["$project_name"]="$source_base_path$ant_rel_path"
+	PROJECT_ANT_BUILD_LANG_DIR["$project_name"]="$source_base_path$ant_rel_path"
 	PATH_BASE_DIR["$source_base_path"]="$source_base_path"
 	PATH_PROJECTS["$source_base_path"]=" $project_name"${PATH_PROJECTS["$source_base_path"]}
 }

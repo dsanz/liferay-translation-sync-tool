@@ -142,7 +142,7 @@ declare -xgA PROJECT_NAMES
 declare -xgA PROJECT_SRC_LANG_BASE
 # contains an entry for each project, storing the ant dir where buils-lang target
 # is to be invoked
-declare -xgA PROJECT_ANT
+declare -xgA PROJECT_ANT_BUILD_LANG_DIR
 # contains an entry for each different base source dir, storing the list of
 # projects associated with that dir
 declare -xga PATH_PROJECTS
@@ -208,6 +208,6 @@ add_projects_Liferay_plugins "$APPS_CT_WEB_LIST" "$WEB"  "$SRC_APPS_CT_BASE"  "$
 # make master lists readonly from now on
 declare -r PROJECT_NAMES
 declare -r PROJECT_SRC_LANG_BASE
-declare -r PROJECT_ANT
+declare -r PROJECT_ANT_BUILD_LANG_DIR
 declare -r PATH_PROJECTS
 declare -r PATH_BASE_DIR
