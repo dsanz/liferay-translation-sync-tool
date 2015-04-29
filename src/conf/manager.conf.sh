@@ -31,6 +31,8 @@ export BC_BIN="$BC_HOME/bc/bc"
 ## hub (git + hub = github)
 export HUB_BIN="$HUB_HOME/hub"
 
+## ansi2html
+export ANSI2HTML_BIN="$ANSI2HTML_HOME/ansi2html.sh"
 
 ################################################################################
 ### Section 1: Pootle server installation
@@ -193,6 +195,10 @@ declare -xgr APPS_CT_HOOK_LIST="analytics\
 ##
 # first project is the Liferay portal itself
 PORTAL_PROJECT_ID=portal
+add_git_root "$SRC_PORTAL_BASE"
+add_git_root "$SRC_PLUGINS_BASE"
+add_git_root "$SRC_APPS_CT_BASE"
+
 add_project "$PORTAL_PROJECT_ID" "$SRC_PORTAL_BASE" "$SRC_PORTAL_LANG_PATH" "/portal-impl"
 # now, some plugins
 add_projects_Liferay_plugins "$PORTLET_LIST" "$PORTLET" "$SRC_PLUGINS_BASE" "$SRC_PLUGINS_LANG_PATH"
