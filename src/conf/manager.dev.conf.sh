@@ -143,7 +143,7 @@ declare -xgA PROJECT_SRC_LANG_BASE
 declare -xgA PROJECT_ANT_BUILD_LANG_DIR
 # contains an entry for each different base source dir, storing the list of
 # projects associated with that dir
-declare -xga PATH_PROJECTS
+declare -xgA PATH_PROJECTS
 # contains an entry for each git repo we are working with. It stores the root dir for each repo.
 declare -xgA GIT_ROOTS
 

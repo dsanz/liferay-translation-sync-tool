@@ -87,13 +87,12 @@ function pootle2src() {
 
 function display_projects() {
 	logt 1 "Working project list by git root (${#PROJECT_NAMES[@]} projects, ${#PATH_PROJECTS[@]} git roots) "
-	for (( i=0; i<${#PATH_PROJECTS[@]}; i++ ));  do
-		project_list="$(echo ${PATH_PROJECTS[$i]} | sed 's: :\n:g' | sort)"
+	for git_root in "${!GIT_ROOTS[@]}"; do
+		project_list="$(echo ${PATH_PROJECTS["$git_root"]} | sed 's: :\n:g' | sort)"
 		projects=$(echo "$project_list" | wc -l)
-		logt 2 "${GIT_ROOTS[$i]} ($projects projects)"
+		logt 2 "$git_root ($projects projects)"
 		while read project; do
-			project=$(printf "%-35s%s" "$project")
-			logt 3 -n "$project"
+			logt 3 -n "$(printf "%-35s%s" "$project")"
 			project_src="${PROJECT_SRC_LANG_BASE["$project"]}"
 			log -n $project_src
 			[ -d $project_src ]

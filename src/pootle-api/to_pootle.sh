@@ -44,14 +44,12 @@ function create_working_branch() {
 
 function setup_working_branches() {
 	logt 1 "Setting up git branches for project(s)"
-	for (( i=0; i<${#PATH_PROJECTS[@]}; i++ ));
-	do
-		projects=${PATH_PROJECTS[$i]}
-		path=${GIT_ROOTS[$i]}
-		logt 2 "$path"
+	for base_src_dir in "${!GIT_ROOTS[@]}"; do
+		projects="${PATH_PROJECTS[$"git_root"]}"
+		logt 2 "$base_src_dir"
 		logt 3 "for projects:$projects"
-		goto_master "$path";
-		create_working_branch "$path"
+		goto_master "$base_src_dir";
+		create_working_branch "$base_src_dir"
 	done;
 }
 
@@ -107,10 +105,8 @@ function create_branch_at_child_of_last_export_commit() {
 
 function generate_additions() {
 	logt 1 "Calculating committed translations from last export commit"
-	for (( i=0; i<${#GIT_ROOTS[@]}; i++ ));
-	do
-		projects=${PATH_PROJECTS[$i]}
-		base_src_dir=${GIT_ROOTS[$i]}
+	for base_src_dir in "${!GIT_ROOTS[@]}"; do
+		projects="${PATH_PROJECTS["$base_src_dir"]}"
 		cd $base_src_dir
 		logt 2 "$base_src_dir"
 		create_branch_at_child_of_last_export_commit "$base_src_dir"
