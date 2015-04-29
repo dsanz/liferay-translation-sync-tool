@@ -9,8 +9,8 @@ function get_param() {
 }
 
 function get_locales_from_source() {
-	source_dir="${PROJECT_SRC_LANG_BASE["$project"]}"
-	echo $(ls -l $source_dir/Language_* | cut -f 1 -d . | cut -f 2- -d _)
+	src_dir="${PROJECT_SRC_LANG_BASE["$project"]}"
+	echo $(ls -l $src_dir/Language_* | cut -f 1 -d . | cut -f 2- -d _)
 }
 
 # $1 - This parameter must contain $@ (parameters to resolve).
