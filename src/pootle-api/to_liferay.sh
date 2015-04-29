@@ -5,9 +5,8 @@
 
 function prepare_output_dir() {
 	project="$1"
-	logt 2 -n "$project: cleaning output working dirs"
+	logt 2 "$project: cleaning output working dirs"
 	clean_dir "$TMP_PROP_OUT_DIR/$project"
-	check_command
 }
 
 # creates temporary working dirs for working with pootle output
@@ -16,9 +15,8 @@ function prepare_output_dirs() {
 	logt 2 -n "Cleaning general output working dirs"
 	clean_dir "$TMP_PROP_OUT_DIR/"
 	check_command
-	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
-	do
-		prepare_output_dir "${PROJECT_NAMES[$i]}"
+	for project in "${!PROJECT_NAMES[@]}"; do
+		prepare_output_dir "$project"
 	done
 }
 
@@ -119,9 +117,7 @@ function ant_all() {
 	logt 3 -n "cd $SRC_PORTAL_BASE"
 	cd ${SRC_PORTAL_BASE}
 	check_command
-	ant_log_dir="$logbase/$PORTAL_PROJECT_ID"
-	ant_log="$ant_log_dir/ant-all.log"
-	check_dir $ant_log_dir
+	ant_log="$logbase/$PORTAL_PROJECT_ID/ant-all.log"
 	logt 2 -n "$ANT_BIN all (all output redirected to $ant_log)"
 	$ANT_BIN all > "$ant_log" 2>&1
 	check_command

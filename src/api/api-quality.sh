@@ -3,9 +3,7 @@
 function run_quality_checks() {
 	logt 1 "Running quality checks"
 
-	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
-	do
-		project=${PROJECT_NAMES[$i]}
+	for project in "${!PROJECT_NAMES[@]}"; do
 		languages=`ls $PODIR/$project`
 		logt 2 "$project"
 		logt 3 "Setting up per-project log file"

@@ -90,8 +90,7 @@ function uniformize_pootle_paths() {
 function rescan_files() {
 	logt 1 "Rescaning project files"
 	start_pootle_session
-	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
-		project=${PROJECT_NAMES[$i]}
+	for project in "${!PROJECT_NAMES[@]}"; do
 		logt 2 "$project"
 		languages=`ls $PODIR/$project/`
 		for language in $languages; do

@@ -25,12 +25,9 @@ function prepare_input_dirs() {
 	logt 2 -n "Cleaning general input working dir"
 	clean_dir "$TMP_PROP_IN_DIR/"
 	check_command
-	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
-	do
-		project=${PROJECT_NAMES[$i]}
-		logt 2 -n "$project: cleaning input working dirs"
+	for project in "${!PROJECT_NAMES[@]}"; do
+		logt 2 "$project: cleaning input working dirs"
 		clean_dir "$TMP_PROP_IN_DIR/$project"
-		check_command
 	done
 }
 

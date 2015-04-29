@@ -121,8 +121,7 @@ function backport_all() {
 
 	# backport is done on a project basis
 	logt 1 "Backporting"
-	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
-		project=${PROJECT_NAMES[$i]}
+	for project in "${!PROJECT_NAMES[@]}"; do
 		logt 2 "$project"
 		source_dir="$(get_project_language_path $project)"
 		target_dir=$(get_ee_target_dir $source_dir)
