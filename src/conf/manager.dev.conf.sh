@@ -138,7 +138,7 @@ declare -xgr LANG_SEP="_"
 # contains all project code names, as seen by pootle and source dirs
 declare -xgA PROJECT_NAMES
 # contains an entry for each project, storing the project bsae source dir
-declare -xgA PROJECT_SRC
+declare -xgA PROJECT_SRC_LANG_BASE
 # contains an entry for each project, storing the ant dir where buils-lang target
 # is to be invoked
 declare -xga PROJECT_ANT
@@ -208,7 +208,7 @@ add_projects_Liferay_plugins "$HOOK_LIST" "$HOOK" "$SRC_PLUGINS_BASE" "$SRC_PLUG
 
 # make master lists readonly from now on
 declare -r PROJECT_NAMES
-declare -r PROJECT_SRC
+declare -r PROJECT_SRC_LANG_BASE
 declare -r PROJECT_ANT
 declare -r PATH_PROJECTS
 declare -r PATH_BASE_DIR

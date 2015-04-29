@@ -94,7 +94,7 @@ function display_projects() {
 		while read project; do
 			project=$(printf "%-35s%s" "$project")
 			logt 3 -n "$project"
-			project_src="${PROJECT_SRC["$project"]}"
+			project_src="${PROJECT_SRC_LANG_BASE["$project"]}"
 			log -n $project_src
 			[ -d $project_src ]
 			check_command
@@ -123,7 +123,7 @@ function backport_all() {
 	logt 1 "Backporting"
 	for project in "${!PROJECT_NAMES[@]}"; do
 		logt 2 "$project"
-		source_dir="${PROJECT_SRC["$project"]}"
+		source_dir="${PROJECT_SRC_LANG_BASE["$project"]}"
 		target_dir=$(get_ee_target_dir $source_dir)
 		backport_project "$project" "$source_dir" "$target_dir"
 	done;

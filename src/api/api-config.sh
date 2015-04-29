@@ -9,7 +9,7 @@ function get_param() {
 }
 
 function get_locales_from_source() {
-	source_dir="${PROJECT_SRC["$project"]}"
+	source_dir="${PROJECT_SRC_LANG_BASE["$project"]}"
 	echo $(ls -l $source_dir/Language_* | cut -f 1 -d . | cut -f 2- -d _)
 }
 

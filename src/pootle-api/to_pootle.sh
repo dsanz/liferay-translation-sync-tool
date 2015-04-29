@@ -6,7 +6,7 @@
 function update_pootle_db() {
 	logt 1 "Updating pootle database..."
 	for project in "${!PROJECT_NAMES[@]}"; do
-		src_dir=${PROJECT_SRC["$project"]}
+		src_dir=${PROJECT_SRC_LANG_BASE["$project"]}
 		logt 2 "$project: "
 		logt 3 "Updating the set of translatable keys"
 		logt 4 -n "Copying project files "
@@ -118,7 +118,7 @@ function generate_additions() {
 			git checkout $WORKING_BRANCH > /dev/null 2>&1
 			for project in $projects; do
 				logt 3 "$project"
-				path="${PROJECT_SRC["$project"]}"
+				path="${PROJECT_SRC_LANG_BASE["$project"]}"
 				generate_addition "$path" "$project"
 			done;
 		else
