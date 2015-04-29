@@ -75,10 +75,10 @@ function generate_addition() {
 
 function create_branch_at_child_of_last_export_commit() {
 	# assume we are now in master
-	src_dir="$1"
+	base_src_dir="$1"
 	logt 3 "Creating branch at child of last export commit"
 	logt 4 "Searching git history for last export commit"
-	cd $src_dir
+	cd $base_src_dir
 	child_of_last_export="HEAD"
 	last_export_commit=$(git log -n 1 --grep "$product_name" --after 2012 --format=format:"%H")
 	if [[ $last_export_commit == "" ]]; then
