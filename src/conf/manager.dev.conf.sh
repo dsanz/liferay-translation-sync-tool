@@ -119,8 +119,8 @@ declare -xgr EXPORT_BRANCH="pootle-export"
 # Git commit msg (all commits to portal master require an LPS number)
 declare -xgr LPS_CODE="LPS-00000"
 
-# GitHub pull request reviewer
-declare -xgr PR_REVIEWER="dsanz"
+# GitHub pull request default reviewer
+declare -xgr DEFAULT_PR_REVIEWER="dsanz"
 
 ## 2.4 File naming
 ##
@@ -146,6 +146,8 @@ declare -xgA PROJECT_ANT_BUILD_LANG_DIR
 declare -xgA PROJECTS_BY_GIT_ROOT
 # contains an entry for each git repo we are working with. It stores the root dir for each repo.
 declare -xgA GIT_ROOTS
+# holds a list of github account names for the reviewer of each git root
+declare -xgA PR_REVIEWER
 
 ## 3.1 List of plugins from the Liferay plugins repo
 ##
@@ -210,3 +212,4 @@ declare -r PROJECT_SRC_LANG_BASE
 declare -r PROJECT_ANT_BUILD_LANG_DIR
 declare -r PROJECTS_BY_GIT_ROOT
 declare -r GIT_ROOTS
+declare -r PR_REVIEWER

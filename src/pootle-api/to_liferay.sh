@@ -84,22 +84,29 @@ function do_commit() {
 			logt 3 "No changes to commit!!"
 		fi
 		if $submit_pr; then
-			submit_pull_request
+			submit_pull_request $base_src_dir
 		fi
 	done;
 }
 
 function submit_pull_request() {
+	base_src_dir="$1"
 	logt 3 -n "Deleting remote branch origin/$EXPORT_BRANCH"
 	git push origin ":$EXPORT_BRANCH" > /dev/null 2>&1
 	check_command
 
 	logt 3 -n "Pushing remote branch origin/$EXPORT_BRANCH"
 	git push origin "$EXPORT_BRANCH" > /dev/null 2>&1
-	check_command
 
-	logt 3 -n "Sending pull request to $PR_REVIEWER"
-	pr_url=$($HUB_BIN pull-request -m "Translations from pootle. Automatic PR sent by $product" -b "$PR_REVIEWER":master -h $EXPORT_BRANCH)
+	reviewer=$PR_REVIEWER["$base_src_dir"]
+	default_reviewer=false;
+	if [[ "abc$reviewer" == "abc" ]]; then
+		default_reviewer=true;
+		reviewer=$DEFAULT_PR_REVIEWER
+	fi
+
+	logt 3 -n "Sending pull request to $reviewer (default: $default_reviewer)"
+	pr_url=$($HUB_BIN pull-request -m "Translations from pootle. Automatic PR sent by $product" -b "$reviewer":master -h $EXPORT_BRANCH)
 	check_command
 
 	logt 4 "Pull request URL: $pr_url"
