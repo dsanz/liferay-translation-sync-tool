@@ -1,15 +1,16 @@
 function send_email() {
-	logfile=$1;
 	command="$0 $@";
 
-	(echo "From: sync-tool-no-reply@liferay.com";
-	echo "To: daniel.sanz@liferay.com";
-	echo "Subject: $product $(date)";
-	echo "MIME-Version: 1.0" ;
-	echo "Content-Type: text/html;charset=\"UTF-8\"" ;
-	echo "Content-Transfer-Encoding: quoted-printable";
-	echo
-	echo "Command: $command"
-	echo "Log: ";
-	cat $logfile | $ANSI2HTML_BIN --bg=dark)|sendmail -t
+	echo "Command: $command <br>" > /tmp/body.html
+	cat $logfile | $ANSIFILTER_HOME/ansifilter -H -e UTF-8 -w256 -F monospace | sed 's/font-family/background:#000000;font-family/g' >> /tmp/body.html
+	rm /tmp/log.tgz > /dev/null 2>&1
+	tar czvf /tmp/log.tgz $logbase
+
+	$SWAKS_HOME/swaks -t daniel.sanz@liferay.com \
+		--from "sync-tool-no-reply@liferay.com" \
+		--header "Subject: $product $(date)" \
+		--add-header "Content-Type: text/html ; charset=\"UTF-8\"" \
+		--add-header "MIME-Version: 1.0" \
+		--body /tmp/body.html \
+		--attach /tmp/log.tgz > /dev/null 2>&1
 }

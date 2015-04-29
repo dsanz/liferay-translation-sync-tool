@@ -89,8 +89,8 @@ function set_log_dir() {
 	dirname=$(date +%Y-%m);
 	subdirname=$(date +%F_%H-%M-%S)
 	filename="pootle_manager.log";
-	logbase="$LOG_DIR/$dirname/$subdirname/"
-	logfile="$logbase$filename";
+	declare -g logbase="$LOG_DIR/$dirname/$subdirname/"
+	declare -g logfile="$logbase$filename";
 	# this can't be logged because log is not ready yet
 	printf "$LILA[$(date +%T.%3N)]${COLOROFF}$CYAN  Preparing log file $logfile\n"
 	# logbase dir has to be created prior to check_dir call
