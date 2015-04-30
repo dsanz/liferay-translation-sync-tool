@@ -80,7 +80,6 @@ declare -xgr MYSQL_DUMP_COMMAND="mysqldump -u$DB_USER -p$DB_PASS"
 ## 2.1 Working dirs
 ##
 # all temp/work dirs are under BASE_DIR
-declare -xgr BASE_DIR="/home/dsanz"
 declare -xgr TMP_DIR="$BASE_DIR/po-lf"
 declare -xgr TMP_PROP_IN_DIR="$TMP_DIR/prop_in"
 declare -xgr TMP_PROP_OUT_DIR="$TMP_DIR/prop_out"
