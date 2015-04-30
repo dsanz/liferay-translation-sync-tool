@@ -52,9 +52,9 @@ declare -xgr FS_GID="apache"
 ## 1.2 Pootle server http access
 ##           (allows us to communicate with a living pootle server)
 # server URL
-declare -xgr PO_HOST="localhost"
+declare -xgr PO_HOST="cloud-10-50-0-102.liferay.com"
 declare -xgr PO_PORT="80"
-declare -xgr PO_SRV="http://$PO_HOST:$PO_PORT"
+declare -xgr PO_SRV="https://$PO_HOST/pootle"
 declare -xgr PO_COOKIES="$TMP_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
 # a valid pootle user with administration privileges
 declare -xgr PO_USER="manager"
@@ -69,8 +69,8 @@ declare -xgr DB_USER="root"
 declare -xgr DB_PASS="test"
 # How DB dump/restore commands look like (depends on pootle installation)
 declare -xgr DB_NAME="pootle"
-declare -xgr MYSQL_COMMAND="mysql -u$DB_USER -p$DB_PASS"
-declare -xgr MYSQL_DUMP_COMMAND="mysqldump -u$DB_USER -p$DB_PASS"
+declare -xgr MYSQL_COMMAND="mysql"
+declare -xgr MYSQL_DUMP_COMMAND="mysqldump"
 
 ################################################################################
 ### Section 2: Dirs and files required to work
