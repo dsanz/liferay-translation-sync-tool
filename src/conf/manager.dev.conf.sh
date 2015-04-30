@@ -38,22 +38,22 @@ export ANSI2HTML_BIN="$ANSI2HTML_HOME/ansi2html.sh"
 ## 1.1 Directories
 ##
 # manage.py will be invoked here. Can be a standalone or module installation
-declare -xgr MANAGE_DIR="/usr/local/lib/python2.7/dist-packages/django/conf/project_template"
+declare -xgr MANAGE_DIR="/usr/lib/python2.6/site-packages/django/conf/project_template"
 # python path for the pootle module. Leave it blank in standalone installations
-declare -xgr POOTLE_PYTHONPATH="/opt/Pootle-2.1.6"
+declare -xgr POOTLE_PYTHONPATH=""
 # name settings for pootle module. Leave it blank in standalone installations
 declare -xgr POOTLE_SETTINGS="pootle.settings"
 # location of translation files for Pootle DB update/sync
-declare -xgr PODIR="/opt/Pootle-2.1.6/po"
+declare -xgr PODIR="/var/lib/pootle/po"
 # fs credentials. Used to restore Pootle exported files ownership inside $PODIR
-declare -xgr FS_UID="dsanz"
-declare -xgr FS_GID="dsanz"
+declare -xgr FS_UID="apache"
+declare -xgr FS_GID="apache"
 
 ## 1.2 Pootle server http access
 ##           (allows us to communicate with a living pootle server)
 # server URL
 declare -xgr PO_HOST="localhost"
-declare -xgr PO_PORT="8080"
+declare -xgr PO_PORT="80"
 declare -xgr PO_SRV="http://$PO_HOST:$PO_PORT"
 declare -xgr PO_COOKIES="$TMP_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
 # a valid pootle user with administration privileges
