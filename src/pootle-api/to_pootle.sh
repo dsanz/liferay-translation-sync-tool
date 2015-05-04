@@ -69,7 +69,7 @@ function get_last_export_commit() {
 	fi;
 	msg="$msg using child_of_last_export"
 	logt 4 "$msg"
-	$child_of_last_export;
+	echo "$child_of_last_export";
 }
 
 function generate_additions() {
