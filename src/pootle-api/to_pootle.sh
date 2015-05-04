@@ -32,36 +32,35 @@ function generate_addition() {
 	project="$1"
 	path="$2"
 	file="$3"
-	language_file="$path/$file"
 	commit="$4"
 
-	if [[ "$language_file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
-		logt 5 -n "Generating additions from: git diff $commit $language_file "
-		git diff $commit $language_file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$project/$file
+	cd $path > /dev/null 2>&1
+	if [[ "$file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
+		logt 5 -n "Generating additions from: git diff $commit $file "
+		git diff $commit $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$project/$file
 		number_of_additions=$(cat "$TMP_PROP_IN_DIR/$project/$file" | wc -l)
 		color="$WHITE"
 		if [[ $number_of_additions -eq 0 ]]; then
 			rm "$TMP_PROP_IN_DIR/$project/$file"
 			color="$COLOROFF"
 		fi;
-		loglc 0 "$color" -n $(get_locale_from_file_name $language_file)"($number_of_additions) "
+		loglc 0 "$color" -n $(get_locale_from_file_name $file)"($number_of_additions) "
 	fi;
 	log ""
 }
 
 function get_last_export_commit() {
 	# assume we are now in master
-	base_src_dir="$1"
-	path="$2"
-	language_file="$path/$3"
+	path="$1"
+	file="$2"
 
-	msg="$language_file: "
-	cd $base_src_dir
+	msg="$file: "
+	cd $path
 	child_of_last_export="HEAD"
-	last_export_commit=$(git log -n 1 --grep "$product_name" --after 2012 --format=format:"%H" $language_file)
+	last_export_commit=$(git log -n 1 --grep "$product_name" --after 2012 --format=format:"%H" $file)
 	if [[ $last_export_commit == "" ]]; then
 		msg="$msg (no export commit containing $product_name) "
-		last_export_commit=$(git log -n 1 --grep "$old_product_name" --after 2012 --format=format:"%H" $language_file)
+		last_export_commit=$(git log -n 1 --grep "$old_product_name" --after 2012 --format=format:"%H" $file)
 	fi;
 	if [[ $last_export_commit == "" ]]; then
 		msg="$msg (no export commit containing $product_name) "
@@ -84,7 +83,7 @@ function generate_additions() {
 			path="${PROJECT_SRC_LANG_BASE["$project"]}"
 			cd $path > /dev/null 2>&1
 			for language_file in $(ls ${FILE}${LANG_SEP}*.$PROP_EXT 2>/dev/null); do
-				commit=$(get_last_export_commit "$base_src_dir" "$path" "$language_file")
+				commit=$(get_last_export_commit "$path" "$language_file")
 				generate_addition "$project" "$path" "$language_file" "$commit"
 			done
 		done;
