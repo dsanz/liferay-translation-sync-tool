@@ -35,18 +35,15 @@ function generate_addition() {
 	commit="$4"
 
 	cd $path > /dev/null 2>&1
-	if [[ "$file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
-		logt 5 -n "Generating additions from: git diff $commit $file "
-		git diff $commit $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$project/$file
-		number_of_additions=$(cat "$TMP_PROP_IN_DIR/$project/$file" | wc -l)
-		color="$WHITE"
-		if [[ $number_of_additions -eq 0 ]]; then
-			rm "$TMP_PROP_IN_DIR/$project/$file"
-			color="$COLOROFF"
-		fi;
-		loglc 0 "$color" -n $(get_locale_from_file_name $file)"($number_of_additions) "
+	logt 5 -n "Generating additions from: git diff $commit $file "
+	git diff $commit $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$project/$file
+	number_of_additions=$(cat "$TMP_PROP_IN_DIR/$project/$file" | wc -l)
+	color="$WHITE"
+	if [[ $number_of_additions -eq 0 ]]; then
+		rm "$TMP_PROP_IN_DIR/$project/$file"
+		color="$LIGHT_GRAY"
 	fi;
-	log ""
+	loglc 0 "$color" "($number_of_additions) "
 }
 
 function get_last_export_commit() {
@@ -54,7 +51,7 @@ function get_last_export_commit() {
 	path="$1"
 	file="$2"
 
-	msg="$file: "
+	msg="$(get_locale_from_file_name $file): "
 	cd $path
 	child_of_last_export="HEAD"
 	last_export_commit=$(git log -n 1 --grep "$product_name" --after 2012 --format=format:"%H" $file)
@@ -67,8 +64,8 @@ function get_last_export_commit() {
 	else
 		child_of_last_export=$(git rev-list --children --after 2012 HEAD | grep "^$last_export_commit" | cut -f 2 -d ' ')
 	fi;
-	msg="$msg using $child_of_last_export"
-	logt 4 "$msg"
+	msg="$msg using $child_of_last_export "
+	logt 4 -n "$msg"
 	echo "$child_of_last_export";
 }
 
@@ -82,9 +79,11 @@ function generate_additions() {
 			logt 3 "$project"
 			path="${PROJECT_SRC_LANG_BASE["$project"]}"
 			cd $path > /dev/null 2>&1
-			for language_file in $(ls ${FILE}${LANG_SEP}*.$PROP_EXT 2>/dev/null); do
-				commit=$(get_last_export_commit "$path" "$language_file")
-				generate_addition "$project" "$path" "$language_file" "$commit"
+			for file in $(ls ${FILE}${LANG_SEP}*.$PROP_EXT 2>/dev/null); do
+				if [[ "$file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
+					commit=$(get_last_export_commit "$path" "$file")
+					generate_addition "$project" "$path" "$file" "$commit"
+				fi;
 			done
 		done;
 	done;

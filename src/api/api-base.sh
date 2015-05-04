@@ -77,7 +77,7 @@ function logt() {
 		1) color=$CYAN ;;
 		2) color=$WHITE ;;
 		3) color=$YELLOW ;;
-		4) color=$COLOROFF ;;
+		4) color=$LIGHT_GRAY ;;
 	esac;
 	length=$(( $depth * 2 ))
 	shift 1;
