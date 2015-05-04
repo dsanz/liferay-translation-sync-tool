@@ -168,7 +168,7 @@ declare -xgr PORTLET_LIST="akismet\
  mail marketplace microblogs\
  opensocial\
  private-messaging push-notifications\
- social-coding social-networking so\
+ social-coding so\
  tasks twitter\
  vimeo\
  web-form wiki-navigation wsrp\
