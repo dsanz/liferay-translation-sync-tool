@@ -266,15 +266,6 @@ function get_store_language_prefix() {
 	echo "s$1$2"
 }
 
-function is_from_template() {
-	project="$1"
-	locale="$2"
-	key="$3"
-	#templatePrefix=$(get_template_prefix $project $locale)
-	#exportedPrefix=$(get_exported_language_prefix $project $locale)
-	! $(value_changed $templatePrefix $exportedPrefix $key)
-}
-
 # Due to pootle exports all untranslated keys, there is no way to know if a value in Language_xx.properties
 # comes from an untranslated keys or a key which valid value in that language is the same than english.
 # This distinction is crucial to skip auto translating terms which are better known if the english word is used.
