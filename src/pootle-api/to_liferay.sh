@@ -220,7 +220,7 @@ function process_translations() {
 				logt 2 "$project: $locale"
 				logt 3 "Reading $language file"
 				read_pootle_exported_language_file $project $language
-				logt 3 "Reading $language file from source branch (at last commit uploaded to pootle)"
+				logt 3 "Reading $language file from source code branch (just pulled)"
 				read_previous_language_file $project $language
 				logt 3 "Reading pootle store"
 				read_pootle_store $project $language
@@ -464,7 +464,6 @@ function read_previous_language_file() {
 	locale=$(get_locale_from_file_name $language)
 	sources="${PROJECT_SRC_LANG_BASE["$project"]}"
 	langFile="$sources/$language"
-	git checkout $LAST_BRANCH > /dev/null 2>&1   # just in case we have run with -p. Now we are in the las update branch
 	prefix=$(get_previous_language_prefix $project $locale)
 	read_locale_file $langFile $prefix
 }
