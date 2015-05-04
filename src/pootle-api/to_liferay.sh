@@ -114,7 +114,9 @@ function ant_all() {
 	logt 3 -n "cd $SRC_PORTAL_BASE"
 	cd ${SRC_PORTAL_BASE}
 	check_command
-	ant_log="$logbase/$PORTAL_PROJECT_ID/ant-all.log"
+	ant_log_dir="$logbase/$PORTAL_PROJECT_ID"
+	ant_log="$ant_log_dir/ant-all.log"
+	check_dir $ant_log_dir
 	logt 2 -n "$ANT_BIN all (all output redirected to $ant_log)"
 	$ANT_BIN all > "$ant_log" 2>&1
 	check_command
