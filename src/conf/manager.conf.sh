@@ -115,7 +115,6 @@ declare -xgr SRC_APPS_CT_LANG_PATH="$SRC_CONTENT"
 ##
 
 # Git branches management
-declare -xgr LAST_BRANCH="child-of-latest-export-to-liferay"
 declare -xgr EXPORT_BRANCH="pootle-export"
 
 # Git commit msg (all commits to portal master require an LPS number)
