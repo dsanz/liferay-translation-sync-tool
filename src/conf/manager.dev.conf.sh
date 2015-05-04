@@ -176,7 +176,7 @@ declare -xgr PORTLET_LIST="akismet\
 # Themes
 declare -xgr THEME_LIST="noir"
 # Hooks
-declare -xgr HOOK_LIST="so-activities so shibboleth"
+declare -xgr HOOK_LIST="so-activities so"
 
 ## 3.2 List of apps for content targeting
 ##
