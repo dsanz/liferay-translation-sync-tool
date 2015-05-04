@@ -1,6 +1,11 @@
 #!/bin/bash
 
 function backup_db() {
+	if [[ "${DO_BACKUPS}x" == "1x" ]]; then
+		logt 1 "Not creating backup. Please set DO_BACKUPS env variable to \"1\" to do them."
+		return;
+	fi;
+
 	logt 1  "Backing up pootle data..."
 	base_dir=$(date +%Y-%m);
 	backup_dir=$(date +%F_%H-%M-%S)
