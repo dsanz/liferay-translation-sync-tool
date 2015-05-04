@@ -73,9 +73,9 @@ function src2pootle() {
 function pootle2src() {
 	loglc 1 $RED "Begin Sync[Pootle -> Liferay source code]"
 	display_projects
-	prepare_source_dirs
-	prepare_output_dirs
-	update_pootle_files
+	pull_source_code
+	clean_temp_output_dirs
+	export_pootle_translations_to_temp_dirs
 	ascii_2_native
 	restore_file_ownership
 	process_translations
@@ -173,8 +173,8 @@ function add_project_in_pootle() {
 function check_quality() {
 	loglc 1 $RED "Begin Quality Checks"
 	display_projects
-	prepare_output_dirs
-	update_pootle_files
+	clean_temp_output_dirs
+	export_pootle_translations_to_temp_dirs
 	ascii_2_native
 	run_quality_checks
 	loglc 1 $RED "End Quality Checks"

@@ -10,7 +10,7 @@ function prepare_output_dir() {
 }
 
 # creates temporary working dirs for working with pootle output
-function prepare_output_dirs() {
+function clean_temp_output_dirs() {
 	logt 1 "Preparing project output working dirs..."
 	logt 2 "Cleaning general output working dirs"
 	clean_dir "$TMP_PROP_OUT_DIR/"
@@ -19,7 +19,7 @@ function prepare_output_dirs() {
 	done
 }
 
-function prepare_source_dirs() {
+function pull_source_code() {
 	logt 1 "Preparing project source dirs..."
 	for base_src_dir in "${!GIT_ROOTS[@]}"; do
 		goto_master "$base_src_dir"
@@ -143,7 +143,7 @@ function ant_build_lang() {
 ## Pootle communication functions
 
 # tells pootle to export its translations to properties files inside webapp dirs
-function update_pootle_files() {
+function export_pootle_translations_to_temp_dirs() {
 	logt 1 "Updating pootle files from pootle DB..."
 	for project in "${!PROJECT_NAMES[@]}"; do
 		logt 2 "$project"
