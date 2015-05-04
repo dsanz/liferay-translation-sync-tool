@@ -31,12 +31,13 @@ function clean_temp_input_dirs() {
 function generate_addition() {
 	project="$1"
 	path="$2"
-	language_file="$path/$3"
+	file="$3"
+	language_file="$path/$file"
 	commit="$4"
 
 	if [[ "$language_file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
-		logt 5 -n "Generating additions from: git diff $commit $file "
-		git diff $commit $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$project/$file
+		logt 5 -n "Generating additions from: git diff $commit $language_file "
+		git diff $commit $language_file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$project/$file
 		number_of_additions=$(cat "$TMP_PROP_IN_DIR/$project/$file" | wc -l)
 		color="$WHITE"
 		if [[ $number_of_additions -eq 0 ]]; then
@@ -67,7 +68,7 @@ function get_last_export_commit() {
 	else
 		child_of_last_export=$(git rev-list --children --after 2012 HEAD | grep "^$last_export_commit" | cut -f 2 -d ' ')
 	fi;
-	msg="$msg using child_of_last_export"
+	msg="$msg using $child_of_last_export"
 	logt 4 "$msg"
 	echo "$child_of_last_export";
 }
