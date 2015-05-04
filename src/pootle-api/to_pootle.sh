@@ -43,7 +43,7 @@ function generate_addition() {
 		rm "$TMP_PROP_IN_DIR/$project/$file"
 		color="$LIGHT_GRAY"
 	fi;
-	loglc 0 "$color" -n "($number_of_additions)   "
+	loglc 4 "$color" "$commit $(get_locale_from_file_name $file) ($number_of_additions)"
 }
 
 function get_last_export_commit() {
@@ -63,8 +63,6 @@ function get_last_export_commit() {
 	else
 		child_of_last_export=$(git rev-list --children --after 2012 HEAD | grep "^$last_export_commit" | cut -f 2 -d ' ')
 	fi;
-	msg="$msg$child_of_last_export "
-	logt 4 -n "$msg"
 	echo "$child_of_last_export";
 }
 
@@ -82,7 +80,6 @@ function generate_additions() {
 				if [[ "$file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
 					commit=$(get_last_export_commit "$path" "$file")
 					generate_addition "$project" "$path" "$file" "$commit"
-					log ""
 				fi;
 			done
 		done;
