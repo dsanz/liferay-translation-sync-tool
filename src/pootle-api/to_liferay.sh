@@ -5,9 +5,8 @@
 
 function prepare_output_dir() {
 	project="$1"
-	logt 2 -n "$project: cleaning output working dirs"
+	logt 2 "$project: cleaning output working dirs"
 	clean_dir "$TMP_PROP_OUT_DIR/$project"
-	check_command
 }
 
 # creates temporary working dirs for working with pootle output
@@ -16,17 +15,14 @@ function prepare_output_dirs() {
 	logt 2 -n "Cleaning general output working dirs"
 	clean_dir "$TMP_PROP_OUT_DIR/"
 	check_command
-	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
-	do
-		prepare_output_dir "${PROJECT_NAMES[$i]}"
+	for project in "${!PROJECT_NAMES[@]}"; do
+		prepare_output_dir "$project"
 	done
 }
 
 function prepare_source_dirs() {
 	logt 1 "Preparing project source dirs..."
-	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
-	do
-		base_src_dir=${PATH_BASE_DIR[$i]}
+	for base_src_dir in "${!GIT_ROOTS[@]}"; do
 		goto_master "$base_src_dir"
 	done;
 }
@@ -36,9 +32,7 @@ function do_commit() {
 	submit_pr=$2
 	commit_msg=$3
 	logt 1 "Committing results (reusing branch?=${reuse_branch}, will submit pr?=$submit_pr)"
-	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
-	do
-		base_src_dir=${PATH_BASE_DIR[$i]}
+	for base_src_dir in "${!GIT_ROOTS[@]}"; do
 		cd $base_src_dir
 		logt 2 "$base_src_dir"
 
@@ -90,12 +84,13 @@ function do_commit() {
 			logt 3 "No changes to commit!!"
 		fi
 		if $submit_pr; then
-			submit_pull_request
+			submit_pull_request $base_src_dir
 		fi
 	done;
 }
 
 function submit_pull_request() {
+	base_src_dir="$1"
 	logt 3 -n "Deleting remote branch origin/$EXPORT_BRANCH"
 	git push origin ":$EXPORT_BRANCH" > /dev/null 2>&1
 	check_command
@@ -104,11 +99,14 @@ function submit_pull_request() {
 	git push origin "$EXPORT_BRANCH" > /dev/null 2>&1
 	check_command
 
-	logt 3 -n "Sending pull request to $PR_REVIEWER"
-	pr_url=$($HUB_BIN pull-request -m "Translations from pootle. Automatic PR sent by $product" -b "$PR_REVIEWER":master -h $EXPORT_BRANCH)
+	reviewer=$PR_REVIEWER["$base_src_dir"]
+	logt 3 -n "Sending pull request to $reviewer"
+	pr_url=$($HUB_BIN pull-request -m "Translations from pootle. Automatic PR sent by $product" -b "$reviewer":master -h $EXPORT_BRANCH)
 	check_command
+	
 
 	logt 4 "Pull request URL: $pr_url"
+
 	logt 3 -n "git checkout master"
 	git checkout master > /dev/null 2>&1
 	check_command
@@ -119,9 +117,7 @@ function ant_all() {
 	logt 3 -n "cd $SRC_PORTAL_BASE"
 	cd ${SRC_PORTAL_BASE}
 	check_command
-	ant_log_dir="$logbase/$PORTAL_PROJECT_ID"
-	ant_log="$ant_log_dir/ant-all.log"
-	check_dir $ant_log_dir
+	ant_log="$logbase/$PORTAL_PROJECT_ID/ant-all.log"
 	logt 2 -n "$ANT_BIN all (all output redirected to $ant_log)"
 	$ANT_BIN all > "$ant_log" 2>&1
 	check_command
@@ -130,10 +126,8 @@ function ant_all() {
 function ant_build_lang() {
 	ant_all
 	logt 1 "Running ant build-lang"
-	for (( i=0; i<${#PROJECT_ANT[@]}; i++ ));
-	do
-		ant_dir=${PROJECT_ANT[$i]}
-		project=${PROJECT_NAMES[$i]}
+	for project in "${!PROJECT_NAMES[@]}"; do
+		ant_dir="${PROJECT_ANT_BUILD_LANG_DIR[$project]}"
 		logt 2 "$project"
 		logt 3 -n "cd $ant_dir"
 		cd $ant_dir
@@ -303,7 +297,7 @@ function refill_translations() {
 	path=$(get_pootle_path $project $locale)
 
 	# involved file paths
-	srcfile=$(get_project_language_path $project)/$language
+	srcfile="${PROJECT_SRC_LANG_BASE["$project"]}/$language"
 	workingfile="${srcfile}.final"
 	copyingLogfile="$logbase/$project/$language"
 	conflictsLogPootle="$logbase/$project/$language.conflicts.pootle"
@@ -482,7 +476,7 @@ function read_previous_language_file() {
 	project="$1";
 	language="$2";
 	locale=$(get_locale_from_file_name $language)
-	sources=$(get_project_language_path $project)
+	sources="${PROJECT_SRC_LANG_BASE["$project"]}"
 	langFile="$sources/$language"
 	git checkout $LAST_BRANCH > /dev/null 2>&1   # just in case we have run with -p. Now we are in the las update branch
 	prefix=$(get_previous_language_prefix $project $locale)

@@ -31,6 +31,8 @@ export BC_BIN="$BC_HOME/bc/bc"
 ## hub (git + hub = github)
 export HUB_BIN="$HUB_HOME/hub"
 
+## ansi2html
+export ANSI2HTML_BIN="$ANSI2HTML_HOME/ansi2html.sh"
 
 ################################################################################
 ### Section 1: Pootle server installation
@@ -120,8 +122,8 @@ declare -xgr EXPORT_BRANCH="pootle-export"
 # Git commit msg (all commits to portal master require an LPS number)
 declare -xgr LPS_CODE="LPS-00000"
 
-# GitHub pull request reviewer
-declare -xgr PR_REVIEWER="dsanz"
+# GitHub pull request default reviewer
+declare -xgr DEFAULT_PR_REVIEWER="dsanz"
 
 ## 2.4 File naming
 ##
@@ -137,18 +139,18 @@ declare -xgr LANG_SEP="_"
 ## 3.0 Master lists
 ##
 # contains all project code names, as seen by pootle and source dirs
-declare -xga PROJECT_NAMES
-# contains an entry for each project, storing the project bsae source dir
-declare -xga PROJECT_SRC
-# contains an entry for each project, storing the ant dir where buils-lang target
-# is to be invoked
-declare -xga PROJECT_ANT
+declare -xgA PROJECT_NAMES
+# contains an entry for each project, storing the project base source dir where Language.properties files are
+declare -xgA PROJECT_SRC_LANG_BASE
+# contains an entry for each project, storing the ant dir where build-lang target is to be invoked
+declare -xgA PROJECT_ANT_BUILD_LANG_DIR
 # contains an entry for each different base source dir, storing the list of
 # projects associated with that dir
-declare -xga PATH_PROJECTS
-# contains a set of different src base dir. The intent is to be used for git operations,
-# which affects all projects living in that basedir
-declare -xga PATH_BASE_DIR
+declare -xgA PROJECTS_BY_GIT_ROOT
+# contains an entry for each git repo we are working with. It stores the root dir for each repo.
+declare -xgA GIT_ROOTS
+# holds a list of github account names for the reviewer of each git root
+declare -xgA PR_REVIEWER
 
 ## 3.1 List of plugins from the Liferay plugins repo
 ##
@@ -193,6 +195,10 @@ declare -xgr APPS_CT_HOOK_LIST="analytics\
 ##
 # first project is the Liferay portal itself
 PORTAL_PROJECT_ID=portal
+add_git_root "$SRC_PORTAL_BASE"
+add_git_root "$SRC_PLUGINS_BASE"
+add_git_root "$SRC_APPS_CT_BASE"
+
 add_project "$PORTAL_PROJECT_ID" "$SRC_PORTAL_BASE" "$SRC_PORTAL_LANG_PATH" "/portal-impl"
 # now, some plugins
 add_projects_Liferay_plugins "$PORTLET_LIST" "$PORTLET" "$SRC_PLUGINS_BASE" "$SRC_PLUGINS_LANG_PATH"
@@ -207,7 +213,8 @@ add_projects_Liferay_plugins "$APPS_CT_WEB_LIST" "$WEB"  "$SRC_APPS_CT_BASE"  "$
 
 # make master lists readonly from now on
 declare -r PROJECT_NAMES
-declare -r PROJECT_SRC
-declare -r PROJECT_ANT
-declare -r PATH_PROJECTS
-declare -r PATH_BASE_DIR
+declare -r PROJECT_SRC_LANG_BASE
+declare -r PROJECT_ANT_BUILD_LANG_DIR
+declare -r PROJECTS_BY_GIT_ROOT
+declare -r GIT_ROOTS
+declare -r PR_REVIEWER

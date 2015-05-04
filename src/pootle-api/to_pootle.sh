@@ -5,10 +5,8 @@
 
 function update_pootle_db() {
 	logt 1 "Updating pootle database..."
-	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
-	do
-		project=${PROJECT_NAMES[$i]}
-		src_dir=${PROJECT_SRC[$i]}
+	for project in "${!PROJECT_NAMES[@]}"; do
+		src_dir=${PROJECT_SRC_LANG_BASE["$project"]}
 		logt 2 "$project: "
 		logt 3 "Updating the set of translatable keys"
 		logt 4 -n "Copying project files "
@@ -25,12 +23,9 @@ function prepare_input_dirs() {
 	logt 2 -n "Cleaning general input working dir"
 	clean_dir "$TMP_PROP_IN_DIR/"
 	check_command
-	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
-	do
-		project=${PROJECT_NAMES[$i]}
-		logt 2 -n "$project: cleaning input working dirs"
+	for project in "${!PROJECT_NAMES[@]}"; do
+		logt 2 "$project: cleaning input working dirs"
 		clean_dir "$TMP_PROP_IN_DIR/$project"
-		check_command
 	done
 }
 
@@ -49,14 +44,12 @@ function create_working_branch() {
 
 function setup_working_branches() {
 	logt 1 "Setting up git branches for project(s)"
-	for (( i=0; i<${#PATH_PROJECTS[@]}; i++ ));
-	do
-		projects=${PATH_PROJECTS[$i]}
-		path=${PATH_BASE_DIR[$i]}
-		logt 2 "$path"
+	for base_src_dir in "${!GIT_ROOTS[@]}"; do
+		projects="${PROJECTS_BY_GIT_ROOT[$"git_root"]}"
+		logt 2 "$base_src_dir"
 		logt 3 "for projects:$projects"
-		goto_master "$path";
-		create_working_branch "$path"
+		goto_master "$base_src_dir";
+		create_working_branch "$base_src_dir"
 	done;
 }
 
@@ -82,10 +75,10 @@ function generate_addition() {
 
 function create_branch_at_child_of_last_export_commit() {
 	# assume we are now in master
-	src_dir="$1"
+	base_src_dir="$1"
 	logt 3 "Creating branch at child of last export commit"
 	logt 4 "Searching git history for last export commit"
-	cd $src_dir
+	cd $base_src_dir
 	child_of_last_export="HEAD"
 	last_export_commit=$(git log -n 1 --grep "$product_name" --after 2012 --format=format:"%H")
 	if [[ $last_export_commit == "" ]]; then
@@ -112,10 +105,8 @@ function create_branch_at_child_of_last_export_commit() {
 
 function generate_additions() {
 	logt 1 "Calculating committed translations from last export commit"
-	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
-	do
-		projects=${PATH_PROJECTS[$i]}
-		base_src_dir=${PATH_BASE_DIR[$i]}
+	for base_src_dir in "${!GIT_ROOTS[@]}"; do
+		projects="${PROJECTS_BY_GIT_ROOT["$base_src_dir"]}"
 		cd $base_src_dir
 		logt 2 "$base_src_dir"
 		create_branch_at_child_of_last_export_commit "$base_src_dir"
@@ -123,7 +114,7 @@ function generate_additions() {
 			git checkout $WORKING_BRANCH > /dev/null 2>&1
 			for project in $projects; do
 				logt 3 "$project"
-				path=$(get_project_language_path "$project")
+				path="${PROJECT_SRC_LANG_BASE["$project"]}"
 				generate_addition "$path" "$project"
 			done;
 		else

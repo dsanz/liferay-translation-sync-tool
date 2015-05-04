@@ -18,6 +18,7 @@ function load_api() {
 	. api/api-pootle.sh
 	. api/api-quality.sh
 	. api/api-mail.sh
+	. api/api-projects.sh
 	. backporter-api/api-files.sh
 	. backporter-api/api-git.sh
 	. backporter-api/api-properties.sh
@@ -85,15 +86,14 @@ function pootle2src() {
 }
 
 function display_projects() {
-	logt 1 "Working project list by git root (${#PROJECT_NAMES[@]} projects, ${#PATH_PROJECTS[@]} git roots) "
-	for (( i=0; i<${#PATH_PROJECTS[@]}; i++ ));  do
-		project_list="$(echo ${PATH_PROJECTS[$i]} | sed 's: :\n:g' | sort)"
+	logt 1 "Working project list by git root (${#PROJECT_NAMES[@]} projects, ${#GIT_ROOTS[@]} git roots) "
+	for git_root in "${!GIT_ROOTS[@]}"; do
+		project_list="$(echo ${PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 		projects=$(echo "$project_list" | wc -l)
-		logt 2 "${PATH_BASE_DIR[$i]} ($projects projects)"
+		logt 2 "$git_root ($projects projects). Reviewer: $PR_REVIEWER[$git_root]"
 		while read project; do
-			project=$(printf "%-35s%s" "$project")
-			logt 3 -n "$project"
-			project_src="$(get_project_language_path $project)"
+			logt 3 -n "$(printf "%-35s%s" "$project")"
+			project_src="${PROJECT_SRC_LANG_BASE["$project"]}"
 			log -n $project_src
 			[ -d $project_src ]
 			check_command
@@ -112,27 +112,22 @@ function backport_all() {
 
 	# prepare git for all base-paths
 	logt 1 "Preparing involved directories"
-	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
-	do
-		base_src_dir=${PATH_BASE_DIR[$i]}
+	for base_src_dir in "${!GIT_ROOTS[@]}"; do
 		check_git "$base_src_dir" "$(get_ee_target_dir $base_src_dir)" "$source_branch" "$target_branch"
 	done
 
 	# backport is done on a project basis
 	logt 1 "Backporting"
-	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));  do
-		project=${PROJECT_NAMES[$i]}
+	for project in "${!PROJECT_NAMES[@]}"; do
 		logt 2 "$project"
-		source_dir="$(get_project_language_path $project)"
+		source_dir="${PROJECT_SRC_LANG_BASE["$project"]}"
 		target_dir=$(get_ee_target_dir $source_dir)
 		backport_project "$project" "$source_dir" "$target_dir"
 	done;
 
 	# commit result is again done on a base-path basis
 	logt 1 "Committing backport process results"
-	for (( i=0; i<${#PATH_BASE_DIR[@]}; i++ ));
-	do
-		base_src_dir=${PATH_BASE_DIR[$i]}
+	for base_src_dir in "${!GIT_ROOTS[@]}"; do
 		commit_result  "$base_src_dir" "$(get_ee_target_dir $base_src_dir)"
 	done
 
