@@ -2,7 +2,7 @@ function add_git_root() {
 	git_root_dir="$1"
 	pr_reviewer="$2"
 
-	[[ -z "$2" ]] && pr_reviewer=$DEFAULT_PR_REVIEWER;
+	[[ "$pr_reviewer" == "" ]] && pr_reviewer=$DEFAULT_PR_REVIEWER;
 
 	GIT_ROOTS["$git_root_dir"]=$git_root_dir;
 	PR_REVIEWER["$git_root_dir"]=$pr_reviewer;
