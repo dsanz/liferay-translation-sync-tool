@@ -20,9 +20,8 @@ function update_pootle_db() {
 
 function prepare_input_dirs() {
 	logt 1 "Preparing project input working dirs..."
-	logt 2 -n "Cleaning general input working dir"
+	logt 2 "Cleaning general input working dir"
 	clean_dir "$TMP_PROP_IN_DIR/"
-	check_command
 	for project in "${!PROJECT_NAMES[@]}"; do
 		logt 2 "$project: cleaning input working dirs"
 		clean_dir "$TMP_PROP_IN_DIR/$project"

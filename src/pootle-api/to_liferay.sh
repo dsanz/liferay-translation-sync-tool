@@ -12,9 +12,8 @@ function prepare_output_dir() {
 # creates temporary working dirs for working with pootle output
 function prepare_output_dirs() {
 	logt 1 "Preparing project output working dirs..."
-	logt 2 -n "Cleaning general output working dirs"
+	logt 2 "Cleaning general output working dirs"
 	clean_dir "$TMP_PROP_OUT_DIR/"
-	check_command
 	for project in "${!PROJECT_NAMES[@]}"; do
 		prepare_output_dir "$project"
 	done
