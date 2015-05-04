@@ -3,7 +3,7 @@
 . api/api-base.sh
 . pootle-api/to_pootle-file_poster.sh
 
-function update_pootle_db() {
+function update_pootle_db_from_templates() {
 	logt 1 "Updating pootle database..."
 	for project in "${!PROJECT_NAMES[@]}"; do
 		src_dir=${PROJECT_SRC_LANG_BASE["$project"]}
@@ -18,7 +18,7 @@ function update_pootle_db() {
 	done
 }
 
-function prepare_input_dirs() {
+function clean_temp_input_dirs() {
 	logt 1 "Preparing project input working dirs..."
 	logt 2 "Cleaning general input working dir"
 	clean_dir "$TMP_PROP_IN_DIR/"
