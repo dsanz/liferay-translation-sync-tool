@@ -98,7 +98,7 @@ function submit_pull_request() {
 	git push origin "$EXPORT_BRANCH" > /dev/null 2>&1
 	check_command
 
-	reviewer=$PR_REVIEWER["$base_src_dir"]
+	reviewer=${PR_REVIEWER["$base_src_dir"]}
 	logt 3 -n "Sending pull request to $reviewer"
 	pr_url=$($HUB_BIN pull-request -m "Translations from pootle. Automatic PR sent by $product" -b "$reviewer":master -h $EXPORT_BRANCH)
 	check_command
