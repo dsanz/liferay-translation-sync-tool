@@ -82,6 +82,7 @@ function generate_additions() {
 				if [[ "$file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
 					commit=$(get_last_export_commit "$path" "$file")
 					generate_addition "$project" "$path" "$file" "$commit"
+					log ""
 				fi;
 			done
 		done;
@@ -96,10 +97,14 @@ function post_new_translations() {
 		logt 2 "Uploading translations for project $project"
 		cd $TMP_PROP_IN_DIR/$project > /dev/null 2>&1
 		files="$(ls ${FILE}${LANG_SEP}*.${PROP_EXT} 2>/dev/null)"
-		for file in $files; do
-			locale=$(get_locale_from_file_name $file)
-			post_file_batch "$project" "$locale"
-		done;
+		if [[ "$files" == "" ]]; then
+			logt 3 "No translations to upload!"
+		else
+			for file in $files; do
+				locale=$(get_locale_from_file_name $file)
+				post_file_batch "$project" "$locale"
+			done;
+		fi;
 	done;
 	logt 2 "Closing session in Pootle"
 	close_pootle_session
