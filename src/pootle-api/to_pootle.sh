@@ -43,9 +43,8 @@ function generate_addition() {
 			rm "$TMP_PROP_IN_DIR/$project/$file"
 			color="$COLOROFF"
 		fi;
-			loglc 0 "$color" -n $(get_locale_from_file_name $language_file)"($number_of_additions) "
-		fi
-	done;
+		loglc 0 "$color" -n $(get_locale_from_file_name $language_file)"($number_of_additions) "
+	fi;
 	log ""
 }
 
