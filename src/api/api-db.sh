@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function backup_db() {
-	if [[ "${DO_BACKUPS}x" == "1x" ]]; then
+	if [[ "${DO_BACKUPS}x" != "1x" ]]; then
 		logt 1 "Not creating backup. Please set DO_BACKUPS env variable to \"1\" to do them."
 		return;
 	fi;
