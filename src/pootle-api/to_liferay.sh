@@ -112,6 +112,11 @@ function submit_pull_request() {
 }
 
 function ant_all() {
+	if [[ "${LR_TRANS_MGR_PROFILE}" == "dev" ]]; then
+		logt 1 "Skipping ant all as we are in dev environment."
+		return;
+	fi;
+
 	logt 1 "Running ant all for portal master"
 	logt 3 -n "cd $SRC_PORTAL_BASE"
 	cd ${SRC_PORTAL_BASE}
