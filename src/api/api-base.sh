@@ -70,7 +70,7 @@ function log() {
 # logs a message using a number of tabs. The tab number provides a way to compute the color
 function logt() {
 	depth=$1
-	color=$COLOROFF;
+	color=$LIGHT_GRAY;
 	case "$depth" in
 		-1) color=$RED ;;
 		0) color=$COLOROFF ;;

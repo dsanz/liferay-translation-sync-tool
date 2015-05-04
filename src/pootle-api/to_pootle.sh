@@ -35,7 +35,7 @@ function generate_addition() {
 	commit="$4"
 
 	cd $path > /dev/null 2>&1
-	logt 5 -n "Generating additions from: git diff $commit $file "
+	#logt 5 -n "Generating additions from: git diff $commit $file "
 	git diff $commit $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$project/$file
 	number_of_additions=$(cat "$TMP_PROP_IN_DIR/$project/$file" | wc -l)
 	color="$WHITE"
@@ -43,28 +43,27 @@ function generate_addition() {
 		rm "$TMP_PROP_IN_DIR/$project/$file"
 		color="$LIGHT_GRAY"
 	fi;
-	loglc 0 "$color" "($number_of_additions) "
+	loglc 0 "$color" -n "($number_of_additions)   "
 }
 
 function get_last_export_commit() {
-	# assume we are now in master
 	path="$1"
 	file="$2"
 
-	msg="$(get_locale_from_file_name $file): "
+	msg="$(get_locale_from_file_name $file):"
 	cd $path
 	child_of_last_export="HEAD"
 	last_export_commit=$(git log -n 1 --grep "$product_name" --after 2012 --format=format:"%H" $file)
 	if [[ $last_export_commit == "" ]]; then
-		msg="$msg (no export commit containing $product_name) "
+		#msg="$msg (no export commit containing $product_name) "
 		last_export_commit=$(git log -n 1 --grep "$old_product_name" --after 2012 --format=format:"%H" $file)
 	fi;
 	if [[ $last_export_commit == "" ]]; then
-		msg="$msg (no export commit containing $product_name) "
+		: #msg="$msg (no export commit containing $product_name) "
 	else
 		child_of_last_export=$(git rev-list --children --after 2012 HEAD | grep "^$last_export_commit" | cut -f 2 -d ' ')
 	fi;
-	msg="$msg using $child_of_last_export "
+	msg="$msg$child_of_last_export "
 	logt 4 -n "$msg"
 	echo "$child_of_last_export";
 }
