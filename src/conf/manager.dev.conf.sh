@@ -16,7 +16,7 @@ declare -xgr BASE_DIR="/opt"
 
 ## ant
 ##
-export ANT_BIN="$ANT_HOME/ant"
+export ANT_BIN="$ANT_HOME/bin/ant"
 export ANT_OPTS="-Xmx1024m -XX:MaxPermSize=512m"
 
 ## java
