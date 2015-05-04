@@ -28,30 +28,6 @@ function clean_temp_input_dirs() {
 	done
 }
 
-function create_working_branch() {
-	path="$1"
-	cd $path
-	if exists_branch $WORKING_BRANCH $path; then
-		logt 4 -n "'$WORKING_BRANCH' branch already exists. There seems to be a previous, interrupted process. Deleting branch '$WORKING_BRANCH' "
-		git branch -D $WORKING_BRANCH > /dev/null 2>&1
-		check_command
-	fi;
-	logt 4 -n "git checkout -b $WORKING_BRANCH "
-	git checkout -b $WORKING_BRANCH > /dev/null 2>&1
-	check_command
-}
-
-function setup_working_branches() {
-	logt 1 "Setting up git branches for project(s)"
-	for base_src_dir in "${!GIT_ROOTS[@]}"; do
-		projects="${PROJECTS_BY_GIT_ROOT[$"git_root"]}"
-		logt 2 "$base_src_dir"
-		logt 3 "for projects:$projects"
-		goto_master "$base_src_dir";
-		create_working_branch "$base_src_dir"
-	done;
-}
-
 function generate_addition() {
 	path="$1"
 	project="$2"
@@ -110,14 +86,13 @@ function generate_additions() {
 		logt 2 "$base_src_dir"
 		create_branch_at_child_of_last_export_commit "$base_src_dir"
 		if exists_branch $LAST_BRANCH $base_src_dir; then
-			git checkout $WORKING_BRANCH > /dev/null 2>&1
 			for project in $projects; do
 				logt 3 "$project"
 				path="${PROJECT_SRC_LANG_BASE["$project"]}"
 				generate_addition "$path" "$project"
 			done;
 		else
-			logt 3 "There is no '$LAST_BRANCH' branch, so I can't diff it with '$WORKING_BRANCH' to detect additions for projects $projects"
+			logt 3 "There is no '$LAST_BRANCH' branch, so I can't diff it with master to detect additions for projects $projects"
 		fi;
 	done;
 }
