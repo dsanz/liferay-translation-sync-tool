@@ -144,9 +144,7 @@ function ant_build_lang() {
 # tells pootle to export its translations to properties files inside webapp dirs
 function update_pootle_files() {
 	logt 1 "Updating pootle files from pootle DB..."
-	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
-	do
-		project=${PROJECT_NAMES[$i]}
+	for project in "${!PROJECT_NAMES[@]}"; do
 		logt 2 "$project"
 		logt 3 "Synchronizing pootle stores for all languages "
 		# Save all translations currently in database to the file system
@@ -170,9 +168,7 @@ function ascii_2_native() {
 }
 function ascii_2_native_orig() {
 	logt 1 "Converting properties files to native ..."
-	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
-	do
-		project=${PROJECT_NAMES[$i]}
+	for project in "${!PROJECT_NAMES[@]}"; do
 		logt 2 "$project: converting working dir properties to native"
 		languages=`ls "$TMP_PROP_OUT_DIR/$project"`
 		for language in $languages ; do
@@ -210,9 +206,7 @@ function process_translations() {
 		loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
 	done;
 
-	for (( i=0; i<${#PROJECT_NAMES[@]}; i++ ));
-	do
-		project=${PROJECT_NAMES[$i]}
+	for project in "${!PROJECT_NAMES[@]}"; do
 		languages=`ls $PODIR/$project`
 		logt 2 "$project"
 		logt 3 "Setting up per-project log file"
