@@ -91,7 +91,7 @@ function display_projects() {
 	for git_root in "${!GIT_ROOTS[@]}"; do
 		project_list="$(echo ${PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 		projects=$(echo "$project_list" | wc -l)
-		logt 2 "$git_root ($projects projects). Sync branch: ${GIT_ROOTS[$git_root]} . Reviewer: ${PR_REVIEWER[$git_root]}"
+		logt 2 "Git root: $git_root ($projects projects). Sync branch: ${GIT_ROOTS[$git_root]}. Reviewer: ${PR_REVIEWER[$git_root]}"
 		while read project; do
 			logt 3 -n "$(printf "%-35s%s" "$project")"
 			project_src="${PROJECT_SRC_LANG_BASE["$project"]}"
