@@ -38,12 +38,12 @@ function generate_addition() {
 	#logt 5 -n "Generating additions from: git diff $commit $file "
 	git diff $commit $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$project/$file
 	number_of_additions=$(cat "$TMP_PROP_IN_DIR/$project/$file" | wc -l)
-	color="$WHITE"
+	color="$GREEN"
 	if [[ $number_of_additions -eq 0 ]]; then
 		rm "$TMP_PROP_IN_DIR/$project/$file"
 		color="$LIGHT_GRAY"
 	fi;
-	loglc 4 "$color" "$commit $(get_locale_from_file_name $file) ($number_of_additions)"
+	loglc 5 "$color" "$commit $(get_locale_from_file_name $file) ($number_of_additions)"
 }
 
 function get_last_export_commit() {
