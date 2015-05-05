@@ -69,6 +69,7 @@ function src2pootle() {
 # - makes a first commit of this
 # - runs ant build-lang for every project
 # - commits and pushes the result
+# - creates a Pull Request for each involved git root, sent to a different reviewer.
 # all the process is logged
 function pootle2src() {
 	loglc 1 $RED "Begin Sync[Pootle -> Liferay source code]"
