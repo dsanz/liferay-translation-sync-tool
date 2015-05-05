@@ -64,7 +64,7 @@ function logc() {
 
 # logs a message using length 0 and no color
 function log() {
-	loglc 0 "$COLOROFF" "$@"
+	loglc 0 "$LIGHT_GRAY" "$@"
 }
 
 # logs a message using a number of tabs. The tab number provides a way to compute the color
@@ -73,7 +73,7 @@ function logt() {
 	color=$LIGHT_GRAY;
 	case "$depth" in
 		-1) color=$RED ;;
-		0) color=$COLOROFF ;;
+		0) color=$LIGHT_GRAY ;;
 		1) color=$CYAN ;;
 		2) color=$WHITE ;;
 		3) color=$YELLOW ;;
