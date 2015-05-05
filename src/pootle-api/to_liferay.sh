@@ -66,9 +66,10 @@ function do_commit() {
 			fi
 
 			if $create_branch; then
-				logt 3 "Creating new export branch from master"
-				logt 4 -n "git checkout master"
-				git checkout master > /dev/null 2>&1
+				sync_branch="${GIT_ROOTS["$base_src_dir"]}"
+				logt 3 "Creating new export branch from $sync_branch"
+				logt 4 -n "git checkout $sync_branch"
+				git checkout $sync_branch > /dev/null 2>&1
 				check_command
 				logt 4 -n "git checkout -b $EXPORT_BRANCH"
 				git checkout -b "$EXPORT_BRANCH" > /dev/null 2>&1
@@ -98,16 +99,16 @@ function submit_pull_request() {
 	git push origin "$EXPORT_BRANCH" > /dev/null 2>&1
 	check_command
 
-	reviewer=${PR_REVIEWER["$base_src_dir"]}
-	logt 3 -n "Sending pull request to $reviewer"
-	pr_url=$($HUB_BIN pull-request -m "Translations from pootle. Automatic PR sent by $product" -b "$reviewer":master -h $EXPORT_BRANCH)
+	reviewer="${PR_REVIEWER[$base_src_dir]}"
+	sync_branch="${GIT_ROOTS[$base_src_dir]}"
+	logt 3 -n "Sending pull request to $reviewer:$sync_branch"
+	pr_url=$($HUB_BIN pull-request -m "Translations from pootle. Automatic PR sent by $product" -b "$reviewer":"$sync_branch" -h $EXPORT_BRANCH)
 	check_command
-	
 
 	logt 4 "Pull request URL: $pr_url"
 
-	logt 3 -n "git checkout master"
-	git checkout master > /dev/null 2>&1
+	logt 3 -n "git checkout $sync_branch"
+	git checkout $sync_branch > /dev/null 2>&1
 	check_command
 }
 
@@ -117,7 +118,7 @@ function ant_all() {
 		return;
 	fi;
 
-	logt 1 "Running ant all for portal master"
+	logt 1 "Running ant all for portal"
 	logt 3 -n "cd $SRC_PORTAL_BASE"
 	cd ${SRC_PORTAL_BASE}
 	check_command
@@ -376,7 +377,7 @@ function refill_translations() {
 
 	logt 0
 	if [[ ${#R[@]} -gt 0 ]]; then
-		logt 3 "Submitting translations from master to pootle. Next time be sure to run this manager with -p option!"
+		logt 3 "Submitting translations from source to pootle. Next time be sure to run this manager with -p option!"
 		start_pootle_session
 		for key in "${!R[@]}"; do
 			value="${R[$key]}"
