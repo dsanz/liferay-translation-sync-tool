@@ -116,6 +116,7 @@ declare -xgr SRC_APPS_CT_LANG_PATH="$SRC_CONTENT"
 
 # Git branches management
 declare -xgr EXPORT_BRANCH="pootle-export"
+declare -xgr DEFAULT_SYNC_BRANCH="master"
 
 # Git commit msg (all commits to portal master require an LPS number)
 declare -xgr LPS_CODE="LPS-00000"

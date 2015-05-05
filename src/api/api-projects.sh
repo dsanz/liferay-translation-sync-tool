@@ -1,10 +1,12 @@
 function add_git_root() {
 	git_root_dir="$1"
 	pr_reviewer="$2"
+	sync_branch="$3"
 
 	[[ "$pr_reviewer" == "" ]] && pr_reviewer=$DEFAULT_PR_REVIEWER;
+	[[ "$sync_branch" == "" ]] && sync_branch=$DEFAULT_SYNC_BRANCH;
 
-	GIT_ROOTS["$git_root_dir"]=$git_root_dir;
+	GIT_ROOTS["$git_root_dir"]=$sync_branch;
 	PR_REVIEWER["$git_root_dir"]=$pr_reviewer;
 }
 
@@ -22,7 +24,6 @@ function add_project() {
 	PROJECT_NAMES["$project_name"]="$project_name"
 	PROJECT_SRC_LANG_BASE["$project_name"]="$git_root_dir$lang_rel_path"
 	PROJECT_ANT_BUILD_LANG_DIR["$project_name"]="$git_root_dir$ant_rel_path"
-	GIT_ROOTS["$git_root_dir"]="$git_root_dir"
 	PROJECTS_BY_GIT_ROOT["$git_root_dir"]=" $project_name"${PROJECTS_BY_GIT_ROOT["$git_root_dir"]}
 }
 

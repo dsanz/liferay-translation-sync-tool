@@ -86,11 +86,11 @@ function print_help() {
 	print_action "-r, --pootle2repo"\
 		"Exports translations from Pootle to Liferay source code. First, saves pootle data into Language*.properties files, makes some processing to the files, then commits them \
 into a branch named \$EXPORT_BRANCH and pushes it to the configured remote repository. To push the changes to the liferay repository, A PR has to be issued to the branch maintainer. \
-$EXPORT_BRANCH is created from a fresh copy of master"
+$EXPORT_BRANCH is created from a fresh copy of master (or specified branch)"
 
 	print_action "-p, --repo2pootle"\
-		"Updates in Pootle the set of translatable available in the Language.properties files from a fresh copy of master branch. After that, updates all translations that have been \
-committed to master since last commit done by the tool as a result of -r action. This allows developers to commit translations directly on master w/o using Pootle."
+		"Updates in Pootle the set of translatable available in the Language.properties files from a fresh copy of master (or specified branch). After that, updates all translations that have been \
+committed to master (or specified branch) since last commit done by the tool as a result of -r action. This allows developers to commit translations directly on master (or specified branch) w/o using Pootle."
 
 	print_action "-R, --repo2pootle2repo"\
 		"Runs a complete roundrtip from with -p, then with -r"
