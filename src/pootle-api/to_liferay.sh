@@ -22,7 +22,7 @@ function clean_temp_output_dirs() {
 function pull_source_code() {
 	logt 1 "Preparing project source dirs..."
 	for base_src_dir in "${!GIT_ROOTS[@]}"; do
-		goto_master "$base_src_dir"
+		goto_branch_tip "$base_src_dir"
 	done;
 }
 

@@ -21,9 +21,12 @@ function something_changed() {
 	[[ $(git diff | wc -l) -gt 0 ]]
 }
 
-function goto_master() {
-	cd $1
-	logt 3 "Going master for $1"
+function goto_branch_tip() {
+	git_root="$1"
+	cd $git_root
+
+	branch="${GIT_ROOTS[$git_root]}"
+	logt 3 "Going tip of '$branch' for got root $1"
 	logt 4 -n "git reset --hard HEAD"
 	git reset --hard HEAD > /dev/null 2>&1
 	check_command
@@ -33,11 +36,11 @@ function goto_master() {
 	logt 4 -n "git checkout -- ."
 	git checkout -- .  > /dev/null 2>&1
 	check_command
-	logt 4 -n "git checkout master"
-	git checkout master  > /dev/null 2>&1
+	logt 4 -n "git checkout $branch"
+	git checkout $branch  > /dev/null 2>&1
 	check_command
-	logt 4 -n "git pull upstream master"
-	git pull upstream master  > /dev/null 2>&1
+	logt 4 -n "git pull upstream $branch"
+	git pull upstream $branch  > /dev/null 2>&1
 	check_command
 }
 
