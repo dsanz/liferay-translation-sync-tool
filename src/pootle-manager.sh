@@ -58,6 +58,7 @@ function src2pootle() {
 	clean_temp_input_dirs
 	post_language_translations # bug #1949
 	restore_file_ownership
+	refresh_stats
 	loglc 1 $RED "End Sync[Liferay source code -> Pootle]"
 }
 

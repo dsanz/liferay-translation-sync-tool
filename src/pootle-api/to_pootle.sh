@@ -154,3 +154,12 @@ function post_derived_translations() {
 	done;
 	close_pootle_session
 }
+
+function refresh_stats() {
+	logt 1 "Refreshing Pootle stats..."
+	for project in "${!PROJECT_NAMES[@]}"; do
+		logt 2 "$project"
+		call_manage "refresh_stats" "--project=$project" "-v 0"
+		check_command
+	done
+}
