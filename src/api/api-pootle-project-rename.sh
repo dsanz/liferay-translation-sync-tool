@@ -99,10 +99,6 @@ function rename_pootle_notifications_notice_entries() {
 	done <<< "$entries"
 }
 
-function exists_project_in_pootle() {
-	wget --spider "$PO_SRV/projects/$1" 2>&1 | grep 200 > /dev/null
-}
-
 function rename_pootle_project() {
 	currentName="$1"
 	newName="$2"
