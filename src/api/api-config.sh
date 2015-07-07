@@ -37,6 +37,8 @@ function resolve_params() {
 			export UPLOAD_DERIVED=1
 		elif [ "$param" = "--newproject" ] || [ "$param" = "-np" ]; then
 			export NEW_PROJECT=1
+		elif [ "$param" = "--deleteproject" ] || [ "$param" = "-dp" ]; then
+			export DELETE_PROJECT=1
 		elif [ "$param" = "--qualityCheck" ] || [ "$param" = "-q" ]; then
 			export QA_CHECK=1
 		elif [ "$param" = "--restoreBackup" ] || [ "$param" = "-B" ]; then

@@ -188,6 +188,8 @@ main() {
 		upload_derived_translations $2 $3 $4
 	elif [ $NEW_PROJECT ]; then
 		add_project_in_pootle $2 "$3"
+	elif [ $DELETE_PROJECT ]; then
+		delete_project_in_pootle $2
 	elif [ $BACKPORT ]; then
 		backport_all $2 $3
 	elif [ $QA_CHECK ]; then
