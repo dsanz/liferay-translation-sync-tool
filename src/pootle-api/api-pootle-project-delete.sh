@@ -18,15 +18,15 @@ function delete_project_in_pootle() {
 
 function delete_pootle_project() {
 	projectCode="$1"
-	projectName="$2"
 
 	logt 2 "Deleting pootle project $projectCode"
 	start_pootle_session
 
 	id=$(get_pootle_project_id_from_code $projectCode)
+	projectName=$(get_pootle_fullname_from_code $projectCode)
 
 	# this deletes the pootle project
-	logt 3 -n "Posting delete project form (id: $id)"
+	logt 3 -n "Posting delete project form (id: $id, fullname: $projectName)"
 	curl $CURL_OPTS -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`"\
         -d "form-TOTAL_FORMS=1" -d "form-INITIAL_FORMS=0" -d "form-MAX_NUM_FORMS=1000"\
         -d "form-0-id=$id" -d "form-0-code=$projectCode" -d "form-0-fullname=$projectName"\
