@@ -28,9 +28,10 @@ function load_api() {
 	. pootle-api/to_liferay.sh
 	. pootle-api/api-pootle-base.sh
 	. pootle-api/api-pootle-project-add.sh
-	. pootle-api/api-pootle-project-rename.sh
+	. pootle-api/api-pootle-project-delete.sh
 	. pootle-api/api-pootle-project-fix-path.sh
 	. pootle-api/api-pootle-project-provisioning.sh
+	. pootle-api/api-pootle-project-rename.sh
 	. backporter-api/api-backporter.sh
 
 	declare -xgr HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
