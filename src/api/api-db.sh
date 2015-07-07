@@ -172,3 +172,9 @@ function get_pootle_notifications_notice_entries() {
 	local i=$($MYSQL_COMMAND $DB_NAME -s -e "select message from pootle_notifications_notice where message like '%${project}%';")
 	echo -e "$i";
 }
+
+function get_pootle_project_id_from_code() {
+	project="$1"
+	local i=$($MYSQL_COMMAND $DB_NAME -s -e "select id from pootle_app_project where code='${project}';")
+	echo -e "$i";
+}
