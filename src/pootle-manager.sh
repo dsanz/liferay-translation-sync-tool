@@ -16,10 +16,11 @@ function load_api() {
 	. api/api-properties.sh
 	. api/api-version.sh
 	. api/api-pootle.sh
+	. api/api-pootle-project-add.sh
 	. api/api-pootle-project-rename.sh
+	. api/api-pootle-project-fix-path.sh
 	. api/api-quality.sh
 	. api/api-mail.sh
-	. api/api-pootle-project-add.sh
 	. backporter-api/api-files.sh
 	. backporter-api/api-git.sh
 	. backporter-api/api-properties.sh
