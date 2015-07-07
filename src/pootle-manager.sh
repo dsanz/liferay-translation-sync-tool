@@ -16,6 +16,7 @@ function load_api() {
 	. api/api-properties.sh
 	. api/api-version.sh
 	. api/api-pootle.sh
+	. api/api-pootle-project-rename.sh
 	. api/api-quality.sh
 	. api/api-mail.sh
 	. api/api-projects.sh
