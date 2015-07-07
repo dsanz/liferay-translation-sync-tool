@@ -1,12 +1,11 @@
 # top level function to delete a project in pootle
 function delete_project_in_pootle() {
 	projectCode="$1"
-	projectName="$2"
 
 	if is_pootle_server_up; then
 		if exists_project_in_pootle "$1"; then
-			logt 1 "Deleting project '$projectCode' ($projectName) in pootle"
-			delete_pootle_project $projectCode "$projectName"
+			logt 1 "Deleting project '$projectCode' in pootle"
+			delete_pootle_project $projectCode
 		else
 			logt 1 "Pootle project '$projectCode' does not exist. Aborting..."
 		fi
@@ -23,7 +22,7 @@ function delete_pootle_project() {
 	start_pootle_session
 
 	id=$(get_pootle_project_id_from_code $projectCode)
-	projectName=$(get_pootle_fullname_from_code $projectCode)
+	projectName=$(get_pootle_project_fullname_from_code $projectCode)
 
 	# this deletes the pootle project
 	logt 3 -n "Posting delete project form (id: $id, fullname: $projectName)"
