@@ -30,6 +30,7 @@ function load_api() {
 	. pootle-api/api-pootle-project-add.sh
 	. pootle-api/api-pootle-project-rename.sh
 	. pootle-api/api-pootle-project-fix-path.sh
+	. pootle-api/api-pootle-project-provisioning.sh
 	. backporter-api/api-backporter.sh
 
 	declare -xgr HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
@@ -103,6 +104,7 @@ function display_projects() {
 			check_command
 		done <<< "$project_list"
 	done;
+	display_projects_from_source
 }
 
 function backport_all() {

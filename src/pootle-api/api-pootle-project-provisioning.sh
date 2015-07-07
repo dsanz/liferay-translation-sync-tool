@@ -28,7 +28,7 @@ function get_projects_standard_layout() {
 	done
 }
 
-function get_projects() {
+function display_projects_from_source() {
 	logt 1 "Calculating project list from current sources"
 	for base_src_dir in "${!GIT_ROOTS[@]}"; do
 		logt 2 "$base_src_dir"
