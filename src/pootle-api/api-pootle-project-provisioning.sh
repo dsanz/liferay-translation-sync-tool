@@ -8,7 +8,7 @@ declare project_name_regex="/([^/]+)/docroot/WEB-INF/src"
 function get_projects_web_layout() {
 	base="$1"
 	web_layout_count=0
-	for f in $(find  $base -wholename $web_layout_file_pattern); do
+	for f in $(find  $base -wholename "$web_layout_file_pattern"); do
 		[[ $f =~ $regex ]];
 		projectCode="${BASH_REMATCH[1]}"
 		if [[ $projectCode != "" ]];
@@ -24,7 +24,7 @@ function get_projects_web_layout() {
 function get_projects_standard_layout() {
 	base="$1"
 	std_layout_count=0
-	for f in $(find $base -wholename $std_layout_file_pattern ); do
+	for f in $(find $base -wholename "$std_layout_file_pattern"); do
 		if [[ $f != *"$web_layout_prefix"* ]];
 		then
 			[[ $f =~ $regex ]];
@@ -41,7 +41,8 @@ function get_projects_standard_layout() {
 
 function count_translatable_projects() {
 	base="$1"
-	logt 3 "Found $(find $base -wholename $std_layout_file_pattern | wc -l) translatable projects"
+	translatable_count=$(find $base -wholename "$std_layout_file_pattern" | wc -l)
+	logt 3 "Found $translatable_count translatable projects"
 }
 
 function display_projects_from_source() {
