@@ -1,8 +1,8 @@
-declare lang_file_path_tail="src/content/$FILE.$PROP_EXT"
-declare web_layout_prefix="docroot/WEB-INF"
-declare web_layout_file_pattern="*/$web_layout_prefix/$lang_file_path_tail"
-declare std_layout_file_pattern="*/$lang_file_path_tail"
-declare project_name_regex="/([^/]+)/docroot/WEB-INF/src"
+declare -xgr lang_file_path_tail="src/content/$FILE.$PROP_EXT"
+declare -xgr web_layout_prefix="docroot/WEB-INF"
+declare -xgr web_layout_file_pattern="*/$web_layout_prefix/$lang_file_path_tail"
+declare -xgr std_layout_file_pattern="*/$lang_file_path_tail"
+declare -xgr project_name_regex="/([^/]+)/docroot/WEB-INF/src"
 
 # this works for liferay (traditional) plugins and some osgi modules
 function get_projects_web_layout() {
