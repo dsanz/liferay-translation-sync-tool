@@ -1,4 +1,4 @@
-declare -xgr lang_file_path_tail="src/content/$FILE.$PROP_EXT"
+declare -xgr lang_file_path_tail="src/content/Language.properties"
 declare -xgr web_layout_prefix="docroot/WEB-INF"
 declare -xgr web_layout_file_pattern="*/$web_layout_prefix/$lang_file_path_tail"
 declare -xgr std_layout_file_pattern="*/$lang_file_path_tail"
