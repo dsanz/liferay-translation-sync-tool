@@ -9,7 +9,7 @@ function get_projects_web_layout() {
 	base="$1"
 	web_layout_count=0
 	for f in $(find  $base -wholename "$web_layout_file_pattern"); do
-		[[ $f =~ $regex ]];
+		[[ $f =~ $project_name_regex ]];
 		projectCode="${BASH_REMATCH[1]}"
 		if [[ $projectCode != "" ]];
 		then
@@ -27,7 +27,7 @@ function get_projects_standard_layout() {
 	for f in $(find $base -wholename "$std_layout_file_pattern"); do
 		if [[ $f != *"$web_layout_prefix"* ]];
 		then
-			[[ $f =~ $regex ]];
+			[[ $f =~ $project_name_regex ]];
 			projectCode="${BASH_REMATCH[1]}"
 			if [[ $projectCode != "" ]];
 			then
@@ -42,6 +42,7 @@ function get_projects_standard_layout() {
 function count_translatable_projects() {
 	base="$1"
 	translatable_count=$(find $base -wholename "$std_layout_file_pattern" | wc -l)
+	logt 4 "find $base -wholename \"$std_layout_file_pattern\" | wc -l"
 	logt 3 "Found $translatable_count translatable projects"
 }
 
