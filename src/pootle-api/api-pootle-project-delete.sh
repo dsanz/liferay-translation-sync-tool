@@ -21,8 +21,8 @@ function delete_pootle_project() {
 	logt 2 "Deleting pootle project $projectCode"
 	start_pootle_session
 
-	id=$(get_pootle_project_id_from_code $projectCode)
-	projectName=$(get_pootle_project_fullname_from_code $projectCode)
+	id="$(get_pootle_project_id_from_code $projectCode)"
+	projectName="$(get_pootle_project_fullname_from_code $projectCode)"
 
 	# this deletes the pootle project
 	logt 3 -n "Posting delete project form (id: $id, fullname: $projectName)"
@@ -30,16 +30,19 @@ function delete_pootle_project() {
         -d "form-TOTAL_FORMS=1" -d "form-INITIAL_FORMS=0" -d "form-MAX_NUM_FORMS=1000"\
         -d "form-0-id=$id" -d "form-0-code=$projectCode" -d "form-0-fullname=$projectName"\
         -d "form-0-checkstyle=standard" -d "form-0-localfiletype=properties" \
-        -d "form-0-source_language=2" -d "form-0-ignoredfiles=" -d "form-0-DELETE=on" \
-        -d "changeprojects=Save Changes" \
+        -d "form-0-treestyle=gnu" -d "form-0-source_language=2" -d "form-0-ignoredfiles=" \
+        -d "form-0-DELETE=on" -d "changeprojects=Save Changes" \
         "$PO_SRV$path/admin/projects.html"
 	check_command
 	close_pootle_session
 }
-#        form-9-id:102
-#        form-9-code:kk
-#        form-9-fullname:de Vaca
-#        form-9-checkstyle:standard
-#        form-9-source_language:2
-#        form-9-ignoredfiles:
-#        form-9-DELETE:on
+
+#form-9-id:105
+#form-9-code:kk
+#form-9-fullname:KkKk
+#form-9-checkstyle:standard
+#form-9-localfiletype:po
+#form-9-treestyle:auto
+#form-9-source_language:2
+#form-9-ignoredfiles:
+#form-9-DELETE:on
