@@ -10,7 +10,7 @@ function delete_project_in_pootle() {
 			logt 1 "Pootle project '$projectCode' does not exist. Aborting..."
 		fi
 	else
-		logt 1 "Unable to delete Pootle project '$projectCode' : pootle server is down. Please start it, then rerun this command"
+		logt 1 "Unable to delete Pootle project '$projectCode': pootle server is down. Please start it, then rerun this command"
 	fi;
 }
 
@@ -36,7 +36,7 @@ function delete_pootle_project() {
 	check_command
 	close_pootle_session
 
-	## seems that above post does not delete files on disk. Let's do it
+	# seems that above post does not delete files on disk. Let's do it
 	logt 3 -n "Deleting project files on disk"
 	rm -Rf $PODIR/$projectCode 2>&1 > /dev/null
 	check_command
