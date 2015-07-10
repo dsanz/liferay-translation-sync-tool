@@ -18,14 +18,14 @@ function delete_project_in_pootle() {
 function delete_pootle_project() {
 	projectCode="$1"
 
-	logt 2 "Deleting pootle project $projectCode"
+	logt 2 "Deleting project $projectCode from pootle server"
 	start_pootle_session
 
 	id="$(get_pootle_project_id_from_code $projectCode)"
 	projectName="$(get_pootle_project_fullname_from_code $projectCode)"
 
 	# this deletes the pootle project
-	logt 3 -n "Posting delete project form (id: $id, fullname: $projectName)"
+	logt 3 -n "Posting delete project form (id: $id, fullname: $projectName) to pootle server"
 	curl $CURL_OPTS -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`"\
         -d "form-TOTAL_FORMS=1" -d "form-INITIAL_FORMS=1" -d "form-MAX_NUM_FORMS=1000"\
         -d "form-0-id=$id" -d "form-0-code=$projectCode" -d "form-0-fullname=$projectName"\
@@ -35,6 +35,11 @@ function delete_pootle_project() {
         "$PO_SRV$path/admin/projects.html"
 	check_command
 	close_pootle_session
+
+	## seems that above post does not delete files on disk. Let's do it
+	logt 3 -n "Deleting project files on disk"
+	rm -Rf $PODIR/$projectCode 2>&1 > /dev/null
+	check_command
 }
 
 #form-9-id:105
