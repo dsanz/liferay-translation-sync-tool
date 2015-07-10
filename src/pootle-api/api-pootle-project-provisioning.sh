@@ -2,14 +2,15 @@ declare -xgr lang_file_path_tail="src/content/Language.properties"
 declare -xgr web_layout_prefix="docroot/WEB-INF"
 declare -xgr web_layout_file_pattern="*/$web_layout_prefix/$lang_file_path_tail"
 declare -xgr std_layout_file_pattern="*/$lang_file_path_tail"
-declare -xgr project_name_regex="/([^/]+)/docroot/WEB-INF/src"
+declare -xgr web_project_code_regex="/([^/]+)/docroot/WEB-INF/src"
+declare -xgr std_project_code_regex="/([^/]+)/src"
 
 # this works for liferay (traditional) plugins and some osgi modules
 function get_projects_web_layout() {
 	base="$1"
 	web_layout_count=0
 	for f in $(find  $base -wholename "$web_layout_file_pattern"); do
-		[[ $f =~ $project_name_regex ]];
+		[[ $f =~ $web_project_code_regex ]];
 		projectCode="${BASH_REMATCH[1]}"
 		if [[ $projectCode != "" ]];
 		then
@@ -27,7 +28,7 @@ function get_projects_standard_layout() {
 	for f in $(find $base -wholename "$std_layout_file_pattern"); do
 		if [[ $f != *"$web_layout_prefix"* ]];
 		then
-			[[ $f =~ $project_name_regex ]];
+			[[ $f =~ $std_project_code_regex ]];
 			projectCode="${BASH_REMATCH[1]}"
 			if [[ $projectCode != "" ]];
 			then
