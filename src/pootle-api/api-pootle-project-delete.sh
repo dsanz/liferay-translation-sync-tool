@@ -27,7 +27,7 @@ function delete_pootle_project() {
 	# this deletes the pootle project
 	logt 3 -n "Posting delete project form (id: $id, fullname: $projectName)"
 	curl $CURL_OPTS -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`"\
-        -d "form-TOTAL_FORMS=1" -d "form-INITIAL_FORMS=0" -d "form-MAX_NUM_FORMS=1000"\
+        -d "form-TOTAL_FORMS=1" -d "form-INITIAL_FORMS=1" -d "form-MAX_NUM_FORMS=1000"\
         -d "form-0-id=$id" -d "form-0-code=$projectCode" -d "form-0-fullname=$projectName"\
         -d "form-0-checkstyle=standard" -d "form-0-localfiletype=properties" \
         -d "form-0-treestyle=gnu" -d "form-0-source_language=2" -d "form-0-ignoredfiles=" \
