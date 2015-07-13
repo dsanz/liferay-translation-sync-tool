@@ -4,8 +4,8 @@ declare -xgr web_layout_prefix="docroot/WEB-INF"
 declare -xgr web_layout_project_code_regex="/([^/]+)/$web_layout_prefix/$lang_file_path_tail"
 declare -xgr std_layout_project_code_regex="/([^/]+)/$lang_file_path_tail"
 
-
 declare -xgr traditional_plugin_regex="/([^/]+)$web_layout_project_code_regex"
+declare -xgr generic_project_regex="/([^/]+)$std_layout_project_code_regex"
 declare -xgr osgi_web_module_regex="modules/([^/]+)/([^/]+)$web_layout_project_code_regex"
 declare -xgr osgi_module_regex="modules/([^/]+)/([^/]+)$std_layout_project_code_regex"
 
@@ -38,14 +38,14 @@ function get_project_code_from_path() {
 		# project can either be the portal or a osgi module
 		if [[ $filepath =~ $osgi_module_regex ]] ;
 			then
-				# project is an osgi web module
+				# project is an osgi module
 				projectFamily="${BASH_REMATCH[2]}"
 				type="OSGi module"
 			else
-				# project is a traditional liferay plugin
-				[[ $filepath =~ $traditional_plugin_regex ]] ;
+				# project is generic (e.g. portal, AT rules...)
+				[[ $filepath =~ $generic_project_regex ]] ;
 				projectFamily="${BASH_REMATCH[1]}"
-				type="Portal"
+				type="Generic"
 		fi;
 	fi
 	logt 3 "Code: $projectCode, Family: $projectFamily, type: $type"
