@@ -18,7 +18,3 @@ function call_manage() {
 	$invoke > /dev/null 2>&1
 	check_command
 }
-
-function exists_project_in_pootle() {
-	wget --spider "$PO_SRV/projects/$1" 2>&1 | grep 200 > /dev/null
-}
