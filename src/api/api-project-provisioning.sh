@@ -1,3 +1,17 @@
+# declare variables prefixed with AP_ which will be the "Auto Provisioned" counterparts for the master lists
+# GIT_ROOTS is the unique variable which will be given to the tool.
+
+# contains all project code names, as seen by pootle and source dirs
+declare -xgA AP_PROJECT_NAMES
+# contains an entry for each project, storing the project base source dir where Language.properties files are
+declare -xgA AP_PROJECT_SRC_LANG_BASE
+# contains an entry for each project, storing the ant dir where build-lang target is to be invoked
+declare -xgA AP_PROJECT_ANT_BUILD_LANG_DIR
+# contains an entry for each different base source dir, storing the list of
+# projects associated with that dir
+declare -xgA AP_PROJECTS_BY_GIT_ROOT
+
+## some regex and patterns for project detection
 declare -xgr lang_file_path_tail="src/content/Language.properties"
 declare -xgr web_layout_prefix="docroot/WEB-INF"
 
@@ -10,7 +24,8 @@ declare -xgr osgi_web_module_regex="modules/([^/]+)/([^/]+)$web_layout_project_c
 declare -xgr osgi_module_regex="modules/([^/]+)/([^/]+)$std_layout_project_code_regex"
 
 function get_project_code_from_path() {
-	filepath="$1"
+	base_src_dir="$1"
+	filepath="$2"
 	type="none"
 
 	if [[ $filepath == *"$web_layout_prefix"* ]]; then
@@ -48,19 +63,64 @@ function get_project_code_from_path() {
 				type="Generic"
 		fi;
 	fi
+	lang_rel_path=$filepath
+	lang_rel_path=${lang_rel_path#$base_src_dir}
+	lang_rel_path=${lang_rel_path%/Language.properties}
+
 	logt 3 "Code: $projectCode, Family: $projectFamily, type: $type"
 	logt 4 "$filepath"
+	logt 4 "$lang_rel_path"
+
+ #	add_AP_project "$projectCode" "$projectFamily/$projectCode" "$base_src_dir" "$lang_rel_path" "test"
 }
+
+# Adds a new Auto-provisioned project to the project arrays. Requires 4 parameters
+#  - project code (eg "sibboleth-hook")
+#  - project name (eg "Hooks/Shibboleth Hook")
+#  - git_root_dir: root of source code for that project
+#  - lang rel path: path where Language.properties file lives, relative to $2
+#  - ant rel path: path where ant build-lang has to be invoked, relative to $2
+function add_AP_project() {
+	project_code="$1"
+	project_name="$2"
+	git_root_dir="$3"
+	lang_rel_path="$4"
+	ant_rel_path="$5"
+
+	AP_PROJECT_NAMES["$project_code"]="$project_name"
+	AP_PROJECT_SRC_LANG_BASE["$project_name"]="$git_root_dir$lang_rel_path"
+	AP_PROJECT_ANT_BUILD_LANG_DIR["$project_name"]="$git_root_dir$ant_rel_path"
+	AP_PROJECTS_BY_GIT_ROOT["$git_root_dir"]=" $project_name"${PROJECTS_BY_GIT_ROOT["$git_root_dir"]}
+}
+
 
 function display_projects_from_source() {
 	logt 1 "Calculating project list from current sources"
 	for base_src_dir in "${!GIT_ROOTS[@]}"; do
 		logt 2 "$base_src_dir"
 		for lang_file in $(find  $base_src_dir -wholename *"$lang_file_path_tail"); do
-			get_project_code_from_path "$lang_file"
+			get_project_code_from_path "$base_src_dir" "$lang_file"
 		done;
 	done;
 }
+
+# Adds a new project to the project arrays. Requires 4 parameters
+#  - project name (eg "sibboleth-hook")
+#  - git_root_dir: root of source code for that project
+#  - lang rel path: path where Language.properties file lives, relative to $2
+#  - ant rel path: path where ant build-lang has to be invoked, relative to $2
+function add_project() {
+	project_name="$1"
+	git_root_dir="$2"
+	lang_rel_path="$3"
+	ant_rel_path="$4"
+
+	PROJECT_NAMES["$project_name"]="$project_name"
+	PROJECT_SRC_LANG_BASE["$project_name"]="$git_root_dir$lang_rel_path"
+	PROJECT_ANT_BUILD_LANG_DIR["$project_name"]="$git_root_dir$ant_rel_path"
+	PROJECTS_BY_GIT_ROOT["$git_root_dir"]=" $project_name"${PROJECTS_BY_GIT_ROOT["$git_root_dir"]}
+}
+
 
 ### DEPRECATED (just initial tests)
 
