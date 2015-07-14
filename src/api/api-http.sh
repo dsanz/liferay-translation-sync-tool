@@ -3,7 +3,7 @@
 function close_pootle_session() {
 	# get logout page and delete cookies
 	logt 3 -n "Closing pootle session... "
-	curl $CURL_OPTS -m 2 "$PO_SRV/accounts/logout"
+	curl $CURL_OPTS -m 120 "$PO_SRV/accounts/logout"
 	check_command
 }
 
