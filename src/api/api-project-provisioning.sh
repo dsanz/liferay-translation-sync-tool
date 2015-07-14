@@ -78,11 +78,8 @@ function get_project_code_from_path() {
 	lang_rel_path=${lang_rel_path%/Language.properties}
 
 	project_name="$(prettify_name $project_family)/$(prettify_name $project_code)"
-	logt 3 "Code: $project_code, Family: $project_family, type: $type, name: $project_name"
-	logt 4 "$filepath"
-	logt 4 "$lang_rel_path"
 
-	add_AP_project "$project_code" "$project_family/$project_code" "$base_src_dir" "$lang_rel_path" "test"
+	add_AP_project "$project_code" "$project_name" "$base_src_dir" "$lang_rel_path" "test"
 }
 
 # Adds a new Auto-provisioned project to the project arrays. Requires 4 parameters
@@ -99,9 +96,9 @@ function add_AP_project() {
 	ant_rel_path="$5"
 
 	AP_PROJECT_NAMES["$project_code"]="$project_name"
-	AP_PROJECT_SRC_LANG_BASE["$project_name"]="$git_root_dir$lang_rel_path"
-	AP_PROJECT_ANT_BUILD_LANG_DIR["$project_name"]="$git_root_dir$ant_rel_path"
-	AP_PROJECTS_BY_GIT_ROOT["$git_root_dir"]=" $project_name"${AP_PROJECTS_BY_GIT_ROOT["$git_root_dir"]}
+	AP_PROJECT_SRC_LANG_BASE["$project_code"]="$git_root_dir$lang_rel_path"
+	AP_PROJECT_ANT_BUILD_LANG_DIR["$project_code"]="$git_root_dir$ant_rel_path"
+	AP_PROJECTS_BY_GIT_ROOT["$git_root_dir"]=" $project_code"${AP_PROJECTS_BY_GIT_ROOT["$git_root_dir"]}
 }
 
 function display_AP_projects() {
