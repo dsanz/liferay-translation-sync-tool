@@ -7,14 +7,14 @@ function exists_project_in_pootle() {
 function exists_project_in_pootle_DB() {
 	project_code="$1"
 	exists=false;
-	for project in "${!POOTLE_PROJECT_CODES[@]}";
+	for pootle_project_code in "${!POOTLE_PROJECT_CODES[@]}";
 	do
-		if [[ "$project_code" == "$project" ]]; then
+		if [[ "$project_code" == "$pootle_project_code" ]]; then
 			exists=true
 			break;
 		fi;
 	done;
-	[[ $exists ]]
+	$exists
 }
 
 function read_pootle_projects() {
@@ -26,12 +26,12 @@ function read_pootle_projects() {
 
 function create_missing_projects_in_pootle() {
 	logt 2 "Creating missing projects in pootle"
-	for project in "${!AP_PROJECT_NAMES[@]}";
+	for ap_project_code in "${!AP_PROJECT_NAMES[@]}";
 	do
-		if exists_project_in_pootle_DB $project; then
-			logt 3 "Project $project exists in pootle"
+		if exists_project_in_pootle_DB $ap_project_code; then
+			logt 3 "Project $ap_project_code exists in pootle"
 		else
-			logt 3 "Project $project does not exist in pootle"
+			logt 3 "Project $ap_project_code does not exist in pootle"
 		fi;
 	done;
 }
