@@ -23,9 +23,10 @@ function add_project_in_pootle() {
 function create_pootle_project() {
 	projectCode="$1"
 	projectName="$2"
+	open_session="$3"
 
 	logt 2 "Creating empty pootle project"
-	start_pootle_session
+	[[ ${open_session+1} ]] && start_pootle_session
 	# this creates the pootle project
 	logt 3 -n "Posting new project form"
 	curl $CURL_OPTS -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`"\
@@ -35,7 +36,7 @@ function create_pootle_project() {
         -d "form-0-source_language=2" -d "form-0-ignoredfiles=" -d "changeprojects=Save Changes"\
         "$PO_SRV$path/admin/projects.html"
 	check_command
-	close_pootle_session
+	[[ ${open_session+1} ]] && close_pootle_session
 }
 
 function notify_pootle() {
