@@ -26,14 +26,20 @@ function read_pootle_projects() {
 
 function create_missing_projects_in_pootle() {
 	logt 2 "Creating missing projects in pootle"
+	declare -a projects_to_create;
 	for ap_project_code in "${!AP_PROJECT_NAMES[@]}";
 	do
-		if exists_project_in_pootle_DB $ap_project_code; then
-			logt 3 "Project $ap_project_code exists in pootle"
-		else
-			logt 4 "Project $ap_project_code does not exist in pootle"
+		if ! exists_project_in_pootle_DB $ap_project_code; then
+			projects_to_create[${#projects_to_create[@]}]=$project_code
 		fi;
 	done;
+	logt 3 "Will create following projects in pootle"
+	for ap_project_code in "${projects_to_create[@]}"; do
+		log -n "  $ap_project_code"
+	done;
+	log
+
+	provision_full_project ${projects_to_create[0]}
 }
 
 function provision_projects() {
@@ -43,3 +49,26 @@ function provision_projects() {
 	##delete_old_projects_in_pootle
 }
 
+function provision_full_project() {
+	project_code="$1"
+
+	log 1 "Provisioning full pootle project $project_code (${AP_PROJECT_NAMES[$project_code]})"
+
+	# create empty project in pootle
+	create_pootle_project $project_code "${AP_PROJECT_NAMES[$project_code]}"
+
+	# let pootle know the set of available key for that project
+	logt 2 "Setting pootle project template"
+	update_from_templates $project_code "${AP_PROJECT_SRC_LANG_BASE[$project_code]}"
+
+	# provide translations from code
+	logt 2 "Filling up project translations"
+	start_pootle_session
+	cd "${AP_PROJECT_SRC_LANG_BASE[$project_code]}"
+	files="$(ls ${FILE}${LANG_SEP}*.${PROP_EXT} 2>/dev/null)"
+	for file in $files; do
+		locale=$(get_locale_from_file_name $file)
+		post_file_batch "$project_code" "$locale"
+	done;
+	close_pootle_session
+}
