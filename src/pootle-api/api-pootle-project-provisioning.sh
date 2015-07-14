@@ -53,7 +53,7 @@ function provision_projects() {
 function provision_full_project() {
 	project_code="$1"
 
-	log 1 "Provisioning full pootle project $project_code (${AP_PROJECT_NAMES[$project_code]})"
+	logt 1 "Provisioning full pootle project $project_code (${AP_PROJECT_NAMES[$project_code]})"
 
 	# create empty project in pootle
 	create_pootle_project $project_code "${AP_PROJECT_NAMES[$project_code]}"
