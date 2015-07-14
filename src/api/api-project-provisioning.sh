@@ -79,6 +79,7 @@ function read_project_from_path() {
 
 	project_name="$(prettify_name $project_family)/$(prettify_name $project_code)"
 
+#TODO: compute ant path
 	add_AP_project "$project_code" "$project_name" "$base_src_dir" "$lang_rel_path" "test"
 }
 

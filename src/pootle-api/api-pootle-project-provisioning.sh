@@ -39,6 +39,7 @@ function create_missing_projects_in_pootle() {
 	done;
 	log
 
+#TODO: iterate over the array
 	provision_full_project ${projects_to_create[0]}
 }
 
