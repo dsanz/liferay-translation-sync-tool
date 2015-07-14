@@ -101,7 +101,7 @@ function add_AP_project() {
 	AP_PROJECT_NAMES["$project_code"]="$project_name"
 	AP_PROJECT_SRC_LANG_BASE["$project_name"]="$git_root_dir$lang_rel_path"
 	AP_PROJECT_ANT_BUILD_LANG_DIR["$project_name"]="$git_root_dir$ant_rel_path"
-	AP_PROJECTS_BY_GIT_ROOT["$git_root_dir"]=" $project_name"${PROJECTS_BY_GIT_ROOT["$git_root_dir"]}
+	AP_PROJECTS_BY_GIT_ROOT["$git_root_dir"]=" $project_name"${AP_PROJECTS_BY_GIT_ROOT["$git_root_dir"]}
 }
 
 function display_AP_projects() {
