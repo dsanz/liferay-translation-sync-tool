@@ -137,6 +137,10 @@ Future version are expected to read a Language.properties file as well to match 
 			"projectCode: new project code, such as 'knowledge-portlet'"\
 			"projectName: new project name, such as 'Knowledge Portlet'. If contains spaces, please double quote it!"\
 
+	print_action "-dp, --deleteproject <projectCode>"\
+			"Deletes an existing project in Pootle. "\
+			"projectCode: project code, such as 'knowledge-portlet'"
+
 	print_action "-q, --qualityCheck"\
 			"Run a set of checks over pootle exported files. Log files contain the results"
 
