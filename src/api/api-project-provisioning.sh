@@ -23,6 +23,16 @@ declare -xgr generic_project_regex="/([^/]+)$std_layout_project_code_regex"
 declare -xgr osgi_web_module_regex="modules/([^/]+)/([^/]+)$web_layout_project_code_regex"
 declare -xgr osgi_module_regex="modules/([^/]+)/([^/]+)$std_layout_project_code_regex"
 
+function prettify_name() {
+	name="$1"
+	r="";
+	while read l; do
+		r="$r ${l^}";
+	done <<< "$(echo $name | tr '-' '\n')" ;
+
+	echo $r
+}
+
 function get_project_code_from_path() {
 	base_src_dir="$1"
 	filepath="$2"
@@ -67,6 +77,7 @@ function get_project_code_from_path() {
 	lang_rel_path=${lang_rel_path#$base_src_dir}
 	lang_rel_path=${lang_rel_path%/Language.properties}
 
+	project_name="$(prettify_name $projectFamily)/(prettify_name $projectCode)"
 	logt 3 "Code: $projectCode, Family: $projectFamily, type: $type"
 	logt 4 "$filepath"
 	logt 4 "$lang_rel_path"
