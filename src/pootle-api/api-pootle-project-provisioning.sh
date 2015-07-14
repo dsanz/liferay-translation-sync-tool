@@ -33,7 +33,7 @@ function create_missing_projects_in_pootle() {
 		else
 			logt 3 "Project $project exists in pootle"
 		fi;
-	done
+	done;
 }
 
 function provision_projects() {
