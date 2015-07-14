@@ -4,7 +4,7 @@ function exists_project_in_pootle() {
 	wget --spider "$PO_SRV/projects/$1" 2>&1 | grep 200 > /dev/null
 }
 
-function exists_project_in_pootle_() {
+function exists_project_in_pootle_DB() {
 	project_code="$1"
 	exists=false;
 	for project in "${!POOTLE_PROJECT_CODES[@]}";
@@ -28,7 +28,7 @@ function create_missing_projects_in_pootle() {
 	logt 2 "Creating missing projects in pootle"
 	for project in "${!AP_PROJECT_NAMES[@]}";
 	do
-		if [[ ! exists_project_in_pootle_ $project ]]; then
+		if [[ ! exists_project_in_pootle_DB $project ]]; then
 			logt 3 "Project $project does not exist in pootle"
 		else
 			logt 3 "Project $project exists in pootle"
