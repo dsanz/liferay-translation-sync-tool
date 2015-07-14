@@ -1,5 +1,5 @@
 # declare variables prefixed with AP_ which will be the "Auto Provisioned" counterparts for the master lists
-# GIT_ROOTS is the unique variable which will be given to the tool.
+# GIT_ROOTS and PR_EVIEWER are the unique variables which will be given to the tool.
 
 # contains all project code names, as seen by pootle and source dirs
 declare -xgA AP_PROJECT_NAMES
@@ -33,7 +33,7 @@ function prettify_name() {
 	echo $r
 }
 
-function get_project_code_from_path() {
+function read_project_from_path() {
 	base_src_dir="$1"
 	filepath="$2"
 	type="none"
@@ -106,7 +106,7 @@ function display_AP_projects() {
 	for base_src_dir in "${!GIT_ROOTS[@]}"; do
 		logt 2 "$base_src_dir"
 		for lang_file in $(find  $base_src_dir -wholename *"$lang_file_path_tail"); do
-			get_project_code_from_path "$base_src_dir" "$lang_file"
+			read_project_from_path "$base_src_dir" "$lang_file"
 		done;
 	done;
 
@@ -124,66 +124,3 @@ function display_AP_projects() {
 		done <<< "$project_list"
 	done;
 }
-
-# Adds a new project to the project arrays. Requires 4 parameters
-#  - project name (eg "sibboleth-hook")
-#  - git_root_dir: root of source code for that project
-#  - lang rel path: path where Language.properties file lives, relative to $2
-#  - ant rel path: path where ant build-lang has to be invoked, relative to $2
-function add_project() {
-	project_name="$1"
-	git_root_dir="$2"
-	lang_rel_path="$3"
-	ant_rel_path="$4"
-
-	PROJECT_NAMES["$project_name"]="$project_name"
-	PROJECT_SRC_LANG_BASE["$project_name"]="$git_root_dir$lang_rel_path"
-	PROJECT_ANT_BUILD_LANG_DIR["$project_name"]="$git_root_dir$ant_rel_path"
-	PROJECTS_BY_GIT_ROOT["$git_root_dir"]=" $project_name"${PROJECTS_BY_GIT_ROOT["$git_root_dir"]}
-}
-
-
-### DEPRECATED (just initial tests)
-
-# this works for liferay (traditional) plugins and some osgi modules
-function get_projects_web_layout() {
-	base="$1"
-	web_layout_count=0
-	for f in $(find  $base -wholename *"$web_layout_file_regex"); do
-		[[ $f =~ $web_project_code_regex ]];
-		project_code="${BASH_REMATCH[1]}"
-		if [[ $project_code != "" ]];
-		then
-			logt 3 "Web layout: $project_code ($f)";
-			(( web_layout_count++ ))
-		fi
-	done
-	logt 3 "Found $web_layout_count translatable projects using web file layout"
-}
-
-# this works for portal and most osgi modules
-function get_projects_standard_layout() {
-	base="$1"
-	std_layout_count=0
-	for f in $(find $base -wholename *"$std_layout_file_regex"); do
-		if [[ $f != *"$web_layout_prefix"* ]];
-		then
-			[[ $f =~ $std_project_code_regex ]];
-			project_code="${BASH_REMATCH[1]}"
-			if [[ $project_code != "" ]];
-			then
-				logt 3 "Std layout: $project_code ($f)";
-				(( std_layout_count++ ))
-			fi
-		fi
-	done
-	logt 3 "Found $std_layout_count translatable projects using standard file layout"
-}
-
-function count_translatable_projects() {
-	base="$1"
-	translatable_count=$(find $base -wholename "$std_layout_file_regex" | wc -l)
-	logt 4 "find $base -wholename \"$std_layout_file_regex\" | wc -l"
-	logt 3 "Found $translatable_count translatable projects"
-}
-
