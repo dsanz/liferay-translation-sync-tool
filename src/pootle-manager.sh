@@ -163,6 +163,7 @@ main() {
 	echo "[START] $product"
 	load_config
 	resolve_params $@
+	read_projects_from_sources
 	if [ $UPDATE_REPOSITORY ]; then
 		if [ $UPDATE_POOTLE_DB ]; then
 			src2pootle

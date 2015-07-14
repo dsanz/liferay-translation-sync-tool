@@ -102,14 +102,6 @@ function add_AP_project() {
 }
 
 function display_AP_projects() {
-	logt 1 "Calculating project list from current sources"
-	for base_src_dir in "${!GIT_ROOTS[@]}"; do
-		logt 2 "$base_src_dir"
-		for lang_file in $(find  $base_src_dir -wholename *"$lang_file_path_tail"); do
-			read_project_from_path "$base_src_dir" "$lang_file"
-		done;
-	done;
-
 	logt 1 "(Auto Provisioned) Working project list by git root (${#AP_PROJECT_NAMES[@]} projects, ${#GIT_ROOTS[@]} git roots) "
 	for git_root in "${!GIT_ROOTS[@]}"; do
 		project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
@@ -122,5 +114,15 @@ function display_AP_projects() {
 			[ -d $project_src ]
 			check_command
 		done <<< "$project_list"
+	done;
+}
+
+function read_projects_from_sources() {
+	logt 1 "Calculating project list from current sources"
+	for base_src_dir in "${!GIT_ROOTS[@]}"; do
+		logt 2 "$base_src_dir"
+		for lang_file in $(find  $base_src_dir -wholename *"$lang_file_path_tail"); do
+			read_project_from_path "$base_src_dir" "$lang_file"
+		done;
 	done;
 }
