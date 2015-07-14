@@ -7,7 +7,7 @@ function exists_project_in_pootle() {
 function exists_project_in_pootle_DB() {
 	project_code="$1"
 	exists=false;
-	for pootle_project_code in "${!POOTLE_PROJECT_CODES[@]}";
+	for pootle_project_code in "${POOTLE_PROJECT_CODES[@]}";
 	do
 		if [[ "$project_code" == "$pootle_project_code" ]]; then
 			exists=true
