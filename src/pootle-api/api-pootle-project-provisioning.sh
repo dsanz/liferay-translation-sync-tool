@@ -31,7 +31,7 @@ function create_missing_projects_in_pootle() {
 		if exists_project_in_pootle_DB $ap_project_code; then
 			logt 3 "Project $ap_project_code exists in pootle"
 		else
-			logt 3 "Project $ap_project_code does not exist in pootle"
+			logt 4 "Project $ap_project_code does not exist in pootle"
 		fi;
 	done;
 }
