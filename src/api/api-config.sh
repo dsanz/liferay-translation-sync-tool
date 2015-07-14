@@ -46,6 +46,8 @@ function resolve_params() {
 			export RESTORE_BACKUP=1
 		elif [ "$param" = "--listProjects" ] || [ "$param" = "-l" ]; then
 			export LIST_PROJECTS=1
+		elif [ "$param" = "--provisionProjects" ] || [ "$param" = "-pp" ]; then
+			export PROVISION_PROJECTS=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else
@@ -140,6 +142,9 @@ Future version are expected to read a Language.properties file as well to match 
 	print_action "-dp, --deleteproject <projectCode>"\
 			"Deletes an existing project in Pootle. "\
 			"projectCode: project code, such as 'knowledge-portlet'"
+
+	print_action "-pp, --provisionProjects"\
+			"Detects projects from source code (git roots) and syncs the sets of projects in Pootle according to detected projects"
 
 	print_action "-q, --qualityCheck"\
 			"Run a set of checks over pootle exported files. Log files contain the results"

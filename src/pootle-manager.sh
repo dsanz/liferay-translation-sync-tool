@@ -190,6 +190,8 @@ main() {
 		restore_backup $2;
 	elif [ $LIST_PROJECTS ]; then
 		display_projects;
+	elif [ $PROVISION_PROJECTS ]; then
+		provision_projects;
 	fi
 
 	if [[ -z ${LR_TRANS_MGR_TAIL_LOG+x} ]]; then
