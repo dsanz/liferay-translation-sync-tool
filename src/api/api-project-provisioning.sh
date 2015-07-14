@@ -77,7 +77,7 @@ function get_project_code_from_path() {
 	lang_rel_path=${lang_rel_path#$base_src_dir}
 	lang_rel_path=${lang_rel_path%/Language.properties}
 
-	project_name="$(prettify_name $project_family)/(prettify_name $project_code)"
+	project_name="$(prettify_name $project_family)/$(prettify_name $project_code)"
 	logt 3 "Code: $project_code, Family: $project_family, type: $type, name: $project_name"
 	logt 4 "$filepath"
 	logt 4 "$lang_rel_path"
