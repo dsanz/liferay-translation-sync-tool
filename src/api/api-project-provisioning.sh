@@ -41,35 +41,35 @@ function get_project_code_from_path() {
 	if [[ $filepath == *"$web_layout_prefix"* ]]; then
 		# project has the "web-layout" (<code>/docroot/WEB-INF/src/content/Language.properties)
 		[[ $filepath =~ $web_layout_project_code_regex ]] ;
-		projectCode="${BASH_REMATCH[1]}"
+		project_code="${BASH_REMATCH[1]}"
 
 		# project can either be a traditional plugin or a osgi (web) module
 		if [[ $filepath =~ $osgi_web_module_regex ]] ;
 		then
 			# project is an osgi web module
-			projectFamily="${BASH_REMATCH[2]}"
+			project_family="${BASH_REMATCH[2]}"
 			type="OSGi web module"
 		else
 			# project is a traditional liferay plugin
 			[[ $filepath =~ $traditional_plugin_regex ]] ;
-			projectFamily="${BASH_REMATCH[1]}"
+			project_family="${BASH_REMATCH[1]}"
 			type="Liferay plugin"
 		fi;
 	else
 		# project has standard layout.
 		[[ $filepath =~ $std_layout_project_code_regex ]];
-		projectCode="${BASH_REMATCH[1]}"
+		project_code="${BASH_REMATCH[1]}"
 
 		# project can either be the portal or a osgi module
 		if [[ $filepath =~ $osgi_module_regex ]] ;
 			then
 				# project is an osgi module
-				projectFamily="${BASH_REMATCH[2]}"
+				project_family="${BASH_REMATCH[2]}"
 				type="OSGi module"
 			else
 				# project is generic (e.g. portal, AT rules...)
 				[[ $filepath =~ $generic_project_regex ]] ;
-				projectFamily="${BASH_REMATCH[1]}"
+				project_family="${BASH_REMATCH[1]}"
 				type="Generic"
 		fi;
 	fi
@@ -77,12 +77,12 @@ function get_project_code_from_path() {
 	lang_rel_path=${lang_rel_path#$base_src_dir}
 	lang_rel_path=${lang_rel_path%/Language.properties}
 
-	project_name="$(prettify_name $projectFamily)/(prettify_name $projectCode)"
-	logt 3 "Code: $projectCode, Family: $projectFamily, type: $type"
+	project_name="$(prettify_name $project_family)/(prettify_name $project_code)"
+	logt 3 "Code: $project_code, Family: $project_family, type: $type, name: $project_name"
 	logt 4 "$filepath"
 	logt 4 "$lang_rel_path"
 
- #	add_AP_project "$projectCode" "$projectFamily/$projectCode" "$base_src_dir" "$lang_rel_path" "test"
+ #	add_AP_project "$project_code" "$project_family/$project_code" "$base_src_dir" "$lang_rel_path" "test"
 }
 
 # Adds a new Auto-provisioned project to the project arrays. Requires 4 parameters
@@ -141,10 +141,10 @@ function get_projects_web_layout() {
 	web_layout_count=0
 	for f in $(find  $base -wholename *"$web_layout_file_regex"); do
 		[[ $f =~ $web_project_code_regex ]];
-		projectCode="${BASH_REMATCH[1]}"
-		if [[ $projectCode != "" ]];
+		project_code="${BASH_REMATCH[1]}"
+		if [[ $project_code != "" ]];
 		then
-			logt 3 "Web layout: $projectCode ($f)";
+			logt 3 "Web layout: $project_code ($f)";
 			(( web_layout_count++ ))
 		fi
 	done
@@ -159,10 +159,10 @@ function get_projects_standard_layout() {
 		if [[ $f != *"$web_layout_prefix"* ]];
 		then
 			[[ $f =~ $std_project_code_regex ]];
-			projectCode="${BASH_REMATCH[1]}"
-			if [[ $projectCode != "" ]];
+			project_code="${BASH_REMATCH[1]}"
+			if [[ $project_code != "" ]];
 			then
-				logt 3 "Std layout: $projectCode ($f)";
+				logt 3 "Std layout: $project_code ($f)";
 				(( std_layout_count++ ))
 			fi
 		fi
