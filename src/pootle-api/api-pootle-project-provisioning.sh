@@ -14,7 +14,7 @@ function exists_project_in_pootle_DB() {
 			break;
 		fi;
 	done;
-	$exists
+	[ "$exists" = true ]
 }
 
 function read_pootle_projects() {
