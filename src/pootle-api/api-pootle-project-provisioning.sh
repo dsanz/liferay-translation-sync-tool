@@ -39,8 +39,12 @@ function create_missing_projects_in_pootle() {
 	done;
 	log
 
+	logt 3 "[Start] Provisioning projects"
+	start_pootle_session
 #TODO: iterate over the array
 	provision_full_project ${projects_to_create[0]}
+	close_pootle_session
+	logt 3 "[End] Provisioning projects"
 }
 
 function provision_projects() {
@@ -56,7 +60,7 @@ function provision_full_project() {
 	logt 1 "Provisioning full pootle project $project_code (${AP_PROJECT_NAMES[$project_code]})"
 
 	# create empty project in pootle
-	create_pootle_project $project_code "${AP_PROJECT_NAMES[$project_code]}"
+	create_pootle_project $project_code "${AP_PROJECT_NAMES[$project_code]}" 0
 
 	# let pootle know the set of available key for that project
 	logt 2 "Setting pootle project template"
@@ -64,12 +68,10 @@ function provision_full_project() {
 
 	# provide translations from code
 	logt 2 "Filling up project translations"
-	start_pootle_session
 	cd "${AP_PROJECT_SRC_LANG_BASE[$project_code]}"
 	files="$(ls ${FILE}${LANG_SEP}*.${PROP_EXT} 2>/dev/null)"
 	for file in $files; do
 		locale=$(get_locale_from_file_name $file)
 		post_file_batch "$project_code" "$locale"
 	done;
-	close_pootle_session
 }
