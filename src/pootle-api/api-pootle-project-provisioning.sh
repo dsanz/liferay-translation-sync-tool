@@ -18,15 +18,10 @@ function exists_project_in_pootle_() {
 }
 
 function read_pootle_projects() {
+	logt 2 "Reading projects from pootle DB"
 	unset POOTLE_PROJECT_CODES
 	declare -xga POOTLE_PROJECT_CODES;
 	read -ra POOTLE_PROJECT_CODES <<< "$(get_pootle_project_codes)"
-}
-
-function provision_projects() {
-	logt 1 "Provisioning projects from sources"
-	create_missing_projects_in_pootle
-	delete_old_projects_in_pootle
 }
 
 function create_missing_projects_in_pootle() {
@@ -40,3 +35,11 @@ function create_missing_projects_in_pootle() {
 		fi;
 	done
 }
+
+function provision_projects() {
+	logt 1 "Provisioning projects from sources"
+	read_pootle_projects
+	create_missing_projects_in_pootle
+	##delete_old_projects_in_pootle
+}
+
