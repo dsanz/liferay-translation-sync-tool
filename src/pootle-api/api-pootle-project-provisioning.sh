@@ -21,7 +21,7 @@ function read_pootle_projects() {
 	logt 2 "Reading projects from pootle DB"
 	unset POOTLE_PROJECT_CODES
 	declare -xga POOTLE_PROJECT_CODES;
-	read -ra POOTLE_PROJECT_CODES <<< "$(get_pootle_project_codes)"
+	read -ra POOTLE_PROJECT_CODES <<< $(get_pootle_project_codes)
 }
 
 function create_missing_projects_in_pootle() {
