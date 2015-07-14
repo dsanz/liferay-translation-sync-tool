@@ -60,7 +60,7 @@ function provision_full_project() {
 	logt 1 "Provisioning full pootle project $project_code (${AP_PROJECT_NAMES[$project_code]})"
 
 	# create empty project in pootle
-	create_pootle_project $project_code "${AP_PROJECT_NAMES[$project_code]}" 0
+	add_project_in_pootle $project_code "${AP_PROJECT_NAMES[$project_code]}" 0
 
 	# let pootle know the set of available key for that project
 	logt 2 "Setting pootle project template"
