@@ -93,20 +93,8 @@ function pootle2src() {
 }
 
 function display_projects() {
-	logt 1 "Working project list by git root (${#PROJECT_NAMES[@]} projects, ${#GIT_ROOTS[@]} git roots) "
-	for git_root in "${!GIT_ROOTS[@]}"; do
-		project_list="$(echo ${PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
-		projects=$(echo "$project_list" | wc -l)
-		logt 2 "Git root: $git_root ($projects projects). Sync branch: ${GIT_ROOTS[$git_root]}. Reviewer: ${PR_REVIEWER[$git_root]}"
-		while read project; do
-			logt 3 -n "$(printf "%-35s%s" "$project")"
-			project_src="${PROJECT_SRC_LANG_BASE["$project"]}"
-			log -n $project_src
-			[ -d $project_src ]
-			check_command
-		done <<< "$project_list"
-	done;
-	display_projects_from_source
+	display_configured_projects
+	display_AP_projects
 }
 
 function backport_all() {
