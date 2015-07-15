@@ -44,7 +44,7 @@ function create_pootle_project() {
 	if [[ ${open_session+1} ]]; then
 		logt 3 "Keeping existing pootle session"
 	else
-		start_pootle_session
+		close_pootle_session
 	fi;
 }
 
