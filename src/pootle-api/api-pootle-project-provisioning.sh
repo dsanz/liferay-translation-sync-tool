@@ -17,6 +17,19 @@ function exists_project_in_pootle_DB() {
 	[ "$exists" = true ]
 }
 
+function exists_project_in_AP_list() {
+	project_code="$1"
+	exists=false;
+	for ap_project_code in "${!AP_PROJECT_NAMES[@]}";
+	do
+		if [[ "$project_code" == "$ap_project_code" ]]; then
+			exists=true
+			break;
+		fi;
+	done;
+	[ "$exists" = true ]
+}
+
 function read_pootle_projects() {
 	logt 2 "Reading projects from pootle DB"
 	unset POOTLE_PROJECT_CODES
@@ -30,7 +43,7 @@ function create_missing_projects_in_pootle() {
 	for ap_project_code in "${!AP_PROJECT_NAMES[@]}";
 	do
 		if ! exists_project_in_pootle_DB $ap_project_code; then
-			projects_to_create[${#projects_to_create[@]}]=$project_code
+			projects_to_create[${#projects_to_create[@]}]=$ap_project_code
 		fi;
 	done;
 	logt 3 "Will create following projects in pootle"
@@ -39,19 +52,45 @@ function create_missing_projects_in_pootle() {
 	done;
 	log
 
-	logt 3 "[Start] Provisioning projects"
+	logt 3 "[Start] Provisioning projects (creation)"
 	start_pootle_session
-#TODO: iterate over the array
+#TODO: iterate over the array once tests are done
 	provision_full_project ${projects_to_create[0]}
 	close_pootle_session
-	logt 3 "[End] Provisioning projects"
+	logt 3 "[End] Provisioning projects (creation)"
+}
+
+function delete_old_projects_in_pootle() {
+	logt 2 "Deleting obsolete projects in pootle"
+	declare -a projects_to_delete;
+	for pootle_project_code in "${POOTLE_PROJECT_CODES[@]}";
+	do
+		if ! exists_project_in_AP_list $pootle_project_code; then
+			projects_to_delete[${#projects_to_delete[@]}]=$pootle_project_code
+		fi;
+	done;
+	logt 3 "Will delete following projects in pootle"
+	for ap_project_code in "${projects_to_delete[@]}"; do
+		log -n "  $ap_project_code"
+	done;
+	log
+
+	logt 3 "[Start] Provisioning projects (deletion)"
+	start_pootle_session
+	for ap_project_code in "${projects_to_delete[@]}"; do
+		#TODO: use a white list to avoid undesired deetions (i.e. liferay sync)
+		delete_project_in_pootle ${ap_project_code} 0
+	done;
+ 	close_pootle_session
+
+	logt 3 "[End] Provisioning projects (deletion)"
 }
 
 function provision_projects() {
 	logt 1 "Provisioning projects from sources"
 	read_pootle_projects
 	create_missing_projects_in_pootle
-	##delete_old_projects_in_pootle
+	delete_old_projects_in_pootle
 }
 
 function provision_full_project() {
