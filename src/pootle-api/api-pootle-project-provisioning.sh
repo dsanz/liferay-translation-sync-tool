@@ -1,4 +1,4 @@
-declare -xg POOTLE_PROJECT_DELETION_WHITELIST_REGEX="sync"
+declare -xga POOTLE_PROJECT_DELETION_WHITELIST_REGEXS=(sync terminology)
 
 # traditional, http way to check for pootle project existence
 function exists_project_in_pootle() {
@@ -61,6 +61,19 @@ function create_missing_projects_in_pootle() {
 	logt 3 "[End] Provisioning projects (creation)"
 }
 
+function is_whitelisted() {
+	project_code="$1"
+	whitelisted=false
+	for regex in "${POOTLE_PROJECT_DELETION_WHITELIST_REGEXS[@]}";
+	do
+		if [[ "$project_code" =~ $regex ]]; then
+			whitelisted=true;
+			break;
+		fi;
+	done;
+	[ "$whitelisted" = true ]
+}
+
 function delete_old_projects_in_pootle() {
 	logt 2 "Deleting obsolete projects in pootle"
 	declare -a projects_to_delete;
@@ -68,7 +81,7 @@ function delete_old_projects_in_pootle() {
 	for pootle_project_code in "${POOTLE_PROJECT_CODES[@]}";
 	do
 		if ! exists_project_in_AP_list $pootle_project_code; then
-			if [[ $pootle_project_code =~ $POOTLE_PROJECT_DELETION_WHITELIST_REGEX ]]; then
+			if is_whitelisted $pootle_project_code; then
 				projects_whitelisted[${#projects_whitelisted[@]}]=$pootle_project_code
 			else
 				projects_to_delete[${#projects_to_delete[@]}]=$pootle_project_code
