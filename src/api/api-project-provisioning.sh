@@ -129,5 +129,6 @@ function read_projects_from_sources() {
 		for lang_file in $(find  $base_src_dir -wholename *"$lang_file_path_tail"); do
 			read_project_from_path "$base_src_dir" "$lang_file"
 		done;
+		check_command
 	done;
 }
