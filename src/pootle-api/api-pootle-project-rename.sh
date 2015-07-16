@@ -81,15 +81,7 @@ function rename_pootle_notifications_notice_entries() {
 	until $done; do
 		read line || done=true
 		origLine="$line"
-		regex="$currentName"
-		while :; do
-			newLine=$(echo $line | sed -r "s:(.*)$currentName(.*):\1$newName\2:")
-			if [[ "$newLine" == "$line" ]]; then
-				break;
-			else
-				line="$newLine"
-			fi
-		done;
+		newLine=$(echo $line | sed "s/$currentName/$newName/g")
 		sql="update pootle_notifications_notice set message='$newLine' where message='$origLine';"
 		logt 4 -n "$sql"
 		$MYSQL_COMMAND $DB_NAME -e "$sql" > /dev/null 2>&1
