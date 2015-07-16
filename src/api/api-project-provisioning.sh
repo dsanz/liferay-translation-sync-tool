@@ -80,6 +80,7 @@ function read_project_from_path() {
 	project_name="$(prettify_name $project_family)/$(prettify_name $project_code)"
 
 #TODO: compute ant path
+	log -n "."
 	add_AP_project "$project_code" "$project_name" "$base_src_dir" "$lang_rel_path" "test"
 }
 
@@ -108,12 +109,15 @@ function display_AP_projects() {
 		project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 		projects=$(echo "$project_list" | wc -l)
 		logt 2 "Git root: $git_root ($projects projects). Sync branch: ${GIT_ROOTS[$git_root]}. Reviewer: ${PR_REVIEWER[$git_root]}"
+		loglc 6 $RED "$(printf "%-40s%s" "Project Code")$(printf "%-85s%s" "Source dir (relative to $git_root)")$(printf "%-65s%s" "Project name")$(printf "%-5s%s" "Check") "
 		while read project; do
-			logt 3 -n "$(printf "%-35s%s" "$project")"
-			project_src="${AP_PROJECT_SRC_LANG_BASE["$project"]}"
-			log -n $project_src
-			[ -d $project_src ]
-			check_command
+			 logt 3 -n "$(printf "%-40s%s" "$project")"
+			 project_src="${AP_PROJECT_SRC_LANG_BASE["$project"]}"
+			 log -n "$(printf "%-85s%s" "${project_src#$git_root}")"
+			 project_name="${AP_PROJECT_NAMES[$project]}"
+			 log -n "$(printf "%-65s%s" "$project_name")"
+			 [ -d $project_src ]
+			 check_command
 		done <<< "$project_list"
 	done;
 }
@@ -121,7 +125,7 @@ function display_AP_projects() {
 function read_projects_from_sources() {
 	logt 1 "Calculating project list from current sources"
 	for base_src_dir in "${!GIT_ROOTS[@]}"; do
-		logt 2 "$base_src_dir"
+		logt 2 -n "$base_src_dir"
 		for lang_file in $(find  $base_src_dir -wholename *"$lang_file_path_tail"); do
 			read_project_from_path "$base_src_dir" "$lang_file"
 		done;
