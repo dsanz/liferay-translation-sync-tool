@@ -17,7 +17,7 @@ Dev tests
 
 4. Review install-assets.sh and remote-control-api for dev and prod
 
-5. clen opt/ dir. Run install-assets.sh
+5. Clean /opt dir. Run install-assets.sh
 
 6. Test all projects creation from AP. Make sure portal-impl is _NOT_ created as it was renamed.
 
