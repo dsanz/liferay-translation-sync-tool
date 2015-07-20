@@ -15,13 +15,13 @@ Dev tests
 	3.3 Create script to backport to all modules
 	3.4 Test final result. Don't commit
 
-4. clen opt/ dir. Run install-assets.sh
+4. Review install-assets.sh and remote-control-api for dev and prod
 
-5. Test all projects creation from AP. Make sure portal-impl is _NOT_ created as it was renamed.
+5. clen opt/ dir. Run install-assets.sh
 
-6. Imstall openssh and check that production machine can scp to here
+6. Test all projects creation from AP. Make sure portal-impl is _NOT_ created as it was renamed.
 
-7. Review install-assets.sh and remote-control-api for dev and prod
+7. Install openssh/ftp server (or the like) and check that production machine can copy data to dev
 
 
 Production (only after all dev stuff is done)
