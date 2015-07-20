@@ -9,6 +9,7 @@ function get_param() {
 }
 
 function get_locales_from_source() {
+	project="$1"
 	src_dir="${PROJECT_SRC_LANG_BASE["$project"]}"
 	echo $(ls -l $src_dir/Language_* | cut -f 1 -d . | cut -f 2- -d _)
 }
@@ -37,12 +38,16 @@ function resolve_params() {
 			export UPLOAD_DERIVED=1
 		elif [ "$param" = "--newproject" ] || [ "$param" = "-np" ]; then
 			export NEW_PROJECT=1
+		elif [ "$param" = "--deleteproject" ] || [ "$param" = "-dp" ]; then
+			export DELETE_PROJECT=1
 		elif [ "$param" = "--qualityCheck" ] || [ "$param" = "-q" ]; then
 			export QA_CHECK=1
 		elif [ "$param" = "--restoreBackup" ] || [ "$param" = "-B" ]; then
 			export RESTORE_BACKUP=1
 		elif [ "$param" = "--listProjects" ] || [ "$param" = "-l" ]; then
 			export LIST_PROJECTS=1
+		elif [ "$param" = "--provisionProjects" ] || [ "$param" = "-pp" ]; then
+			export PROVISION_PROJECTS=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else
@@ -133,6 +138,13 @@ Future version are expected to read a Language.properties file as well to match 
 			"Creates a new project in Pootle. In addition, creates all languages in the project, generating project files as expected by -r and -p options. This saves a lot of time"\
 			"projectCode: new project code, such as 'knowledge-portlet'"\
 			"projectName: new project name, such as 'Knowledge Portlet'. If contains spaces, please double quote it!"\
+
+	print_action "-dp, --deleteproject <projectCode>"\
+			"Deletes an existing project in Pootle. "\
+			"projectCode: project code, such as 'knowledge-portlet'"
+
+	print_action "-pp, --provisionProjects"\
+			"Detects projects from source code (git roots) and syncs the sets of projects in Pootle according to detected projects"
 
 	print_action "-q, --qualityCheck"\
 			"Run a set of checks over pootle exported files. Log files contain the results"

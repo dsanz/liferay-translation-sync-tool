@@ -15,10 +15,10 @@ function load_api() {
 	. api/api-db.sh
 	. api/api-properties.sh
 	. api/api-version.sh
-	. api/api-pootle.sh
+	. api/api-project.sh
+	. api/api-project-provisioning.sh
 	. api/api-quality.sh
 	. api/api-mail.sh
-	. api/api-projects.sh
 	. backporter-api/api-files.sh
 	. backporter-api/api-git.sh
 	. backporter-api/api-properties.sh
@@ -27,7 +27,12 @@ function load_api() {
 	. pootle-api/to_pootle.sh
 	. pootle-api/to_pootle-file_poster.sh
 	. pootle-api/to_liferay.sh
-	. pootle-api/provisioning-api.sh
+	. pootle-api/api-pootle-base.sh
+	. pootle-api/api-pootle-project-add.sh
+	. pootle-api/api-pootle-project-delete.sh
+	. pootle-api/api-pootle-project-fix-path.sh
+	. pootle-api/api-pootle-project-provisioning.sh
+	. pootle-api/api-pootle-project-rename.sh
 	. backporter-api/api-backporter.sh
 
 	declare -xgr HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
@@ -58,6 +63,7 @@ function src2pootle() {
 	clean_temp_input_dirs
 	post_language_translations # bug #1949
 	restore_file_ownership
+	refresh_stats
 	loglc 1 $RED "End Sync[Liferay source code -> Pootle]"
 }
 
@@ -87,19 +93,8 @@ function pootle2src() {
 }
 
 function display_projects() {
-	logt 1 "Working project list by git root (${#PROJECT_NAMES[@]} projects, ${#GIT_ROOTS[@]} git roots) "
-	for git_root in "${!GIT_ROOTS[@]}"; do
-		project_list="$(echo ${PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
-		projects=$(echo "$project_list" | wc -l)
-		logt 2 "Git root: $git_root ($projects projects). Sync branch: ${GIT_ROOTS[$git_root]}. Reviewer: ${PR_REVIEWER[$git_root]}"
-		while read project; do
-			logt 3 -n "$(printf "%-35s%s" "$project")"
-			project_src="${PROJECT_SRC_LANG_BASE["$project"]}"
-			log -n $project_src
-			[ -d $project_src ]
-			check_command
-		done <<< "$project_list"
-	done;
+	display_configured_projects
+	display_AP_projects
 }
 
 function backport_all() {
@@ -152,25 +147,6 @@ function upload_derived_translations() {
 	loglc 1 $RED "Upload finished"
 }
 
-function add_project_in_pootle() {
-	projectCode="$1"
-	projectName="$2"
-
-	if is_pootle_server_up; then
-		if exists_project_in_pootle "$1"; then
-			logt 1 "Pootle project '$projectCode' already exists. Aborting..."
-		else
-			logt 1 "Provisioning new project '$projectCode' ($projectName) in pootle"
-			create_pootle_project $projectCode "$projectName"
-			initialize_project_files $projectCode "$projectName"
-			notify_pootle $projectCode
-			restore_file_ownership
-		fi
-	else
-		logt 1 "Unable to create Pootle project '$projectCode' : pootle server is down. Please start it, then rerun this command"
-	fi;
-}
-
 function check_quality() {
 	loglc 1 $RED "Begin Quality Checks"
 	display_projects
@@ -187,6 +163,10 @@ main() {
 	echo "[START] $product"
 	load_config
 	resolve_params $@
+
+	# most operations need (or will need) the AP project list
+	[ ! $HELP ] && read_projects_from_sources
+
 	if [ $UPDATE_REPOSITORY ]; then
 		if [ $UPDATE_POOTLE_DB ]; then
 			src2pootle
@@ -204,6 +184,8 @@ main() {
 		upload_derived_translations $2 $3 $4
 	elif [ $NEW_PROJECT ]; then
 		add_project_in_pootle $2 "$3"
+	elif [ $DELETE_PROJECT ]; then
+		delete_project_in_pootle $2
 	elif [ $BACKPORT ]; then
 		backport_all $2 $3
 	elif [ $QA_CHECK ]; then
@@ -212,6 +194,8 @@ main() {
 		restore_backup $2;
 	elif [ $LIST_PROJECTS ]; then
 		display_projects;
+	elif [ $PROVISION_PROJECTS ]; then
+		provision_projects;
 	fi
 
 	if [[ -z ${LR_TRANS_MGR_TAIL_LOG+x} ]]; then

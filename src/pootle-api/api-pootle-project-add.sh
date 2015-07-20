@@ -1,11 +1,37 @@
 #!/bin/sh
 
+# top level function to add a new empty project in pootle
+function add_project_in_pootle() {
+	projectCode="$1"
+	projectName="$2"
+	open_session="$3"
+
+	if is_pootle_server_up; then
+		if exists_project_in_pootle "$1"; then
+			logt 1 "Pootle project '$projectCode' already exists. Aborting..."
+		else
+			logt 1 "Provisioning new project '$projectCode' ($projectName) in pootle"
+			create_pootle_project $projectCode "$projectName" "$open_session"
+			initialize_project_files $projectCode "$projectName"
+			notify_pootle $projectCode
+			restore_file_ownership
+		fi
+	else
+		logt 1 "Unable to create Pootle project '$projectCode' : pootle server is down. Please start it, then rerun this command"
+	fi;
+}
+
 function create_pootle_project() {
 	projectCode="$1"
 	projectName="$2"
+	open_session="$3"
 
-	logt 2 "Creating empty pootle project"
-	start_pootle_session
+	logt 2 "Creating empty pootle project with code $projectCode"
+	if [[ ${open_session+1} ]]; then
+		logt 3 "Reusing existing pootle session"
+	else
+		start_pootle_session
+	fi;
 	# this creates the pootle project
 	logt 3 -n "Posting new project form"
 	curl $CURL_OPTS -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`"\
@@ -15,7 +41,11 @@ function create_pootle_project() {
         -d "form-0-source_language=2" -d "form-0-ignoredfiles=" -d "changeprojects=Save Changes"\
         "$PO_SRV$path/admin/projects.html"
 	check_command
-	close_pootle_session
+	if [[ ${open_session+1} ]]; then
+		logt 3 "Keeping existing pootle session"
+	else
+		close_pootle_session
+	fi;
 }
 
 function notify_pootle() {
