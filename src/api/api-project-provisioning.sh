@@ -79,9 +79,9 @@ function read_project_from_path() {
 
 	project_name="$(prettify_name $project_family)/$(prettify_name $project_code)"
 
-#TODO: compute ant path
 	log -n "."
-	add_AP_project "$project_code" "$project_name" "$base_src_dir" "$lang_rel_path" "test"
+	# for the auto-provisioner, ant build-lang dir will be invoked from the base src dir-
+	add_AP_project "$project_code" "$project_name" "$base_src_dir" "$lang_rel_path"
 }
 
 # Adds a new Auto-provisioned project to the project arrays. Requires 4 parameters
