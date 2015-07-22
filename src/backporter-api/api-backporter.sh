@@ -101,11 +101,9 @@ function backport() {
 	done < $target_lang_path
 	log
 
-	if [[ $do_commit -eq 0 ]]; then
-		logt 3 "Moving $file to $target_lang_path"
-		mv $file $target_lang_path
-		file=$target_lang_path
-	fi
+	logt 3 "Moving $file to $target_lang_path"
+	mv $file $target_lang_path
+	file=$target_lang_path
 	logt 3 "Summary of $project ($locale) backport process:"
 	logt 4 "- $backports keys backported"
 	logt 4 "- $deprecations keys are in $target_english_path but not in $source_english_path"
