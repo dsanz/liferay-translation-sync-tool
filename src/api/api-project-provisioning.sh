@@ -10,6 +10,8 @@ declare -xgA AP_PROJECT_ANT_BUILD_LANG_DIR
 # contains an entry for each different base source dir, storing the list of
 # projects associated with that dir
 declare -xgA AP_PROJECTS_BY_GIT_ROOT
+# contains an entry for each project, storing the project's git root
+declare -xgA AP_PROJECT_GIT_ROOT
 
 ## some regex and patterns for project detection
 declare -xgr lang_file_path_tail="src/content/Language.properties"
