@@ -95,17 +95,17 @@ declare -xgr SRC_BASE="$BASE_DIR/"
 declare -xgr SRC_CONTENT="src/content/"
 
 # liferay portal
-declare -xgr SRC_PORTAL_BASE="${SRC_BASE}liferay-portal/"
+declare -xgr SRC_PORTAL_BASE="${SRC_BASE}/master/liferay-portal/"
 declare -xgr SRC_PORTAL_EE_BASE="${SRC_BASE}liferay-portal-ee/"
 declare -xgr SRC_PORTAL_LANG_PATH="portal-impl/$SRC_CONTENT"
 
 # liferay plugns
-declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}liferay-plugins/"
+declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}/master/liferay-plugins/"
 declare -xgr SRC_PLUGINS_EE_BASE="${SRC_BASE}liferay-plugins-ee/"
 declare -xgr SRC_PLUGINS_LANG_PATH="docroot/WEB-INF/$SRC_CONTENT"
 
 # liferay apps for content targeting
-declare -xgr SRC_APPS_CT_BASE="${SRC_BASE}liferay-apps-content-targeting/"
+declare -xgr SRC_APPS_CT_BASE="${SRC_BASE}/audience-targeting/liferay-plugins/apps/content-targeting/"
 declare -xgr SRC_APPS_CT_LANG_PATH="$SRC_CONTENT"
 
 ## 2.3 Git & github
