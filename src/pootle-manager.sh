@@ -113,7 +113,7 @@ function spread_translations() {
 	# in the destination project
 	source_dir="$PODIR/$source_project"
 	git_root="${AP_PROJECT_GIT_ROOT["$source_project"]}"
-	logt 1 "Preparing to copy translations from project $source_project to the rest of projects under $git_root"
+	logt 1 "Preparing to spread translations from project $source_project to the rest of projects under $git_root"
 
 	# no need to call checkgit as source folder is not under git control
 	# target dir is assumed to be on the right branch
@@ -235,7 +235,7 @@ main() {
 	elif [ $PROVISION_PROJECTS ]; then
 		provision_projects;
 	elif [ $SPREAD_TRANSLATIONS ]; then
-		spread_translations;
+		spread_translations $2;
 	fi
 
 	if [[ -z ${LR_TRANS_MGR_TAIL_LOG+x} ]]; then
