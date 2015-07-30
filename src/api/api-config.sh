@@ -48,6 +48,8 @@ function resolve_params() {
 			export LIST_PROJECTS=1
 		elif [ "$param" = "--provisionProjects" ] || [ "$param" = "-pp" ]; then
 			export PROVISION_PROJECTS=1
+		elif [ "$param" = "--spreadTranslations" ] || [ "$param" = "-S" ]; then
+			export SPREAD_TRANSLATIONS=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else
@@ -103,6 +105,12 @@ committed to master (or specified branch) since last commit done by the tool as 
 	print_action "-s, --rescanfile"\
 		"Instructs Pootle to rescan filesystem to update the filenames in the DB. This basically avoids doing the same using the UI (saving a lot of time).\
 In addition, corrects any filename not matching Language_<locale>.properties naming convention"
+
+	print_action "-S, --spreadTranslations <sourceProjectCode>"\
+			"Spreads translations from an existing project to the other projects in the same git root. Useful when moving translations between projects, and those translations are only in pootle DB.\
+			The detailed process is as follows: first, source git root is synced to get the latest keys and translations from source code. Then, pootle exports the source project translations into a \
+			temp dir, which is used to copy all available translations in the destination projects. Result is that translations in pootle for sourceProject are copied into target projects, then committed."\
+			"sourceProjectCode: project code which translations will be exported from pootle and spread to the other projectcs"\
 
 	print_action "-m, --moveproject <currentCode> <newCode>"\
 		"Changes the project code in Pootle. This operation is not supported by Pootle. Truly useful in case a plugin name changes"\
