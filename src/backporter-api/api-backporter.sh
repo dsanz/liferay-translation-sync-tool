@@ -168,11 +168,12 @@ function backport_project() {
 }
 
 function some_key_is_backporteable() {
-	for key in  ${K[@]}; do
+	backporteable=false;
+	for key in ${K[@]}; do
 		if exists_in_new $key; then
-			return true;
+			backporteable=true;
 		fi
 	done;
-	return false;
+	[ "$backporteable" = true ]
 }
 
