@@ -1,22 +1,23 @@
-export BASH_HOME=/opt/bash-4.3
-export SYNC_TOOL_HOME=/opt/liferay-pootle-manager/src
-export HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
-
 # source code repos
 export BASE_DIR="/opt"
+
+export BASH_HOME=$BASE_DIR/bash
+export SYNC_TOOL_HOME=$BASE_DIR/liferay-translation-sync-tool/src
+
+export HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 
 export SRC_BASE="$BASE_DIR/"
 
 # liferay portal
-export SRC_PORTAL_BASE="${SRC_BASE}liferay-portal/"
-export SRC_PORTAL_EE_BASE="${SRC_BASE}liferay-portal-ee/"
+declare -xgr SRC_PORTAL_BASE="${SRC_BASE}/master/liferay-portal/"
+declare -xgr SRC_PORTAL_EE_BASE="${SRC_BASE}liferay-portal-ee/"
 
 # liferay plugns
-export SRC_PLUGINS_BASE="${SRC_BASE}liferay-plugins/"
-export SRC_PLUGINS_EE_BASE="${SRC_BASE}liferay-plugins-ee/"
+declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}/master/liferay-plugins/"
+declare -xgr SRC_PLUGINS_EE_BASE="${SRC_BASE}liferay-plugins-ee/"
 
 # liferay apps for content targeting
-export SRC_APPS_CT_BASE="${SRC_BASE}liferay-apps-content-targeting/"
+declare -xgr SRC_APPS_CT_BASE="${SRC_BASE}/audience-targeting/liferay-plugins/apps/content-targeting/"
 
 function run_sync_tool() {
   echo "Running sync tool: $BASH_HOME/bash $SYNC_TOOL_HOME/pootle-manager.sh $@"

@@ -10,6 +10,8 @@ declare -xgA AP_PROJECT_ANT_BUILD_LANG_DIR
 # contains an entry for each different base source dir, storing the list of
 # projects associated with that dir
 declare -xgA AP_PROJECTS_BY_GIT_ROOT
+# contains an entry for each project, storing the project's git root
+declare -xgA AP_PROJECT_GIT_ROOT
 
 ## some regex and patterns for project detection
 declare -xgr lang_file_path_tail="src/content/Language.properties"
@@ -79,9 +81,9 @@ function read_project_from_path() {
 
 	project_name="$(prettify_name $project_family)/$(prettify_name $project_code)"
 
-#TODO: compute ant path
 	log -n "."
-	add_AP_project "$project_code" "$project_name" "$base_src_dir" "$lang_rel_path" "test"
+	# for the auto-provisioner, ant build-lang dir will be invoked from the base src dir-
+	add_AP_project "$project_code" "$project_name" "$base_src_dir" "$lang_rel_path"
 }
 
 # Adds a new Auto-provisioned project to the project arrays. Requires 4 parameters
@@ -98,6 +100,7 @@ function add_AP_project() {
 	ant_rel_path="$5"
 
 	AP_PROJECT_NAMES["$project_code"]="$project_name"
+	AP_PROJECT_GIT_ROOT["$project_code"]="$git_root_dir"
 	AP_PROJECT_SRC_LANG_BASE["$project_code"]="$git_root_dir$lang_rel_path"
 	AP_PROJECT_ANT_BUILD_LANG_DIR["$project_code"]="$git_root_dir$ant_rel_path"
 	AP_PROJECTS_BY_GIT_ROOT["$git_root_dir"]=" $project_code"${AP_PROJECTS_BY_GIT_ROOT["$git_root_dir"]}

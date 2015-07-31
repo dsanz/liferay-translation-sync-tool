@@ -26,7 +26,7 @@ function goto_branch_tip() {
 	cd $git_root
 
 	branch="${GIT_ROOTS[$git_root]}"
-	logt 3 "Going tip of '$branch' for got root $1"
+	logt 3 "Going tip of '$branch' for git root $1"
 	logt 4 -n "git reset --hard HEAD"
 	git reset --hard HEAD > /dev/null 2>&1
 	check_command

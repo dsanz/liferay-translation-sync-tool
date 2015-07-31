@@ -4,24 +4,25 @@ Dev tests
 1. Rename project code portal --> portal-impl
 	Required the project auto-provisioning uses the directory name to link projects in pootle with sources.
 
-2. Make sure AP is finished
+2. Finish Auto Provisioning
 	2.1 All portal projects know its ant build-lang path
 	2.2 Test for one AP project that it can be synced (e.g. use of correct arrays in the code, build-lang)
 	2.3 Review the resulting pr
 
-3. Translation splitting (core to modules)
-	3.1 Analyze & implement required changes in the backporter
-	3.2 Test single backport. Check translation status for the module before and after
-	3.3 Create script to backport to all modules
-	3.4 Test final result. Don't commit
+3. Test all projects creation from AP. Make sure portal-impl is _NOT_ created as it was renamed.
 
-4. Review install-assets.sh and remote-control-api for dev and prod
+4. Translation splitting (core to modules)
+	4.1 Analyze & implement required changes in the backporter
+	4.2 Test single backport. Check translation status for the module before and after
+	4.3 Create script to backport to all modules
+	4.4 Test final result. Don't commit
 
-5. Clean /opt dir. Run install-assets.sh
+5. Review install-assets.sh and remote-control-api for dev and prod
+	5.1 Check that manage.*.conf have the right source dirs according to installed assets
+	5.2 Clean /opt dir. Run install-assets.sh
+	5.3 Test AP functionality by deleting some projects in pootle and reruning it.
 
-6. Test all projects creation from AP. Make sure portal-impl is _NOT_ created as it was renamed.
-
-7. Install openssh/ftp server (or the like) and check that production machine can copy data to dev
+6. Install openssh/ftp server (or the like) and check that production machine can copy data to dev
 
 
 Production (only after all dev stuff is done)
@@ -35,7 +36,7 @@ Production (only after all dev stuff is done)
 5. Rename project code portal --> portal-impl
 6. Create a backup (2) from sync-tool and copy in dev machine
 7. Enable maintenance page for pootle
-8. Run the backporter from latest sources + all portal-impl translations, commit and wait for approval
+8. Run the backporter from latest sources in modules + all portal-impl translations (and Language.properties), commit and wait for approval
 9. Enable back pootle server
 10. Run AP for all projects. Check results (specially for modules)
 11. Announce the new projects

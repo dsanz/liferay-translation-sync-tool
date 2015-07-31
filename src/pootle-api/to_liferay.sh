@@ -148,22 +148,27 @@ function ant_build_lang() {
 
 ## Pootle communication functions
 
-# tells pootle to export its translations to properties files inside webapp dirs
+function export_pootle_project_translations_to_temp_dirs() {
+	project="$1"
+	logt 2 "$project"
+	logt 3 "Synchronizing pootle stores for all languages "
+	# Save all translations currently in database to the file system
+	call_manage "sync_stores" "--project=$project" "-v 0"
+	logt 3 "Copying exported translations into working dir"
+	for language in $(ls "$PODIR/$project"); do
+		if [[ "$language" =~ $lang_file_rexp ]]; then
+			logt 0 -n  "$(get_locale_from_file_name $language) "
+			cp -f  "$PODIR/$project/$language" "$TMP_PROP_OUT_DIR/$project/"
+		fi
+	done
+	check_command
+}
+
+# tells pootle to export its translations to properties files to $PODIR dir
 function export_pootle_translations_to_temp_dirs() {
 	logt 1 "Updating pootle files from pootle DB..."
 	for project in "${!PROJECT_NAMES[@]}"; do
-		logt 2 "$project"
-		logt 3 "Synchronizing pootle stores for all languages "
-		# Save all translations currently in database to the file system
-		call_manage "sync_stores" "--project=$project" "-v 0"
-		logt 3 "Copying exported translations into working dir"
-		for language in $(ls "$PODIR/$project"); do
-			if [[ "$language" =~ $lang_file_rexp ]]; then
-				logt 0 -n  "$(get_locale_from_file_name $language) "
-				cp -f  "$PODIR/$project/$language" "$TMP_PROP_OUT_DIR/$project/"
-			fi
-		done
-		check_command
+		export_pootle_project_translations_to_temp_dirs "$project"
 	done
 }
 

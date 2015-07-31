@@ -97,6 +97,50 @@ function display_projects() {
 	display_AP_projects
 }
 
+# spread translations from a source project to the other ones within the same branch
+# source project translations will be exported from pootle into PODIR
+# source project git root will be pulled from upstream
+# then, source project translations from PODIR are backported into target projects
+# the target projects are all projects sharing the same git_root with the source project
+# result is committed
+#
+# $1 is the source project code
+function spread_translations() {
+	source_project="$1"
+	# we'll use the pootle export folder as source for the copy. This avoids polluting
+	# the destination git root with data exported from the source project, which would
+	# make those changes to be committed. We don't like that, we just need translations
+	# in the destination project
+	source_dir="$PODIR/$source_project"
+	git_root="${AP_PROJECT_GIT_ROOT["$source_project"]}"
+	logt 1 "Preparing to spread translations from project $source_project to the rest of projects under $git_root"
+
+	# no need to call checkgit as source folder is not under git control
+	# target dir is assumed to be on the right branch
+	#check_git "${AP_PROJECT_GIT_ROOT[$source_project]}" "${AP_PROJECT_GIT_ROOT[$target_project]}" "master" "master"
+
+	# this will export all source project translations into $source_dir
+	clean_temp_output_dirs
+	export_pootle_project_translations_to_temp_dirs $source_project
+	# make sure we get the latest templates & translations from source code
+	goto_branch_tip $git_root
+
+	# iterate all projects in the same git root and backport to them
+	project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
+	while read target_project; do
+		if [[ $target_project != $source_project ]]; then
+			target_dir="${AP_PROJECT_SRC_LANG_BASE["$target_project"]}"
+			# don't need further processing on pootle exported tranlations. The backporter will discard untranslated keys
+			backport_project "$source_project > $target_project" "$source_dir" "$target_dir"
+		fi
+	done <<< "$project_list"
+
+	# this function was designed for the backporter but can be used here
+	# call it once as we are in just a single git root. Source project translations remain untouched.
+	do_commit=0
+	commit_result "$git_root" "$git_root"
+}
+
 function backport_all() {
 	loglc 1 $RED "Begin backport process"
 	display_projects
@@ -196,6 +240,8 @@ main() {
 		display_projects;
 	elif [ $PROVISION_PROJECTS ]; then
 		provision_projects;
+	elif [ $SPREAD_TRANSLATIONS ]; then
+		spread_translations $2;
 	fi
 
 	if [[ -z ${LR_TRANS_MGR_TAIL_LOG+x} ]]; then
