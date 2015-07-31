@@ -131,6 +131,10 @@ function spread_translations() {
 			target_dir="${AP_PROJECT_SRC_LANG_BASE["$target_project"]}"
 			# don't need further processing on pootle exported tranlations. The backporter will discard untranslated keys
 			backport_project "$source_project > $target_project" "$source_dir" "$target_dir"
+			unset K
+			unset T
+			declare -gA T;
+			declare -ga K;
 		fi
 	done <<< "$project_list"
 
