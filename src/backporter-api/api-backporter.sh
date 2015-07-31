@@ -153,13 +153,26 @@ function backport_project() {
 	else
 		prepare_dirs $2 $3
 		read_english_files
-		echo_legend
-		for locale in "${L[@]}"; do
-			backport "$project" "$locale"
-		done
-		logt 3 "Garbage collection (project)"
-		unset L;
-		declare -ag L;
+		if some_key_is_backporteable; then
+			echo_legend
+			for locale in "${L[@]}"; do
+				backport "$project" "$locale"
+			done
+			logt 3 "Garbage collection (project)"
+			unset L;
+			declare -ag L;
+		else
+			logt 3 "No need to backport to $project as source and destination templates don't share keys"
+		fi
 	fi;
+}
+
+function some_key_is_backporteable() {
+	for key in  ${K[@]}; do
+		if exists_in_new $key; then
+			return true;
+		fi
+	done;
+	return false;
 }
 
