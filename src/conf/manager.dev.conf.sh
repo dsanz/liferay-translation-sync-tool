@@ -8,28 +8,9 @@
 ################################################################################
 ### Section 0: Environment
 ###
-### Note: setEnv script should have defined some *_HOME variables.
 
-## working dirs
-# all temp/work dirs are under BASE_DIR
-declare -xgr BASE_DIR="/opt"
-
-## ant
-##
-export ANT_BIN="$ANT_HOME/bin/ant"
-export ANT_OPTS="-Xmx1024m -XX:MaxPermSize=512m"
-
-## java
-export NATIVE2ASCII_BIN="$JAVA_HOME/bin/native2ascii"
-
-## bc
-export BC_BIN="$BC_HOME/bc/bc"
-
-## hub (git + hub = github)
-export HUB_BIN="$HUB_HOME/hub"
-
-## ansi2html
-export ANSI2HTML_BIN="$ANSI2HTML_HOME/ansi2html.sh"
+### Note: setEnv script should have defined all required variables.
+## here you can override them (proper solution would be to generate a correct setEnv.sh)
 
 ################################################################################
 ### Section 1: Pootle server installation
