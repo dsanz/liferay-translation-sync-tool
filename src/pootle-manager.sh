@@ -124,13 +124,18 @@ function spread_translations() {
 	# make sure we get the latest templates & translations from source code
 	goto_branch_tip $git_root
 
-	for target_project in "${AP_PROJECTS_BY_GIT_ROOT[$git_root]}"; do
-		target_dir="${AP_PROJECT_SRC_LANG_BASE["$target_project"]}"
-		# don't need further processing on pootle exported tranlations. The backporter will discard untranslated keys
-		backport_project "$source_project > $target_project" "$source_dir" "$target_dir"
-	done;
+	# iterate all projects in the same git root and backport to them
+	project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
+	while read target_project; do
+		if [[ $target_project != $source_project ]]; then
+			target_dir="${AP_PROJECT_SRC_LANG_BASE["$target_project"]}"
+			# don't need further processing on pootle exported tranlations. The backporter will discard untranslated keys
+			backport_project "$source_project > $target_project" "$source_dir" "$target_dir"
+		fi
+	done <<< "$project_list"
 
 	# this function was designed for the backporter but can be used here
+	# call it once as we are in just a single git root. Source project translations remain untouched.
 	do_commit=0
 	commit_result "$git_root" "$git_root"
 }
