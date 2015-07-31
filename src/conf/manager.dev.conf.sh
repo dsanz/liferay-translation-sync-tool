@@ -37,7 +37,7 @@ declare -xgr FS_GID="apache"
 declare -xgr PO_HOST="cloud-10-50-0-102.liferay.com"
 declare -xgr PO_PORT="80"
 declare -xgr PO_SRV="https://$PO_HOST/pootle"
-declare -xgr PO_COOKIES="$TMP_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
+declare -xgr PO_COOKIES="$BASE_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
 # a valid pootle user with administration privileges
 declare -xgr PO_USER="manager"
 declare -xgr PO_PASS="test"

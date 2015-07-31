@@ -39,7 +39,7 @@ declare -xgr FS_GID="apache"
 declare -xgr PO_HOST="localhost"
 declare -xgr PO_PORT="8080"
 declare -xgr PO_SRV="http://$PO_HOST:$PO_PORT"
-declare -xgr PO_COOKIES="$TMP_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
+declare -xgr PO_COOKIES="$BASE_DIR/${PO_HOST}_${PO_PORT}_cookies.txt"
 # a valid pootle user with administration privileges
 declare -xgr PO_USER="manager"
 declare -xgr PO_PASS="test"
