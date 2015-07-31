@@ -106,11 +106,7 @@ function display_projects() {
 # $1 is the source project code
 function spread_translations() {
 	source_project="$1"
-	# we'll use the pootle export folder as source for the copy. This avoids polluting
-	# the destination git root with data exported from the source project, which would
-	# make those changes to be committed. We don't like that, we just need translations
-	# in the destination project
-	source_dir="$PODIR/$source_project"
+	source_dir="${AP_PROJECT_SRC_LANG_BASE["$source_project"]}"
 	git_root="${AP_PROJECT_GIT_ROOT["$source_project"]}"
 	logt 1 "Preparing to spread translations from project $source_project to the rest of projects under $git_root"
 
@@ -118,11 +114,20 @@ function spread_translations() {
 	# target dir is assumed to be on the right branch
 	#check_git "${AP_PROJECT_GIT_ROOT[$source_project]}" "${AP_PROJECT_GIT_ROOT[$target_project]}" "master" "master"
 
-	# this will export all source project translations into $source_dir
-	clean_temp_output_dirs
-	export_pootle_project_translations_to_temp_dirs $source_project
 	# make sure we get the latest templates & translations from source code
 	goto_branch_tip $git_root
+
+	# this will export all source project translations into $source_dir as we do in pootle2src, but only for source_project
+	clean_temp_output_dirs
+	export_pootle_project_translations_to_temp_dirs $source_project
+	process_project_translations $source_project
+	restore_file_ownership
+	unset K
+	unset T
+	unset L;
+	declare -gA T;
+	declare -ga K;
+	declare -ag L;
 
 	# iterate all projects in the same git root and backport to them
 	project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
@@ -143,6 +148,7 @@ function spread_translations() {
 	# this function was designed for the backporter but can be used here
 	# call it once as we are in just a single git root. Source project translations remain untouched.
 	do_commit=0
+	# TODO: revert source project translations
 	commit_result "$git_root" "$git_root"
 }
 

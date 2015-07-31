@@ -195,6 +195,44 @@ function ascii_2_native_orig() {
 	done
 }
 
+function process_project_translations() {
+	project="$1"
+	languages=`ls $PODIR/$project`
+	logt 2 "$project"
+	logt 3 "Setting up per-project log file"
+	check_dir "$logbase/$project/"
+	logt 3 "Reading template file"
+	read_pootle_exported_template $project
+	for language in $languages; do
+		locale=$(get_locale_from_file_name $language)
+		if [[ "$locale" != "en" && "$language" =~ $trans_file_rexp ]]; then
+			logt 2 "$project: $locale"
+			logt 3 "Reading $language file"
+			read_pootle_exported_language_file $project $language
+			logt 3 "Reading $language file from source code branch (just pulled)"
+			read_previous_language_file $project $language
+			logt 3 "Reading pootle store"
+			read_pootle_store $project $language
+			logt 3 "Reading overriding translations"
+			read_ext_language_file $project $language
+			refill_translations $project $language
+			logt 3 -n "Garbage collection... "
+			clear_keys "$(get_exported_language_prefix $project $locale)"
+			clear_keys "$(get_previous_language_prefix $project $locale)"
+			clear_keys "$(get_store_language_prefix $project $locale)"
+			clear_keys "$(get_ext_language_prefix $project $locale)"
+			check_command
+		fi
+	done
+	logt 3 -n "Garbage collection (whole project)... "
+	unset K
+	unset T
+	declare -gA T;
+	declare -ga K;
+	check_command
+}
+
+
 # Pootle exports all untranslated keys, assigning them the english value. This function restores the values in old version of Language_*.properties
 # this way, untranslated keys will have the Automatic Copy/Translation tag
 function process_translations() {
@@ -219,39 +257,7 @@ function process_translations() {
 	done;
 
 	for project in "${!AP_PROJECT_NAMES[@]}"; do
-		languages=`ls $PODIR/$project`
-		logt 2 "$project"
-		logt 3 "Setting up per-project log file"
-		check_dir "$logbase/$project/"
-		logt 3 "Reading template file"
-		read_pootle_exported_template $project
-		for language in $languages; do
-			locale=$(get_locale_from_file_name $language)
-			if [[ "$locale" != "en" && "$language" =~ $trans_file_rexp ]]; then
-				logt 2 "$project: $locale"
-				logt 3 "Reading $language file"
-				read_pootle_exported_language_file $project $language
-				logt 3 "Reading $language file from source code branch (just pulled)"
-				read_previous_language_file $project $language
-				logt 3 "Reading pootle store"
-				read_pootle_store $project $language
-				logt 3 "Reading overriding translations"
-				read_ext_language_file $project $language
-				refill_translations $project $language
-				logt 3 -n "Garbage collection... "
-				clear_keys "$(get_exported_language_prefix $project $locale)"
-				clear_keys "$(get_previous_language_prefix $project $locale)"
-				clear_keys "$(get_store_language_prefix $project $locale)"
-				clear_keys "$(get_ext_language_prefix $project $locale)"
-				check_command
-			fi
-		done
-		logt 3 -n "Garbage collection (whole project)... "
-		unset K
-		unset T
-		declare -gA T;
-		declare -ga K;
-		check_command
+		process_project_translations $project
 	done
 }
 
