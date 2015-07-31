@@ -18,8 +18,8 @@ function update_from_templates() {
 
 function update_pootle_db_from_templates() {
 	logt 1 "Updating pootle database..."
-	for project in "${!PROJECT_NAMES[@]}"; do
-		src_dir=${PROJECT_SRC_LANG_BASE["$project"]}
+	for project in "${!AP_PROJECT_NAMES[@]}"; do
+		src_dir=${AP_PROJECT_SRC_LANG_BASE["$project"]}
 		logt 2 "$project: "
 		update_from_templates $project $src_dir
 	done
@@ -29,7 +29,7 @@ function clean_temp_input_dirs() {
 	logt 1 "Preparing project input working dirs..."
 	logt 2 "Cleaning general input working dir"
 	clean_dir "$TMP_PROP_IN_DIR/"
-	for project in "${!PROJECT_NAMES[@]}"; do
+	for project in "${!AP_PROJECT_NAMES[@]}"; do
 		logt 2 "$project: cleaning input working dirs"
 		clean_dir "$TMP_PROP_IN_DIR/$project"
 	done
@@ -76,12 +76,12 @@ function get_last_export_commit() {
 function generate_additions() {
 	logt 1 "Calculating committed translations from latest export commit, for each project/language"
 	for base_src_dir in "${!GIT_ROOTS[@]}"; do
-		projects="${PROJECTS_BY_GIT_ROOT["$base_src_dir"]}"
+		projects="${AP_PROJECTS_BY_GIT_ROOT["$base_src_dir"]}"
 		cd $base_src_dir
 		logt 2 "$base_src_dir"
 		for project in $projects; do
 			logt 3 "$project"
-			path="${PROJECT_SRC_LANG_BASE["$project"]}"
+			path="${AP_PROJECT_SRC_LANG_BASE["$project"]}"
 			cd $path > /dev/null 2>&1
 			for file in $(ls ${FILE}${LANG_SEP}*.$PROP_EXT 2>/dev/null); do
 				if [[ "$file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
@@ -164,7 +164,7 @@ function post_derived_translations() {
 
 function refresh_stats() {
 	logt 1 "Refreshing Pootle stats..."
-	for project in "${!PROJECT_NAMES[@]}"; do
+	for project in "${!AP_PROJECT_NAMES[@]}"; do
 		logt 2 "$project"
 		call_manage "refresh_stats" "--project=$project" "-v 0"
 		check_command

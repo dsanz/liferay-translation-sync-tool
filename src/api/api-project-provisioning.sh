@@ -1,18 +1,3 @@
-# declare variables prefixed with AP_ which will be the "Auto Provisioned" counterparts for the master lists
-# GIT_ROOTS and PR_EVIEWER are the unique variables which will be given to the tool.
-
-# contains all project code names, as seen by pootle and source dirs
-declare -xgA AP_PROJECT_NAMES
-# contains an entry for each project, storing the project base source dir where Language.properties files are
-declare -xgA AP_PROJECT_SRC_LANG_BASE
-# contains an entry for each project, storing the ant dir where build-lang target is to be invoked
-declare -xgA AP_PROJECT_ANT_BUILD_LANG_DIR
-# contains an entry for each different base source dir, storing the list of
-# projects associated with that dir
-declare -xgA AP_PROJECTS_BY_GIT_ROOT
-# contains an entry for each project, storing the project's git root
-declare -xgA AP_PROJECT_GIT_ROOT
-
 ## some regex and patterns for project detection
 declare -xgr lang_file_path_tail="src/content/Language.properties"
 declare -xgr web_layout_prefix="docroot/WEB-INF"

@@ -134,59 +134,25 @@ declare -xgr LANG_SEP="_"
 
 ## 3.0 Master lists
 ##
+# declare variables prefixed with AP_ which will be the "Auto Provisioned"
+# counterparts for the old master lists
+# GIT_ROOTS and PR_EVIEWER are the unique variables which will be given to the tool.
+
 # contains all project code names, as seen by pootle and source dirs
-declare -xgA PROJECT_NAMES
+declare -xgA AP_PROJECT_NAMES
 # contains an entry for each project, storing the project base source dir where Language.properties files are
-declare -xgA PROJECT_SRC_LANG_BASE
+declare -xgA AP_PROJECT_SRC_LANG_BASE
 # contains an entry for each project, storing the ant dir where build-lang target is to be invoked
-declare -xgA PROJECT_ANT_BUILD_LANG_DIR
+declare -xgA AP_PROJECT_ANT_BUILD_LANG_DIR
 # contains an entry for each different base source dir, storing the list of
 # projects associated with that dir
-declare -xgA PROJECTS_BY_GIT_ROOT
+declare -xgA AP_PROJECTS_BY_GIT_ROOT
+# contains an entry for each project, storing the project's git root
+declare -xgA AP_PROJECT_GIT_ROOT
 # contains an entry for each git repo we are working with. It stores the root dir for each repo.
 declare -xgA GIT_ROOTS
 # holds a list of github account names for the reviewer of each git root
 declare -xgA PR_REVIEWER
-
-## 3.1 List of plugins from the Liferay plugins repo
-##
-# plugin type constants
-declare -xgr PORTLET="portlet"
-declare -xgr THEME="theme"
-declare -xgr HOOK="hook"
-declare -xgr WEB="web"
-
-# Portlets
-declare -xgr PORTLET_LIST="akismet\
- calendar chat contacts\
- ddl-form\
- events-display\
- google-maps\
- knowledge-base\
- mail marketplace microblogs\
- notifications\
- opensocial\
- private-messaging push-notifications\
- social-coding so\
- tasks twitter\
- vimeo\
- web-form wiki-navigation wsrp\
- youtube"
-# Themes
-declare -xgr THEME_LIST="noir"
-# Hooks
-declare -xgr HOOK_LIST="so-activities so"
-
-## 3.2 List of apps for content targeting
-##
-declare -xgr APPS_CT_MODULE_LIST="content-targeting-api\
- report-campaign-content report-campaign-tracking-action report-user-segment-content\
- rule-age rule-browser rule-device rule-facebook rule-gender rule-ip-geocode rule-organization-member\
- rule-os rule-role rule-site-member rule-score-points rule-time rule-user-group-member rule-user-logged rule-visited\
- tracking-action-content tracking-action-form tracking-action-link tracking-action-page tracking-action-youtube"
-declare -xgr APPS_CT_WEB_LIST="content-targeting"
-declare -xgr APPS_CT_HOOK_LIST="analytics\
- simulator"
 
 ## 3.3 project lists initialization
 ##
@@ -196,23 +162,3 @@ add_git_root "$SRC_PORTAL_BASE"
 add_git_root "$SRC_PLUGINS_BASE"
 add_git_root "$SRC_APPS_CT_BASE" juliocamarero develop
 
-add_project "$PORTAL_PROJECT_ID" "$SRC_PORTAL_BASE" "$SRC_PORTAL_LANG_PATH" "/portal-impl"
-# now, some plugins
-add_projects_Liferay_plugins "$PORTLET_LIST" "$PORTLET" "$SRC_PLUGINS_BASE" "$SRC_PLUGINS_LANG_PATH"
-#add_projects_Liferay_plugins "so" "$PORTLET" "$SRC_PLUGINS_BASE" "$SRC_PLUGINS_LANG_PATH"
-add_projects_Liferay_plugins "$HOOK_LIST" "$HOOK" "$SRC_PLUGINS_BASE" "$SRC_PLUGINS_LANG_PATH"
-# no translatable themes so far...
-#add_projects_Liferay_plugins "$THEME_LIST" "$THEME" "$SRC_PLUGINS_BASE" "$SRC_PLUGINS_LANG_PATH"
-
-# content targeting apps
-#add_projects "$APPS_CT_MODULE_LIST" "$SRC_APPS_CT_BASE" "$SRC_APPS_CT_LANG_PATH"
-add_projects_Liferay_plugins "$APPS_CT_HOOK_LIST" "$HOOK"  "$SRC_APPS_CT_BASE"  "$SRC_PLUGINS_LANG_PATH" ""
-#add_projects_Liferay_plugins "$APPS_CT_WEB_LIST" "$WEB"  "$SRC_APPS_CT_BASE"  "$SRC_PLUGINS_LANG_PATH" ""
-
-# make master lists readonly from now on
-declare -r PROJECT_NAMES
-declare -r PROJECT_SRC_LANG_BASE
-declare -r PROJECT_ANT_BUILD_LANG_DIR
-declare -r PROJECTS_BY_GIT_ROOT
-declare -r GIT_ROOTS
-declare -r PR_REVIEWER

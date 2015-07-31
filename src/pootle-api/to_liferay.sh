@@ -14,7 +14,7 @@ function clean_temp_output_dirs() {
 	logt 1 "Preparing project output working dirs..."
 	logt 2 "Cleaning general output working dirs"
 	clean_dir "$TMP_PROP_OUT_DIR/"
-	for project in "${!PROJECT_NAMES[@]}"; do
+	for project in "${!AP_PROJECT_NAMES[@]}"; do
 		prepare_output_dir "$project"
 	done
 }
@@ -133,8 +133,8 @@ function ant_all() {
 function ant_build_lang() {
 	ant_all
 	logt 1 "Running ant build-lang"
-	for project in "${!PROJECT_NAMES[@]}"; do
-		ant_dir="${PROJECT_ANT_BUILD_LANG_DIR[$project]}"
+	for project in "${!AP_PROJECT_NAMES[@]}"; do
+		ant_dir="${AP_PROJECT_ANT_BUILD_LANG_DIR[$project]}"
 		logt 2 "$project"
 		logt 3 -n "cd $ant_dir"
 		cd $ant_dir
@@ -167,7 +167,7 @@ function export_pootle_project_translations_to_temp_dirs() {
 # tells pootle to export its translations to properties files to $PODIR dir
 function export_pootle_translations_to_temp_dirs() {
 	logt 1 "Updating pootle files from pootle DB..."
-	for project in "${!PROJECT_NAMES[@]}"; do
+	for project in "${!AP_PROJECT_NAMES[@]}"; do
 		export_pootle_project_translations_to_temp_dirs "$project"
 	done
 }
@@ -180,7 +180,7 @@ function ascii_2_native() {
 }
 function ascii_2_native_orig() {
 	logt 1 "Converting properties files to native ..."
-	for project in "${!PROJECT_NAMES[@]}"; do
+	for project in "${!AP_PROJECT_NAMES[@]}"; do
 		logt 2 "$project: converting working dir properties to native"
 		languages=`ls "$TMP_PROP_OUT_DIR/$project"`
 		for language in $languages ; do
@@ -218,7 +218,7 @@ function process_translations() {
 		loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
 	done;
 
-	for project in "${!PROJECT_NAMES[@]}"; do
+	for project in "${!AP_PROJECT_NAMES[@]}"; do
 		languages=`ls $PODIR/$project`
 		logt 2 "$project"
 		logt 3 "Setting up per-project log file"
@@ -294,7 +294,7 @@ function refill_translations() {
 	path=$(get_pootle_path $project $locale)
 
 	# involved file paths
-	srcfile="${PROJECT_SRC_LANG_BASE["$project"]}/$language"
+	srcfile="${AP_PROJECT_SRC_LANG_BASE["$project"]}/$language"
 	workingfile="${srcfile}.final"
 	copyingLogfile="$logbase/$project/$language"
 	conflictsLogPootle="$logbase/$project/$language.conflicts.pootle"
@@ -473,7 +473,7 @@ function read_previous_language_file() {
 	project="$1";
 	language="$2";
 	locale=$(get_locale_from_file_name $language)
-	sources="${PROJECT_SRC_LANG_BASE["$project"]}"
+	sources="${AP_PROJECT_SRC_LANG_BASE["$project"]}"
 	langFile="$sources/$language"
 	prefix=$(get_previous_language_prefix $project $locale)
 	read_locale_file $langFile $prefix
