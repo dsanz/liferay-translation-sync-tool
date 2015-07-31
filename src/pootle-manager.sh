@@ -15,7 +15,6 @@ function load_api() {
 	. api/api-db.sh
 	. api/api-properties.sh
 	. api/api-version.sh
-	. api/api-project.sh
 	. api/api-project-provisioning.sh
 	. api/api-quality.sh
 	. api/api-mail.sh
