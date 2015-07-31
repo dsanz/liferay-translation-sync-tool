@@ -133,8 +133,10 @@ function spread_translations() {
 			backport_project "$source_project > $target_project" "$source_dir" "$target_dir"
 			unset K
 			unset T
+			unset L;
 			declare -gA T;
 			declare -ga K;
+			declare -ag L;
 		fi
 	done <<< "$project_list"
 
