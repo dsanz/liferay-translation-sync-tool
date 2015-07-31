@@ -197,6 +197,7 @@ function ascii_2_native_orig() {
 
 function process_project_translations() {
 	project="$1"
+	publish_translations="$2"
 	languages=`ls $PODIR/$project`
 	logt 2 "$project"
 	logt 3 "Setting up per-project log file"
@@ -215,7 +216,7 @@ function process_project_translations() {
 			read_pootle_store $project $language
 			logt 3 "Reading overriding translations"
 			read_ext_language_file $project $language
-			refill_translations $project $language
+			refill_translations $project $language $publish_translations
 			logt 3 -n "Garbage collection... "
 			clear_keys "$(get_exported_language_prefix $project $locale)"
 			clear_keys "$(get_previous_language_prefix $project $locale)"
@@ -257,7 +258,7 @@ function process_translations() {
 	done;
 
 	for project in "${!AP_PROJECT_NAMES[@]}"; do
-		process_project_translations $project
+		process_project_translations $project true
 	done
 }
 
@@ -293,6 +294,7 @@ function refill_translations() {
 	set -f
 	project="$1";
 	language="$2";
+	publish_translations="$3"
 	locale=$(get_locale_from_file_name $language)
 
 	# required by api-db to access pootle DB in case we need to know if a term was translated using the english word or not
@@ -387,15 +389,19 @@ function refill_translations() {
 	done < $target_lang_path
 
 	logt 0
-	if [[ ${#R[@]} -gt 0 ]]; then
-		logt 3 "Submitting translations from source to pootle. Next time be sure to run this manager with -p option!"
-		start_pootle_session
-		for key in "${!R[@]}"; do
-			value="${R[$key]}"
-			upload_submission "$key" "$value" "$storeId" "$path"
-		done;
-		close_pootle_session
-	fi
+	if [[ "$publish_translations" == true ]]; then
+		if [[ ${#R[@]} -gt 0 ]];  then
+			logt 3 "Submitting translations from source to pootle. Next time be sure to run this manager with -p option!"
+			start_pootle_session
+			for key in "${!R[@]}"; do
+				value="${R[$key]}"
+				upload_submission "$key" "$value" "$storeId" "$path"
+			done;
+			close_pootle_session
+		fi
+	else
+		logt 3 "Translation submission is disabled"
+	fi;
 	if [[ ${#Cp[@]} -gt 0 ]]; then
 		logt 3 "Conflicts warning:"
 		logt 4 "Conflicts are keys having correct, different translations both in pootle and in liferay sources. During pootle2src, the pootle value will be considered the correct one"

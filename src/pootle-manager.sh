@@ -120,7 +120,7 @@ function spread_translations() {
 	# this will export all source project translations into $source_dir as we do in pootle2src, but only for source_project
 	clean_temp_output_dirs
 	export_pootle_project_translations_to_temp_dirs $source_project
-	process_project_translations $source_project
+	process_project_translations $source_project false
 	restore_file_ownership
 	unset K
 	unset T
