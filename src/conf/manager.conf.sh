@@ -160,7 +160,7 @@ declare -xgA PR_REVIEWER
 ## 3.3 project lists initialization
 ##
 # first project is the Liferay portal itself
-PORTAL_PROJECT_ID=portal
+PORTAL_PROJECT_ID=portal-impl
 add_git_root "$SRC_PORTAL_BASE"
 add_git_root "$SRC_PLUGINS_BASE"
 add_git_root "$SRC_APPS_CT_BASE" juliocamarero develop
