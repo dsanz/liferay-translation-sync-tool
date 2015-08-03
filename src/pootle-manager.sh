@@ -121,6 +121,10 @@ function spread_translations() {
 	clean_temp_output_dirs
 	export_pootle_project_translations_to_temp_dirs $source_project
 	process_project_translations $source_project false
+	# don't forget to copy the Language.properties itself to the source dir. In a regular export this is not required.
+	logt 2 -n "Copying language template from $source_project export to the source code"
+	cp -f  "$PODIR/$project/${FILE}.$PROP_EXT" "$source_dir"
+	check_command
 	restore_file_ownership
 
 	logt 1 "Source project has been exported. Now I will spread its translations to the other projects in $git_root"
