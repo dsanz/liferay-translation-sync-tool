@@ -108,7 +108,7 @@ function spread_translations() {
 	source_project="$1"
 	source_dir="${AP_PROJECT_SRC_LANG_BASE["$source_project"]}"
 	git_root="${AP_PROJECT_GIT_ROOT["$source_project"]}"
-	logt 1 "Preparing to spread translations from project $source_project to the rest of projects under $git_root"
+	logt 1 "Preparing to spread translations from project $source_project to the other projects in $git_root"
 
 	# no need to call checkgit as source folder is not under git control
 	# target dir is assumed to be on the right branch
@@ -122,6 +122,9 @@ function spread_translations() {
 	export_pootle_project_translations_to_temp_dirs $source_project
 	process_project_translations $source_project false
 	restore_file_ownership
+
+	logt 1 "Source project has been exported. Now I will spread its translations to the other projects in $git_root"
+	# now, prepare the backport process that will implement the spread
 	unset K
 	unset T
 	unset L;
@@ -131,6 +134,7 @@ function spread_translations() {
 
 	# iterate all projects in the same git root and backport to them
 	project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
+	logt 2 "Target project list ('$source_project' will be excluded): ${AP_PROJECTS_BY_GIT_ROOT[$git_root]}"
 	while read target_project; do
 		if [[ $target_project != $source_project ]]; then
 			target_dir="${AP_PROJECT_SRC_LANG_BASE["$target_project"]}"
@@ -145,10 +149,17 @@ function spread_translations() {
 		fi
 	done <<< "$project_list"
 
-	# this function was designed for the backporter but can be used here
-	# call it once as we are in just a single git root. Source project translations remain untouched.
+	# commit_result function was designed for the backporter but can be used here
+	# it must be called once as we are in just a single git root. Source project translations remain untouched.
+	# before committing, lets revert source project changes. This way, just spread translations will be committed
+	logt 2 "Resetting $source_project changes before committing"
+	cd $source_dir
+	for language_file in $(ls); do
+		logt 3 -n "git checkout HEAD $language_file"
+		git checkout HEAD $language_file;
+		check_command
+	done
 	do_commit=0
-	# TODO: revert source project translations
 	commit_result "$git_root" "$git_root"
 }
 
