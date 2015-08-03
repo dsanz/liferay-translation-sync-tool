@@ -124,13 +124,6 @@ function spread_translations() {
 	restore_file_ownership
 
 	logt 1 "Source project has been exported. Now I will spread its translations to the other projects in $git_root"
-	# now, prepare the backport process that will implement the spread
-	unset K
-	unset T
-	unset L;
-	declare -gA T;
-	declare -ga K;
-	declare -ag L;
 
 	# iterate all projects in the same git root and backport to them
 	project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
@@ -139,13 +132,13 @@ function spread_translations() {
 		if [[ $target_project != $source_project ]]; then
 			target_dir="${AP_PROJECT_SRC_LANG_BASE["$target_project"]}"
 			# don't need further processing on pootle exported tranlations. The backporter will discard untranslated keys
-			backport_project "$source_project > $target_project" "$source_dir" "$target_dir"
 			unset K
 			unset T
 			unset L;
 			declare -gA T;
 			declare -ga K;
 			declare -ag L;
+			backport_project "$source_project > $target_project" "$source_dir" "$target_dir"
 		fi
 	done <<< "$project_list"
 
