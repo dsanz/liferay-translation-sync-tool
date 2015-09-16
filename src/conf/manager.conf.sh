@@ -76,21 +76,17 @@ declare -xgr LOG_DIR="$BASE_DIR/log"
 
 # general variables
 declare -xgr SRC_BASE="$BASE_DIR/"
-declare -xgr SRC_CONTENT="src/content/"
 
 # liferay portal
 declare -xgr SRC_PORTAL_BASE="${SRC_BASE}liferay-portal/"
 declare -xgr SRC_PORTAL_EE_BASE="${SRC_BASE}liferay-portal-ee/"
-declare -xgr SRC_PORTAL_LANG_PATH="portal-impl/$SRC_CONTENT"
 
 # liferay plugns
 declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}liferay-plugins/"
 declare -xgr SRC_PLUGINS_EE_BASE="${SRC_BASE}liferay-plugins-ee/"
-declare -xgr SRC_PLUGINS_LANG_PATH="docroot/WEB-INF/$SRC_CONTENT"
 
 # liferay apps for content targeting
 declare -xgr SRC_APPS_CT_BASE="${SRC_BASE}liferay-apps-content-targeting/"
-declare -xgr SRC_APPS_CT_LANG_PATH="$SRC_CONTENT"
 
 ## 2.3 Git & github
 ##
@@ -120,7 +116,7 @@ declare -xgr LANG_SEP="_"
 ##
 # declare variables prefixed with AP_ which will be the "Auto Provisioned"
 # counterparts for the old master lists
-# GIT_ROOTS and PR_EVIEWER are the unique variables which will be given to the tool.
+# GIT_ROOTS and PR_REVIEWER are the only variables which will be given to the tool, via add_git_root calls
 
 # contains all project code names, as seen by pootle and source dirs
 declare -xgA AP_PROJECT_NAMES
