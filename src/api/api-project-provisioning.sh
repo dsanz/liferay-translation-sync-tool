@@ -24,6 +24,7 @@ function read_project_from_path() {
 	base_src_dir="$1"
 	filepath="$2"
 	type="none"
+	ant_rel_path=""
 
 	if [[ $filepath == *"$web_layout_prefix"* ]]; then
 		# project has the "web-layout" (<code>/docroot/WEB-INF/src/content/Language.properties)
@@ -41,11 +42,18 @@ function read_project_from_path() {
 			[[ $filepath =~ $traditional_plugin_regex ]] ;
 			project_family="${BASH_REMATCH[1]}"
 			type="Liferay plugin"
+			# for these projects, ant build-lang is invoked from the plugin itself
+			ant_rel_path=${filepath#$base_src_dir}
+			ant_rel_path=${ant_rel_path%$web_layout_prefix/$lang_file_path_tail}
 		fi;
 	else
 		# project has standard layout.
 		[[ $filepath =~ $std_layout_project_code_regex ]];
 		project_code="${BASH_REMATCH[1]}"
+
+		# for these projects, ant build-lang is invoked from the base dir, like plugins
+		ant_rel_path=${filepath#$base_src_dir}
+		ant_rel_path=${ant_rel_path%$lang_file_path_tail}
 
 		# project can either be the portal or a osgi module
 		if [[ $filepath =~ $osgi_module_regex ]] ;
@@ -68,7 +76,7 @@ function read_project_from_path() {
 
 	log -n "."
 	# for the auto-provisioner, ant build-lang dir will be invoked from the base src dir-
-	add_AP_project "$project_code" "$project_name" "$base_src_dir" "$lang_rel_path"
+	add_AP_project "$project_code" "$project_name" "$base_src_dir" "$lang_rel_path" "$ant_rel_path"
 }
 
 # Adds a new Auto-provisioned project to the project arrays. Requires 4 parameters
@@ -97,11 +105,13 @@ function display_AP_projects() {
 		project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 		projects=$(echo "$project_list" | wc -l)
 		logt 2 "Git root: $git_root ($projects projects). Sync branch: ${GIT_ROOTS[$git_root]}. Reviewer: ${PR_REVIEWER[$git_root]}"
-		loglc 6 $RED "$(printf "%-40s%s" "Project Code")$(printf "%-85s%s" "Source dir (relative to $git_root)")$(printf "%-65s%s" "Project name")$(printf "%-5s%s" "Check") "
+		loglc 6 $RED "$(printf "%-40s%s" "Project Code")$(printf "%-85s%s" "Source dir (relative to $git_root)")$(printf "%-65s%s" "build lang patj")$(printf "%-65s%s" "Project name")$(printf "%-5s%s" "Check") "
 		while read project; do
 			 logt 3 -n "$(printf "%-40s%s" "$project")"
 			 project_src="${AP_PROJECT_SRC_LANG_BASE["$project"]}"
 			 log -n "$(printf "%-85s%s" "${project_src#$git_root}")"
+			 build_lang_path="${AP_PROJECT_ANT_BUILD_LANG_DIR[$project]}"
+			 log -n "$(printf "%-65s%s" "$build_lang_path")"
 			 project_name="${AP_PROJECT_NAMES[$project]}"
 			 log -n "$(printf "%-65s%s" "$project_name")"
 			 [ -d $project_src ]
