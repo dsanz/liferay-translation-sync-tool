@@ -146,7 +146,7 @@ function ant_build_lang() {
 
 		# this checks if ant build-lang tell us to run gradlew buildLang
 		logt 2 "Checking if ant redirects to gradle"
-		invocation = $(cat "$ant_log" | grep "instead" | sed -r 's/[^:]+: (.*)$/\1/g')
+		invocation=$(cat "$ant_log" | grep "instead" | sed -r 's/[^:]+: (.*)$/\1/g')
 		if [[ $invocation == *"gradle*" ]]; then
 			gradle_log="$logbase/$project/gradle-build-lang.log"
 			logt 3 "Running '$invocation' (all output redirected to $gradle_log)"
