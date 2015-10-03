@@ -11,7 +11,6 @@
 
 ### Note: setEnv script should have defined all required variables.
 ## here you can override them (proper solution would be to generate a correct setEnv.sh)
-declare -xgr BASE_DIR="/opt"
 
 ################################################################################
 ### Section 1: Pootle server installation
