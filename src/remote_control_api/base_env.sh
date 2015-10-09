@@ -9,15 +9,15 @@ export HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 export SRC_BASE="$BASE_DIR/"
 
 # liferay portal
-declare -xgr SRC_PORTAL_BASE="${SRC_BASE}/master/liferay-portal/"
-declare -xgr SRC_PORTAL_EE_BASE="${SRC_BASE}liferay-portal-ee/"
+declare -xr SRC_PORTAL_BASE="${SRC_BASE}/master/liferay-portal/"
+declare -xr SRC_PORTAL_EE_BASE="${SRC_BASE}liferay-portal-ee/"
 
 # liferay plugns
-declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}/master/liferay-plugins/"
-declare -xgr SRC_PLUGINS_EE_BASE="${SRC_BASE}liferay-plugins-ee/"
+declare -xr SRC_PLUGINS_BASE="${SRC_BASE}/master/liferay-plugins/"
+declare -xr SRC_PLUGINS_EE_BASE="${SRC_BASE}liferay-plugins-ee/"
 
 # liferay apps for content targeting
-declare -xgr SRC_APPS_CT_BASE="${SRC_BASE}/audience-targeting/liferay-plugins/apps/content-targeting/"
+declare -xr SRC_APPS_CT_BASE="${SRC_BASE}/audience-targeting/liferay-plugins/apps/content-targeting/"
 
 function run_sync_tool() {
   echo "Running sync tool: $BASH_HOME/bash $SYNC_TOOL_HOME/pootle-manager.sh $@"
