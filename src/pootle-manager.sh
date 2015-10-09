@@ -85,7 +85,7 @@ function pootle2src() {
 	ascii_2_native
 	restore_file_ownership
 	process_translations
-	do_commit false false "pootle exported keys"
+	do_commit false false "Translations sync from translate.liferay.com"
 	ant_build_lang
 	do_commit true true "ant build-lang"
 	loglc 1 $RED "End Sync[Pootle -> Liferay source code]"
