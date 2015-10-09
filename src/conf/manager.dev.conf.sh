@@ -137,5 +137,5 @@ declare -xgA PR_REVIEWER
 PORTAL_PROJECT_ID=portal-impl
 add_git_root "$SRC_PORTAL_BASE"
 add_git_root "$SRC_PLUGINS_BASE"
-add_git_root "$SRC_APPS_CT_BASE" juliocamarero develop
+add_git_root "$SRC_APPS_CT_BASE" liferay develop
 
