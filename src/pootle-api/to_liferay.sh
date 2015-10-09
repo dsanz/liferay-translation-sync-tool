@@ -336,8 +336,10 @@ function refill_translations() {
 	logt 0
 	done=false;
 	format="%s\n";
+	OLDIFS=$IFS
+	IFS=
 	until $done; do
-		if ! read line; then
+		if ! read -r line; then
 			done=true;
 			format="%s"
 		fi;
@@ -397,6 +399,7 @@ function refill_translations() {
 			loglc 0 "${charc[$char]}" -n "$char"
 		fi;
 	done < $target_lang_path
+	IFS=$OLDIFS
 
 	logt 0
 	if [[ "$publish_translations" == true ]]; then
