@@ -55,8 +55,9 @@ function create_missing_projects_in_pootle() {
 
 	logt 3 "[Start] Provisioning projects (creation)"
 	start_pootle_session
-#TODO: iterate over the array once tests are done
-	provision_full_project ${projects_to_create[0]}
+	for ap_project_code in "${projects_to_create[@]}"; do
+		provision_full_project ${ap_project_code}
+	done;
 	close_pootle_session
 	logt 3 "[End] Provisioning projects (creation)"
 }
