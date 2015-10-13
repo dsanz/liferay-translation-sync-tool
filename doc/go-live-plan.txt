@@ -4,22 +4,22 @@ Dev tests
 [ok] 1. Rename project code portal --> portal-impl.	Required the project auto-provisioning uses the directory name to link projects in pootle with sources.
 	1.1 Add remote script to do this operation
 
-2. Finish Auto Provisioning
+[ok] 2. Finish Auto Provisioning
 	2.1 All portal projects know its ant build-lang path
 	2.2 Test for one AP project that it can be synced (e.g. use of correct arrays in the code, build-lang)
 	2.3 Review the resulting pr
 
-3. Test all projects creation from AP. Make sure portal-impl is _NOT_ created as it was renamed.
+[ok] 3. Test all projects creation from AP. Make sure portal-impl is _NOT_ created as it was renamed.
 
-4. Translation spreading functionality (core to modules)
-[ok]	4.1 Analyze & implement required changes in the backporter
+[ok] 4. Translation spreading functionality (core to modules)
+	4.1 Analyze & implement required changes in the backporter
 	4.2 Test single backport. Check translation status for the module before and after
 	4.3 Create script to backport to all modules
 	4.4 Test final result. Don't commit
 
-5. Review install-assets.sh and remote-control-api for dev and prod
+[ok] 5. Review install-assets.sh and remote-control-api for dev and prod
 	5.1 Check that manage.*.conf have the right source dirs according to installed assets
-[ok]	5.2 Clean /opt dir. Run install-assets.sh
+	5.2 Clean /opt dir. Run install-assets.sh
 	5.3 Test AP functionality by deleting some projects in pootle and reruning it.
 
 6. Install openssh/ftp server (or the like) and check that production machine can copy data to dev
