@@ -120,7 +120,7 @@ declare -xgA AP_PROJECT_NAMES
 # contains an entry for each project, storing the project base source dir where Language.properties files are
 declare -xgA AP_PROJECT_SRC_LANG_BASE
 # contains an entry for each project, storing the ant dir where build-lang target is to be invoked
-declare -xgA AP_PROJECT_ANT_BUILD_LANG_DIR
+declare -xgA AP_PROJECT_BUILD_LANG_DIR
 # contains an entry for each different base source dir, storing the list of
 # projects associated with that dir
 declare -xgA AP_PROJECTS_BY_GIT_ROOT

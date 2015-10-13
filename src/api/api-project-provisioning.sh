@@ -24,12 +24,17 @@ function read_project_from_path() {
 	base_src_dir="$1"
 	filepath="$2"
 	type="none"
-	ant_rel_path=""
+
+	# relative path where invoke build-lang target
+	build_lang_rel_path=${filepath#$base_src_dir}
 
 	if [[ $filepath == *"$web_layout_prefix"* ]]; then
 		# project has the "web-layout" (<code>/docroot/WEB-INF/src/content/Language.properties)
 		[[ $filepath =~ $web_layout_project_code_regex ]] ;
 		project_code="${BASH_REMATCH[1]}"
+
+		# for these projects, ant build-lang is invoked from the plugin itself
+		build_lang_rel_path=${build_lang_rel_path%$web_layout_prefix/$lang_file_path_tail}
 
 		# project can either be a traditional plugin or a osgi (web) module
 		if [[ $filepath =~ $osgi_web_module_regex ]] ;
@@ -42,18 +47,14 @@ function read_project_from_path() {
 			[[ $filepath =~ $traditional_plugin_regex ]] ;
 			project_family="${BASH_REMATCH[1]}"
 			type="Liferay plugin"
-			# for these projects, ant build-lang is invoked from the plugin itself
-			ant_rel_path=${filepath#$base_src_dir}
-			ant_rel_path=${ant_rel_path%$web_layout_prefix/$lang_file_path_tail}
 		fi;
 	else
 		# project has standard layout.
 		[[ $filepath =~ $std_layout_project_code_regex ]];
 		project_code="${BASH_REMATCH[1]}"
 
-		# for these projects, ant build-lang is invoked from the base dir, like plugins
-		ant_rel_path=${filepath#$base_src_dir}
-		ant_rel_path=${ant_rel_path%$lang_file_path_tail}
+		# for these projects, build-lang is invoked from the base dir, like plugins
+		build_lang_rel_path=${build_lang_rel_path%$lang_file_path_tail}
 
 		# project can either be the portal or a osgi module
 		if [[ $filepath =~ $osgi_module_regex ]] ;
@@ -76,7 +77,7 @@ function read_project_from_path() {
 
 	log -n "."
 	# for the auto-provisioner, ant build-lang dir will be invoked from the base src dir-
-	add_AP_project "$project_code" "$project_name" "$base_src_dir" "$lang_rel_path" "$ant_rel_path"
+	add_AP_project "$project_code" "$project_name" "$base_src_dir" "$lang_rel_path" "$build_lang_rel_path"
 }
 
 # Adds a new Auto-provisioned project to the project arrays. Requires 4 parameters
@@ -90,12 +91,12 @@ function add_AP_project() {
 	project_name="$2"
 	git_root_dir="$3"
 	lang_rel_path="$4"
-	ant_rel_path="$5"
+	build_lang_rel_path="$5"
 
 	AP_PROJECT_NAMES["$project_code"]="$project_name"
 	AP_PROJECT_GIT_ROOT["$project_code"]="$git_root_dir"
 	AP_PROJECT_SRC_LANG_BASE["$project_code"]="$git_root_dir$lang_rel_path"
-	AP_PROJECT_ANT_BUILD_LANG_DIR["$project_code"]="$git_root_dir$ant_rel_path"
+	AP_PROJECT_BUILD_LANG_DIR["$project_code"]="$git_root_dir$build_lang_rel_path"
 	AP_PROJECTS_BY_GIT_ROOT["$git_root_dir"]=" $project_code"${AP_PROJECTS_BY_GIT_ROOT["$git_root_dir"]}
 }
 
@@ -110,7 +111,7 @@ function display_AP_projects() {
 			 logt 3 -n "$(printf "%-40s%s" "$project")"
 			 project_src="${AP_PROJECT_SRC_LANG_BASE["$project"]}"
 			 log -n "$(printf "%-85s%s" "${project_src#$git_root}")"
-			 build_lang_path="${AP_PROJECT_ANT_BUILD_LANG_DIR[$project]}"
+			 build_lang_path="${AP_PROJECT_BUILD_LANG_DIR[$project]}"
 			 log -n "$(printf "%-65s%s" "$build_lang_path")"
 			 project_name="${AP_PROJECT_NAMES[$project]}"
 			 log -n "$(printf "%-65s%s" "$project_name")"
