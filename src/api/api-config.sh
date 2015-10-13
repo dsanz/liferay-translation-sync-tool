@@ -62,7 +62,6 @@ function resolve_params() {
 	fi
 }
 
-# TODO: add parameters so that scripts can be run without external management via ssh
 # -u and -U: allow to specify an URL for Language file download (ie github)
 # add -c option to clean all branches related to tool operation
 # add option to clean old logs/backups

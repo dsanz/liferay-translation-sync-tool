@@ -103,7 +103,6 @@ function delete_old_projects_in_pootle() {
 	logt 3 "[Start] Provisioning projects (deletion)"
 	start_pootle_session
 	for ap_project_code in "${projects_to_delete[@]}"; do
-		#TODO: use a white list to avoid undesired deetions (i.e. liferay sync)
 		delete_project_in_pootle ${ap_project_code} 0
 	done;
  	close_pootle_session
