@@ -126,7 +126,7 @@ function display_AP_projects() {
 function read_projects_from_sources() {
 	logt 1 "Calculating project list from current sources"
 	for base_src_dir in "${!GIT_ROOTS[@]}"; do
-		logt 2 -n "$base_src_dir"
+		logt 2 "$base_src_dir"
 		for lang_file in $(find  $base_src_dir -wholename *"$lang_file_path_tail"); do
 			if is_path_blacklisted $lang_file; then
 				logt 3 "Blacklisted: $lang_file"
