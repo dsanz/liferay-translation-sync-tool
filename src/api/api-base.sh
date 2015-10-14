@@ -23,7 +23,7 @@ function check_dir() {
 
 # Creates dir if does not exist, deletes its contents otherwise
 function clean_dir() {
-	dir_name = "$1"
+	dir_name="$1"
 
 	if [[ "$dir_name" == */ ]]; then
 		dirname=${dirname%/}
