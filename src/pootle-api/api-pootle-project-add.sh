@@ -39,7 +39,7 @@ function create_pootle_project() {
         -d "form-0-id=" -d "form-0-code=$projectCode" -d "form-0-fullname=$projectName"\
         -d "form-0-checkstyle=standard" -d "form-0-localfiletype=properties" -d "form-0-treestyle=gnu" \
         -d "form-0-source_language=2" -d "form-0-ignoredfiles=" -d "changeprojects=Save Changes"\
-        "$PO_SRV$path/admin/projects.html" 2> /dev/null)
+        "$PO_SRV/admin/projects.html" 2> /dev/null)
 	log -n " ($status_code)"
 	[[ $status_code == "200" ]]
 	check_command
