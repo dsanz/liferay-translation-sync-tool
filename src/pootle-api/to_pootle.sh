@@ -37,7 +37,7 @@ function clean_temp_input_dirs() {
 
 function generate_addition() {
 	project="$1"
-	path="$2"
+	local path="$2"
 	file="$3"
 	commit="$4"
 
@@ -54,7 +54,7 @@ function generate_addition() {
 }
 
 function get_last_export_commit() {
-	path="$1"
+	local path="$1"
 	file="$2"
 
 	msg="$(get_locale_from_file_name $file):"
@@ -81,7 +81,7 @@ function generate_additions() {
 		logt 2 "$base_src_dir"
 		for project in $projects; do
 			logt 3 "$project"
-			path="${AP_PROJECT_SRC_LANG_BASE["$project"]}"
+			local path="${AP_PROJECT_SRC_LANG_BASE["$project"]}"
 			cd $path > /dev/null 2>&1
 			for file in $(ls ${FILE}${LANG_SEP}*.$PROP_EXT 2>/dev/null); do
 				if [[ "$file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
@@ -148,7 +148,7 @@ function post_derived_translations() {
 	# TODO: try to read Language.properties to avoid uploading untranslated keys
 	# best way to achieve this is calling upload_submissions with a filtered version of derived file
 	storeId=$(get_store_id $project $derived_locale)
-	path=$(get_pootle_path $project $derived_locale)
+	local path=$(get_pootle_path $project $derived_locale)
 
 	logt 2 "Uploading..."
 	start_pootle_session

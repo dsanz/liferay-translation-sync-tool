@@ -309,7 +309,7 @@ function refill_translations() {
 
 	# required by api-db to access pootle DB in case we need to know if a term was translated using the english word or not
 	storeId=$(get_store_id $project $locale)
-	path=$(get_pootle_path $project $locale)
+	local path=$(get_pootle_path $project $locale)
 
 	# involved file paths
 	srcfile="${AP_PROJECT_SRC_LANG_BASE["$project"]}/$language"

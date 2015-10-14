@@ -15,7 +15,7 @@ function upload_submission() {
 	key="$1"
 	value="$2"
 	storeId="$3"
-	path="$4"
+	local path="$4"
 
 	if is_translated_value "$value"; then
 		logt 4 -n "publishing translation '$key': $value"
@@ -36,7 +36,7 @@ function upload_submissions() {
 	locale="$2"
 	project="$1"
 	storeId=$(get_store_id $project $locale)
-	path=$(get_pootle_path $project $locale)
+	local path=$(get_pootle_path $project $locale)
 	filename=$(get_filename $locale)
 
 	logt 3 "Posting the set of translations"
