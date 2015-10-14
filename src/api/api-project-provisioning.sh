@@ -10,6 +10,8 @@ declare -xgr generic_project_regex="/([^/]+)$std_layout_project_code_regex"
 declare -xgr osgi_web_module_regex="modules/([^/]+)/([^/]+)$web_layout_project_code_regex"
 declare -xgr osgi_module_regex="modules/([^/]+)/([^/]+)$std_layout_project_code_regex"
 
+declare -xga POOTLE_PROJECT_PATH_BLACKLIST_REGEXS=(build classes)
+
 function prettify_name() {
 	name="$1"
 	r="";
@@ -75,7 +77,7 @@ function read_project_from_path() {
 
 	project_name="$(prettify_name $project_family)/$(prettify_name $project_code)"
 
-	log -n "."
+	logt 3 "Detected $type project $project_code '$project_name' (family: $project_family)"
 	# for the auto-provisioner, ant build-lang dir will be invoked from the base src dir-
 	add_AP_project "$project_code" "$project_name" "$base_src_dir" "$lang_rel_path" "$build_lang_rel_path"
 }
@@ -126,10 +128,27 @@ function read_projects_from_sources() {
 	for base_src_dir in "${!GIT_ROOTS[@]}"; do
 		logt 2 -n "$base_src_dir"
 		for lang_file in $(find  $base_src_dir -wholename *"$lang_file_path_tail"); do
-			read_project_from_path "$base_src_dir" "$lang_file"
+			if is_path_blacklisted $lang_file; then
+				logt 3 "Blacklisted: $lang_file"
+			else
+				read_project_from_path "$base_src_dir" "$lang_file"
+			fi;
 		done;
 		check_command
 	done;
+}
+
+function is_path_blacklisted() {
+	lang_path="$1"
+	blacklisted=false
+	for regex in "${POOTLE_PROJECT_PATH_BLACKLIST_REGEXS[@]}";
+	do
+		if [[ "$lang_path" =~ $regex ]]; then
+			blacklisted=true;
+			break;
+		fi;
+	done;
+	[ "$blacklisted" = true ]
 }
 
 function add_git_root() {
