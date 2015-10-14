@@ -23,13 +23,26 @@ function check_dir() {
 
 # Creates dir if does not exist, deletes its contents otherwise
 function clean_dir() {
+	dir_name = "$1"
+
+	if [[ "$dir_name" == */ ]]; then
+		dirname=${dirname%/}
+	fi;
+
+	if [ -f $dir_name ]; then
+		logt 3 -n "File with same name exists, deleting file $dir_name prior to create a dir"
+		rm -f $dir_name
+		check_command
+	fi;
+
 	if [ ! -d $1 ]; then
-		logt 3 -n "Creating dir $1"
-		mkdir -p $1
+		logt 3 -n "Creating dir $dir_name"
+		mkdir -p $dir_name
 	else
-		logt 3 -n "Cleaning dir $1"
-		rm -Rf $1/*
+		logt 3 -n "Cleaning dir $dir_name"
+		rm -Rf $dir_name/*
 	fi
+
 	check_command
 }
 

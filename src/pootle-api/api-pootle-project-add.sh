@@ -61,7 +61,7 @@ function initialize_project_files() {
 
 	locales=$(get_locales_from_source $PORTAL_PROJECT_ID)
 
-	clean_dir "$PODIR/$projectCode/"
+	clean_dir "$PODIR/$projectCode"
 
 	logt 3 -n "Creating template file"
 	touch "$PODIR/$projectCode/$FILE.$PROP_EXT"
