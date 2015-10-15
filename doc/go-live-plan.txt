@@ -38,7 +38,12 @@ Production (only after all dev stuff is done)
 4. Translation sync-tool: pull origin master (or tag) to get latest sources (should be done by install-assets.sh just check)
 
 -- Changes in pootle projects
-5. Rename project code portal --> portal-impl
+5. Renaming projects:
+		portal --> portal-impl
+		ddl-form-portlet --> dynamic-data-lists-form-web
+		social-networking-portlet --> social-networking-web
+		marketplace-portlet --> marketplace-store-web
+
 6. Create a backup (2) from sync-tool and copy in dev machine
 7. Enable maintenance page for pootle
 8. run spread-translations. Review results and send PR. wait for approval
