@@ -24,6 +24,6 @@ function send_email() {
 		--add-header "MIME-Version: 1.0" \
 		--body "Sync Tool execution: $command" \
 		--attach /tmp/body.html.bz2 \
-		--attach /tmp/log.tar.bz2
+		--attach /tmp/log.tar.bz2 > /dev/null 2>&1
 	check_command
 }
