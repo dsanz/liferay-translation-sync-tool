@@ -10,8 +10,6 @@ declare -xgr generic_project_regex="/([^/]+)$std_layout_project_code_regex"
 declare -xgr osgi_web_module_regex="modules/([^/]+)/([^/]+)$web_layout_project_code_regex"
 declare -xgr osgi_module_regex="modules/([^/]+)/([^/]+)$std_layout_project_code_regex"
 
-declare -xga POOTLE_PROJECT_PATH_BLACKLIST_REGEXS=(build/ classes/ localization)
-
 function prettify_name() {
 	name="$1"
 	r="";

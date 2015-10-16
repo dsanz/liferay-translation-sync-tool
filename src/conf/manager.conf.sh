@@ -134,6 +134,16 @@ declare -xgA GIT_ROOTS
 # holds a list of github account names for the reviewer of each git root
 declare -xgA PR_REVIEWER
 
+## 3.1 Auto-provisioning lists
+##
+# projects code that won't be deleted from pootle even if there is no source
+# code associated
+declare -xga POOTLE_PROJECT_DELETION_WHITELIST_REGEXS=(sync terminology lcs-portlet)
+
+# if Language.properties file path matches any of these regexs, the project won't be
+# considered for auto-provisioing, therefore it will not be created
+declare -xga POOTLE_PROJECT_PATH_BLACKLIST_REGEXS=(build/ classes/ /localization)
+
 ## 3.3 project lists initialization
 ##
 # first project is the Liferay portal itself
