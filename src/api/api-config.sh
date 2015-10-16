@@ -42,8 +42,10 @@ function resolve_params() {
 			export DELETE_PROJECT=1
 		elif [ "$param" = "--qualityCheck" ] || [ "$param" = "-q" ]; then
 			export QA_CHECK=1
-		elif [ "$param" = "--restoreBackup" ] || [ "$param" = "-B" ]; then
+		elif [ "$param" = "--restoreBackup" ] || [ "$param" = "-rB" ]; then
 			export RESTORE_BACKUP=1
+		elif [ "$param" = "--createBackup" ] || [ "$param" = "-cB" ]; then
+			export CREATE_BACKUP=1
 		elif [ "$param" = "--listProjects" ] || [ "$param" = "-l" ]; then
 			export LIST_PROJECTS=1
 		elif [ "$param" = "--provisionProjects" ] || [ "$param" = "-pp" ]; then
@@ -156,8 +158,10 @@ Future version are expected to read a Language.properties file as well to match 
 	print_action "-q, --qualityCheck"\
 			"Run a set of checks over pootle exported files. Log files contain the results"
 
-	print_action "-B, --restoreBackup <backupID>" "Restores a Pootle data backup given its ID. The backup id is provided in the logs whenever the invoked action requires a backup"\
+	print_action "-rB, --restoreBackup <backupID>" "Restores a Pootle data backup given its ID. The backup id is provided in the logs whenever the invoked action requires a backup"\
 			"backupID: the backup ID which will be used to locate backup files to be restored"
+
+	print_action "-cB, --createBackup" "Creates a backup. Log will show the backupId that can be used to restore"
 
 	print_action "-l, --listProjects" "List all projects configured for the $LR_TRANS_MGR_PROFILE profile "
 

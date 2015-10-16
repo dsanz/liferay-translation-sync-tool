@@ -254,6 +254,8 @@ main() {
 		check_quality
 	elif [ $RESTORE_BACKUP ]; then
 		restore_backup $2;
+	elif [ $CREATE_BACKUP ]; then
+		backup_db;
 	elif [ $LIST_PROJECTS ]; then
 		display_projects;
 	elif [ $PROVISION_PROJECTS ]; then
