@@ -92,7 +92,6 @@ function pootle2src() {
 }
 
 function display_projects() {
-	display_configured_projects
 	display_AP_projects
 }
 
