@@ -49,4 +49,6 @@ Production (only after all dev stuff is done)
 8. run spread-translations. Review results and send PR. wait for approval
 9. Enable back pootle server
 10. Run AP for all projects. Check results (specially for modules)
-11. Announce the new projects
+11. Run src2pootle to update remaining projects
+12. Use proper "friendly names" for renamed projects, consistent with the new scheme
+13. Announce the new projects
