@@ -57,8 +57,8 @@ function src2pootle() {
 	loglc 1 $RED "Begin Sync[Liferay source code -> Pootle]"
 	display_projects
 	backup_db
-	update_pootle_db_from_templates
 	pull_source_code
+	update_pootle_db_from_templates
 	clean_temp_input_dirs
 	post_language_translations # bug #1949
 	restore_file_ownership
