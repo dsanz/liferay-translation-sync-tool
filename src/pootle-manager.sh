@@ -57,7 +57,6 @@ function src2pootle() {
 	loglc 1 $RED "Begin Sync[Liferay source code -> Pootle]"
 	display_projects
 	backup_db
-	pull_source_code
 	update_pootle_db_from_templates
 	clean_temp_input_dirs
 	post_language_translations # bug #1949
@@ -79,7 +78,6 @@ function src2pootle() {
 function pootle2src() {
 	loglc 1 $RED "Begin Sync[Pootle -> Liferay source code]"
 	display_projects
-	pull_source_code
 	clean_temp_output_dirs
 	export_pootle_translations_to_temp_dirs
 	ascii_2_native
@@ -226,15 +224,14 @@ main() {
 	load_config
 	resolve_params $@
 
-	# most operations need (or will need) the AP project list
-	[ ! $HELP ] && read_projects_from_sources
-
 	if [ $UPDATE_REPOSITORY ]; then
+		read_projects_from_sources
 		if [ $UPDATE_POOTLE_DB ]; then
 			src2pootle
 		fi
 		pootle2src
 	elif [ $UPDATE_POOTLE_DB ]; then
+		read_projects_from_sources
 		src2pootle
 	elif [ $RESCAN_FILES ]; then
 		uniformize_pootle_paths
@@ -257,8 +254,10 @@ main() {
 	elif [ $CREATE_BACKUP ]; then
 		backup_db;
 	elif [ $LIST_PROJECTS ]; then
+		read_projects_from_sources
 		display_projects;
 	elif [ $PROVISION_PROJECTS ]; then
+		read_projects_from_sources
 		provision_projects;
 	elif [ $SPREAD_TRANSLATIONS ]; then
 		spread_translations $2;

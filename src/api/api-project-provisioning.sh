@@ -122,6 +122,7 @@ function display_AP_projects() {
 }
 
 function read_projects_from_sources() {
+	pull_source_code
 	logt 1 "Calculating project list from current sources"
 	for base_src_dir in "${!GIT_ROOTS[@]}"; do
 		logt 2 "$base_src_dir"
