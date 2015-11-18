@@ -119,19 +119,17 @@ function display_AP_projects() {
 		project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 		projects=$(echo "$project_list" | wc -l)
 		logt 2 "Git root: $git_root ($projects projects). Sync branch: ${GIT_ROOTS[$git_root]}. Reviewer: ${PR_REVIEWER[$git_root]}"
-		loglc 6 $RED "$(printf "%-40s%s" "Project Code")$(printf "%-85s%s" "Source dir (relative to $git_root)")$(printf "%-65s%s" "build lang path")$(printf "%-65s%s" "Lang file base")$(printf "%-65s%s" "Project name")$(printf "%-5s%s" "Check") "
+		loglc 6 $RED "$(printf "%-40s%s" "Project Code")$(printf "%-65s%s" "Language files base (relative to git_root)")$(printf "%-65s%s" "build lang path")$(printf "%-50s%s" "Project name")$(printf "%-5s%s" "Check") "
 		while read project; do
-			 logt 3 -n "$(printf "%-40s%s" "$project")"
-			 project_src="${AP_PROJECT_SRC_LANG_BASE["$project"]}"
-			 log -n "$(printf "%-85s%s" "${project_src#$git_root}")"
-			 build_lang_path="${AP_PROJECT_BUILD_LANG_DIR[$project]}"
-			 log -n "$(printf "%-65s%s" "$build_lang_path#$git_root")"
-			 src_lang_base="${AP_PROJECT_SRC_LANG_BASE[$project]}"
-			 log -n "$(printf "%-65s%s" "$src_lang_base#$git_root")"
-			 project_name="${AP_PROJECT_NAMES[$project]}"
-			 log -n "$(printf "%-65s%s" "$project_name")"
-			 [ -d $project_src ]
-			 check_command
+			logt 3 -n "$(printf "%-40s%s" "$project")"
+			src_lang_base="${AP_PROJECT_SRC_LANG_BASE[$project]}"
+			log -n "$(printf "%-65s%s" "${src_lang_base#$git_root}")"
+			build_lang_path="${AP_PROJECT_BUILD_LANG_DIR[$project]}"
+			log -n "$(printf "%-65s%s" "${build_lang_path#$git_root}")"
+			project_name="${AP_PROJECT_NAMES[$project]}"
+			log -n "$(printf "%-50s%s" "$project_name")"
+			[ -d $src_lang_base ]
+			check_command
 		done <<< "$project_list"
 	done;
 }
