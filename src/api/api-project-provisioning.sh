@@ -1,10 +1,18 @@
 ## some regex and patterns for project detection
-declare -xgr lang_file_path_tail="src/content/Language.properties"
+
+# regex for Language.properties final path. Since LPS-59564 we have to support 2 possible file layouts.
+# Prior to LPS-59664, this was a pattern. Now is a regex so we can't use it as a constant. We
+# have to match some string against it and use the match to process relevant paths
+declare -xgr lang_file_path_tail="src/(main/resources/)?content/Language.properties"
+
+# this allows us to know we are in a web.like project: portlet, web-osgi module,...
 declare -xgr web_layout_prefix="docroot/WEB-INF"
 
-declare -xgr web_layout_project_code_regex="/([^/]+)/$web_layout_prefix/$lang_file_path_tail"
-declare -xgr std_layout_project_code_regex="/([^/]+)/$lang_file_path_tail"
+# these capture the project code from the 2 different file layouts
+declare -xgr web_layout_project_code_regex="/([^/]+)/$web_layout_prefix/($lang_file_path_tail)"
+declare -xgr std_layout_project_code_regex="/([^/]+)/($lang_file_path_tail)"
 
+# finally, these capture whole project types from the very git root dir
 declare -xgr traditional_plugin_regex="/([^/]+)$web_layout_project_code_regex"
 declare -xgr generic_project_regex="/([^/]+)$std_layout_project_code_regex"
 declare -xgr osgi_web_module_regex="modules/([^/]+)/([^/]+)$web_layout_project_code_regex"
@@ -23,18 +31,21 @@ function prettify_name() {
 function read_project_from_path() {
 	base_src_dir="$1"
 	filepath="$2"
-	type="none"
+	type="unknown"
+	project_family="unknown"
 
 	# relative path where invoke build-lang target
 	build_lang_rel_path=${filepath#$base_src_dir}
 
 	if [[ $filepath == *"$web_layout_prefix"* ]]; then
-		# project has the "web-layout" (<code>/docroot/WEB-INF/src/content/Language.properties)
+		# project has the "web-layout" (<code>/docroot/WEB-INF/$lang_file_path_tail)
 		[[ $filepath =~ $web_layout_project_code_regex ]] ;
+		# get project code and actual lang file location within the project
 		project_code="${BASH_REMATCH[1]}"
+		lang_file_tail="${BASH_REMATCH[2]}"
 
 		# for these projects, ant build-lang is invoked from the plugin itself
-		build_lang_rel_path=${build_lang_rel_path%$web_layout_prefix/$lang_file_path_tail}
+		build_lang_rel_path=${build_lang_rel_path%$web_layout_prefix/$lang_file_tail}
 
 		# project can either be a traditional plugin or a osgi (web) module
 		if [[ $filepath =~ $osgi_web_module_regex ]] ;
@@ -49,12 +60,14 @@ function read_project_from_path() {
 			type="Liferay plugin"
 		fi;
 	else
-		# project has standard layout.
+		# project has standard layout (<code>/$lang_file_path_tail)
 		[[ $filepath =~ $std_layout_project_code_regex ]];
+		# get project code and actual lang file location within the project
 		project_code="${BASH_REMATCH[1]}"
+		lang_file_tail="${BASH_REMATCH[2]}"
 
 		# for these projects, build-lang is invoked from the base dir, like plugins
-		build_lang_rel_path=${build_lang_rel_path%$lang_file_path_tail}
+		build_lang_rel_path=${build_lang_rel_path%$lang_file_tail}
 
 		# project can either be the portal or a osgi module
 		if [[ $filepath =~ $osgi_module_regex ]] ;
@@ -106,13 +119,15 @@ function display_AP_projects() {
 		project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 		projects=$(echo "$project_list" | wc -l)
 		logt 2 "Git root: $git_root ($projects projects). Sync branch: ${GIT_ROOTS[$git_root]}. Reviewer: ${PR_REVIEWER[$git_root]}"
-		loglc 6 $RED "$(printf "%-40s%s" "Project Code")$(printf "%-85s%s" "Source dir (relative to $git_root)")$(printf "%-65s%s" "build lang patj")$(printf "%-65s%s" "Project name")$(printf "%-5s%s" "Check") "
+		loglc 6 $RED "$(printf "%-40s%s" "Project Code")$(printf "%-85s%s" "Source dir (relative to $git_root)")$(printf "%-65s%s" "build lang path")$(printf "%-65s%s" "Lang file base")$(printf "%-65s%s" "Project name")$(printf "%-5s%s" "Check") "
 		while read project; do
 			 logt 3 -n "$(printf "%-40s%s" "$project")"
 			 project_src="${AP_PROJECT_SRC_LANG_BASE["$project"]}"
 			 log -n "$(printf "%-85s%s" "${project_src#$git_root}")"
 			 build_lang_path="${AP_PROJECT_BUILD_LANG_DIR[$project]}"
-			 log -n "$(printf "%-65s%s" "$build_lang_path")"
+			 log -n "$(printf "%-65s%s" "$build_lang_path#$git_root")"
+			 src_lang_base="${AP_PROJECT_SRC_LANG_BASE[$project]}"
+			 log -n "$(printf "%-65s%s" "$src_lang_base#$git_root")"
 			 project_name="${AP_PROJECT_NAMES[$project]}"
 			 log -n "$(printf "%-65s%s" "$project_name")"
 			 [ -d $project_src ]
