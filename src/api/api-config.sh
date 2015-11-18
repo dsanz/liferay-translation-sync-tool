@@ -50,6 +50,8 @@ function resolve_params() {
 			export LIST_PROJECTS=1
 		elif [ "$param" = "--provisionProjects" ] || [ "$param" = "-pp" ]; then
 			export PROVISION_PROJECTS=1
+		elif [ "$param" = "--provisionProjectsOnlyCreate" ] || [ "$param" = "-ppc" ]; then
+			export PROVISION_PROJECTS_ONLY_CREATE=1
 		elif [ "$param" = "--spreadTranslations" ] || [ "$param" = "-S" ]; then
 			export SPREAD_TRANSLATIONS=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
@@ -154,6 +156,10 @@ Future version are expected to read a Language.properties file as well to match 
 
 	print_action "-pp, --provisionProjects"\
 			"Detects projects from source code (git roots) and syncs the sets of projects in Pootle according to detected projects"
+
+	print_action "-ppc, --provisionProjectsOnlyCreate"\
+			"Detects projects from source code (git roots) and just creates the sets of projects in Pootle according to detected projects.\
+Projects in pootle that ceased to exist in sources are kept."
 
 	print_action "-q, --qualityCheck"\
 			"Run a set of checks over pootle exported files. Log files contain the results"

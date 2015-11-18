@@ -116,6 +116,12 @@ function provision_projects() {
 	delete_old_projects_in_pootle
 }
 
+function provision_projects_only_create() {
+	logt 1 "Provisioning projects from sources (only create)"
+	read_pootle_projects
+	create_missing_projects_in_pootle
+}
+
 function provision_full_project() {
 	project_code="$1"
 
