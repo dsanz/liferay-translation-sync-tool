@@ -1,5 +1,5 @@
 export HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 
-. $HOME_DIR/base_env.sh
+. $HOME_DIR/../base_env.sh
 
-run_sync_tool "-ppD"
+run_sync_tool "-l"

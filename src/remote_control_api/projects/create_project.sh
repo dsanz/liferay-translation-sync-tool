@@ -2,7 +2,7 @@
 
 export HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 
-. $HOME_DIR/base_env.sh
+. $HOME_DIR/../base_env.sh
 
 # regexp with matches the key in a key/value pair text line. Works even if value is empty
 declare k_rexp="^([^=]+)="

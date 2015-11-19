@@ -1,5 +1,5 @@
 export HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 
-. $HOME_DIR/base_env.sh
+. $HOME_DIR/../base_env.sh
 
-run_sync_tool "-pp"
+pull_ee_branch "ee-6.1.x"
