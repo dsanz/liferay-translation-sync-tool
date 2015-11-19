@@ -78,6 +78,10 @@ Detects projects from source code (git roots) and just deletes the set of projec
 
 Detects projects from source code (git roots) and just tells what would be created/deleted in pootle.No projects are created/deleted in pootle.
 
+`-fpd, --fixPODir` 
+
+Re-cretaes the project dir structure on disk (under $PODIR). Useful if some dir got deleted. Allows pootle to write the exported files, which in turn allows user to download them and the export sync to work properly
+
 ##### Tranlsation management
 
 `S, --spreadTranslations <sourceProjectCode>`

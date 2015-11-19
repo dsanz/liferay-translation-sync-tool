@@ -162,6 +162,7 @@ function export_pootle_project_translations_to_temp_dirs() {
 	project="$1"
 	logt 2 "$project"
 	logt 3 "Synchronizing pootle stores for all languages "
+	check_dir "$PODIR/$project"
 	# Save all translations currently in database to the file system
 	call_manage "sync_stores" "--project=$project" "-v 0"
 	logt 3 "Copying exported translations into working dir"

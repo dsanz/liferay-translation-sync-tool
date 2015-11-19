@@ -268,6 +268,8 @@ main() {
 	elif [ $PROVISION_PROJECTS_DUMMY ]; then
 		read_projects_from_sources
 		provision_projects false false
+	elif [ $FIX_PODIR ]; then
+		fix_podir
 	elif [ $SPREAD_TRANSLATIONS ]; then
 		spread_translations $2;
 	fi

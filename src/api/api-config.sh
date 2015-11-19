@@ -56,6 +56,8 @@ function resolve_params() {
 			export PROVISION_PROJECTS_ONLY_DELETE=1
 		elif [ "$param" = "--provisionProjectsDummy" ] || [ "$param" = "-ppD" ]; then
 			export PROVISION_PROJECTS_DUMMY=1
+		elif [ "$param" = "--fixPODir" ] || [ "$param" = "-fpd" ]; then
+			export FIX_PODIR=1
 		elif [ "$param" = "--spreadTranslations" ] || [ "$param" = "-S" ]; then
 			export SPREAD_TRANSLATIONS=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
@@ -179,6 +181,9 @@ No projects are created/deleted in pootle."
 			"backupID: the backup ID which will be used to locate backup files to be restored"
 
 	print_action "-cB, --createBackup" "Creates a backup. Log will show the backupId that can be used to restore"
+
+	print_action "-fpd, --fixPODir" "Re-cretaes the project dir structure on disk (under $PODIR). Useful if some dir got deleted. Allows pootle to write the exported files, which in\
+ turn allows user to download them and the export sync to work properly"
 
 	print_action "-l, --listProjects" "List all projects configured for the $LR_TRANS_MGR_PROFILE profile "
 

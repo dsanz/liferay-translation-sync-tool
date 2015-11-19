@@ -164,3 +164,12 @@ function provision_full_project() {
 		post_file_batch "$project_code" "$locale"
 	done;
 }
+
+function fix_podir() {
+	logt 1 "Fixing po dir contents. Location: $PODIR"
+	read_pootle_projects
+	for pootle_project_code in "${POOTLE_PROJECT_CODES[@]}";
+	do
+		check_dir "$PODIR/pootle_project_code"
+	done;
+}
