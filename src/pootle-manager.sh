@@ -267,7 +267,7 @@ main() {
 		provision_projects false true
 	elif [ $PROVISION_PROJECTS_DUMMY ]; then
 		read_projects_from_sources
-		provision_projects false faise
+		provision_projects false false
 	elif [ $SPREAD_TRANSLATIONS ]; then
 		spread_translations $2;
 	fi
