@@ -12,7 +12,7 @@ function add_project_in_pootle() {
 		else
 			logt 1 "Provisioning new project '$projectCode' ($projectName) in pootle"
 			create_pootle_project $projectCode "$projectName" "$open_session"
-			initialize_project_files $projectCode "$projectName"
+			initialize_project_files $projectCode
 			notify_pootle $projectCode
 			restore_file_ownership
 		fi
@@ -59,7 +59,6 @@ function notify_pootle() {
 
 function initialize_project_files() {
 	projectCode="$1"
-	projectName="$2"
 	logt 2 "Initializing language files for $projectCode"
 
 	locales=$(get_locales_from_source $PORTAL_PROJECT_ID)
