@@ -9,9 +9,9 @@ The installer is not part of this distribution so far.
 Tool is invoked with one action at a time. Each action might have additional arguments.
 
 ### Environment variables
- - LR_TRANS_MGR_PROFILE    configuration profile to load (see Configuration section).
- - LR_TRANS_MGR_TAIL_LOG   if value is 1, tool invocation will do tail on log file. This allows to track the execution in real time
- - LR_TRANS_MGR_COLOR_LOG  if value is 1, tool logs will be coloured
+ -` LR_TRANS_MGR_PROFILE`    configuration profile to load (see Configuration section).
+ - `LR_TRANS_MGR_TAIL_LOG`   if value is 1, tool invocation will do tail on log file. This allows to track the execution in real time
+ - `LR_TRANS_MGR_COLOR_LOG`  if value is 1, tool logs will be coloured
 
 ### Configuration
 Tool reads conf/manager.$LR_TRANS_MGR_PROFILE.conf.sh file. Variables are documented in conf/manager.conf file
@@ -23,7 +23,8 @@ Tool output is written into log file. Filename is shown in the console
 ##### Synchronizing Liferay source code and pootle
 `-r, --pootle2repo`
 
-Exports translations from Pootle to Liferay source code. First, saves pootle data into Language*.properties files, makes some processing to the files, then commits them into a branch named $EXPORT_BRANCH and pushes it to the configured remote repository. To push the changes to the liferay repository, A PR has to be issued to the branch maintainer. pootle-export is created from a fresh copy of master (or specified branch)
+Exports translations from Pootle to Liferay source code. First, saves pootle data into Language*.properties files, makes some processing to the files, then commits them into a branch named $EXPORT_BRANCH (created from a fresh copy of working branch) and pushes it to the configured remote repository. 
+Then sends a pull request to the branch maintainer. Repositiry, Working branch and maintainer github nick name are configurable (see conf directory)
 
 `-p, --repo2pootle`
 
