@@ -30,7 +30,7 @@ function exists_project_in_AP_list() {
 }
 
 function read_pootle_projects() {
-	logt -n 2 "Reading projects from pootle DB"
+	logt 2 -n "Reading projects from pootle DB"
 	unset POOTLE_PROJECT_CODES
 	declare -xga POOTLE_PROJECT_CODES;
 	read -ra POOTLE_PROJECT_CODES <<< $(get_pootle_project_codes)
