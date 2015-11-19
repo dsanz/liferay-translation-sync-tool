@@ -258,10 +258,10 @@ main() {
 		display_projects;
 	elif [ $PROVISION_PROJECTS ]; then
 		read_projects_from_sources
-		provision_projects;
+		provision_projects false
 	elif [ $PROVISION_PROJECTS_ONLY_CREATE ]; then
 		read_projects_from_sources
-		provision_projects_only_create;
+		provision_projects true
 	elif [ $SPREAD_TRANSLATIONS ]; then
 		spread_translations $2;
 	fi

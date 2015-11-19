@@ -74,7 +74,15 @@ function is_whitelisted() {
 }
 
 function delete_old_projects_in_pootle() {
-	logt 2 "Deleting obsolete projects in pootle"
+	runDry=$1
+
+    if $runDry; then
+		prefix="Would"
+	else
+		prefix="Will"
+	fi;
+
+	logt 2 "Deleting obsolete projects in pootle (run dry: $runDry)"
 	declare -a projects_to_delete;
 	declare -a projects_whitelisted;
 	for pootle_project_code in "${POOTLE_PROJECT_CODES[@]}";
@@ -87,39 +95,45 @@ function delete_old_projects_in_pootle() {
 			fi
 		fi;
 	done;
-	logt 3 "Will delete following projects in pootle"
+	logt 3 "$prefix delete following projects in pootle"
 	for ap_project_code in "${projects_to_delete[@]}"; do
 		log -n "  $ap_project_code"
 	done;
 	log
 
-	logt 3 "Won't delete following whitelisted projects in pootle"
+	logt 3 "$prefix not delete following whitelisted projects in pootle"
 	for ap_project_code in "${projects_whitelisted[@]}"; do
 		log -n "  $ap_project_code"
 	done;
 	log
 
-	logt 3 "[Start] Provisioning projects (deletion)"
-	start_pootle_session
-	for ap_project_code in "${projects_to_delete[@]}"; do
-		delete_project_in_pootle ${ap_project_code} 0
-	done;
- 	close_pootle_session
+	if $runDry; then
+		logt 3 "Not performing project deletion..."
+	else
+		logt 3 "[Start] Provisioning projects (deletion)"
+		start_pootle_session
+		for ap_project_code in "${projects_to_delete[@]}"; do
+			delete_project_in_pootle ${ap_project_code} 0
+		done;
+	 	close_pootle_session
 
-	logt 3 "[End] Provisioning projects (deletion)"
+		logt 3 "[End] Provisioning projects (deletion)"
+	fi;
 }
 
 function provision_projects() {
-	logt 1 "Provisioning projects from sources"
-	read_pootle_projects
-	create_missing_projects_in_pootle
-	delete_old_projects_in_pootle
-}
+	runDry=$1
 
-function provision_projects_only_create() {
-	logt 1 "Provisioning projects from sources (only create)"
+    if $runDry; then
+		suffix="(only create)"
+	else
+		suffix=""
+	fi;
+
+	logt 1 "Provisioning projects from sources $suffix"
 	read_pootle_projects
 	create_missing_projects_in_pootle
+	delete_old_projects_in_pootle $runDry
 }
 
 function provision_full_project() {
