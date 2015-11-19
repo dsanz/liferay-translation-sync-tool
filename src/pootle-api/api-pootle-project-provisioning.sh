@@ -46,7 +46,7 @@ function create_missing_projects_in_pootle() {
 		action_prefix="Would"
 	fi;
 
-	logt 2 "Creating missing projects in pootle (run dry: $runDry)"
+	logt 2 "Creating missing projects in pootle (do create: $do_create)"
 	declare -a projects_to_create;
 	for ap_project_code in "${!AP_PROJECT_NAMES[@]}";
 	do
@@ -95,7 +95,7 @@ function delete_old_projects_in_pootle() {
 		action_prefix="Would"
 	fi;
 
-	logt 2 "Deleting obsolete projects in pootle (run dry: $runDry)"
+	logt 2 "Deleting obsolete projects in pootle (do delete: $do_delete)"
 	declare -a projects_to_delete;
 	declare -a projects_whitelisted;
 	for pootle_project_code in "${POOTLE_PROJECT_CODES[@]}";
