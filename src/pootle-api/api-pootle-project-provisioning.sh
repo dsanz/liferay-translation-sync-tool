@@ -30,14 +30,23 @@ function exists_project_in_AP_list() {
 }
 
 function read_pootle_projects() {
-	logt 2 "Reading projects from pootle DB"
+	logt -n 2 "Reading projects from pootle DB"
 	unset POOTLE_PROJECT_CODES
 	declare -xga POOTLE_PROJECT_CODES;
 	read -ra POOTLE_PROJECT_CODES <<< $(get_pootle_project_codes)
+	check_command
 }
 
 function create_missing_projects_in_pootle() {
-	logt 2 "Creating missing projects in pootle"
+	runDry=$1
+
+	if $runDry; then
+		action_prefix="Would"
+	else
+		action_prefix="Will"
+	fi;
+
+	logt 2 "Creating missing projects in pootle (run dry: $runDry)"
 	declare -a projects_to_create;
 	for ap_project_code in "${!AP_PROJECT_NAMES[@]}";
 	do
@@ -45,19 +54,23 @@ function create_missing_projects_in_pootle() {
 			projects_to_create[${#projects_to_create[@]}]=$ap_project_code
 		fi;
 	done;
-	logt 3 "Will create following projects in pootle"
+	logt 3 "$action_prefix create following projects in pootle"
 	for ap_project_code in "${projects_to_create[@]}"; do
 		log -n "  $ap_project_code"
 	done;
 	log
 
-	logt 3 "[Start] Provisioning projects (creation)"
-	start_pootle_session
-	for ap_project_code in "${projects_to_create[@]}"; do
-		provision_full_project ${ap_project_code}
-	done;
-	close_pootle_session
-	logt 3 "[End] Provisioning projects (creation)"
+	if $runDry; then
+		logt 3 "Not performing project creation..."
+	else
+		logt 3 "[Start] Provisioning projects (creation)"
+		start_pootle_session
+		for ap_project_code in "${projects_to_create[@]}"; do
+			provision_full_project ${ap_project_code}
+		done;
+		close_pootle_session
+		logt 3 "[End] Provisioning projects (creation)"
+	fi;
 }
 
 function is_whitelisted() {
@@ -76,10 +89,10 @@ function is_whitelisted() {
 function delete_old_projects_in_pootle() {
 	runDry=$1
 
-    if $runDry; then
-		prefix="Would"
+	if $runDry; then
+		action_prefix="Would"
 	else
-		prefix="Will"
+		action_prefix="Will"
 	fi;
 
 	logt 2 "Deleting obsolete projects in pootle (run dry: $runDry)"
@@ -95,13 +108,13 @@ function delete_old_projects_in_pootle() {
 			fi
 		fi;
 	done;
-	logt 3 "$prefix delete following projects in pootle"
+	logt 3 "$action_prefix delete following projects in pootle"
 	for ap_project_code in "${projects_to_delete[@]}"; do
 		log -n "  $ap_project_code"
 	done;
 	log
 
-	logt 3 "$prefix not delete following whitelisted projects in pootle"
+	logt 3 "$action_prefix not delete following whitelisted projects in pootle"
 	for ap_project_code in "${projects_whitelisted[@]}"; do
 		log -n "  $ap_project_code"
 	done;
@@ -125,14 +138,14 @@ function provision_projects() {
 	runDry=$1
 
     if $runDry; then
-		suffix="(only create)"
+		action_suffix="(run dry)"
 	else
-		suffix=""
+		action_suffix=""
 	fi;
 
-	logt 1 "Provisioning projects from sources $suffix"
+	logt 1 "Provisioning projects from sources $action_suffix"
 	read_pootle_projects
-	create_missing_projects_in_pootle
+	create_missing_projects_in_pootle $runDry
 	delete_old_projects_in_pootle $runDry
 }
 
