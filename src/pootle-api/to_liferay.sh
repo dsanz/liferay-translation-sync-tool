@@ -158,13 +158,17 @@ function build_lang() {
 
 ## Pootle communication functions
 
-function export_pootle_project_translations_to_temp_dirs() {
+function sync_stores() {
 	project="$1"
-	logt 2 "$project"
-	logt 3 "Synchronizing pootle stores for all languages "
+	logt 2 "Synchronizing pootle stores for all languages ($project) "
 	check_dir "$PODIR/$project"
 	# Save all translations currently in database to the file system
 	call_manage "sync_stores" "--project=$project" "-v 0"
+}
+
+function export_pootle_project_translations_to_temp_dirs() {
+	project="$1"
+	sync_stores $project
 	logt 3 "Copying exported translations into working dir"
 	for language in $(ls "$PODIR/$project"); do
 		if [[ "$language" =~ $lang_file_rexp ]]; then

@@ -170,6 +170,6 @@ function fix_podir() {
 	read_pootle_projects
 	for pootle_project_code in "${POOTLE_PROJECT_CODES[@]}";
 	do
-		check_dir "$PODIR/$pootle_project_code"
+		sync_stores $pootle_project_code
 	done;
 }
