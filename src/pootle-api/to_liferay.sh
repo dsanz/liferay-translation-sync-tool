@@ -177,7 +177,8 @@ function export_pootle_project_translations_to_temp_dirs() {
 # tells pootle to export its translations to properties files to $PODIR dir
 function export_pootle_translations_to_temp_dirs() {
 	logt 1 "Updating pootle files from pootle DB..."
-	for project in "${!AP_PROJECT_NAMES[@]}"; do
+	read_pootle_projects
+	for project in "${POOTLE_PROJECT_CODES[@]}"; do
 		export_pootle_project_translations_to_temp_dirs "$project"
 	done
 }
