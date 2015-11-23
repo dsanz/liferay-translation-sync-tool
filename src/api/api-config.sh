@@ -8,12 +8,6 @@ function get_param() {
 	echo  $1
 }
 
-function get_locales_from_source() {
-	project="$1"
-	src_dir="${AP_PROJECT_SRC_LANG_BASE["$project"]}"
-	echo $(ls -l $src_dir/Language_* | cut -f 1 -d . | cut -f 2- -d _)
-}
-
 # $1 - This parameter must contain $@ (parameters to resolve).
 function resolve_params() {
 	params="$@"
