@@ -9,7 +9,7 @@ The installer is not part of this distribution so far.
 Tool is invoked with one action at a time. Each action might have additional arguments.
 
 ### Environment variables
- -` LR_TRANS_MGR_PROFILE`    configuration profile to load (see Configuration section).
+ - ` LR_TRANS_MGR_PROFILE`    configuration profile to load (see Configuration section).
  - `LR_TRANS_MGR_TAIL_LOG`   if value is 1, tool invocation will do tail on log file. This allows to track the execution in real time
  - `LR_TRANS_MGR_COLOR_LOG`  if value is 1, tool logs will be coloured
 
