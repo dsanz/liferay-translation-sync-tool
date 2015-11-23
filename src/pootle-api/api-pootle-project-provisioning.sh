@@ -29,11 +29,17 @@ function exists_project_in_AP_list() {
 	[ "$exists" = true ]
 }
 
-function read_pootle_projects() {
+function read_pootle_projects_and_locales() {
 	logt 2 -n "Reading projects from pootle DB"
 	unset POOTLE_PROJECT_CODES
 	declare -xga POOTLE_PROJECT_CODES;
 	read -ra POOTLE_PROJECT_CODES <<< $(get_pootle_project_codes)
+	check_command
+
+	logt 2 -n "Reading used locales from pootle DB"
+	unset POOTLE_PROJECT_LOCALES
+	declare -xga POOTLE_PROJECT_LOCALES;
+	read -ra POOTLE_PROJECT_LOCALES <<<  $(get_default_project_locales)
 	check_command
 }
 
@@ -138,7 +144,7 @@ function provision_projects() {
 	do_delete=$2
 
 	logt 1 "Provisioning projects from sources (will create: $do_create, will delete: $do_delete)"
-	read_pootle_projects
+	read_pootle_projects_and_locales
 	create_missing_projects_in_pootle $do_create
 	delete_old_projects_in_pootle $do_delete
 }
@@ -167,7 +173,7 @@ function provision_full_project() {
 
 function fix_podir() {
 	logt 1 "Fixing po dir contents. Location: $PODIR"
-	read_pootle_projects
+	read_pootle_projects_and_locales
 	for pootle_project_code in "${POOTLE_PROJECT_CODES[@]}";
 	do
 		regenerate_stores $pootle_project_code

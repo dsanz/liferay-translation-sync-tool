@@ -61,8 +61,6 @@ function initialize_project_files() {
 	projectCode="$1"
 	logt 3 "Initializing language files for $projectCode"
 
-	read -ra locales <<< $(get_default_project_locales)
-
 	clean_dir "$PODIR/$projectCode"
 
 	logt 4 -n "Creating template file"
