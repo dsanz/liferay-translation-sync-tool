@@ -185,4 +185,5 @@ function regenerate_stores() {
 	logt 2 "Regenerating project stores for $project_code"
 	initialize_project_files $project_code
 	sync_stores $project_code
+	restore_file_ownership
 }
