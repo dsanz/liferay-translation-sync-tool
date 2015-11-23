@@ -170,6 +170,8 @@ function export_pootle_project_translations_to_temp_dirs() {
 	project="$1"
 	regenerate_stores $project
 	logt 3 "Copying exported translations into working dir"
+
+	# here we need the actual contents in $PODIR/$project instead of the locale set
 	for language in $(ls "$PODIR/$project"); do
 		if [[ "$language" =~ $lang_file_rexp ]]; then
 			logt 0 -n  "$(get_locale_from_file_name $language) "
