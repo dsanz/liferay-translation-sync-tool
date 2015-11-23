@@ -170,6 +170,13 @@ function fix_podir() {
 	read_pootle_projects
 	for pootle_project_code in "${POOTLE_PROJECT_CODES[@]}";
 	do
-		sync_stores $pootle_project_code
+		regenerate_stores $pootle_project_code
 	done;
+}
+
+function regenerate_stores() {
+	project_code="$1"
+	logt 2 "Regenerating project stores for $project_code"
+	initialize_project_files $project_code
+	sync_stores $project_code
 }

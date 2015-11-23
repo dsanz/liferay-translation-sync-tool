@@ -168,7 +168,7 @@ function sync_stores() {
 
 function export_pootle_project_translations_to_temp_dirs() {
 	project="$1"
-	sync_stores $project
+	regenerate_stores $project
 	logt 3 "Copying exported translations into working dir"
 	for language in $(ls "$PODIR/$project"); do
 		if [[ "$language" =~ $lang_file_rexp ]]; then

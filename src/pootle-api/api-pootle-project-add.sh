@@ -59,19 +59,19 @@ function notify_pootle() {
 
 function initialize_project_files() {
 	projectCode="$1"
-	logt 2 "Initializing language files for $projectCode"
+	logt 3 "Initializing language files for $projectCode"
 
 	locales=$(get_locales_from_source $PORTAL_PROJECT_ID)
 
 	clean_dir "$PODIR/$projectCode"
 
-	logt 3 -n "Creating template file"
+	logt 4 -n "Creating template file"
 	touch "$PODIR/$projectCode/$FILE.$PROP_EXT"
 	check_command
 
 	for locale in $locales; do
 		filename="$FILE$LANG_SEP$locale.$PROP_EXT"
-		logt 3 -n "Creating $filename"
+		logt 4 -n "Creating $filename"
 		touch "$PODIR/$projectCode/$filename"
 		check_command
 	done;
