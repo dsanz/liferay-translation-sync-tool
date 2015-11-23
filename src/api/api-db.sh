@@ -189,3 +189,9 @@ function get_pootle_project_codes() {
 	local i=$($MYSQL_COMMAND $DB_NAME -s -N -e "select code from pootle_app_project;")
 	echo -e "$i";
 }
+
+function get_default_project_locales() {
+	local i=$($MYSQL_COMMAND $DB_NAME -s -N -e "select code from pootle_app_language where id in (select language_id from pootle_app_translationproject where real_path='${PORTAL_PROJECT_ID}');")
+	echo -e "$i";
+}
+

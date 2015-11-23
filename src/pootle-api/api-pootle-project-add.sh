@@ -61,7 +61,7 @@ function initialize_project_files() {
 	projectCode="$1"
 	logt 3 "Initializing language files for $projectCode"
 
-	locales=$(get_locales_from_source $PORTAL_PROJECT_ID)
+	read -ra locales <<< $(get_default_project_locales)
 
 	clean_dir "$PODIR/$projectCode"
 
