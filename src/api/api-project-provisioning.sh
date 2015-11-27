@@ -121,7 +121,7 @@ function display_AP_projects() {
 		logt 2 "Git root: $git_root ($projects projects). Sync branch: ${GIT_ROOTS[$git_root]}. Reviewer: ${PR_REVIEWER[$git_root]}"
 		logc $RED "$(printf "%-51s%s" "Project Code")$(printf "%-100s%s" "Build-lang path (relative to git_root)")$(printf "%-35s%s" "Lang file base (rel to build lang)")$(printf "%-60s%s" "Project name")$(printf "%-5s%s" "Check") "
 		while read project; do
-			logc $YELLOW -n "$(printf "%-51s%s" "$project")"
+			log -n "$(printf "%-51s%s" "$project")"
 			build_lang_path="${AP_PROJECT_BUILD_LANG_DIR[$project]}"
 			build_lang_path="${build_lang_path#$git_root}"
 			log -n "$(printf "%-100s%s" "$build_lang_path")"
@@ -130,7 +130,7 @@ function display_AP_projects() {
 			src_lang_base="${src_lang_base#$build_lang_path}"
 			log -n "$(printf "%-35s%s" "$src_lang_base")"
 			project_name="${AP_PROJECT_NAMES[$project]}"
-			logc $CYAN -n "$(printf "%-60s%s" "$project_name")"
+			log -n "$(printf "%-60s%s" "$project_name")"
 			[ -d ${AP_PROJECT_SRC_LANG_BASE[$project]} ]
 			check_command
 		done <<< "$project_list"
