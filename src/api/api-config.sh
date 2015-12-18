@@ -52,6 +52,8 @@ function resolve_params() {
 			export PROVISION_PROJECTS_DUMMY=1
 		elif [ "$param" = "--fixPODir" ] || [ "$param" = "-fpd" ]; then
 			export FIX_PODIR=1
+		elif [ "$param" = "--listBackups" ] || [ "$param" = "-lb" ]; then
+			export LIST_BACKUPS=1
 		elif [ "$param" = "--spreadTranslations" ] || [ "$param" = "-S" ]; then
 			export SPREAD_TRANSLATIONS=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
@@ -180,6 +182,8 @@ No projects are created/deleted in pootle."
  turn allows user to download them and the export sync to work properly"
 
 	print_action "-l, --listProjects" "List all projects configured for the $LR_TRANS_MGR_PROFILE profile "
+
+	print_action "-lb, --listBackups" "List all available backups "
 
 	print_action "-h, --help" "Prints this help and exits"
 

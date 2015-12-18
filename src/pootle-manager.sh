@@ -270,6 +270,8 @@ main() {
 		provision_projects false false
 	elif [ $FIX_PODIR ]; then
 		fix_podir
+	elif [ $LIST_BACKUPS ]; then
+		list_backups;
 	elif [ $SPREAD_TRANSLATIONS ]; then
 		spread_translations $2;
 	fi

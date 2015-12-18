@@ -133,6 +133,9 @@ Restores a Pootle data backup given its ID. The backup id is provided in the log
 Arguments:
  - `backupID`: the backup ID which will be used to locate backup files to be restored
 
+`-lb, --listBackups`
+
+List all available backups
 
 ##### Other
 `-l, --listProjects`
