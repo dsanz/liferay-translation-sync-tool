@@ -112,7 +112,7 @@ function spread_translations() {
 		project_list=${AP_PROJECTS_BY_GIT_ROOT["$git_root"]}
 	fi;
 	logt 1 "Translations will be spread to the following projects ('$source_project' will be excluded if belongs to destination list): $project_list"
-	project_list="$(echo $project_list | sed 's: :\n:g' | sort)"
+	project_list="$(echo "$project_list" | sed 's: :\n:g' | sort)"
 
 	# no need to call checkgit as source folder is not under git control
 	# target dir is assumed to be on the right branch
