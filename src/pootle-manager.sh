@@ -286,7 +286,7 @@ main() {
 	elif [ $LIST_BACKUPS ]; then
 		list_backups;
 	elif [ $SPREAD_TRANSLATIONS ]; then
-		spread_translations $2;
+		spread_translations $2 "$3";
 	fi
 
 	if [[ -z ${LR_TRANS_MGR_TAIL_LOG+x} ]]; then
