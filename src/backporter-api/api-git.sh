@@ -4,7 +4,7 @@ declare -Ag commit
 declare -Ag branch
 
 declare -g use_git=0
-declare -g result_branch="translations_backport"
+declare -g result_branch="translations_copy"
 declare -g refspec="origin/$result_branch"
 declare -g do_commit=1
 
@@ -77,7 +77,7 @@ function commit_result() {
 			check_command
 		fi;
 		logt 4 -n "Creating branch $result_branch_name"
-		message="Translations backported from ${branch[$source_dir]}:${commit[$source_dir]} to ${branch[$target_dir]}:${commit[$target_dir]}, by $product"
+		message="Translations copied from ${branch[$source_dir]}:${commit[$source_dir]} to ${branch[$target_dir]}:${commit[$target_dir]}, by $product"
 		git checkout -b $result_branch_name > /dev/null 2>&1
 		check_command
 

@@ -103,9 +103,16 @@ function display_projects() {
 # $1 is the source project code
 function spread_translations() {
 	source_project="$1"
+	project_list="$2"
 	source_dir="${AP_PROJECT_SRC_LANG_BASE["$source_project"]}"
 	git_root="${AP_PROJECT_GIT_ROOT["$source_project"]}"
-	logt 1 "Preparing to spread translations from project $source_project to the other projects in $git_root"
+	logt 1 "Preparing to spread translations from project $source_project in $git_root"
+
+	if [[ $project_list == "" ]]; then
+		project_list=${AP_PROJECTS_BY_GIT_ROOT["$git_root"]}
+	fi;
+	logt 1 "Translations will be spread to the following projects: $project_list"
+	project_list="$(echo $project_list | sed 's: :\n:g' | sort)"
 
 	# no need to call checkgit as source folder is not under git control
 	# target dir is assumed to be on the right branch
@@ -126,8 +133,7 @@ function spread_translations() {
 
 	logt 1 "Source project has been exported. Now I will spread its translations to the other projects in $git_root"
 
-	# iterate all projects in the same git root and backport to them
-	project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
+	# iterate all projects in the destination project list and 'backport' to them
 	logt 2 "Target project list ('$source_project' will be excluded): ${AP_PROJECTS_BY_GIT_ROOT[$git_root]}"
 	while read target_project; do
 		if [[ $target_project != $source_project ]]; then
@@ -154,7 +160,14 @@ function spread_translations() {
 		check_command
 	done
 	do_commit=0
-	commit_result "$git_root" "$git_root"
+
+	# tweak a bit the arrays expected by commit_result so that spread commit message makes sense.
+	branch["$source_project"]="$source_project"
+	commit["$source_project"]="pootle"
+	cd $target_dir
+	branch["$git_root"]="$target_project"
+	commit["$git_root"]=$(git rev-parse HEAD)
+	commit_result "$source_project" "$git_root"
 }
 
 function backport_all() {
