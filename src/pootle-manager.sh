@@ -285,6 +285,7 @@ main() {
 	elif [ $LIST_BACKUPS ]; then
 		list_backups;
 	elif [ $SPREAD_TRANSLATIONS ]; then
+		read_projects_from_sources
 		spread_translations $2 "$3";
 	fi
 
