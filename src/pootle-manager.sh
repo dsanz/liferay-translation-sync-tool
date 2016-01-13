@@ -148,13 +148,6 @@ function spread_translations() {
 
 	project_list="$(echo "$project_list" | sed 's: :\n:g' | sort)"
 
-	# no need to call checkgit as source folder is not under git control
-	# target dir is assumed to be on the right branch
-	#check_git "${AP_PROJECT_GIT_ROOT[$source_project]}" "${AP_PROJECT_GIT_ROOT[$target_project]}" "master" "master"
-
-	# make sure we get the latest templates & translations from source code
-	#goto_branch_tip $git_root
-
 	# this will export all source project translations into $source_dir as we do in pootle2src, but only for source_project
 	clean_temp_output_dirs
 	read_pootle_projects_and_locales # we eed the set of locales to copy & process translated stuff from source project
