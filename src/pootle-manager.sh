@@ -111,7 +111,7 @@ function spread_translations() {
 	if [[ $project_list == "" ]]; then
 		project_list=${AP_PROJECTS_BY_GIT_ROOT["$git_root"]}
 	fi;
-	logt 1 "Translations will be spread to the following projects: $project_list"
+	logt 1 "Translations will be spread to the following projects ('$source_project' will be excluded if belongs to destination list): $project_list"
 	project_list="$(echo $project_list | sed 's: :\n:g' | sort)"
 
 	# no need to call checkgit as source folder is not under git control
@@ -134,7 +134,6 @@ function spread_translations() {
 	logt 1 "Source project has been exported. Now I will spread its translations to the other projects in $git_root"
 
 	# iterate all projects in the destination project list and 'backport' to them
-	logt 2 "Target project list ('$source_project' will be excluded): ${AP_PROJECTS_BY_GIT_ROOT[$git_root]}"
 	while read target_project; do
 		if [[ $target_project != $source_project ]]; then
 			target_dir="${AP_PROJECT_SRC_LANG_BASE["$target_project"]}"
