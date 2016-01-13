@@ -121,8 +121,8 @@ function spread_translations() {
 	fi;
 
     if [[ $git_root == "" ]]; then
-		logt 2 "I can not compute git root. I'll use the git root of first project destination project"
-		first_project="$(echo project_list | cut -d " " -f1)"
+		first_project="$(echo $project_list | cut -d " " -f1)"
+		logt 2 "I can not compute git root. I'll use the git root of first destination project: $first_project"
 		git_root="${AP_PROJECT_GIT_ROOT["$first_project"]}"
 	fi;
 
