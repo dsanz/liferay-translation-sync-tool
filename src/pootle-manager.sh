@@ -153,7 +153,7 @@ function spread_translations() {
 	#check_git "${AP_PROJECT_GIT_ROOT[$source_project]}" "${AP_PROJECT_GIT_ROOT[$target_project]}" "master" "master"
 
 	# make sure we get the latest templates & translations from source code
-	goto_branch_tip $git_root
+	#goto_branch_tip $git_root
 
 	# this will export all source project translations into $source_dir as we do in pootle2src, but only for source_project
 	clean_temp_output_dirs
