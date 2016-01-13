@@ -104,14 +104,44 @@ function display_projects() {
 function spread_translations() {
 	source_project="$1"
 	project_list="$2"
-	source_dir="${AP_PROJECT_SRC_LANG_BASE["$source_project"]}"
+	logt 1 "Preparing to spread translations from project $source_project"
+
+	# try to get git root from source project first
 	git_root="${AP_PROJECT_GIT_ROOT["$source_project"]}"
-	logt 1 "Preparing to spread translations from project $source_project in $git_root"
+	# try to get source dir from auto-provisioned stuff indexing by source_project
+	source_dir="${AP_PROJECT_SRC_LANG_BASE["$source_project"]}"
+
+	# as source project might not exist in sources, let's check and try plan B instead
+	# Plan B: get git root from destination project. In this case, destination project
+	# has to be explicitly listed
+
+	if [[ $project_list == "" && $git_root == "" ]]; then
+		logc $RED "There is no way to compute git root dir. Please provide either an existing source project or specify a list of destination projects"
+		return;
+	fi;
+
+    if [[ $git_root == "" ]]; then
+		logt 2 "I can not compute git root. I'll use the git root of first project destination project"
+		first_project="$(echo project_list | cut -d " " -f1)"
+		git_root="${AP_PROJECT_GIT_ROOT["$first_project"]}"
+	fi;
 
 	if [[ $project_list == "" ]]; then
+		logt 2 "Source project does not exist in $git_root. I'll use all projects"
 		project_list=${AP_PROJECTS_BY_GIT_ROOT["$git_root"]}
 	fi;
-	logt 1 "Translations will be spread to the following projects ('$source_project' will be excluded if belongs to destination list): $project_list"
+
+	if [[ $source_dir == "" ]]; then
+		logt 2 "Source project does not exist in $git_root. I'll create a temporary location for it "
+		mkdir --parents $git_root/temp/$project_code
+		add_AP_project "$source_code" "$source_name" "$git_root" "temp/$project_code" ""
+	fi;
+
+	logt 2 "Translations will be spread as follows:"
+	logt 3 "Source project: $source_project "
+	logt 3 "Destination project(s): $project_list  (Source project will be excluded from this list if exists)"
+	logt 3 "Git root: $git_root"
+
 	project_list="$(echo "$project_list" | sed 's: :\n:g' | sort)"
 
 	# no need to call checkgit as source folder is not under git control
