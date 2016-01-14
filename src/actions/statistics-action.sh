@@ -1,4 +1,5 @@
 function display_stats() {
+	read_pootle_projects_and_locales
 	logt 1 "Statistics: # and % of translated keys"
 
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
