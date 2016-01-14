@@ -7,10 +7,15 @@ function display_stats() {
 		translations_filename="$FILE$LANG_SEP$locale.$PROP_EXT"
 		template_filename="$FILE.$PROP_EXT"
 
+
 		for git_root in "${!GIT_ROOTS[@]}"; do
 			project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 			projects=$(echo "$project_list" | wc -l)
 			logt 3 "Git root: $git_root ($projects projects)."
+
+			per_root_key_count=0
+			per_root_translated_count=0
+			per_root_untranslated_count=0
 			while read project; do
 				project_name="${AP_PROJECT_NAMES[$project]}"
 				src_lang_base="${AP_PROJECT_SRC_LANG_BASE[$project]}"
@@ -20,11 +25,20 @@ function display_stats() {
 				untranslated_count=$(( $key_count - $translation_count + $automatic_count ))
 				translated_count=$(( $key_count - $untranslated_count ))
 
-				loglc 0 $YELLOW -n "$(printf "%-7s %-60s %-6s" "[$locale]" "$project_name " "$key_count")"
-				loglc 0 $GREEN -n "$(printf "%-4s (%-4s)  " "$translated_count" "$(( $translated_count * 100 / $key_count ))%")"
-				loglc 0 $RED -n "$(printf "%-4s (%-4s)  " "$untranslated_count" "$(( $untranslated_count * 100 / $key_count ))%")"
+				(( per_root_key_count += key_count ))
+				(( per_root_translated_count += translated_count ))
+				(( per_root_untranslated_count += untranslated_count ))
+
+				loglc 0 $YELLOW -n "$(printf "%-7s %-60s %-6s keys      " "[$locale]" "$project_name " "$key_count")"
+				loglc 0 $GREEN -n "$(printf "%-4s - %-6s translated     " "$translated_count" "$(( $translated_count * 100 / $key_count ))%")"
+				loglc 0 $RED -n "$(printf "%-4s - %-6s untranslated" "$untranslated_count" "$(( $untranslated_count * 100 / $key_count ))%")"
 				log
 			done <<< "$project_list"
+
+			logt 3 "Totals per git root:"
+			loglc 0 $YELLOW -n "$(printf "%-7s %-60s %-6s keys      " "[$locale]" "$git_root " "$key_count")"
+			loglc 0 $GREEN -n "$(printf "%-4s - %-6s translated     " "$translated_count" "$(( $translated_count * 100 / $key_count ))%")"
+			loglc 0 $RED -n "$(printf "%-4s - %-6s untranslated" "$untranslated_count" "$(( $untranslated_count * 100 / $key_count ))%")"
 		done
 	done;
 }
