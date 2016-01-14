@@ -34,6 +34,9 @@ function load_api() {
 	. pootle-api/api-pootle-project-rename.sh
 	. backporter-api/api-backporter.sh
 
+	# Load Actions
+	. actions/statistics-action.sh
+
 	declare -xgr HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 }
 
@@ -315,6 +318,9 @@ main() {
 	elif [ $SPREAD_TRANSLATIONS ]; then
 		read_projects_from_sources
 		spread_translations $2 "$3";
+	elif [ $DISPLAY_STATS ]; then
+		read_projects_from_sources
+		display_stats;
 	fi
 
 	if [[ -z ${LR_TRANS_MGR_TAIL_LOG+x} ]]; then
