@@ -15,8 +15,8 @@ function display_stats() {
 				project_name="${AP_PROJECT_NAMES[$project]}"
 				src_lang_base="${AP_PROJECT_SRC_LANG_BASE[$project]}"
 				key_count=$(cat $src_lang_base/$template_filename | grep -E "^([^=]+)="  | wc -l)
-				translation_count=$(cat $src_lang_base/$translation_filename | grep -E "^([^=]+)=" | wc -l)
-				automatic_count=$(cat $src_lang_base/$translation_filename | grep -E "^([^=]+)=" | grep -E "\(Automatic [^\)]+{4,11}\)$" | wc -l)
+				translation_count=$(cat $src_lang_base/$translations_filename | grep -E "^([^=]+)=" | wc -l)
+				automatic_count=$(cat $src_lang_base/$translations_filename | grep -E "^([^=]+)=" | grep -E "\(Automatic [^\)]+{4,11}\)$" | wc -l)
 				untranslated_count=$(( $key_count - $translation_count + $automatic_count ))
 				translated_count=$(( $key_count - $untranslated_count ))
 
