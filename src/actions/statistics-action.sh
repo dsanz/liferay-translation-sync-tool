@@ -20,9 +20,9 @@ function display_stats() {
 				untranslated_count=$(( $key_count - $translation_count + $automatic_count ))
 				translated_count=$(( $key_count - $untranslated_count ))
 
-				loglc 0 $YELLOW -n "$(printf "%-60s%s" "$project_name")"
-				loglc 0 $GREEN -n "$(printf "%-20s%s" "$translated_count / $key_count ($(( $translated_count * 100 / $key_count )))")"
-				loglc 0 $RED -n "$(printf "%-20s%s" "$untranslated_count / $key_count ($(( $untranslated_count * 100 / $key_count )))")"
+				loglc 0 $YELLOW -n "$(printf "%-7s %-60s %-6s" "[$locale]" "$project_name " "$key_count")"
+				loglc 0 $GREEN -n "$(printf "%-4s (%-4s)  " "$translated_count" "$(( $translated_count * 100 / $key_count ))%")"
+				loglc 0 $RED -n "$(printf "%-4s (%-4s)  " "$untranslated_count" "$(( $untranslated_count * 100 / $key_count ))%")"
 				log
 			done <<< "$project_list"
 		done
