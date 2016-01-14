@@ -16,7 +16,7 @@ run_sync_tool "-m" "wiki-navigation-portlet" "wiki-navigation-web"
 # UI (Chema)
 run_sync_tool "-m" "frontend-editors-web" "frontend-editor-lang"
 
-
+## change the "pretty" project names
 
 #######
 ## Spreads / merges
