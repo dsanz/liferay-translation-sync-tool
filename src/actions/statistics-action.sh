@@ -42,8 +42,8 @@ function display_stats() {
 			loglc 0 $YELLOW -n "$(printf "%-7s %-60s %-6s keys      " "[$locale]" "$git_root " "$per_root_key_count")"
 			loglc 0 $GREEN -n "$(printf "[%-4s translated - %-4s percent]     " "$per_root_translated_count" "$(( $per_root_translated_count * 100 / $per_root_key_count ))")"
 			loglc 0 $RED -n "$(printf "[%-4s untranslated - %-4s percent]" "$per_root_untranslated_count" "$(( $per_root_untranslated_count * 100 / $per_root_key_count ))")"
-    		log
-    		log
+			log
+			log
 			(( per_locale_key_count += per_root_key_count ))
 			(( per_locale_translated_count += per_root_translated_count ))
 			(( per_locale_untranslated_count += per_root_untranslated_count ))
@@ -52,6 +52,7 @@ function display_stats() {
 		loglc 0 $YELLOW -n "$(printf "%-7s %-6s keys      " "[$locale]" "$per_locale_key_count")"
 		loglc 0 $GREEN -n "$(printf "[%-4s translated - %-4s percent]     " "$per_locale_translated_count" "$(( $per_locale_translated_count * 100 / $per_locale_key_count ))")"
 		loglc 0 $RED -n "$(printf "[%-4s untranslated - %-4s percent]" "$per_locale_untranslated_count" "$(( $per_locale_untranslated_count * 100 / $per_locale_key_count ))")"
-
+		log
+		log
 	done;
 }
