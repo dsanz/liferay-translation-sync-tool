@@ -5,7 +5,7 @@ function display_stats() {
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		logt 2 "$locale"
 		translations_filename="$FILE$LANG_SEP$locale.$PROP_EXT"
-		template_filename="$FILE$LANG_SEP.$PROP_EXT"
+		template_filename="$FILE.$PROP_EXT"
 
 		for git_root in "${!GIT_ROOTS[@]}"; do
 			project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
