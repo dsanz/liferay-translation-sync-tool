@@ -275,7 +275,7 @@ function process_translations() {
 		loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
 	done;
 
-	for project in "${!AP_PROJECT_NAMES[@]}"; do
+	for project in "${POOTLE_PROJECT_CODES[@]}"; do
 		process_project_translations $project true
 	done
 }
@@ -359,7 +359,7 @@ function refill_translations() {
 				valueExp=${T["$exportedPrefix$key"]}                            # get translation exported by pootle
 
 				if exists_ext_value $extPrefix $key; then                       # has translation to be overriden?
-					value=$(getTVal $extPrefix $key)
+					value=${T["$extPrefix$key"]}
 					char="o"
 				elif [[ "$valueExp" == "$valueTpl" ]]; then                     # ok, no overriding. Now, is exported value = template value?
 					valueStore=${T["$storePrefix$key"]}                         #   then let's see if translators wrote the template value by hand in the text box
