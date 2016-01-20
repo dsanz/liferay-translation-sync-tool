@@ -110,7 +110,7 @@ function get_locale_from_file_name() {
 # $2 is the key prefix where keys will be stored
 # $3 is an optional boolean which states if keys are being read from the template or not
 function read_locale_file() {
-	lines=$(wc -l "$1" | cut -d' ' -f1)
+	lines=$(wc -l "$1" | cut -d' ' -f1)  ## this reads n-1 in a n-lines file if last line is not terminated
 	template=$3
 	logt 4 -n "Reading file $1        "
 	done=false;
