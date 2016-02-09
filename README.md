@@ -142,6 +142,9 @@ List all available backups
 
 List all projects configured for the dev profile
 
+`-l, --displayStats`
+Counts untranslated keys as stored in pootle and displays some stats per project, locale and git repo
+
 `-h, --help, (or no arguments)`
 
 Prints this help and exits
