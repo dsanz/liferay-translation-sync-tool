@@ -268,7 +268,7 @@ main() {
 	resolve_params $@
 
 	if [ $UPDATE_REPOSITORY ]; then
-		read_projects_from_sources
+	read_projects_from_sources
 		if [ $UPDATE_POOTLE_DB ]; then
 			src2pootle
 		fi

@@ -186,7 +186,7 @@ function export_pootle_translations_to_temp_dirs() {
 	logt 1 "Updating pootle files from pootle DB..."
 	read_pootle_projects_and_locales
 	for project in "${POOTLE_PROJECT_CODES[@]}"; do
-		export_pootle_project_translations_to_temp_dirs "$project"
+                [[ $project == "announcements-web" ]] && export_pootle_project_translations_to_temp_dirs "$project"
 	done
 }
 
@@ -276,7 +276,7 @@ function process_translations() {
 	done;
 
 	for project in "${POOTLE_PROJECT_CODES[@]}"; do
-		process_project_translations $project true
+                [[ $project == "announcements-web" ]] && process_project_translations $project true
 	done
 }
 
@@ -355,19 +355,31 @@ function refill_translations() {
 			char="!"
 			if is_key_line "$line" ; then
 				[[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
+                                log "KEY                  : '$key'"
+
+
 				valueTpl=${T["$templatePrefix$key"]}
+				log "Template value       : '$valueTpl'"
 				valueExp=${T["$exportedPrefix$key"]}                            # get translation exported by pootle
+                                log "Pootle export value  : '$valueExp'"
 
 				if exists_ext_value $extPrefix $key; then                       # has translation to be overriden?
 					value=${T["$extPrefix$key"]}
+	                                log "Extension overrided v: '$value'"
+
+
 					char="o"
 				elif [[ "$valueExp" == "$valueTpl" ]]; then                     # ok, no overriding. Now, is exported value = template value?
 					valueStore=${T["$storePrefix$key"]}                         #   then let's see if translators wrote the template value by hand in the text box
+	                                log "Pootle store  value  : '$valueStore'"
+
 					if [[ "$valueStore" == "$valueTpl" ]]; then                 #   was it translated that way on purpose?
 						char="e"                                                #       use the template value. English is ok in this case.
 						value=$valueTpl
 					else                                                        #   otherwise, key is really untranslated in pootle
-						valuePrev=${T["$previousPrefix$key"]}                   #       let's look for the current key translation in master
+						valuePrev=${T["$previousPrefix$key"]}                   #       let's look for the current key translation in masteri
+		                                log "Source code   value  : '$valuePrev'"
+
 						if is_translated_value "$valuePrev"; then               #       is the key translated in master? [shouldn't happen unless we run -r before a -p]
 							if [[ "$valuePrev" != "$valueTpl" ]]; then          #           ok, key is already translated in master. is that value different from the template?
 								char="r"                                        #               ok, then master is translated but Pootle not, hmmm! we have a reverse-path
@@ -385,6 +397,8 @@ function refill_translations() {
 				else                                                            # ok, no overriding, and value is not the english one: it's supposed to be a valid translation!!
 					value=${T["$exportedPrefix$key"]}                           #   get translation exported by pootle
 					valuePrev=${T["$previousPrefix$key"]}                       #   get the translation from master
+                                        log "Source code   value  : '$valuePrev'"
+
 					if is_translated_value "$valuePrev"; then                   #   is the master value translated?
 						if [[ "$valuePrev" != "$value" ]]; then                 #      is this translation different than the one pootle exported?
 							char="x"                                            #           ok, we have a conflict, pootle wins. Let user know
@@ -404,7 +418,7 @@ function refill_translations() {
 			fi
 			printf "$format" "$result" >> $workingfile
 			printf "$format"  "[${char}]___${key}" >> $copyingLogfile
-			loglc 0 "${charc[$char]}" -n "$char"
+			loglc 0 "${charc[$char]}" "RESULT: $char"
 		fi;
 	done < $target_lang_path
 	IFS=$OLDIFS
