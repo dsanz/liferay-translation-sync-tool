@@ -120,6 +120,8 @@ Arguments:
 `-q, --qualityCheck`
 Runs a set of checks over pootle exported files. Log files contain the results
 
+`-z, --generateZip`
+Exports all translations from pootle, generating a big zip file per locale
 
 ##### Backups
 `-cB, --createBackup`
