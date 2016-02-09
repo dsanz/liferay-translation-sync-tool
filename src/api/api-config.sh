@@ -58,6 +58,8 @@ function resolve_params() {
 			export SPREAD_TRANSLATIONS=1
 		elif [ "$param" = "--displayStats" ] || [ "$param" = "-ds" ]; then
 			export DISPLAY_STATS=1
+		elif [ "$param" = "--generateZip" ] || [ "$param" = "-z" ]; then
+			export GENERATE_ZIP=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else
@@ -188,6 +190,8 @@ No projects are created/deleted in pootle."
 	print_action "-lb, --listBackups" "List all available backups "
 
 	print_action "-ds, --displayStats" "List some stats about translation projects"
+
+	print_action "-z, --generateZip" "Exports pootle translations into a zip file per locale"
 
 	print_action "-h, --help" "Prints this help and exits"
 

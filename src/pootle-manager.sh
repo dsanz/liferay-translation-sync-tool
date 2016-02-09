@@ -36,6 +36,7 @@ function load_api() {
 
 	# Load Actions
 	. actions/statistics-action.sh
+	. actions/export_translations_into_zip.action.sh
 
 	declare -xgr HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 }
@@ -321,6 +322,8 @@ main() {
 	elif [ $DISPLAY_STATS ]; then
 		read_projects_from_sources
 		display_stats;
+	elif [ $GENERATE_ZIP ]; then
+		generate_zip_from_translations;
 	fi
 
 	if [[ -z ${LR_TRANS_MGR_TAIL_LOG+x} ]]; then
