@@ -38,6 +38,7 @@ function load_api() {
 	. actions/statistics-action.sh
 	. actions/export/export_translations_into_zip_action.sh
 	. actions/export/backport_all_action.sh
+	. actions/import/upload_translations_action.sh
 	. actions/provisioning/rescan_files_action.sh
 	. actions/provisioning/move_pootle_project_action.sh
 	. actions/sync/sync_sources_from_pootle_action.sh
@@ -103,13 +104,6 @@ function display_projects() {
 	display_AP_projects
 }
 
-function upload_translations() {
-	loglc 1 $RED  "Uploading $2 translations for project $1"
-	backup_db
-	post_file $1 $2
-	loglc 1 $RED "Upload finished"
-}
-
 function upload_derived_translations() {
 	project="$1"
 	derived_locale="$2"
@@ -147,7 +141,7 @@ main() {
 	elif [ $BACKPORT ]; then backport_all_action $2 $3
 
 	# import translations actions
-	elif [ $UPLOAD ]; then upload_translations $2 $3
+	elif [ $UPLOAD ]; then upload_translations_action $2 $3
 	elif [ $UPLOAD_DERIVED ]; then upload_derived_translations $2 $3 $4
 
 	# project provisioning actions
