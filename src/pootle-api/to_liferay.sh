@@ -1,5 +1,28 @@
 #!/bin/bash
 
+# pootle2src implements the sync between pootle and liferay source code repos
+# - tells pootle to update its files with the DB contents
+# - copy and convert those files to utf-8
+# - pulls from upstream the master branch
+# - process translations by comparing pootle export with contents in master, using a set of predefined rules
+# - makes a first commit of this
+# - runs ant build-lang for every project
+# - commits and pushes the result
+# - creates a Pull Request for each involved git root, sent to a different reviewer.
+# all the process is logged
+function pootle2src() {
+	loglc 1 $RED "Begin Sync[Pootle -> Liferay source code]"
+	display_source_projects_action
+	clean_temp_output_dirs
+	export_pootle_translations_to_temp_dirs
+	ascii_2_native
+	restore_file_ownership
+	process_translations
+	do_commit false false "Translations sync from translate.liferay.com"
+	build_lang
+	do_commit true true "build-lang"
+	loglc 1 $RED "End Sync[Pootle -> Liferay source code]"
+}
 
 ## basic functions
 
