@@ -42,6 +42,7 @@ function load_api() {
 	. actions/import/upload_derived_translations_action.sh
 	. actions/provisioning/add_pootle_project_action.sh
 	. actions/provisioning/delete_pootle_project_action.sh
+	. actions/provisioning/display_source_projects_action.sh
 	. actions/provisioning/move_pootle_project_action.sh
 	. actions/provisioning/rescan_files_action.sh
 	. actions/sync/sync_sources_from_pootle_action.sh
@@ -69,7 +70,7 @@ function load_api() {
 #  . portal/plugin sources are available and are under git control
 function src2pootle() {
 	loglc 1 $RED "Begin Sync[Liferay source code -> Pootle]"
-	display_projects
+	display_source_projects_action
 	backup_db
 	update_pootle_db_from_templates
 	clean_temp_input_dirs
@@ -91,7 +92,7 @@ function src2pootle() {
 # all the process is logged
 function pootle2src() {
 	loglc 1 $RED "Begin Sync[Pootle -> Liferay source code]"
-	display_projects
+	display_source_projects_action
 	clean_temp_output_dirs
 	export_pootle_translations_to_temp_dirs
 	ascii_2_native
@@ -103,13 +104,9 @@ function pootle2src() {
 	loglc 1 $RED "End Sync[Pootle -> Liferay source code]"
 }
 
-function display_projects() {
-	display_AP_projects
-}
-
 function check_quality() {
 	loglc 1 $RED "Begin Quality Checks"
-	display_projects
+	display_source_projects_action
 	clean_temp_output_dirs
 	export_pootle_translations_to_temp_dirs
 	ascii_2_native
@@ -141,9 +138,7 @@ main() {
 	elif [ $MOVE_PROJECT ]; then move_pootle_project_action $2 $3
 	elif [ $NEW_PROJECT ]; then add_pootle_project_action $2 "$3"
 	elif [ $DELETE_PROJECT ]; then delete_pootle_project_action $2
-	elif [ $LIST_PROJECTS ]; then
-		read_projects_from_sources
-		display_projects;
+	elif [ $LIST_PROJECTS ]; then display_source_projects_action
 	elif [ $PROVISION_PROJECTS ]; then
 		read_projects_from_sources
 		provision_projects true true

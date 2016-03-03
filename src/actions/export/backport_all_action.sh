@@ -1,6 +1,6 @@
 function backport_all_action() {
 	loglc 1 $RED "Begin backport process"
-	display_projects
+	display_source_projects_action
 
 	use_git=0
 	do_commit=0
