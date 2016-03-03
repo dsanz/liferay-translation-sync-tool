@@ -1,4 +1,5 @@
-function display_stats() {
+function display_stats_action() {
+	read_projects_from_sources
 	read_pootle_projects_and_locales
 	logt 1 "Statistics: # and % of translated keys"
 

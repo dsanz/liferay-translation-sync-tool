@@ -37,12 +37,12 @@ function load_api() {
 	# Load Actions
 	. actions/backup/create_backup_action.sh
 	. actions/backup/restore-backup-action.sh
-	. actions/statistics-action.sh
 	. actions/export/export_translations_into_zip_action.sh
 	. actions/export/backport_all_action.sh
 	. actions/import/upload_translations_action.sh
 	. actions/import/upload_derived_translations_action.sh
 	. actions/misc/check_quality_action.sh
+	. actions/misc/display_stats_action.sh
 	. actions/provisioning/add_pootle_project_action.sh
 	. actions/provisioning/delete_pootle_project_action.sh
 	. actions/provisioning/display_source_projects_action.sh
@@ -148,9 +148,7 @@ main() {
 
 	# miscellaneous actions
 	elif [ $QA_CHECK ]; then check_quality_action
-	elif [ $DISPLAY_STATS ]; then
-		read_projects_from_sources
-		display_stats;
+	elif [ $DISPLAY_STATS ]; then display_stats_action;
 	fi
 
 	if [[ -z ${LR_TRANS_MGR_TAIL_LOG+x} ]]; then
