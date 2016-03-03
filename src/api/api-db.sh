@@ -1,19 +1,5 @@
 #!/bin/bash
 
-function list_backups() {
-	logt 1 "Available backups"
-
-	for month in $(ls $TMP_DB_BACKUP_DIR/); do
-		logt 2 "From $month"
-		for backup_id in $(ls $TMP_DB_BACKUP_DIR/$month); do
-			logt 3 "Backup ID: $backup_id"
-			for backup_file in $(ls $TMP_DB_BACKUP_DIR/$month/$backup_id); do
-				logt 4 "$(ls $TMP_DB_BACKUP_DIR/$month/$backup_id/$backup_file -lag)"
-			done;
-		done;
-	done;
-}
-
 function clean_tables() {
 	logt 3 "Cleaning DB tables";
 	drop_table_sentences=$($MYSQL_DUMP_COMMAND $DB_NAME --add-drop-table --no-data | grep "^DROP")

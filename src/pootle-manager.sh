@@ -153,7 +153,7 @@ main() {
 	# data backup actions
 	elif [ $RESTORE_BACKUP ]; then restore_backup_action $2;
 	elif [ $CREATE_BACKUP ]; then create_backup_action;
-	elif [ $LIST_BACKUPS ]; then list_backups;
+	elif [ $LIST_BACKUPS ]; then list_backups_action;
 
 	# miscellaneous actions
 	elif [ $QA_CHECK ]; then check_quality
