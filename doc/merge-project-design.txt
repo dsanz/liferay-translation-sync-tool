@@ -1,0 +1,12 @@
+Steps:
+
+0. Reorganize code to prepare the change.
+0.1 get rid of unused stuff: backporter standalone, etc.
+0.2 move actions to actions folder
+0.3 Reorganize API folder
+
+1. Check that export pootle files works even if template file is outdated (e.g. NAS outage)
+2. Implement new actions from exiting apis
+ 2.1 Merge several projects taken from pootle into a new one
+ 2.2 new import
+ 2.3 new export based on the spread within the same repo
