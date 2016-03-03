@@ -58,15 +58,12 @@ function fix_malformed_paths_gnu() {
 	done;
 }
 
-function fix_malformed_paths() {
-	fix_malformed_paths_having_dashes
-	fix_malformed_paths_gnu
-}
-
 function uniformize_pootle_paths() {
 	backup_db
 	logt 1 "Uniformizing wrong pootle paths"
-	fix_malformed_paths
+	fix_malformed_paths_having_dashes
+	fix_malformed_paths_gnu
+
 }
 
 function rescan_files() {
