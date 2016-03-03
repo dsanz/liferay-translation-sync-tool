@@ -1,5 +1,5 @@
 function generate_zip_from_translations_action() {
-	export_pootle_translations_to_po_dir
+	regenerate_file_stores_action
 
 	timestamp="$(date +%F_%H-%M-%S)"
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do

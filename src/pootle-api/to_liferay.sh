@@ -182,26 +182,8 @@ function export_pootle_translations_to_temp_dirs() {
 # (for the given project)
 function export_pootle_project_translations_to_temp_dirs() {
 	project="$1"
-	export_pootle_project_translations_to_po_dir "$project"
+	regenerate_file_stores "$project"
 	copy_pootle_project_translations_to_temp_dirs "$project"
-}
-
-# tells pootle to export its translations to properties files to $PODIR dir
-# (all projects)
-function export_pootle_translations_to_po_dir() {
-	logt 1 "Exporting pootle files from pootle DB into po dir"
-	read_pootle_projects_and_locales
-	for project in "${POOTLE_PROJECT_CODES[@]}"; do
-		export_pootle_project_translations_to_po_dir "$project"
-	done
-}
-
-# tells pootle to export its translations to properties files to $PODIR dir
-# (for the given project)
-function export_pootle_project_translations_to_po_dir() {
-	project="$1"
-	logt 2 "$project: Exporting pootle files from pootle DB into po dir"
-	regenerate_stores $project
 }
 
 # copies exported translations to prop_out dirs for further processing,

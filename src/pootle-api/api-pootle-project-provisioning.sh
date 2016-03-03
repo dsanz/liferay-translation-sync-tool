@@ -170,20 +170,3 @@ function provision_full_project() {
 		post_file_batch "$project_code" "$locale"
 	done;
 }
-
-function fix_podir() {
-	logt 1 "Fixing po dir contents. Location: $PODIR"
-	read_pootle_projects_and_locales
-	for pootle_project_code in "${POOTLE_PROJECT_CODES[@]}";
-	do
-		regenerate_stores $pootle_project_code
-	done;
-}
-
-function regenerate_stores() {
-	project_code="$1"
-	logt 2 "Regenerating project stores for $project_code"
-	initialize_project_files $project_code
-	sync_stores $project_code
-	restore_file_ownership
-}

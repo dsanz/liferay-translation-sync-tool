@@ -45,6 +45,7 @@ function load_api() {
 	. actions/provisioning/display_source_projects_action.sh
 	. actions/provisioning/move_pootle_project_action.sh
 	. actions/provisioning/provision_projects_actions.sh
+	. actions/provisioning/regenerate_file_stores_action.sh
 	. actions/provisioning/rescan_files_action.sh
 	. actions/sync/sync_sources_from_pootle_action.sh
 	. actions/sync/sync_pootle_from_sources_action.sh
@@ -145,7 +146,7 @@ main() {
 	elif [ $PROVISION_PROJECTS_ONLY_DELETE ]; then provision_projects_only_delete_action
 	elif [ $PROVISION_PROJECTS_DUMMY ]; then provision_projects_dummy_action
 	elif [ $RESCAN_FILES ]; then rescan_files_action
-	elif [ $FIX_PODIR ]; then fix_podir
+	elif [ $FIX_PODIR ]; then regenerate_file_stores_action
 
 	# data backup actions
 	elif [ $RESTORE_BACKUP ]; then restore_backup $2;
