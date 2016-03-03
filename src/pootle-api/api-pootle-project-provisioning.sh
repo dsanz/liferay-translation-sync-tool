@@ -130,7 +130,7 @@ function delete_old_projects_in_pootle() {
 		logt 3 "[Start] Provisioning projects (deletion)"
 		start_pootle_session
 		for ap_project_code in "${projects_to_delete[@]}"; do
-			delete_project_in_pootle ${ap_project_code} 0
+			delete_pootle_project_action ${ap_project_code} 0
 		done;
 	 	close_pootle_session
 		logt 3 "[End] Provisioning projects (deletion)"
@@ -155,7 +155,7 @@ function provision_full_project() {
 	logt 1 "Provisioning full pootle project $project_code (${AP_PROJECT_NAMES[$project_code]})"
 
 	# create empty project in pootle
-	add_project_in_pootle $project_code "${AP_PROJECT_NAMES[$project_code]}" 0
+	add_pootle_project_action $project_code "${AP_PROJECT_NAMES[$project_code]}" 0
 
 	# let pootle know the set of available key for that project
 	logt 2 "Setting pootle project template"

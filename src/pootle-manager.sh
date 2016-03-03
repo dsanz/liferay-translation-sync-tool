@@ -40,8 +40,10 @@ function load_api() {
 	. actions/export/backport_all_action.sh
 	. actions/import/upload_translations_action.sh
 	. actions/import/upload_derived_translations_action.sh
-	. actions/provisioning/rescan_files_action.sh
+	. actions/provisioning/add_pootle_project_action.sh
+	. actions/provisioning/delete_pootle_project_action.sh
 	. actions/provisioning/move_pootle_project_action.sh
+	. actions/provisioning/rescan_files_action.sh
 	. actions/sync/sync_sources_from_pootle_action.sh
 	. actions/sync/sync_pootle_from_sources_action.sh
 	. actions/sync/spread_translations_action.sh
@@ -137,8 +139,8 @@ main() {
 
 	# project provisioning actions
 	elif [ $MOVE_PROJECT ]; then move_pootle_project_action $2 $3
-	elif [ $NEW_PROJECT ]; then add_project_in_pootle $2 "$3"
-	elif [ $DELETE_PROJECT ]; then delete_project_in_pootle $2
+	elif [ $NEW_PROJECT ]; then add_pootle_project_action $2 "$3"
+	elif [ $DELETE_PROJECT ]; then delete_pootle_project_action $2
 	elif [ $LIST_PROJECTS ]; then
 		read_projects_from_sources
 		display_projects;
