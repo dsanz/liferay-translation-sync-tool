@@ -1,4 +1,4 @@
-function generate_zip_from_translations() {
+function generate_zip_from_translations_action() {
 	export_pootle_translations_to_po_dir
 
 	timestamp="$(date +%F_%H-%M-%S)"

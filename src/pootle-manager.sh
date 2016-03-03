@@ -36,12 +36,12 @@ function load_api() {
 
 	# Load Actions
 	. actions/statistics-action.sh
-	. actions/export_translations_into_zip.action.sh
+	. actions/export/export_translations_into_zip_action.sh
+	. actions/provisioning/rescan_files_action.sh
+	. actions/provisioning/move_pootle_project_action.sh
 	. actions/sync/sync_sources_from_pootle_action.sh
 	. actions/sync/sync_pootle_from_sources_action.sh
 	. actions/sync/spread_translations_action.sh
-	. actions/provisioning/rescan_files_action.sh
-	. actions/provisioning/move_pootle_project_action.sh
 
 	declare -xgr HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 }
@@ -174,11 +174,13 @@ main() {
 	elif [ $SYNC_POOTLE ];  then sync_pootle_from_sources_action
 	elif [ $SPREAD_TRANSLATIONS ]; then spread_translations_action $2 "$3"
 
-	# export-import translation actions
-	elif [ $GENERATE_ZIP ]; then generate_zip_from_translations;
+	# export translation actions
+	elif [ $GENERATE_ZIP ]; then generate_zip_from_translations_action
+	elif [ $BACKPORT ]; then backport_all $2 $3
+
+	# import translations actions
 	elif [ $UPLOAD ]; then upload_translations $2 $3
 	elif [ $UPLOAD_DERIVED ]; then upload_derived_translations $2 $3 $4
-	elif [ $BACKPORT ]; then backport_all $2 $3
 
 	# project provisioning actions
 	elif [ $MOVE_PROJECT ]; then move_pootle_project_action $2 $3
