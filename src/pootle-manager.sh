@@ -40,6 +40,7 @@ function load_api() {
 	. actions/sync/sync_sources_from_pootle_action.sh
 	. actions/sync/sync_pootle_from_sources_action.sh
 	. actions/provisioning/rescan_files_action.sh
+	. actions/provisioning/move_pootle_project_action.SH
 
 	declare -xgr HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 }
@@ -274,8 +275,7 @@ main() {
 	if   [ $SYNC_SOURCES ]; then sync_sources_from_pootle_action
 	elif [ $SYNC_POOTLE ];  then sync_pootle_from_sources_action
 	elif [ $RESCAN_FILES ]; then rescan_files_action
-	elif [ $MOVE_PROJECT ]; then
-		rename_pootle_project $2 $3
+	elif [ $MOVE_PROJECT ]; then move_pootle_project_action $2 $3
 	elif [ $UPLOAD ]; then
 		upload_translations $2 $3
 	elif [ $UPLOAD_DERIVED ]; then
