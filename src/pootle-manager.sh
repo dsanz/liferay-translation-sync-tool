@@ -39,6 +39,7 @@ function load_api() {
 	. actions/export/export_translations_into_zip_action.sh
 	. actions/export/backport_all_action.sh
 	. actions/import/upload_translations_action.sh
+	. actions/import/upload_derived_translations_action.sh
 	. actions/provisioning/rescan_files_action.sh
 	. actions/provisioning/move_pootle_project_action.sh
 	. actions/sync/sync_sources_from_pootle_action.sh
@@ -104,16 +105,6 @@ function display_projects() {
 	display_AP_projects
 }
 
-function upload_derived_translations() {
-	project="$1"
-	derived_locale="$2"
-	parent_locale="$3"
-	loglc 1 $RED  "Uploading $derived_locale (derived language) translations for project $project"
-	backup_db
-	post_derived_translations $project $derived_locale $parent_locale
-	loglc 1 $RED "Upload finished"
-}
-
 function check_quality() {
 	loglc 1 $RED "Begin Quality Checks"
 	display_projects
@@ -142,7 +133,7 @@ main() {
 
 	# import translations actions
 	elif [ $UPLOAD ]; then upload_translations_action $2 $3
-	elif [ $UPLOAD_DERIVED ]; then upload_derived_translations $2 $3 $4
+	elif [ $UPLOAD_DERIVED ]; then upload_derived_translations_action $2 $3 $4
 
 	# project provisioning actions
 	elif [ $MOVE_PROJECT ]; then move_pootle_project_action $2 $3
