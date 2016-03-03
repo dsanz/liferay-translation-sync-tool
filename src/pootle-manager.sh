@@ -57,34 +57,6 @@ function load_api() {
 	declare -xgr HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 }
 
-####
-## Top-level functions
-####
-
-# src2pootle implements the sync bewteen liferay source code and pootle storage
-# - backups everything
-# - pulls from upstream the master branch
-# - updates pootle from the template of each project (Language.properties) so that:
-#   . only keys contained in Language.properties are processed
-#   . new/deleted keys in Language.properties are conveniently updated in pootle project
-# - updates any translation committed to liferay source code since last pootle2src sync (pootle built-in
-#     'update-translation-projects' can't be used due to a pootle bug, we do this with curl)
-
-# preconditions:
-#  . project must exist in pootle, same 'project code' than git source dir (for plugins)
-#  . portal/plugin sources are available and are under git control
-function src2pootle() {
-	loglc 1 $RED "Begin Sync[Liferay source code -> Pootle]"
-	display_source_projects_action
-	create_backup_action
-	update_pootle_db_from_templates
-	clean_temp_input_dirs
-	post_language_translations # bug #1949
-	restore_file_ownership
-	refresh_stats
-	loglc 1 $RED "End Sync[Liferay source code -> Pootle]"
-}
-
 # main function which loads api functions, then configuration, and then invokes logic according to arguments
 main() {
 	load_api
