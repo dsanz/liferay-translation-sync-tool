@@ -14,12 +14,12 @@ function resolve_params() {
 	[ "$params" = "" ] && export HELP=1
 	for param in $1 ; do
 		if [ "$param" = "--pootle2repo" ] || [ "$param" = "-r" ]; then
-			export UPDATE_REPOSITORY=1
+			export SYNC_SOURCES=1
 		elif [ "$param" = "--repo2pootle2repo" ] || [ "$param" = "-R" ]; then
-			export UPDATE_POOTLE_DB=1
-			export UPDATE_REPOSITORY=1
+			export SYNC_POOTLE=1
+			export SYNC_SOURCES=1
 		elif [ "$param" = "--repo2pootle" ] || [ "$param" = "-p" ]; then
-			export UPDATE_POOTLE_DB=1
+			export SYNC_POOTLE=1
 		elif [ "$param" = "--rescanfile" ] || [ "$param" = "-s" ]; then
 			export RESCAN_FILES=1
 		elif [ "$param" = "--moveproject" ] || [ "$param" = "-m" ]; then
@@ -195,8 +195,8 @@ No projects are created/deleted in pootle."
 
 	print_action "-h, --help" "Prints this help and exits"
 
-	UPDATE_REPOSITORY=
-	UPDATE_POOTLE_DB=
+	SYNC_SOURCES=
+	SYNC_POOTLE=
 }
 
 function print_action() {

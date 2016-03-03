@@ -270,8 +270,8 @@ main() {
 	load_config
 	resolve_params $@
 
-	if [ $UPDATE_REPOSITORY ]; then sync_sources_from_pootle_action
-	elif [ $UPDATE_POOTLE_DB ]; then sync_pootle_from_sources_action
+	if   [ $SYNC_SOURCES ]; then sync_sources_from_pootle_action
+	elif [ $SYNC_POOTLE ];  then sync_pootle_from_sources_action
 	elif [ $RESCAN_FILES ]; then
 		uniformize_pootle_paths
 	elif [ $MOVE_PROJECT ]; then
