@@ -1,3 +1,6 @@
 function rescan_files_action() {
-	uniformize_pootle_paths
+	backup_db
+	logt 1 "Uniformizing wrong pootle paths"
+	fix_malformed_paths_having_dashes
+	fix_malformed_paths_gnu
 }

@@ -58,14 +58,6 @@ function fix_malformed_paths_gnu() {
 	done;
 }
 
-function uniformize_pootle_paths() {
-	backup_db
-	logt 1 "Uniformizing wrong pootle paths"
-	fix_malformed_paths_having_dashes
-	fix_malformed_paths_gnu
-
-}
-
 function rescan_files() {
 	logt 1 "Rescaning project files"
 	start_pootle_session
