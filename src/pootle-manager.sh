@@ -44,6 +44,7 @@ function load_api() {
 	. actions/provisioning/delete_pootle_project_action.sh
 	. actions/provisioning/display_source_projects_action.sh
 	. actions/provisioning/move_pootle_project_action.sh
+	. actions/provisioning/provision_projects_actions.sh
 	. actions/provisioning/rescan_files_action.sh
 	. actions/sync/sync_sources_from_pootle_action.sh
 	. actions/sync/sync_pootle_from_sources_action.sh
@@ -139,18 +140,10 @@ main() {
 	elif [ $NEW_PROJECT ]; then add_pootle_project_action $2 "$3"
 	elif [ $DELETE_PROJECT ]; then delete_pootle_project_action $2
 	elif [ $LIST_PROJECTS ]; then display_source_projects_action
-	elif [ $PROVISION_PROJECTS ]; then
-		read_projects_from_sources
-		provision_projects true true
-	elif [ $PROVISION_PROJECTS_ONLY_CREATE ]; then
-		read_projects_from_sources
-		provision_projects true false
-	elif [ $PROVISION_PROJECTS_ONLY_DELETE ]; then
-		read_projects_from_sources
-		provision_projects false true
-	elif [ $PROVISION_PROJECTS_DUMMY ]; then
-		read_projects_from_sources
-		provision_projects false false
+	elif [ $PROVISION_PROJECTS ]; then provision_projects_action
+	elif [ $PROVISION_PROJECTS_ONLY_CREATE ]; then provision_projects_only_create_action
+	elif [ $PROVISION_PROJECTS_ONLY_DELETE ]; then provision_projects_only_delete_action
+	elif [ $PROVISION_PROJECTS_DUMMY ]; then provision_projects_dummy_action
 	elif [ $RESCAN_FILES ]; then rescan_files_action
 	elif [ $FIX_PODIR ]; then fix_podir
 
