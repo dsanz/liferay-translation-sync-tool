@@ -35,6 +35,7 @@ function load_api() {
 	. backporter-api/api-backporter.sh
 
 	# Load Actions
+	. actions/backup/restore-backup-action.sh
 	. actions/statistics-action.sh
 	. actions/export/export_translations_into_zip_action.sh
 	. actions/export/backport_all_action.sh
@@ -149,7 +150,7 @@ main() {
 	elif [ $FIX_PODIR ]; then regenerate_file_stores_action
 
 	# data backup actions
-	elif [ $RESTORE_BACKUP ]; then restore_backup $2;
+	elif [ $RESTORE_BACKUP ]; then restore_backup_action $2;
 	elif [ $CREATE_BACKUP ]; then backup_db;
 	elif [ $LIST_BACKUPS ]; then list_backups;
 
