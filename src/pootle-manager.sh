@@ -37,6 +37,7 @@ function load_api() {
 	# Load Actions
 	. actions/statistics-action.sh
 	. actions/export_translations_into_zip.action.sh
+	. actions/sync/sync_sources_from_pootle_action.sh
 
 	declare -xgr HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 }
@@ -268,12 +269,7 @@ main() {
 	load_config
 	resolve_params $@
 
-	if [ $UPDATE_REPOSITORY ]; then
-		read_projects_from_sources
-		if [ $UPDATE_POOTLE_DB ]; then
-			src2pootle
-		fi
-		pootle2src
+	if [ $UPDATE_REPOSITORY ]; then sync_sources_from_pootle_action
 	elif [ $UPDATE_POOTLE_DB ]; then
 		read_projects_from_sources
 		src2pootle
