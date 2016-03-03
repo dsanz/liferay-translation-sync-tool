@@ -7,7 +7,7 @@ function move_pootle_project_action() {
 		logt 1 "Unable to rename Pootle project: pootle server is up and running. Please stop it, then rerun this command"
 	else
 		logt 1 "Renaming Pootle project \"$currentName\" to \"$newName\""
-		backup_db
+		create_backup_action
 		logt 2 "Updating database tables"
 		rename_pootle_store_store_entries $currentName $newName
 		rename_pootle_app_directory_entries $currentName $newName

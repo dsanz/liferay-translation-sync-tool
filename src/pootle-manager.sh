@@ -35,6 +35,7 @@ function load_api() {
 	. backporter-api/api-backporter.sh
 
 	# Load Actions
+	. actions/backup/create-backup-action.sh
 	. actions/backup/restore-backup-action.sh
 	. actions/statistics-action.sh
 	. actions/export/export_translations_into_zip_action.sh
@@ -74,7 +75,7 @@ function load_api() {
 function src2pootle() {
 	loglc 1 $RED "Begin Sync[Liferay source code -> Pootle]"
 	display_source_projects_action
-	backup_db
+	create_backup_action
 	update_pootle_db_from_templates
 	clean_temp_input_dirs
 	post_language_translations # bug #1949
@@ -151,7 +152,7 @@ main() {
 
 	# data backup actions
 	elif [ $RESTORE_BACKUP ]; then restore_backup_action $2;
-	elif [ $CREATE_BACKUP ]; then backup_db;
+	elif [ $CREATE_BACKUP ]; then create_backup_action;
 	elif [ $LIST_BACKUPS ]; then list_backups;
 
 	# miscellaneous actions
