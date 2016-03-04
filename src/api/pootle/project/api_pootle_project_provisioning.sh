@@ -29,6 +29,19 @@ function exists_project_in_AP_list() {
 	[ "$exists" = true ]
 }
 
+function exists_project_in_AP_GIT_ROOT_list() {
+	project_code="$1"
+	exists=false;
+	for ap_project_code in "${GIT_ROOT_POOTLE_PROJECT_NAME[@]}";
+	do
+		if [[ "$project_code" == "$ap_project_code" ]]; then
+			exists=true
+			break;
+		fi;
+	done;
+	[ "$exists" = true ]
+}
+
 function read_pootle_projects_and_locales() {
 	logt 2 -n "Reading projects from pootle DB"
 	unset POOTLE_PROJECT_CODES
