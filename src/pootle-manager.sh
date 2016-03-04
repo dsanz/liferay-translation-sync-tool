@@ -10,9 +10,9 @@ function load_api() {
 	. api/core/api-properties.sh
 	. api/core/api-source-code-project-provisioning.sh
 	. api/core/api-quality.sh
-	. api/pootle/api-pootle-base.sh
-	. api/pootle/api-pootle-db.sh
-	. api/pootle/api-pootle-http.sh
+	. api/pootle/infrastructure/api-pootle-base.sh
+	. api/pootle/infrastructure/api-pootle-db.sh
+	. api/pootle/infrastructure/api-pootle-http.sh
 	. api/pootle/project/api-pootle-project-add.sh
 	. api/pootle/project/api-pootle-project-delete.sh
 	. api/pootle/project/api-pootle-project-fix-path.sh
