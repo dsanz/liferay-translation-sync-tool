@@ -11,8 +11,15 @@ function load_api() {
 	. api/core/api-properties.sh
 	. api/core/api-project-provisioning.sh
 	. api/core/api-quality.sh
+	. api/pootle/api-pootle-base.sh
 	. api/pootle/api-pootle-db.sh
 	. api/pootle/api-pootle-http.sh
+	. api/pootle/api-pootle-project-add.sh
+	. api/pootle/api-pootle-project-delete.sh
+	. api/pootle/api-pootle-project-fix-path.sh
+	. api/pootle/api-pootle-project-provisioning.sh
+	. api/pootle/api-pootle-project-rename.sh
+
 	. api/util/api-base.sh
 	. api/util/api-config.sh
 	. api/util/api-git.sh
@@ -25,12 +32,6 @@ function load_api() {
 	. pootle-api/to_pootle.sh
 	. pootle-api/to_pootle-file_poster.sh
 	. pootle-api/to_liferay.sh
-	. pootle-api/api-pootle-base.sh
-	. pootle-api/api-pootle-project-add.sh
-	. pootle-api/api-pootle-project-delete.sh
-	. pootle-api/api-pootle-project-fix-path.sh
-	. pootle-api/api-pootle-project-provisioning.sh
-	. pootle-api/api-pootle-project-rename.sh
 	. backporter-api/api-backporter.sh
 
 	# Load Actions
