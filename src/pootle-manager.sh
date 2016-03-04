@@ -8,7 +8,7 @@ function load_api() {
 	[[ -f setEnv.sh ]] && . setEnv.sh
 
 	. api/core/api-properties.sh
-	. api/core/api-project-provisioning.sh
+	. api/core/api-source-code-project-provisioning.sh
 	. api/core/api-quality.sh
 	. api/pootle/api-pootle-base.sh
 	. api/pootle/api-pootle-db.sh
