@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # T contains all translations
 declare -gA T;
 # K contains all keys in the template file
@@ -20,6 +18,18 @@ declare -g trans_file_rexp="Language_[^\.]+\.properties"
 # regexp for locating language files (includes Language.properties)
 declare -g lang_file_rexp="Language[^\.]*\.properties"
 
+#
+# Some convenience prefixes for general sync logic (backport/spread)
+#
+
+# key prefix for new (source) english key names
+declare -g new_english="N";
+# key prefix for old (target) english key names
+declare -g old_english="O";
+# key prefix for new (source) language key names
+declare -g new_lang="n";
+# key prefix for old (target) language key names
+declare -g old_lang="o";
 
 #### Base functions
 
@@ -94,6 +104,22 @@ function is_automatic_translation() {
 	rexp='\(Automatic Translation\)$'
 	value=${T["$1$2"]}
 	[[ "$value" =~ $rexp ]]
+}
+
+function english_value_changed() {
+	value_changed $new_english $old_english $1
+}
+
+function lang_value_changed() {
+	value_changed $new_lang $old_lang $1
+}
+
+function exists_in_new() {
+	exists_key $new_english $1
+}
+
+function exists_in_old() {
+	exists_key $old_english $1
 }
 
 function get_locale_from_file_name() {

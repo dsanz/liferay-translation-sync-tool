@@ -20,7 +20,6 @@ function load_api() {
 	. api/api-mail.sh
 	. backporter-api/api-files.sh
 	. backporter-api/api-git.sh
-	. backporter-api/api-properties.sh
 
 	# Load APIs
 	. pootle-api/to_pootle.sh
