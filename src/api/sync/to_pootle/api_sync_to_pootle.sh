@@ -26,27 +26,6 @@ function src2pootle() {
 	loglc 1 $RED "End Sync[Liferay source code -> Pootle]"
 }
 
-function update_from_templates() {
-	project="$1"
-	src_dir="$2"
-
-	logt 3 "Updating the set of translatable keys"
-	logt 4 -n "Copying project files "
-	cp "$src_dir/${FILE}.$PROP_EXT" "$PODIR/$project"
-	check_command
-	# Update database as well as file system to reflect the latest version of translation templates
-	logt 4 "Updating Pootle templates (this may take a while...)"
-	call_manage "update_from_templates" "--project=$project" "-v 0"
-}
-
-function update_pootle_db_from_templates() {
-	logt 1 "Updating pootle database..."
-	for project in "${!AP_PROJECT_NAMES[@]}"; do
-		src_dir=${AP_PROJECT_SRC_LANG_BASE["$project"]}
-		logt 2 "$project: "
-		update_from_templates $project $src_dir
-	done
-}
 
 function clean_temp_input_dirs() {
 	logt 1 "Preparing project input working dirs..."
