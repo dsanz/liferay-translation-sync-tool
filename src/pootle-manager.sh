@@ -18,7 +18,6 @@ function load_api() {
 	. api/api-project-provisioning.sh
 	. api/api-quality.sh
 	. api/api-mail.sh
-	. backporter-api/api-files.sh
 	. backporter-api/api-git.sh
 
 	# Load APIs
