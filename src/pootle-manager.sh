@@ -7,7 +7,6 @@ function load_api() {
 	# load environment from an explicitly git-ignored file
 	[[ -f setEnv.sh ]] && . setEnv.sh
 
-	# Load base APIs
 	. api/core/api-properties.sh
 	. api/core/api-project-provisioning.sh
 	. api/core/api-quality.sh
@@ -26,13 +25,11 @@ function load_api() {
 	. api/util/api-mail.sh
 	. api/util/api-version.sh
 
-	. backporter-api/api-backporter-git.sh
-
-	# Load APIs
 	. pootle-api/to_pootle.sh
 	. pootle-api/to_pootle-file_poster.sh
 	. pootle-api/to_liferay.sh
-	. backporter-api/api-backporter.sh
+	. api/sync/api-backporter.sh
+	. api/sync/api-backporter-git.sh
 
 	# Load Actions
 	. actions/backup/create_backup_action.sh
