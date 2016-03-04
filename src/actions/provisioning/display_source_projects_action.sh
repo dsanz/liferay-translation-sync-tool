@@ -4,7 +4,7 @@ function display_source_projects_action() {
 	for git_root in "${!GIT_ROOTS[@]}"; do
 		project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 		projects=$(echo "$project_list" | wc -l)
-		logt 2 "Git root: $git_root ($projects projects). Sync branch: ${GIT_ROOTS[$git_root]}. Reviewer: ${PR_REVIEWER[$git_root]}"
+		logt 2 "Git root: $git_root ($projects projects). Sync branch: ${GIT_ROOTS[$git_root]}. Reviewer: ${PR_REVIEWER[$git_root]}. Repo project name: ${GIT_ROOT_POOTLE_PROJECT_NAME[$git_root]}"
 		logc $RED "$(printf "%-51s%s" "Project Code")$(printf "%-100s%s" "Build-lang path (relative to git_root)")$(printf "%-35s%s" "Lang file base (rel to build lang)")$(printf "%-60s%s" "Project name")$(printf "%-5s%s" "Check") "
 		while read project; do
 			log -n "$(printf "%-51s%s" "$project")"

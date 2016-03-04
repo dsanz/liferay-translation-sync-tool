@@ -133,6 +133,8 @@ declare -xgA AP_PROJECT_GIT_ROOT
 declare -xgA GIT_ROOTS
 # holds a list of github account names for the reviewer of each git root
 declare -xgA PR_REVIEWER
+# contains the pootle project name corresponding to each git root
+declare -xgA GIT_ROOT_POOTLE_PROJECT_NAME
 
 ## 3.1 Auto-provisioning lists
 ##

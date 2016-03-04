@@ -142,6 +142,13 @@ function is_path_blacklisted() {
 	[ "$blacklisted" = true ]
 }
 
+function get_repository_name() {
+	git_root_dir="$1"
+	cd $git_root_dir
+
+	echo $(git remote show -n upstream | grep Fetch | sed -r 's:(([^/]*/)?+)([^\.]+)\.git:\3:g')
+}
+
 function add_git_root() {
 	git_root_dir="$1"
 	pr_reviewer="$2"
@@ -150,6 +157,7 @@ function add_git_root() {
 	[[ "$pr_reviewer" == "" ]] && pr_reviewer=$DEFAULT_PR_REVIEWER;
 	[[ "$sync_branch" == "" ]] && sync_branch=$DEFAULT_SYNC_BRANCH;
 
+	GIT_ROOT_POOTLE_PROJECT_NAME["$git_root_dir"]=$(get_repository_name)
 	GIT_ROOTS["$git_root_dir"]=$sync_branch;
 	PR_REVIEWER["$git_root_dir"]=$pr_reviewer;
 }
