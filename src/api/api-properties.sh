@@ -1,26 +1,32 @@
-# T contains all translations
+###
+# Provides API to read Language.properties files into arrays and operate with
+# them via useful functions. This API is extensively used from sync process
+#  logic
+
+#
+# Storage arrays, please manipulate via API!
+
+# T contains all translations. We distinguish which file they come from via key prefixes
 declare -gA T;
 # K contains all keys in the template file
 declare -ga K;
 
+#
+# Some useful regexes for parsing properties files
+
 # regexp for separating key/value pairs (don't look for an /n at the end). Only works when value is not empty
 declare -g kv_rexp="^([^=]+)=(.+)"
-
 # regexp with matches the key in a key/value pair text line. Works even if value is empty
 declare -g k_rexp="^([^=]+)="
-
 # regexp with matches the value in a key/value pair text line. Works even if value is empty
 declare -g v_rexp="^[^=]+=(.*)"
-
 # regexp for locating translation files (does not include Language.properties)
 declare -g trans_file_rexp="Language_[^\.]+\.properties"
-
 # regexp for locating language files (includes Language.properties)
 declare -g lang_file_rexp="Language[^\.]*\.properties"
 
 #
 # Some convenience prefixes for general sync logic (backport/spread)
-#
 
 # key prefix for new (source) english key names
 declare -g new_english="N";
