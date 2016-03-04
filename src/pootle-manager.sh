@@ -8,11 +8,11 @@ function load_api() {
 	[[ -f setEnv.sh ]] && . setEnv.sh
 
 	# Load base APIs
-	. api/api-http.sh
-	. api/api-db.sh
 	. api/core/api-properties.sh
 	. api/core/api-project-provisioning.sh
 	. api/core/api-quality.sh
+	. api/pootle/api-http.sh
+	. api/pootle/api-db.sh
 	. api/util/api-base.sh
 	. api/util/api-config.sh
 	. api/util/api-git.sh
