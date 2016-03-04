@@ -25,9 +25,9 @@ function load_api() {
 	. api/util/api-mail.sh
 	. api/util/api-version.sh
 
-	. pootle-api/to_pootle.sh
-	. pootle-api/to_pootle-file_poster.sh
-	. pootle-api/to_liferay.sh
+	. api/sync/to_pootle.sh
+	. api/sync/to_pootle-file_poster.sh
+	. api/sync/to_liferay.sh
 	. api/sync/api-backporter.sh
 	. api/sync/api-backporter-git.sh
 
