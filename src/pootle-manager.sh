@@ -29,7 +29,6 @@ function load_api() {
 	. api/sync/api-sync-backport-git.sh
 	. api/sync/api_sync_to_liferay.sh
 	. api/sync/api_sync_to_pootle.sh
-	. api/sync/api_sync_to_pootle-file_poster.sh
 
 	# Load Actions
 	. actions/backup/create_backup_action.sh
