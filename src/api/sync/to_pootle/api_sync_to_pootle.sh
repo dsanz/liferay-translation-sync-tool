@@ -26,44 +26,9 @@ function src2pootle() {
 	loglc 1 $RED "End Sync[Liferay source code -> Pootle]"
 }
 
-
-
-function generate_addition() {
-	project="$1"
-	local path="$2"
-	file="$3"
-	commit="$4"
-
-	cd $path > /dev/null 2>&1
-	#logt 5 -n "Generating additions from: git diff $commit $file "
-	git diff $commit $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$project/$file
-	number_of_additions=$(cat "$TMP_PROP_IN_DIR/$project/$file" | wc -l)
-	color="$GREEN"
-	if [[ $number_of_additions -eq 0 ]]; then
-		rm "$TMP_PROP_IN_DIR/$project/$file"
-		color="$LIGHT_GRAY"
-	fi;
-	loglc 5 "$color" "$commit $(get_locale_from_file_name $file) ($number_of_additions)"
-}
-
-function get_last_export_commit() {
-	local path="$1"
-	file="$2"
-
-	msg="$(get_locale_from_file_name $file):"
-	cd $path
-	child_of_last_export="HEAD"
-	last_export_commit=$(git log -n 1 --grep "$product_name" --after 2012 --format=format:"%H" $file)
-	if [[ $last_export_commit == "" ]]; then
-		#msg="$msg (no export commit containing $product_name) "
-		last_export_commit=$(git log -n 1 --grep "$old_product_name" --after 2012 --format=format:"%H" $file)
-	fi;
-	if [[ $last_export_commit == "" ]]; then
-		: #msg="$msg (no export commit containing $product_name) "
-	else
-		child_of_last_export=$(git rev-list --children --after 2012 HEAD | grep "^$last_export_commit" | cut -f 2 -d ' ')
-	fi;
-	echo "$child_of_last_export";
+function post_language_translations() {
+	generate_additions
+	post_new_translations
 }
 
 function generate_additions() {
@@ -84,6 +49,24 @@ function generate_additions() {
 			done
 		done;
 	done;
+}
+
+function generate_addition() {
+	project="$1"
+	local path="$2"
+	file="$3"
+	commit="$4"
+
+	cd $path > /dev/null 2>&1
+	#logt 5 -n "Generating additions from: git diff $commit $file "
+	git diff $commit $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$project/$file
+	number_of_additions=$(cat "$TMP_PROP_IN_DIR/$project/$file" | wc -l)
+	color="$GREEN"
+	if [[ $number_of_additions -eq 0 ]]; then
+		rm "$TMP_PROP_IN_DIR/$project/$file"
+		color="$LIGHT_GRAY"
+	fi;
+	loglc 5 "$color" "$commit $(get_locale_from_file_name $file) ($number_of_additions)"
 }
 
 function post_new_translations() {
@@ -107,23 +90,24 @@ function post_new_translations() {
 	close_pootle_session
 }
 
-function post_language_translations() {
-	generate_additions
-	post_new_translations
-}
+function get_last_export_commit() {
+	local path="$1"
+	file="$2"
 
-# given a project and a language, reads the Language_xx.properties file
-# present in current directory puts it into array T using the locale as prefix
-function read_derived_language_file() {
-	project="$1";
-	locale="$2";
-	langFile="$FILE$LANG_SEP$locale.$PROP_EXT"
-	prefix=$(get_derived_language_prefix $project $locale)
-	read_locale_file $langFile $prefix "$3"
-}
-
-function get_derived_language_prefix() {
-	echo d$1$2
+	msg="$(get_locale_from_file_name $file):"
+	cd $path
+	child_of_last_export="HEAD"
+	last_export_commit=$(git log -n 1 --grep "$product_name" --after 2012 --format=format:"%H" $file)
+	if [[ $last_export_commit == "" ]]; then
+		#msg="$msg (no export commit containing $product_name) "
+		last_export_commit=$(git log -n 1 --grep "$old_product_name" --after 2012 --format=format:"%H" $file)
+	fi;
+	if [[ $last_export_commit == "" ]]; then
+		: #msg="$msg (no export commit containing $product_name) "
+	else
+		child_of_last_export=$(git rev-list --children --after 2012 HEAD | grep "^$last_export_commit" | cut -f 2 -d ' ')
+	fi;
+	echo "$child_of_last_export";
 }
 
 function post_derived_translations() {

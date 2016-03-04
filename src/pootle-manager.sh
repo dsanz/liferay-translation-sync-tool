@@ -31,9 +31,10 @@ function load_api() {
 	. api/sync/backport/api_sync_backport_git.sh
 	. api/sync/to_source/api_sync_to_source.sh
 	. api/sync/to_source/api_sync_to_source_build_sources.sh
-	. api/sync/to_source/api_sync_to_source_files.sh
+	. api/sync/to_source/api_sync_to_source_lang_files.sh
 	. api/sync/to_source/api_sync_to_source_git.sh
 	. api/sync/to_pootle/api_sync_to_pootle.sh
+	. api/sync/to_pootle/api_sync_to_pootle_lang_files.sh
 
 	# Load Actions
 	. actions/backup/create_backup_action.sh
