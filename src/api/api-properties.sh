@@ -135,6 +135,16 @@ function clear_translations() {
 	check_command
 }
 
+function src_and_target_have_common_keys() {
+	have_common_keys=false;
+	for key in ${K[@]}; do
+		if exists_in_new $key; then
+			have_common_keys=true;
+		fi
+	done;
+	[ "$have_common_keys" = true ]
+}
+
 function get_locale_from_file_name() {
 	file=$1
 	if [[ $file == "$FILE.$PROP_EXT" ]]; then

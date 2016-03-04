@@ -146,7 +146,7 @@ function backport_project() {
 	else
 		prepare_dirs $2 $3
 		read_english_files
-		if some_key_is_backporteable; then
+		if src_and_target_have_common_keys; then
 			echo_legend
 			for locale in "${L[@]}"; do
 				backport "$project" "$locale"
@@ -158,15 +158,5 @@ function backport_project() {
 			logt 3 "No need to backport to $project as source and destination templates don't share keys"
 		fi
 	fi;
-}
-
-function some_key_is_backporteable() {
-	backporteable=false;
-	for key in ${K[@]}; do
-		if exists_in_new $key; then
-			backporteable=true;
-		fi
-	done;
-	[ "$backporteable" = true ]
 }
 
