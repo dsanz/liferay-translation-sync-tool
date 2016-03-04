@@ -7,36 +7,36 @@ function load_api() {
 	# load environment from an explicitly git-ignored file
 	[[ -f setEnv.sh ]] && . setEnv.sh
 
-	. api/core/api-properties.sh
-	. api/core/api-source-code-project-provisioning.sh
-	. api/core/api-quality.sh
-	. api/pootle/infrastructure/api-pootle-base.sh
-	. api/pootle/infrastructure/api-pootle-db.sh
-	. api/pootle/infrastructure/api-pootle-http.sh
-	. api/pootle/project/api-pootle-project-add.sh
-	. api/pootle/project/api-pootle-project-delete.sh
-	. api/pootle/project/api-pootle-project-fix-path.sh
-	. api/pootle/project/api-pootle-project-provisioning.sh
-	. api/pootle/project/api-pootle-project-rename.sh
+	. api/core/api_properties.sh
+	. api/core/api_source_code_project_provisioning.sh
+	. api/core/api_quality.sh
+	. api/pootle/infrastructure/api_pootle_base.sh
+	. api/pootle/infrastructure/api_pootle_db.sh
+	. api/pootle/infrastructure/api_pootle_http.sh
+	. api/pootle/project/api_pootle_project_add.sh
+	. api/pootle/project/api_pootle_project_delete.sh
+	. api/pootle/project/api_pootle_project_fix_path.sh
+	. api/pootle/project/api_pootle_project_provisioning.sh
+	. api/pootle/project/api_pootle_project_rename.sh
 
-	. api/pootle/sync/api-pootle-export.sh
+	. api/pootle/sync/api_pootle_export.sh
 
-	. api/util/api-base.sh
-	. api/util/api-config.sh
-	. api/util/api-git.sh
-	. api/util/api-mail.sh
-	. api/util/api-version.sh
+	. api/util/api_base.sh
+	. api/util/api_config.sh
+	. api/util/api_git.sh
+	. api/util/api_mail.sh
+	. api/util/api_version.sh
 
-	. api/sync/backport/api-sync-backport.sh
-	. api/sync/backport/api-sync-backport-git.sh
+	. api/sync/backport/api_sync_backport.sh
+	. api/sync/backport/api_sync_backport_git.sh
 	. api/sync/to_source/api_sync_to_source.sh
-	. api/sync/to_source/api-sync-to-source-build-sources.sh
+	. api/sync/to_source/api_sync_to_source_build_sources.sh
 	. api/sync/to_source/api_sync_to_source_files.sh
 	. api/sync/to_pootle/api_sync_to_pootle.sh
 
 	# Load Actions
 	. actions/backup/create_backup_action.sh
-	. actions/backup/restore-backup-action.sh
+	. actions/backup/restore_backup_action.sh
 	. actions/export/export_translations_into_zip_action.sh
 	. actions/export/backport_all_action.sh
 	. actions/import/upload_translations_action.sh
