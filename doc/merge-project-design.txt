@@ -10,4 +10,4 @@ Steps:
 2.     Implement new actions from exiting apis
  2.1      Merge several projects taken from pootle into a new one
  2.2      new src2pootle reusing the existing one
- 2.3      new pootle2src based on the spread within the same repo
+ 2.3      new pootle2src based on the spread within the same repo (use a new spread action based on the first one)
