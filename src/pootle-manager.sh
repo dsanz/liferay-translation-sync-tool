@@ -30,6 +30,7 @@ function load_api() {
 	. api/sync/backport/api-sync-backport.sh
 	. api/sync/backport/api-sync-backport-git.sh
 	. api/sync/to_source/api_sync_to_source.sh
+	. api/sync/to_source/api-sync-to-source-build-sources.sh
 	. api/sync/to_source/api_sync_to_source_files.sh
 	. api/sync/to_pootle/api_sync_to_pootle.sh
 
