@@ -25,11 +25,11 @@ function load_api() {
 	. api/util/api-mail.sh
 	. api/util/api-version.sh
 
-	. api/sync/to_pootle.sh
-	. api/sync/to_pootle-file_poster.sh
-	. api/sync/to_liferay.sh
-	. api/sync/api-backporter.sh
-	. api/sync/api-backporter-git.sh
+	. api/sync/api-sync-backport.sh
+	. api/sync/api-sync-backport-git.sh
+	. api/sync/api_sync_to_liferay.sh
+	. api/sync/api_sync_to_pootle.sh
+	. api/sync/api_sync_to_pootle-file_poster.sh
 
 	# Load Actions
 	. actions/backup/create_backup_action.sh
