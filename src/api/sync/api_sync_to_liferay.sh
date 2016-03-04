@@ -225,6 +225,17 @@ function copy_pootle_project_translations_to_temp_dirs() {
 	check_command
 }
 
+function dump_store() {
+	project="$1";
+	language="$2";
+	langFile="$3";
+	locale=$(get_locale_from_file_name $language)
+	storeId=$(get_store_id $project $locale)
+	logt 4 "Dumping store id $storeId into $langFile"
+	export_targets "$storeId" "$langFile"
+}
+
+
 
 
 ## File processing functions
@@ -315,29 +326,6 @@ function process_translations() {
 	for project in "${POOTLE_PROJECT_CODES[@]}"; do
 		process_project_translations $project true
 	done
-}
-
-function dump_store() {
-	project="$1";
-	language="$2";
-	langFile="$3";
-	locale=$(get_locale_from_file_name $language)
-	storeId=$(get_store_id $project $locale)
-	logt 4 "Dumping store id $storeId into $langFile"
-	export_targets "$storeId" "$langFile"
-}
-
-function read_pootle_store() {
-	project="$1";
-	language="$2";
-	langFile="$TMP_PROP_OUT_DIR/$project/$language.store"
-	dump_store "$project" "$language" "$langFile"
-	prefix=$(get_store_language_prefix $project $locale)
-	read_locale_file $langFile $prefix $3
-}
-
-function get_store_language_prefix() {
-	echo "s$1$2"
 }
 
 # Due to pootle exports all untranslated keys, there is no way to know if a value in Language_xx.properties
@@ -484,11 +472,9 @@ function refill_translations() {
 	check_command
 }
 
-function exists_ext_value() {
-	extPrefix=$1
-	key=$2
-	exists_key $extPrefix $key
-}
+
+
+
 
 # given a project and a language, reads the Language_xx.properties file
 # exported from pootle and puts it into array T using the locale as prefix
@@ -551,4 +537,17 @@ function read_previous_language_file() {
 
 function get_previous_language_prefix() {
 	echo "p$1$2"
+}
+
+function read_pootle_store() {
+	project="$1";
+	language="$2";
+	langFile="$TMP_PROP_OUT_DIR/$project/$language.store"
+	dump_store "$project" "$language" "$langFile"
+	prefix=$(get_store_language_prefix $project $locale)
+	read_locale_file $langFile $prefix $3
+}
+
+function get_store_language_prefix() {
+	echo "s$1$2"
 }

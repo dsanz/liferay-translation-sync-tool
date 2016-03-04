@@ -128,6 +128,12 @@ function exists_in_old() {
 	exists_key $old_english $1
 }
 
+function exists_ext_value() {
+	extPrefix=$1
+	key=$2
+	exists_key $extPrefix $key
+}
+
 function clear_translations() {
 	logt 3 -n "Garbage collection... "
 	clear_keys $new_lang
