@@ -10,9 +10,9 @@ function load_api() {
 	# Load base APIs
 	. api/api-http.sh
 	. api/api-db.sh
-	. api/api-properties.sh
-	. api/api-project-provisioning.sh
-	. api/api-quality.sh
+	. api/core/api-properties.sh
+	. api/core/api-project-provisioning.sh
+	. api/core/api-quality.sh
 	. api/util/api-base.sh
 	. api/util/api-config.sh
 	. api/util/api-git.sh
