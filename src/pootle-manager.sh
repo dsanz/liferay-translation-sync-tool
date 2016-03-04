@@ -11,8 +11,8 @@ function load_api() {
 	. api/core/api-properties.sh
 	. api/core/api-project-provisioning.sh
 	. api/core/api-quality.sh
-	. api/pootle/api-http.sh
-	. api/pootle/api-db.sh
+	. api/pootle/api-pootle-db.sh
+	. api/pootle/api-pootle-http.sh
 	. api/util/api-base.sh
 	. api/util/api-config.sh
 	. api/util/api-git.sh
