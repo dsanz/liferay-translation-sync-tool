@@ -3,7 +3,7 @@ Steps:
 0.    Reorganize code to prepare the change.
   0.1 [ok] get rid of unused stuff: backporter standalone, etc.
   0.2 [ok] move actions to actions folder
-  0.3      Reorganize API folder
+  0.3 [ok] Reorganize API folder
 
 1.     Check that export pootle files works even if template file is outdated (e.g. NAS outage)
 
