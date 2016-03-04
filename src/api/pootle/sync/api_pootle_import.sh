@@ -107,3 +107,13 @@ function post_file_batch() {
 	logt 2 "Posting '$locale' translations for project $1"
 	upload_submissions "$project" "$locale"
 }
+
+function clean_temp_input_dirs() {
+	logt 1 "Preparing project input working dirs..."
+	logt 2 "Cleaning general input working dir"
+	clean_dir "$TMP_PROP_IN_DIR/"
+	for project in "${!AP_PROJECT_NAMES[@]}"; do
+		logt 2 "$project: cleaning input working dirs"
+		clean_dir "$TMP_PROP_IN_DIR/$project"
+	done
+}
