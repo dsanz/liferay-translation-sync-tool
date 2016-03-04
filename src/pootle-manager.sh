@@ -13,11 +13,11 @@ function load_api() {
 	. api/pootle/api-pootle-base.sh
 	. api/pootle/api-pootle-db.sh
 	. api/pootle/api-pootle-http.sh
-	. api/pootle/api-pootle-project-add.sh
-	. api/pootle/api-pootle-project-delete.sh
-	. api/pootle/api-pootle-project-fix-path.sh
-	. api/pootle/api-pootle-project-provisioning.sh
-	. api/pootle/api-pootle-project-rename.sh
+	. api/pootle/project/api-pootle-project-add.sh
+	. api/pootle/project/api-pootle-project-delete.sh
+	. api/pootle/project/api-pootle-project-fix-path.sh
+	. api/pootle/project/api-pootle-project-provisioning.sh
+	. api/pootle/project/api-pootle-project-rename.sh
 
 	. api/util/api-base.sh
 	. api/util/api-config.sh
