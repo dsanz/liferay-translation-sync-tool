@@ -15,7 +15,6 @@ function pootle2src() {
 	display_source_projects_action
 	clean_temp_output_dirs
 	export_pootle_translations_to_temp_dirs
-	ascii_2_native
 	restore_file_ownership
 	process_translations
 	do_commit false false "Translations sync from translate.liferay.com"
@@ -165,27 +164,6 @@ function build_lang() {
 }
 
 ## File processing functions
-
-# Pootle exports its translations into ascii-encoded properties files. This converts them to UTF-8
-function ascii_2_native() {
-:
-}
-function ascii_2_native_orig() {
-	logt 1 "Converting properties files to native ..."
-	for project in "${!AP_PROJECT_NAMES[@]}"; do
-		logt 2 "$project: converting working dir properties to native"
-		languages=`ls "$TMP_PROP_OUT_DIR/$project"`
-		for language in $languages ; do
-			if [[ "$language" =~ $trans_file_rexp ]]; then
-				pl="$TMP_PROP_OUT_DIR/$project/$language"
-				logt 0 -n "$(get_locale_from_file_name $language) "
-				[ -f $pl ] && NATIVE2ASCII_BIN -reverse -encoding utf8 $pl "$pl.native"
-				[ -f "$pl.native" ] && mv --force "$pl.native" $pl
-			fi
-		done
-		check_command
-	done
-}
 
 function process_project_translations() {
 	project="$1"
