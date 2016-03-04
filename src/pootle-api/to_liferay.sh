@@ -364,7 +364,7 @@ function refill_translations() {
 	conflictsLogLiferay="$logbase/$project/$language.conflicts.liferay"
 
 	[[ -f $workingfile ]] && rm $workingfile # when debugging we don't run all sync stages so we can have this file from a previous run
-	target_lang_path="$TMP_PROP_OUT_DIR/$project/$language"
+	target_lang_file_path="$TMP_PROP_OUT_DIR/$project/$language"
 
 	# prefixes for array accessing
 	exportedPrefix=$(get_exported_language_prefix $project $locale)
@@ -443,7 +443,7 @@ function refill_translations() {
 			printf "$format"  "[${char}]___${key}" >> $copyingLogfile
 			loglc 0 "${charc[$char]}" -n "$char"
 		fi;
-	done < $target_lang_path
+	done < $target_lang_file_path
 	IFS=$OLDIFS
 
 	logt 0
