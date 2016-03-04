@@ -127,13 +127,6 @@ function backport() {
 	unset result;
 }
 
-function clear_translations() {
-	logt 3 -n "Garbage collection... "
-	clear_keys $new_lang
-	clear_keys $old_lang
-	check_command
-}
-
 function echo_legend() {
 	logt 3 "Legend:"
 	for char in ${!charc[@]}; do

@@ -128,6 +128,13 @@ function exists_in_old() {
 	exists_key $old_english $1
 }
 
+function clear_translations() {
+	logt 3 -n "Garbage collection... "
+	clear_keys $new_lang
+	clear_keys $old_lang
+	check_command
+}
+
 function get_locale_from_file_name() {
 	file=$1
 	if [[ $file == "$FILE.$PROP_EXT" ]]; then
