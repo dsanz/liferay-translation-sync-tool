@@ -46,9 +46,8 @@ function copy_pootle_project_translations_to_temp_dirs() {
 
 function dump_store() {
 	project="$1";
-	language="$2";
+	locale="$2";
 	langFile="$3";
-	locale=$(get_locale_from_file_name $language)
 	storeId=$(get_store_id $project $locale)
 	logt 4 "Dumping store id $storeId into $langFile"
 	export_targets "$storeId" "$langFile"

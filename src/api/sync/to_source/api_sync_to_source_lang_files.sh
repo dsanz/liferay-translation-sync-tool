@@ -64,8 +64,9 @@ function get_previous_language_prefix() {
 function read_pootle_store() {
 	project="$1";
 	language="$2";
+	locale=$(get_locale_from_file_name $language)
 	langFile="$TMP_PROP_OUT_DIR/$project/$language.store"
-	dump_store "$project" "$language" "$langFile"
+	dump_store "$project" "$locale" "$langFile"
 	prefix=$(get_store_language_prefix $project $locale)
 	read_locale_file $langFile $prefix $3
 }
