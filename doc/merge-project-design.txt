@@ -8,6 +8,7 @@ Steps:
 1.     Check that export pootle files works even if template file is outdated (e.g. NAS outage)
 
 2.     Implement new actions from exiting apis
- 2.1      Merge several projects taken from pootle into a new one
+ 2.1 [ok] Merge several projects taken from pootle into a new one (basic impl)
  2.2      new src2pootle reusing the existing one
  2.3      new pootle2src based on the spread within the same repo (use a new spread action based on the first one)
+ 2.4      new provisioner.add operation, this time taking a new repo
