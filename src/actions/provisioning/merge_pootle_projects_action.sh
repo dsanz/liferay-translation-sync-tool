@@ -24,7 +24,7 @@ function merge_pootle_projects_action() {
 			done;
 
 			regenerate_file_stores "$project"
-			cat $PODIR/$project/$FILE.$PROP_EXT >> $TMP_PROP_OUT_DIR//$target_project_code/$FILE.$PROP_EXT
+			cat $PODIR/$project/$FILE.$PROP_EXT >> $TMP_PROP_OUT_DIR/$target_project_code/$FILE.$PROP_EXT
 		else
 		 	logt 2 "Skippig $project as it does not exist in pootle"
 		fi
@@ -36,6 +36,6 @@ function merge_pootle_projects_action() {
 
 	# provision new project (not from sources!)
 	start_pootle_session
-	provision_full_project_base $target_project_code $target_project_code  $$TMP_PROP_OUT_DIR/$target_project_code
+	provision_full_project_base $target_project_code $target_project_code $TMP_PROP_OUT_DIR/$target_project_code
 	close_pootle_session
 }
