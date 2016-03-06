@@ -182,12 +182,7 @@ function provision_full_project_base() {
 
 	logt 1 "Provisioning full pootle project $project_code ($project_name)"
 
-	# create empty project in pootle
-	add_pootle_project_action $project_code "$project_name" 0
-
-	# let pootle know the set of available key for that project
-	logt 2 "Setting pootle project template"
-	update_from_templates $project_code "$translations_dir"
+	provision_project_template $project_code $project_name $translations_dir
 
 	# provide translations from translations dir
 	logt 2 "Filling up project translations"
@@ -197,4 +192,18 @@ function provision_full_project_base() {
 		locale=$(get_locale_from_file_name $file)
 		post_file_batch "$project_code" "$locale"
 	done;
+}
+
+function provision_project_template() {
+	project_code="$1"
+	project_name="$2"
+	translations_dir="$3"
+
+	# create empty project in pootle
+	add_pootle_project_action $project_code "$project_name" 0
+
+	# let pootle know the set of available key for that project
+	logt 2 "Setting pootle project template"
+	update_from_templates $project_code "$translations_dir"
+
 }
