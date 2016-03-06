@@ -3,7 +3,7 @@
 function read_derived_language_file() {
 	project="$1";
 	locale="$2";
-	langFile="$FILE$LANG_SEP$locale.$PROP_EXT"
+	langFile=$(get_file_name_from_locale $locale)
 	prefix=$(get_derived_language_prefix $project $locale)
 	read_locale_file $langFile $prefix "$3"
 }

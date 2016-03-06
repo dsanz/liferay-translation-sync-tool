@@ -5,7 +5,7 @@ function display_stats_action() {
 
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		logt 2 "$locale"
-		translations_filename="$FILE$LANG_SEP$locale.$PROP_EXT"
+		translations_filename=$(get_file_name_from_locale $locale)
 		template_filename="$FILE.$PROP_EXT"
 
 		per_locale_key_count=0

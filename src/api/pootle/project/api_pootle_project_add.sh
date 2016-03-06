@@ -47,7 +47,7 @@ function initialize_project_files() {
 	check_command
 
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
-		filename="$FILE$LANG_SEP$locale.$PROP_EXT"
+		filename=$(get_file_name_from_locale $locale)
 		logt 4 -n "Creating $filename"
 		touch "$PODIR/$projectCode/$filename"
 		check_command

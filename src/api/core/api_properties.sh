@@ -160,6 +160,10 @@ function get_locale_from_file_name() {
 	fi
 }
 
+function get_file_name_from_locale() {
+	echo "$FILE$LANG_SEP$1.$PROP_EXT"
+}
+
 # reads a file and inserts keys in T (also in K if applicable)
 # $1 is the file name path
 # $2 is the key prefix where keys will be stored

@@ -10,7 +10,7 @@ function generate_zip_from_translations_action() {
 function generate_locale_zip_from_translations() {
 	locale="$1"
 	timestamp="$2"
-	locale_file="$FILE$LANG_SEP$locale.$PROP_EXT"
+	locale_file=$(get_file_name_from_locale $locale)
 	zip_file="${locale}_$timestamp.zip"
 
 	logt 2 "Compressing $locale_file for all projects into $zip_file"
