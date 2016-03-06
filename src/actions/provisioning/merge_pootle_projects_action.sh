@@ -1,7 +1,7 @@
 function merge_pootle_projects_action() {
 	target_project_code="$1"
 	source_project_codes="$2"
-	source_project_list"$(echo $source_project_codes | sed 's: :\n:g' | sort)"
+	source_project_list="$(echo $source_project_codes | sed 's: :\n:g' | sort)"
 	logt 1 "Merging projects: $source_project_codes"
 	logt 1 "into project: $target_project_code"
 
