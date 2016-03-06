@@ -165,18 +165,33 @@ function provision_projects() {
 function provision_full_project_from_source_code() {
 	project_code="$1"
 
-	logt 1 "Provisioning full pootle project $project_code (${AP_PROJECT_NAMES[$project_code]})"
+	# call base function using auto-provisioning source code project data
+	provision_full_project_base $project_code "${AP_PROJECT_NAMES[$project_code]})" "${AP_PROJECT_SRC_LANG_BASE[$project_code]}"
+}
+
+# base function to provision a project in pootle from a minimal set of data
+# preconditions: pootle session has been created in advance
+# postconditions: pootle session has to be closed after function ends
+# $1: pootle project code to use
+# $2: pootle project name
+# $3: dir where language template and translations will be found
+function provision_full_project_base() {
+	project_code="$1"
+	project_name="$2"
+	translations_dir="$3"
+
+	logt 1 "Provisioning full pootle project $project_code ($project_name)"
 
 	# create empty project in pootle
-	add_pootle_project_action $project_code "${AP_PROJECT_NAMES[$project_code]}" 0
+	add_pootle_project_action $project_code "$project_name" 0
 
 	# let pootle know the set of available key for that project
 	logt 2 "Setting pootle project template"
-	update_from_templates $project_code "${AP_PROJECT_SRC_LANG_BASE[$project_code]}"
+	update_from_templates $project_code "$translations_dir"
 
-	# provide translations from code
+	# provide translations from translations dir
 	logt 2 "Filling up project translations"
-	cd "${AP_PROJECT_SRC_LANG_BASE[$project_code]}"
+	cd "$translations_dir"
 	files="$(ls ${FILE}${LANG_SEP}*.${PROP_EXT} 2>/dev/null)"
 	for file in $files; do
 		locale=$(get_locale_from_file_name $file)
