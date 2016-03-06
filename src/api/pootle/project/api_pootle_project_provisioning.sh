@@ -83,7 +83,7 @@ function create_missing_projects_in_pootle() {
 		logt 3 "[Start] Provisioning projects (creation)"
 		start_pootle_session
 		for ap_project_code in "${projects_to_create[@]}"; do
-			provision_full_project ${ap_project_code}
+			provision_full_project_from_source_code ${ap_project_code}
 		done;
 		close_pootle_session
 		logt 3 "[End] Provisioning projects (creation)"
@@ -162,7 +162,7 @@ function provision_projects() {
 	delete_old_projects_in_pootle $do_delete
 }
 
-function provision_full_project() {
+function provision_full_project_from_source_code() {
 	project_code="$1"
 
 	logt 1 "Provisioning full pootle project $project_code (${AP_PROJECT_NAMES[$project_code]})"
