@@ -20,6 +20,7 @@ function load_api() {
 	. api/pootle/project/api_pootle_project_rename.sh
 
 	. api/pootle/sync/api_pootle_export.sh
+	. api/pootle/sync/api_pootle_import.sh
 
 	. api/util/api_base.sh
 	. api/util/api_config.sh
