@@ -60,6 +60,8 @@ function resolve_params() {
 			export DISPLAY_STATS=1
 		elif [ "$param" = "--generateZip" ] || [ "$param" = "-z" ]; then
 			export GENERATE_ZIP=1
+		elif [ "$param" = "--mergeProjects" ] || [ "$param" = "-M" ]; then
+			export MERGE_PROJECTS=1
 		elif [ "$param" = "--help" ] && [ "$param" = "-h" ] && [ "$param" = "/?" ]; then
 			export HELP=1
 		else
@@ -124,6 +126,11 @@ In addition, corrects any filename not matching Language_<locale>.properties nam
 		"Changes the project code in Pootle. This operation is not supported by Pootle. Truly useful in case a plugin name changes"\
 		"currentCode: project current code, such as 'knowledge-portlet'"\
 		"newCode: project new code, such as 'knowledge-base-portlet'"
+
+	print_action "-M, --mergeProjects <targetCode> <source codes>"\
+		"Merges several pootle projects into a new one"\
+		"targetCode: resulting project code"\
+		"newCode: listr of existing source projects in pootle"
 
 	print_action "-b, --backport [<sourceBranch> <targetBranch>]"\
 		"Backports translations from source to destination branch. This action just works with branches, there is no communication with the Pootle server nor filesystem. It's recommended \

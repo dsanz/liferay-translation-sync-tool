@@ -1,4 +1,4 @@
-function merge_pootle_projects() {
+function merge_pootle_projects_action() {
 	target_project_code="$1"
 	source_project_codes="$2"
 	logt 1 "Merging projects: $source_project_codes"

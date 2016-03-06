@@ -48,6 +48,7 @@ function load_api() {
 	. actions/provisioning/add_pootle_project_action.sh
 	. actions/provisioning/delete_pootle_project_action.sh
 	. actions/provisioning/display_source_projects_action.sh
+	. actions/provisioning/merge_pootle_projects_action.sh
 	. actions/provisioning/move_pootle_project_action.sh
 	. actions/provisioning/provision_projects_actions.sh
 	. actions/provisioning/regenerate_file_stores_action.sh
@@ -84,6 +85,7 @@ main() {
 	elif [ $NEW_PROJECT ]; then add_pootle_project_action $2 "$3"
 	elif [ $DELETE_PROJECT ]; then delete_pootle_project_action $2
 	elif [ $LIST_PROJECTS ]; then display_source_projects_action
+	elif [ $MERGE_PROJECTS ]; then merge_pootle_projects_action $2 "$3"
 	elif [ $PROVISION_PROJECTS ]; then provision_projects_action
 	elif [ $PROVISION_PROJECTS_ONLY_CREATE ]; then provision_projects_only_create_action
 	elif [ $PROVISION_PROJECTS_ONLY_DELETE ]; then provision_projects_only_delete_action
