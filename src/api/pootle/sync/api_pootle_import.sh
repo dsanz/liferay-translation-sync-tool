@@ -76,7 +76,8 @@ function upload_submissions() {
 	until $done; do
 		read line || done=true
 		if is_key_line "$line" ; then
-			[[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
+			[[ "$line" =~ $k_rexp ]] && key="${BASH_REMATCH[1]}"
+			[[ "$line" =~ $v_rexp ]] && value="${BASH_REMATCH[1]}"
 			if [ ! checkTpl ]; then
 				upload_submission "$key" "$value" "$storeId" "$path"
 			elif [[ ${T["tpl$key"]} != $value ]]; then
