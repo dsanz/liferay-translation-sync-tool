@@ -38,4 +38,6 @@ function merge_pootle_projects_action() {
 	start_pootle_session
 	provision_full_project_base $target_project_code $target_project_code $TMP_PROP_OUT_DIR/$target_project_code
 	close_pootle_session
+
+	refresh_project_stats $target_project_code
 }
