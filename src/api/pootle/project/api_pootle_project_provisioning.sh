@@ -183,18 +183,10 @@ function provision_full_project_base() {
 	logt 1 "Provisioning full pootle project $project_code ($project_name)"
 	# create empty project in pootle
 	add_pootle_project_action $project_code "$project_name" 0
-	provision_project_template $project_code $project_name $translations_dir
-	provision_project_translatins $project_code $project_name $translations_dir
-}
-
-function provision_project_template() {
-	project_code="$1"
-	project_name="$2"
-	translations_dir="$3"
-
-	# let pootle know the set of available key for that project
-	logt 2 "Setting template for $project_code in pootle"
+	# let pootle know the set of available keys for that project
 	update_from_templates $project_code "$translations_dir"
+	# let pootle know the set of translations for that project
+	provision_project_translatins $project_code $project_name $translations_dir
 }
 
 function provision_project_translations() {
