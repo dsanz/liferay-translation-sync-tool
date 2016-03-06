@@ -35,6 +35,7 @@ function merge_pootle_projects_action() {
 	#   skip english value unless DB contains it: dump store should take care (TODO: double check!!)
 
 	# provision new project (not from sources!)
+	start_pootle_session
 	provision_full_project_base $target_project_code $target_project_code  $PODIR/$target_project_code/
-
+	close_pootle_session
 }
