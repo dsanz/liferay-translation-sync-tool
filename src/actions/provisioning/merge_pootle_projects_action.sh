@@ -20,11 +20,11 @@ function merge_pootle_projects_action() {
 				language_file=$(get_file_name_from_locale $locale);
 				storeFile="$TMP_PROP_OUT_DIR/$project/$language_file.store"
 				dump_store "$project" "$locale" "$storeFile"
-				cat $storeFile >> $PODIR/$target_project_code/$language_file
+				cat $storeFile >> $TMP_PROP_OUT_DIR/$target_project_code/$language_file
 			done;
 
 			regenerate_file_stores "$project"
-			cat $PODIR/$project/$FILE.$PROP_EXT >> $PODIR/$target_project_code/$FILE.$PROP_EXT
+			cat $PODIR/$project/$FILE.$PROP_EXT >> $TMP_PROP_OUT_DIR//$target_project_code/$FILE.$PROP_EXT
 		else
 		 	logt 2 "Skippig $project as it does not exist in pootle"
 		fi
@@ -36,6 +36,6 @@ function merge_pootle_projects_action() {
 
 	# provision new project (not from sources!)
 	start_pootle_session
-	provision_full_project_base $target_project_code $target_project_code  $PODIR/$target_project_code/
+	provision_full_project_base $target_project_code $target_project_code  $$TMP_PROP_OUT_DIR/$target_project_code
 	close_pootle_session
 }
