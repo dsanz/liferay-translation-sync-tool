@@ -142,8 +142,14 @@ function post_derived_translations() {
 function refresh_stats() {
 	logt 1 "Refreshing Pootle stats..."
 	for project in "${!AP_PROJECT_NAMES[@]}"; do
-		logt 2 "$project"
-		call_manage "refresh_stats" "--project=$project" "-v 0"
-		check_command
+		refresh_project_stats $project
 	done
+}
+
+function refresh_project_stats() {
+	project="$1"
+
+	logt 2 "$project: refreshing stats"
+	call_manage "refresh_stats" "--project=$project" "-v 0"
+	check_command
 }
