@@ -9,20 +9,24 @@ function merge_pootle_projects_action() {
 	prepare_output_dir "$target_project_code"
 
 	while read project; do
-		logt 2 "Processing source pootle project: $project"
-		# clean output dirs for source project code
-		prepare_output_dir "$project"
+		if exists_project_in_pootle_DB $project; then
+			logt 2 "Processing source pootle project: $project"
+			# clean output dirs for source project code
+			prepare_output_dir "$project"
 
-		# export all source project files: sync_store or dump_store?
-		for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
-			language_file=$(get_file_name_from_locale $locale);
-			storeFile="$TMP_PROP_OUT_DIR/$project/$language_file.store"
-			dump_store "$project" "$locale" "$storeFile"
-			cat $storeFile >> $PODIR/$target_project_code/$language_file
-		done;
+			# export all source project files: sync_store or dump_store?
+			for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
+				language_file=$(get_file_name_from_locale $locale);
+				storeFile="$TMP_PROP_OUT_DIR/$project/$language_file.store"
+				dump_store "$project" "$locale" "$storeFile"
+				cat $storeFile >> $PODIR/$target_project_code/$language_file
+			done;
 
-		regenerate_file_stores "$project"
-		cat $PODIR/$project/$FILE.$PROP_EXT >> $PODIR/$target_project_code/$FILE.$PROP_EXT
+			regenerate_file_stores "$project"
+			cat $PODIR/$project/$FILE.$PROP_EXT >> $PODIR/$target_project_code/$FILE.$PROP_EXT
+		else
+		 	logt 2 "Skippig $project as it does not exist in pootle"
+		fi
 	done <<< "$source_project_codes"
 
 	# process translations for each language:
