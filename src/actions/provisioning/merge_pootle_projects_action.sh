@@ -1,11 +1,12 @@
 function merge_pootle_projects_action() {
-	merge_pootle_projects_publishing
+	merge_pootle_projects_publishing "$1" "$2"
 
 }
 
 #
 # First merge projects impl: based on transferring translation units in the db. We thus keep things like word count
 function merge_pootle_projects_unit_transfer() {
+	target_project_code="$1"
 	source_project_codes="$2"
 	source_project_list="$(echo $source_project_codes | sed 's: :\n:g' | sort)"
 	logt 1 "Merging projects: $source_project_codes"
