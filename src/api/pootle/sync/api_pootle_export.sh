@@ -2,7 +2,7 @@
 
 function regenerate_file_stores() {
 	project_code="$1"
-	logt 2 " $project_code: Regenerating project stores from pootle DB into po dir"
+	logt 3 "$project_code: Regenerating project stores from pootle DB into po dir"
 	initialize_project_files $project_code
 	sync_stores $project_code
 	# sync stores should be enough. But update_from_templates seems not be updating the
