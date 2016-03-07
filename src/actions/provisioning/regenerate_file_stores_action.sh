@@ -7,10 +7,3 @@ function regenerate_file_stores_action() {
 	done;
 }
 
-function regenerate_file_stores() {
-	project_code="$1"
-	logt 2 " $project_code: Regenerating project stores from pootle DB into po dir"
-	initialize_project_files $project_code
-	sync_stores $project_code
-	restore_file_ownership
-}
