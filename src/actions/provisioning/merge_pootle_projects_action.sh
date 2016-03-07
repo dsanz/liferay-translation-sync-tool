@@ -59,6 +59,8 @@ function merge_pootle_projects_publishing() {
 
 	prepare_output_dir "$target_project_code"
 
+	start_pootle_session
+
 	if exists_project_in_pootle_DB $target_project_code; then
 		logt 2 "Merging with existing project $target_project_code"
 		regenerate_file_stores $target_project_code
@@ -105,4 +107,6 @@ function merge_pootle_projects_publishing() {
 	fi;
 
 	refresh_project_stats $target_project_code
+
+	close_pootle_session
 }
