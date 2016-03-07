@@ -39,11 +39,11 @@ function get_targetf() {
 }
 
 function export_targets() {
-	$MYSQL_COMMAND $DB_NAME -s -e "set names utf8; select concat(unitid,\"=\",target_f) from pootle_store_unit where store_id=\"$1\";" > $2
+	$MYSQL_COMMAND $DB_NAME -s -e "set names utf8; select concat(unitid,\"=\",target_f) from pootle_store_unit where store_id=\"$1\" order by pootle_store_unit.index;" > $2
 }
 
 function export_template() {
-	$MYSQL_COMMAND $DB_NAME -s -e "set names utf8; select concat(unitid,\"=\",source_f) from pootle_store_unit where store_id=\"$1\";" > $2
+	$MYSQL_COMMAND $DB_NAME -s -e "set names utf8; select concat(unitid,\"=\",source_f) from pootle_store_unit where store_id=\"$1\" order by pootle_store_unit.index;" > $2
 }
 
 ## todo: http://cloud-10-50-0-102:443/pootle/ar/nuevo2/Language_ar.properties/translate/?unit=1014367
