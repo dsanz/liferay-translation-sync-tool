@@ -26,12 +26,12 @@ function export_project_template() {
 
 	logt 3 "$project: Exported template ($exported_es_template_line_count lines). sync_stores output ($sync_stores_template_line_count lines)"
 
-	if [[ "$exported_es_template_line_count" -gt "$exported_es_template_line_count" ]]; then
+	if [[ "$exported_es_template_line_count" -gt "$sync_stores_template_line_count" ]]; then
 		logt 3 "$project: Exported template from es language has more keys than sync_stores output. Using the exported template"
-		mv "$exported_es_template_file" "$sync_stores_template_file"
+		cp "$exported_es_template_file" "$sync_stores_template_file"
 	else
 		logt 3 "$project: Exported template from es language is ok with sync_stores output. Using the latter"
-		rm "$exported_es_template_file"
+		#rm "$exported_es_template_file"
 	fi
 }
 
