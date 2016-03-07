@@ -45,7 +45,7 @@ function generate_additions() {
 			for file in $(ls ${FILE}${LANG_SEP}*.$PROP_EXT 2>/dev/null); do
 				if [[ "$file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
 					commit=$(get_last_export_commit "$path" "$file")
-					generate_addition "$project" "$path" "$file" "$commit"
+					generate_addition "$project" "$path" "$file" "$commit" "$base_src_dir"
 				fi;
 			done
 		done;
@@ -57,6 +57,7 @@ function generate_addition() {
 	local path="$2"
 	file="$3"
 	commit="$4"
+	base_src_dir="$5"
 
 	cd $path > /dev/null 2>&1
 	#logt 5 -n "Generating additions from: git diff $commit $file "
@@ -66,6 +67,8 @@ function generate_addition() {
 	if [[ $number_of_additions -eq 0 ]]; then
 		rm "$TMP_PROP_IN_DIR/$project/$file"
 		color="$LIGHT_GRAY"
+	else
+		cat "$TMP_PROP_IN_DIR/$project/$file" >> "$TMP_PROP_IN_DIR/${GIT_ROOT_POOTLE_PROJECT_NAME[$base_src_dir]}/$file"
 	fi;
 	loglc 5 "$color" "$commit $(get_locale_from_file_name $file) ($number_of_additions)"
 }
