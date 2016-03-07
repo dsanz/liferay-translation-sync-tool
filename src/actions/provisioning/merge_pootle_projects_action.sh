@@ -1,5 +1,5 @@
 function merge_pootle_projects_action() {
-	merge_pootle_project_publishing
+	merge_pootle_projects_publishing
 
 }
 
