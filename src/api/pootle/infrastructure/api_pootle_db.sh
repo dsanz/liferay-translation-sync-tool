@@ -42,6 +42,37 @@ function export_targets() {
 	$MYSQL_COMMAND $DB_NAME -s -e "set names utf8; select concat(unitid,\"=\",target_f) from pootle_store_unit where store_id=\"$1\";" > $2
 }
 
+
+## todo: http://cloud-10-50-0-102:443/pootle/ar/nuevo2/Language_ar.properties/translate/?unit=1014367
+## todo: merge into existing. export only templates in regenerate-stores and use dupm_store
+function transfer_store() {
+	#transfer_store "$project" "$target_project_code" "$locale"
+	source_project="$1"
+	target_project="$2"
+	locale="$3"
+
+	source_storeId=$(get_store_id $source_project $locale)
+	target_storeId=$(get_store_id $target_project $locale)
+
+	logt 4 "Transferring translations from store $source_storeId ($source_project - $locale) to $target_storeId ($target_project - $locale)"
+
+	key="$2"
+	value="$3"
+
+
+		index=$(get_index $storeId $key)
+		id=$(get_unitid $storeId $key)
+		sourcef=$(get_sourcef $storeId $key)
+		#function dump_store() {
+			#project="$1";
+			#locale="$2";
+			#langFile="$3";
+			#storeId=$(get_store_id $project $locale)
+			#logt 4 "Dumping store id $storeId into $langFile"
+			#export_targets "$storeId" "$langFile"
+		#}
+}
+
 # given a locale name such as "pt_BR" returns the file name "Language_pt_BR.properties"
 function get_filename(){
 	local i="Language_$1.properties"
