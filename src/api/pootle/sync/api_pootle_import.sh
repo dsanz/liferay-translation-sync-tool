@@ -8,6 +8,24 @@ function update_from_templates() {
 	check_command
 	# Update database as well as file system to reflect the latest version of translation templates
 	logt 4 "Updating Pootle templates (this may take a while...)"
+
+	session_opened=$(is_admin_session_opened)
+
+	if ! $session_opened; then
+		start_pootle_session
+	fi
+
+	logt 4 "Telling pootle to rescan template file"
+	status_code=$(curl $CURL_OPTS -m 120 -w "%{http_code}" -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "scan_files=Rescan project files" "$PO_SRV$path/templates/$project/admin_files.html" 2> /dev/null)
+	[[ $status_code == "200" ]]
+	check_command
+
+	if ! $session_opened; then
+		close_pootle_session
+	fi
+
+	# this call seems to update all languages from templates, except the templates itself
+	# this leads to poor exports as exported template is wrong
 	call_manage "update_from_templates" "--project=$project" "-v 0"
 }
 

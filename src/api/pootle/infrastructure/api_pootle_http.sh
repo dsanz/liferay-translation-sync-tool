@@ -22,3 +22,8 @@ function start_pootle_session() {
 function is_pootle_server_up() {
 	wget -q --delete-after "$PO_SRV/accounts/login"
 }
+
+function is_admin_session_opened() {
+	status_code=$(curl $CURL_OPTS -m 120 -w "%{http_code}" -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" "$PO_SRV$path/admin.html/?" 2> /dev/null)
+	[[ $status_code == "200" ]]
+}

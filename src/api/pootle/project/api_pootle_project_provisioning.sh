@@ -184,6 +184,7 @@ function provision_full_project_base() {
 	# create empty project in pootle
 	add_pootle_project_action $project_code "$project_name" 0
 	# let pootle know the set of available keys for that project
+	# note that this is the first update from templates so it works ok
 	update_from_templates $project_code "$translations_dir"
 	# let pootle know the set of translations for that project
 	provision_project_translatins $project_code $project_name $translations_dir
