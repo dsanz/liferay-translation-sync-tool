@@ -76,7 +76,7 @@ function merge_pootle_projects_publishing() {
 			regenerate_file_stores "$project"
 			cat $PODIR/$project/$FILE.$PROP_EXT >> $TMP_PROP_OUT_DIR/$target_project_code/$FILE.$PROP_EXT
 		else
-		 	logt 2 "Skippig $project as it does not exist in pootle"
+		 	logt 2 "Skipping $project as it does not exist in pootle"
 		fi
 	done <<< "$source_project_list"
 
