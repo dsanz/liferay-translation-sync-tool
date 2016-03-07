@@ -18,7 +18,7 @@ function src2pootle() {
 	loglc 1 $RED "Begin Sync[Liferay source code -> Pootle]"
 	display_source_projects_action
 	create_backup_action
-	update_pootle_db_from_templates
+	update_pootle_db_from_templates_repo_based
 	clean_temp_input_dirs
 	post_language_translations # bug #1949
 	restore_file_ownership
@@ -73,23 +73,40 @@ function generate_addition() {
 	loglc 5 "$color" "$commit $(get_locale_from_file_name $file) ($number_of_additions)"
 }
 
+function post_new_project_translations() {
+	project="$1"
+
+	logt 2 "Uploading translations for project $project"
+	cd $TMP_PROP_IN_DIR/$project > /dev/null 2>&1
+	files="$(ls ${FILE}${LANG_SEP}*.${PROP_EXT} 2>/dev/null)"
+	if [[ "$files" == "" ]]; then
+		logt 3 "No translations to upload!"
+	else
+		for file in $files; do
+			locale=$(get_locale_from_file_name $file)
+			post_file_batch "$project" "$locale"
+		done;
+	fi;
+}
+
+function post_new_translations_repo_based() {
+	logt 1 "Posting commited translations from last update"
+	logt 2 "Creating session in Pootle"
+	start_pootle_session
+
+	for project in "${GIT_ROOT_POOTLE_PROJECT_NAME[@]}"; do
+		post_new_project_translations "$project"
+	done;
+	logt 2 "Closing session in Pootle"
+	close_pootle_session
+}
+
 function post_new_translations() {
-	# TODO: use per-repo project names and prop-in dirs for publication
 	logt 1 "Posting commited translations from last update"
 	logt 2 "Creating session in Pootle"
 	start_pootle_session
 	for project in $(ls $TMP_PROP_IN_DIR); do
-		logt 2 "Uploading translations for project $project"
-		cd $TMP_PROP_IN_DIR/$project > /dev/null 2>&1
-		files="$(ls ${FILE}${LANG_SEP}*.${PROP_EXT} 2>/dev/null)"
-		if [[ "$files" == "" ]]; then
-			logt 3 "No translations to upload!"
-		else
-			for file in $files; do
-				locale=$(get_locale_from_file_name $file)
-				post_file_batch "$project" "$locale"
-			done;
-		fi;
+		post_new_project_translations "$project"
 	done;
 	logt 2 "Closing session in Pootle"
 	close_pootle_session
