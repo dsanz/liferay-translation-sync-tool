@@ -82,7 +82,7 @@ function merge_pootle_projects_publishing() {
 
 	# process translations for each language:
 	#   skip automatic copy/translations: publish translations will take care
-	#   skip english value unless DB contains it: dump store should take care (TODO: double check!!)
+	#   skip english value unless DB contains it: dump store takes care
 
 	if exists_project_in_pootle_DB $target_project_code; then
 		logt 2 "Merging with existing project $target_project_code"
