@@ -9,6 +9,17 @@ Steps:
 
 2.     Implement new actions from exiting apis
  2.1 [ok] Merge several projects taken from pootle into a new one (basic impl)
- 2.2      new src2pootle reusing the existing one
+ 2.2 [ok] new src2pootle reusing the existing one
  2.3      new pootle2src based on the spread within the same repo (use a new spread action based on the first one)
  2.4      new provisioner.add operation, this time taking a new repo
+
+
+ Production plan
+ ---------------
+
+ 1. For each repo, rename the biggest project to make it repo-based counterpart
+ 2. Merge all existing pootle projects into them
+ 3. Check results
+ 4. Delete old, per-module projects (use provisioner if possible)
+ 5. sync to pootle
+ 6. sync to sources
