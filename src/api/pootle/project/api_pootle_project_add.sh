@@ -40,8 +40,7 @@ function initialize_project_files() {
 	projectCode="$1"
 	logt 3 "Initializing language files for $projectCode"
 
-	check_dir "$PODIR/$projectCode"
-	rm "$PODIR/$projectCode/${FILE}*.$PROP_EXT" 2>&1
+	clean_dir "$PODIR/$projectCode"
 
 	logt 3 -n "Creating empty files for project. "
 	touch "$PODIR/$projectCode/$FILE.$PROP_EXT"
