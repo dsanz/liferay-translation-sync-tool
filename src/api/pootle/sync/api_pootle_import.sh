@@ -15,7 +15,7 @@ function update_from_templates() {
 		start_pootle_session
 	fi
 
-	logt -n 4 "Telling pootle to rescan template file"
+	logt 4 -n "Telling pootle to rescan template file"
 	status_code=$(curl $CURL_OPTS -m 120 -w "%{http_code}" -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "scan_files=Rescan project files" "$PO_SRV$path/templates/$project/admin_files.html" 2> /dev/null)
 	[[ $status_code == "200" ]]
 	check_command

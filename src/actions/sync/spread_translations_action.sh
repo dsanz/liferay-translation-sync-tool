@@ -41,7 +41,7 @@ function spread_translations_action() {
 
 	if [[ $source_dir == "" ]]; then
 		logt 2 "Source project does not exist in $git_root. I'll create a temporary location for it "
-		logt -n 4 "Creating $git_root/temp/$source_project"
+		logt 4 -n "Creating $git_root/temp/$source_project"
 		mkdir --parents "$git_root/temp/$source_project"
 		check_command
 		add_AP_project "$source_project" "$source_project" "$git_root" "temp/$source_project" "temp/$source_project"
