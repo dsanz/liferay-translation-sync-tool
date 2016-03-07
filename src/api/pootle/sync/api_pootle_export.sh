@@ -24,6 +24,8 @@ function export_project_template() {
 	sync_stores_template_line_count=$(cat "$sync_stores_template_file" | wc -l )
 	exported_es_template_line_count=$(cat "$exported_es_template_file" | wc -l )
 
+	logt 3 "$project: Exported template ($exported_es_template_line_count lines). sync_stores output ($sync_stores_template_line_count lines)"
+
 	if [[ "$exported_es_template_line_count" -gt "$exported_es_template_line_count" ]]; then
 		logt 3 "$project: Exported template from es language has more keys than sync_stores output. Using the exported template"
 		mv "$exported_es_template_file" "$sync_stores_template_file"
