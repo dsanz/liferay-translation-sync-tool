@@ -16,6 +16,7 @@ function pootle2src() {
 	clean_temp_output_dirs
 	export_pootle_translations_to_temp_dirs
 	restore_file_ownership
+	# TODO: change process_translations for spread_translations_repo_based (repo-based version for spread_translations which substitutes process_translations)
 	process_translations
 	do_commit false false "Translations sync from translate.liferay.com"
 	build_lang
