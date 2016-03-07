@@ -20,7 +20,7 @@ function src2pootle() {
 	create_backup_action
 	update_pootle_db_from_templates_repo_based
 	clean_temp_input_dirs
-	post_language_translations # bug #1949
+	post_language_translations_repo_based # bug #1949
 	restore_file_ownership
 	refresh_stats
 	loglc 1 $RED "End Sync[Liferay source code -> Pootle]"
@@ -31,8 +31,12 @@ function post_language_translations() {
 	post_new_translations
 }
 
+function post_language_translations_repo_based() {
+	generate_additions
+	post_new_translations_repo_based
+}
+
 function generate_additions() {
-	# TODO: generate additions from sources per repo, all together in the same PROP_IN_DIR
 	logt 1 "Calculating committed translations from latest export commit, for each project/language"
 	for base_src_dir in "${!GIT_ROOTS[@]}"; do
 		projects="${AP_PROJECTS_BY_GIT_ROOT["$base_src_dir"]}"
@@ -52,6 +56,7 @@ function generate_additions() {
 	done;
 }
 
+# this function works either for module-based or repo-based layout
 function generate_addition() {
 	project="$1"
 	local path="$2"
