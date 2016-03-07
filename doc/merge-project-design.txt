@@ -10,10 +10,11 @@ Steps:
 2.     Implement new actions from exiting apis
  2.1 [ok] Merge several projects taken from pootle into a new one (basic impl)
  2.2 [ok] new src2pootle reusing the existing one
- 2.3    improve template export/import in pootle. None of them are Ok!!
- 2.4      new pootle2src based on the spread within the same repo (use a new spread action based on the first one)
- 2.5      new provisioner.add operation, this time taking a new repo
- 2.6      (optional) make a sql-based translation publisher
+ 2.3 [ok] improve template export in pootle
+ 2.4      improve template import in pootle
+ 2.5      new pootle2src based on the spread within the same repo (use a new spread action based on the first one)
+ 2.6      new provisioner.add operation, this time taking a new repo
+ 2.7      (optional) make a sql-based translation publisher
 
  Go-live plan
  ---------------
