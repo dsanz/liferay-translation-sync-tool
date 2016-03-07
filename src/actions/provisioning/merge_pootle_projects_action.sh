@@ -85,7 +85,7 @@ function merge_pootle_projects_publishing() {
 	#   skip english value unless DB contains it: dump store should take care (TODO: double check!!)
 
 	if exists_project_in_pootle_DB $target_project_code; then
-		logt2 "Merging with existing project $target_project_code"
+		logt 2 "Merging with existing project $target_project_code"
 		regenerate_file_stores $target_project_code
 		# add the target project template to the composite template
 		cat $PODIR/$target_project_code/$FILE.$PROP_EXT >> $TMP_PROP_OUT_DIR/$target_project_code/$FILE.$PROP_EXT
