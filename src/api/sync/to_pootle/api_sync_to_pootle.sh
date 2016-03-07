@@ -110,7 +110,7 @@ function post_new_translations() {
 	logt 1 "Posting commited translations from last update"
 	logt 2 "Creating session in Pootle"
 	start_pootle_session
-	for project in $(ls $TMP_PROP_IN_DIR); do
+	for project in "${!AP_PROJECT_NAMES[@]}"; do
 		post_new_project_translations "$project"
 	done;
 	logt 2 "Closing session in Pootle"
