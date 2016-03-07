@@ -43,16 +43,15 @@ function initialize_project_files() {
 	check_dir "$PODIR/$projectCode"
 	rm "$PODIR/${FILE}*.$PROP_EXT"
 
-	logt 4 -n "Creating template file"
+	logt 3 -n "Creating empty files for project. "
 	touch "$PODIR/$projectCode/$FILE.$PROP_EXT"
-	check_command
 
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		filename=$(get_file_name_from_locale $locale)
-		logt 4 -n "Creating $filename"
+		log -n "$locale "
 		touch "$PODIR/$projectCode/$filename"
-		check_command
 	done;
+	check_command
 }
 #form-35-id:
 #form-35-code:periquito-portlet
