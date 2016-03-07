@@ -21,7 +21,7 @@ function update_pootle_db_from_templates() {
 }
 
 function update_pootle_db_from_templates_repo_based() {
-	logt 1 "Updating pootle database..."
+	logt 1 "Updating pootle database from repository-based project set ..."
 	for project in "${GIT_ROOT_POOTLE_PROJECT_NAME[@]}";
 	do
 		logt 2 "$project: "
