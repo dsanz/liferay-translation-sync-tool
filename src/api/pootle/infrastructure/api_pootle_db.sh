@@ -44,7 +44,8 @@ function export_targets() {
 
 
 ## todo: http://cloud-10-50-0-102:443/pootle/ar/nuevo2/Language_ar.properties/translate/?unit=1014367
-## todo: merge into existing. export only templates in regenerate-stores and use dupm_store
+## todo: export only templates in regenerate-stores
+## todo: check some translations for which publication failed
 function transfer_store() {
 	#transfer_store "$project" "$target_project_code" "$locale"
 	source_project="$1"
