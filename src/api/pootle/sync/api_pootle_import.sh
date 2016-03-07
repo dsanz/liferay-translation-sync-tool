@@ -25,6 +25,13 @@ function update_pootle_db_from_templates_repo_based() {
 	for project in "${GIT_ROOT_POOTLE_PROJECT_NAME[@]}";
 	do
 		logt 2 "$project: "
+		project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
+		projects=$(echo "$project_list" | wc -l)
+		while read source_code_project; do
+			logt 3 "Adding $source_code_project template"
+			cat ${AP_PROJECT_SRC_LANG_BASE[$source_code_project]}/$FILE.$EXT >> $PODIR/$project/$FILE.$EXT
+			check_command
+		done <<< "$project_list"
 		update_from_templates $project $PODIR/$project
 	done
 }
