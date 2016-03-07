@@ -32,6 +32,7 @@ function post_language_translations() {
 }
 
 function generate_additions() {
+	# TODO: generate additions from sources per repo, all together in the same PROP_IN_DIR
 	logt 1 "Calculating committed translations from latest export commit, for each project/language"
 	for base_src_dir in "${!GIT_ROOTS[@]}"; do
 		projects="${AP_PROJECTS_BY_GIT_ROOT["$base_src_dir"]}"
@@ -70,6 +71,7 @@ function generate_addition() {
 }
 
 function post_new_translations() {
+	# TODO: use per-repo project names and prop-in dirs for publication
 	logt 1 "Posting commited translations from last update"
 	logt 2 "Creating session in Pootle"
 	start_pootle_session
@@ -142,6 +144,13 @@ function post_derived_translations() {
 function refresh_stats() {
 	logt 1 "Refreshing Pootle stats..."
 	for project in "${!AP_PROJECT_NAMES[@]}"; do
+		refresh_project_stats $project
+	done
+}
+
+function refresh_stats_repo_based() {
+	logt 1 "Refreshing Pootle stats..."
+	for project in "${GIT_ROOT_POOTLE_PROJECT_NAME[@]}"; do
 		refresh_project_stats $project
 	done
 }
