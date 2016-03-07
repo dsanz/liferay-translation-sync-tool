@@ -20,6 +20,15 @@ function update_pootle_db_from_templates() {
 	done
 }
 
+function update_pootle_db_from_templates_repo_based() {
+	logt 1 "Updating pootle database..."
+	for project in "${GIT_ROOT_POOTLE_PROJECT_NAME[@]}";
+	do
+		logt 2 "$project: "
+		update_from_templates $project $PODIR/$project
+	done
+}
+
 # this API allows to workaround a pootle bug so that new translations coming from a Language_*.properties file
 # can be incorporated to the Pootle Database. This feature is used both from the pootle_manager (to post
 # new tranlsations coming from source branches) and from the stand-alone version.
