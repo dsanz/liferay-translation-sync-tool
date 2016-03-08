@@ -39,7 +39,7 @@ function get_targetf() {
 }
 
 function count_targets() {
-	local i=$(MYSQL_COMMAND $DB_NAME -s -e "set names utf8; select count(*) from pootle_store_unit where store_id=\"$1\";" | cut -d : -f2)
+	local i=$($MYSQL_COMMAND $DB_NAME -s -e "set names utf8; select count(*) from pootle_store_unit where store_id=\"$1\";" | cut -d : -f2)
 	echo $i
 }
 
