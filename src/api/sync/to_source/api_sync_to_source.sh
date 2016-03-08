@@ -144,12 +144,12 @@ function refill_translations_repo_based() {
 			if is_key_line "$line" ; then
 				[[ "$line" =~ $kv_rexp ]] && Tkey="${BASH_REMATCH[1]}" && Tval="${BASH_REMATCH[2]}"
 				SvalTpl=${T["$templatePrefix$Tkey"]}
-				valueExp=${T["$exportedPrefix$Tkey"]}                            # get translation exported by pootle
+				SvalExp=${T["$exportedPrefix$Tkey"]}                            # get translation exported by pootle
 
 				if exists_ext_value $extPrefix $Tkey; then                       # has translation to be overriden?
 					Tval=${T["$extPrefix$Tkey"]}
 					char="o"
-				elif [[ "$valueExp" == "$SvalTpl" ]]; then                     # ok, no overriding. Now, is exported value = template value?
+				elif [[ "$SvalExp" == "$SvalTpl" ]]; then                     # ok, no overriding. Now, is exported value = template value?
 					valueStore=${T["$storePrefix$Tkey"]}                         #   then let's see if translators wrote the template value by hand in the text box
 					if [[ "$valueStore" == "$SvalTpl" ]]; then                 #   was it translated that way on purpose?
 						char="e"                                                #       use the template value. English is ok in this case.
