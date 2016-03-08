@@ -16,13 +16,85 @@ function pootle2src() {
 	clean_temp_output_dirs
 	export_pootle_translations_to_temp_dirs
 	restore_file_ownership
-	# TODO: change process_translations for spread_translations_repo_based (repo-based version for spread_translations which substitutes process_translations)
-	process_translations
+	process_translations_repo_based
 	do_commit false false "Translations sync from translate.liferay.com"
 	build_lang
 	do_commit true true "build-lang"
 	loglc 1 $RED "End Sync[Pootle -> Liferay source code]"
 }
+
+#
+# new, repository-based sync logic
+#
+
+function process_translations_repo_based() {
+	logt 1 "Processing translations for export"
+
+	# TODO: print whatever legend we have
+
+	for git_root in "${!GIT_ROOTS[@]}"; do
+		process_project_translations_repo_based $git_root true
+	done;
+}
+
+# process translations from a repo-based
+function process_project_translations_repo_based() {
+	git_root="$1"
+
+	source_project="${GIT_ROOT_POOTLE_PROJECT_NAME[$git_root]}"
+	target_project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
+	languages=`ls $PODIR/$source_project`
+
+	logt 2 "$source_project"
+	logt 3 "Setting up per-project log file"
+	check_dir "$logbase/$source_project/"
+
+	# this has to be read once per source project
+	read_pootle_exported_template $source_project
+
+	for language in $languages; do
+		locale=$(get_locale_from_file_name $language)
+		if [[ "$locale" != "en" && "$language" =~ $trans_file_rexp ]]; then
+			logt 2 "$source_project: $locale"
+
+			# this has to be read once per source project and language
+			read_pootle_exported_language_file $source_project $language
+
+			# iterate all projects in the destination project list and 'backport' to them
+			while read target_project; do
+				if [[ $target_project != $source_project ]]; then
+					read_source_code_language_file $target_project $language
+					read_pootle_store $target_project $language
+					read_ext_language_file $target_project $language
+
+					# TODO: reimplement this
+					#refill_translations $target_project $language $publish_translations
+
+					logt 3 -n "Garbage collection (target: $target_project, $locale)... "
+					clear_keys "$(get_previous_language_prefix $target_project $locale)"
+					clear_keys "$(get_store_language_prefix $target_project $locale)"
+					clear_keys "$(get_ext_language_prefix $target_project $locale)"
+					check_command
+				fi
+			done <<< "$target_project_list"
+
+			logt 3 -n "Garbage collection (source: $source_project, $locale)... "
+			clear_keys "$(get_exported_language_prefix $source_project $locale)"
+		fi
+	done
+
+	logt 3 -n "Garbage collection (source project: $source_project)... "
+	unset K
+	unset T
+	declare -gA T;
+	declare -ga K;
+	check_command
+}
+
+
+#
+# Traditional, module-based sync logic
+#
 
 function process_project_translations() {
 	project="$1"
@@ -40,7 +112,7 @@ function process_project_translations() {
 			logt 3 "Reading $language file"
 			read_pootle_exported_language_file $project $language
 			logt 3 "Reading $language file from source code branch (just pulled)"
-			read_previous_language_file $project $language
+			read_source_code_language_file $project $language
 			logt 3 "Reading pootle store"
 			read_pootle_store $project $language
 			logt 3 "Reading overriding translations"

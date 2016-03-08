@@ -3,6 +3,7 @@
 function read_ext_language_file() {
 	project="$1";
 	language="$2";
+	logt 3 "Reading $project $language overriding translations"
 	locale=$(get_locale_from_file_name $language)
 	langFile="$HOME_DIR/conf/ext/$project/$language"
 	if [ -e $langFile ]; then
@@ -21,6 +22,7 @@ function get_ext_language_prefix() {
 # and puts it into array T using the project as prefix
 function read_pootle_exported_template() {
 	project="$1";
+	logt 3 "Reading $project template file"
 	template="$TMP_PROP_OUT_DIR/$project/$FILE.$PROP_EXT"
 	prefix=$(get_template_prefix $project $locale)
 	read_locale_file $template $prefix true
@@ -35,6 +37,7 @@ function get_template_prefix() {
 function read_pootle_exported_language_file() {
 	project="$1";
 	language="$2";
+	logt 3 "Reading $project $language file as exported by Pootle"
 	locale=$(get_locale_from_file_name $language)
 	langFile="$TMP_PROP_OUT_DIR/$project/$language"
 	prefix=$(get_exported_language_prefix $project $locale)
@@ -45,11 +48,10 @@ function get_exported_language_prefix() {
 	echo $1$2
 }
 
-# given a project and a language, reads the Language_xx.properties file
-# from the branch and puts it into array T using "p"+locale as prefix
-function read_previous_language_file() {
+function read_source_code_language_file() {
 	project="$1";
 	language="$2";
+	logt 3 "Reading $project $language file from source code branch (just pulled)"
 	locale=$(get_locale_from_file_name $language)
 	sources="${AP_PROJECT_SRC_LANG_BASE["$project"]}"
 	langFile="$sources/$language"
@@ -64,6 +66,7 @@ function get_previous_language_prefix() {
 function read_pootle_store() {
 	project="$1";
 	language="$2";
+	logt 3 "Reading $project $language pootle store"
 	locale=$(get_locale_from_file_name $language)
 	langFile="$TMP_PROP_OUT_DIR/$project/$language.store"
 	dump_store "$project" "$locale" "$langFile"
