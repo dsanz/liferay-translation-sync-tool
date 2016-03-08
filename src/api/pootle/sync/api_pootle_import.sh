@@ -4,7 +4,7 @@ function update_from_templates() {
 
 	logt 3 "Updating the set of translatable keys for project $project"
 
-	if [[ "$src_dir" != "$PODIR" ]]; then
+	if [[ "$src_dir" != "$PODIR/$project" ]]; then
 		logt 4 -n "Copying template to PODIR "
 		cp "$src_dir/${FILE}.$PROP_EXT" "$PODIR/$project"
 		check_command
