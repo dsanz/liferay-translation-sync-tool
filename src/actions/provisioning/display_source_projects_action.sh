@@ -22,5 +22,11 @@ function display_source_projects_action() {
 		done <<< "$project_list"
 		log
 	done;
+
+	logt 2 "Projects by git root summary"
+	for git_root in "${!GIT_ROOTS[@]}"; do
+		logt 3 "Git root: $git_root"
+		logt 3 "Projects: ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]}"
+	done
 }
 
