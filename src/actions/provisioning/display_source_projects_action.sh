@@ -32,7 +32,7 @@ function display_source_projects_action() {
 	read_pootle_projects_and_locales
 	logt 3 "Current projects in Pootle:"
 	for project in "${POOTLE_PROJECT_CODES[@]}"; do
-		log -n $project
+		log -n "$project "
 	done
 	log
 }
