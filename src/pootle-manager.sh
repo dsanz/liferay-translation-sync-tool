@@ -39,6 +39,7 @@ function load_api() {
 
 	# Load Actions
 	. actions/backup/create_backup_action.sh
+	. actions/backup/list_backups_action.sh
 	. actions/backup/restore_backup_action.sh
 	. actions/export/export_translations_into_zip_action.sh
 	. actions/export/backport_all_action.sh
