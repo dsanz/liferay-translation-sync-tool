@@ -54,9 +54,10 @@ function process_translations_repo_based() {
 	done;
 }
 
-# process translations from a repo-based
+# process translations from a repo-based projet layout
 function process_project_translations_repo_based() {
 	git_root="$1"
+	publish_translations="$2"
 
 	source_project="${GIT_ROOT_POOTLE_PROJECT_NAME[$git_root]}"
 	target_project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
