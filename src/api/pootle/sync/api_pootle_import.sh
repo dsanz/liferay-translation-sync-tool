@@ -3,9 +3,14 @@ function update_from_templates() {
 	src_dir="$2"
 
 	logt 3 "Updating the set of translatable keys for project $project"
-	logt 4 -n "Copying project files "
-	cp "$src_dir/${FILE}.$PROP_EXT" "$PODIR/$project"
-	check_command
+
+	if [[ "$src_dir" != "$PODIR" ]]; then
+		logt 4 -n "Copying template to PODIR "
+		cp "$src_dir/${FILE}.$PROP_EXT" "$PODIR/$project"
+		check_command
+	else
+		logt 4 -n "I've been instructed to sync directly from PODIR"
+	fi
 	# Update database as well as file system to reflect the latest version of translation templates
 	logt 4 "Updating Pootle templates (this may take a while...)"
 
@@ -55,7 +60,7 @@ function update_pootle_db_from_templates_repo_based() {
 		logt 2 "Pootle $project (git root: $git_root): will update templates from $projects projects"
 		while read source_code_project; do
 			logt 3 "Adding $source_code_project template"
-			cat ${AP_PROJECT_SRC_LANG_BASE[$source_code_project]}/$FILE.$EXT >> $PODIR/$project/$FILE.$EXT
+			cat ${AP_PROJECT_SRC_LANG_BASE[$source_code_project]}/$FILE.$PROP_EXT >> $PODIR/$project/$FILE.$PROP_EXT
 			check_command
 		done <<< "$project_list"
 
