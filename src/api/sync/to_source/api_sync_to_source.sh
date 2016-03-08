@@ -129,7 +129,11 @@ function refill_translations_repo_based() {
 	format="%s\n";
 	OLDIFS=$IFS
 	IFS=
-	# read the target language file
+	# read the target language file. Variables meaning:
+	# Tkey: target file language key
+	# Tval: target file language value. This one will be written to the exported file associated to Tkey
+	# SvalTpl: source file language value to Tkey
+
 	until $done; do
 		if ! read -r line; then
 			done=true;
@@ -139,21 +143,21 @@ function refill_translations_repo_based() {
 			char="!"
 			if is_key_line "$line" ; then
 				[[ "$line" =~ $kv_rexp ]] && Tkey="${BASH_REMATCH[1]}" && Tval="${BASH_REMATCH[2]}"
-				valueTpl=${T["$templatePrefix$Tkey"]}
+				SvalTpl=${T["$templatePrefix$Tkey"]}
 				valueExp=${T["$exportedPrefix$Tkey"]}                            # get translation exported by pootle
 
 				if exists_ext_value $extPrefix $Tkey; then                       # has translation to be overriden?
 					Tval=${T["$extPrefix$Tkey"]}
 					char="o"
-				elif [[ "$valueExp" == "$valueTpl" ]]; then                     # ok, no overriding. Now, is exported value = template value?
+				elif [[ "$valueExp" == "$SvalTpl" ]]; then                     # ok, no overriding. Now, is exported value = template value?
 					valueStore=${T["$storePrefix$Tkey"]}                         #   then let's see if translators wrote the template value by hand in the text box
-					if [[ "$valueStore" == "$valueTpl" ]]; then                 #   was it translated that way on purpose?
+					if [[ "$valueStore" == "$SvalTpl" ]]; then                 #   was it translated that way on purpose?
 						char="e"                                                #       use the template value. English is ok in this case.
-						Tval=$valueTpl
+						Tval=$SvalTpl
 					else                                                        #   otherwise, key is really untranslated in pootle
 						valuePrev=${T["$sourceCodePrefix$Tkey"]}                   #       let's look for the current key translation in master
 						if is_translated_value "$valuePrev"; then               #       is the key translated in master? [shouldn't happen unless we run -r before a -p]
-							if [[ "$valuePrev" != "$valueTpl" ]]; then          #           ok, key is already translated in master. is that value different from the template?
+							if [[ "$valuePrev" != "$SvalTpl" ]]; then          #           ok, key is already translated in master. is that value different from the template?
 								char="r"                                        #               ok, then master is translated but Pootle not, hmmm! we have a reverse-path
 								Tval="$valuePrev"                               #               let's keep`the value in master as a good default.
 								R[$Tkey]="$Tval";                               #               and memorize it so that Pootle can be properly updated later
