@@ -57,28 +57,29 @@ function process_project_translations_repo_based() {
 		if [[ "$locale" != "en" && "$language" =~ $trans_file_rexp ]]; then
 			logt 2 "$source_project: $locale"
 
-			# this has to be read once per source project and language
+			# these have to be read once per source project and language
 			read_pootle_exported_language_file $source_project $language
+			read_pootle_store $source_project $language
+			read_ext_language_file $source_project $language
 
 			# iterate all projects in the destination project list and 'backport' to them
 			while read target_project; do
 				if [[ $target_project != $source_project ]]; then
+					# this has to be read once per target project and locale
 					read_source_code_language_file $target_project $language
-					read_pootle_store $target_project $language
-					read_ext_language_file $target_project $language
 
 					refill_translations_repo_based $source_project $target_project $language $publish_translations
 
 					logt 3 -n "Garbage collection (target: $target_project, $locale)... "
 					clear_keys "$(get_source_code_language_prefix $target_project $locale)"
-					clear_keys "$(get_store_language_prefix $target_project $locale)"
-					clear_keys "$(get_ext_language_prefix $target_project $locale)"
 					check_command
 				fi
 			done <<< "$target_project_list"
 
 			logt 3 -n "Garbage collection (source: $source_project, $locale)... "
 			clear_keys "$(get_exported_language_prefix $source_project $locale)"
+			clear_keys "$(get_store_language_prefix $source_project $locale)"
+			clear_keys "$(get_ext_language_prefix $source_project $locale)"
 		fi
 	done
 
@@ -109,18 +110,20 @@ function refill_translations_repo_based() {
 
 	[[ -f $workingfile ]] && rm $workingfile # when debugging we don't run all sync stages so we can have this file from a previous run
 
-	# prefixes for array accessing
-	exportedPrefix=$(get_exported_language_prefix $project $locale)
-	previousPrefix=$(get_source_code_language_prefix $project $locale)
-	templatePrefix=$(get_template_prefix $project $locale)
-	storePrefix=$(get_store_language_prefix $project $locale)
-	extPrefix=$(get_ext_language_prefix $project $locale)
+	# source project prefixes for array accessing
+	templatePrefix=$(get_template_prefix $source_project $locale)
+	exportedPrefix=$(get_exported_language_prefix $source_project $locale)
+	storePrefix=$(get_store_language_prefix $source_project $locale)
+	extPrefix=$(get_ext_language_prefix $source_project $locale)
+
+	# target project prefixes for array accessing
+	sourceCodePrefix=$(get_source_code_language_prefix $target_project $locale)
 
 	declare -A R  # reverse translations
 	declare -A Cp  # conflicts - pootle value
 	declare -A Cl  # conflicts - liferay source value
 
-	logt 3 "Copying translations..."
+	logt 3 "Exporting translations from $source_project to $target_project"
 	logt 0
 	done=false;
 	format="%s\n";
@@ -147,7 +150,7 @@ function refill_translations_repo_based() {
 						char="e"                                                #       use the template value. English is ok in this case.
 						value=$valueTpl
 					else                                                        #   otherwise, key is really untranslated in pootle
-						valuePrev=${T["$previousPrefix$key"]}                   #       let's look for the current key translation in master
+						valuePrev=${T["$sourceCodePrefix$key"]}                   #       let's look for the current key translation in master
 						if is_translated_value "$valuePrev"; then               #       is the key translated in master? [shouldn't happen unless we run -r before a -p]
 							if [[ "$valuePrev" != "$valueTpl" ]]; then          #           ok, key is already translated in master. is that value different from the template?
 								char="r"                                        #               ok, then master is translated but Pootle not, hmmm! we have a reverse-path
@@ -164,7 +167,7 @@ function refill_translations_repo_based() {
 					fi
 				else                                                            # ok, no overriding, and value is not the english one: it's supposed to be a valid translation!!
 					value=${T["$exportedPrefix$key"]}                           #   get translation exported by pootle
-					valuePrev=${T["$previousPrefix$key"]}                       #   get the translation from master
+					valuePrev=${T["$sourceCodePrefix$key"]}                       #   get the translation from master
 					if is_translated_value "$valuePrev"; then                   #   is the master value translated?
 						if [[ "$valuePrev" != "$value" ]]; then                 #      is this translation different than the one pootle exported?
 							char="x"                                            #           ok, we have a conflict, pootle wins. Let user know
@@ -330,7 +333,7 @@ function refill_translations() {
 
 	# prefixes for array accessing
 	exportedPrefix=$(get_exported_language_prefix $project $locale)
-	previousPrefix=$(get_source_code_language_prefix $project $locale)
+	sourceCodePrefix=$(get_source_code_language_prefix $project $locale)
 	templatePrefix=$(get_template_prefix $project $locale)
 	storePrefix=$(get_store_language_prefix $project $locale)
 	extPrefix=$(get_ext_language_prefix $project $locale)
@@ -366,7 +369,7 @@ function refill_translations() {
 						char="e"                                                #       use the template value. English is ok in this case.
 						value=$valueTpl
 					else                                                        #   otherwise, key is really untranslated in pootle
-						valuePrev=${T["$previousPrefix$key"]}                   #       let's look for the current key translation in master
+						valuePrev=${T["$sourceCodePrefix$key"]}                   #       let's look for the current key translation in master
 						if is_translated_value "$valuePrev"; then               #       is the key translated in master? [shouldn't happen unless we run -r before a -p]
 							if [[ "$valuePrev" != "$valueTpl" ]]; then          #           ok, key is already translated in master. is that value different from the template?
 								char="r"                                        #               ok, then master is translated but Pootle not, hmmm! we have a reverse-path
@@ -383,7 +386,7 @@ function refill_translations() {
 					fi
 				else                                                            # ok, no overriding, and value is not the english one: it's supposed to be a valid translation!!
 					value=${T["$exportedPrefix$key"]}                           #   get translation exported by pootle
-					valuePrev=${T["$previousPrefix$key"]}                       #   get the translation from master
+					valuePrev=${T["$sourceCodePrefix$key"]}                       #   get the translation from master
 					if is_translated_value "$valuePrev"; then                   #   is the master value translated?
 						if [[ "$valuePrev" != "$value" ]]; then                 #      is this translation different than the one pootle exported?
 							char="x"                                            #           ok, we have a conflict, pootle wins. Let user know
