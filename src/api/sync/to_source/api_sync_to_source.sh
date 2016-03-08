@@ -143,52 +143,43 @@ function refill_translations_repo_based() {
 			char="!"
 			if is_key_line "$line" ; then
 				[[ "$line" =~ $kv_rexp ]] && Tkey="${BASH_REMATCH[1]}" && Tval="${BASH_REMATCH[2]}"
-				SvalTpl=${T["$templatePrefix$Tkey"]}
-				SvalExp=${T["$exportedPrefix$Tkey"]}                            # get translation exported by pootle
+				SvalTpl=${T["$templatePrefix$Tkey"]}           # get template value
+				SvalExp=${T["$exportedPrefix$Tkey"]}           # get translation exported by pootle
 
-				if exists_ext_value $extPrefix $Tkey; then                       # has translation to be overriden?
-					Tval=${T["$extPrefix$Tkey"]}
-					char="o"
-				elif [[ "$SvalExp" == "$SvalTpl" ]]; then                     # ok, no overriding. Now, is exported value = template value?
-					SvalStore=${T["$storePrefix$Tkey"]}                         #   then let's see if translators wrote the template value by hand in the text box
-					if [[ "$SvalStore" == "$SvalTpl" ]]; then                 #   was it translated that way on purpose?
-						char="e"                                                #       use the template value. English is ok in this case.
-						Tval=$SvalTpl
-					else                                                        #   otherwise, key is really untranslated in pootle
-						valuePrev=${T["$sourceCodePrefix$Tkey"]}                   #       let's look for the current key translation in master
-						if is_translated_value "$valuePrev"; then               #       is the key translated in master? [shouldn't happen unless we run -r before a -p]
-							if [[ "$valuePrev" != "$SvalTpl" ]]; then          #           ok, key is already translated in master. is that value different from the template?
-								char="r"                                        #               ok, then master is translated but Pootle not, hmmm! we have a reverse-path
-								Tval="$valuePrev"                               #               let's keep`the value in master as a good default.
-								R[$Tkey]="$Tval";                               #               and memorize it so that Pootle can be properly updated later
-							else                                                #           ok, value in master is just like the template
-								char="a"                                        #               discard it! ant build-lang will do
-								Tval=""
-							fi
-						else                                                    #       value in master is not translated. This means an auto-copy or auto-translation
-							char="u"                                            #           let's reuse it, we are saving build-lang work. don't do same work twice
-							Tval=$valuePrev
-						fi;
-					fi
-				else                                                            # ok, no overriding, and value is not the english one: it's supposed to be a valid translation!!
-					Tval=${T["$exportedPrefix$Tkey"]}                           #   get translation exported by pootle
-					valuePrev=${T["$sourceCodePrefix$Tkey"]}                       #   get the translation from master
-					if is_translated_value "$valuePrev"; then                   #   is the master value translated?
-						if [[ "$valuePrev" != "$Tval" ]]; then                 #      is this translation different than the one pootle exported?
-							char="x"                                            #           ok, we have a conflict, pootle wins. Let user know
-							Cp[$Tkey]="$Tval"                                   #           take note for logging purposes
-							Cl[$Tkey]="$valuePrev"
-						else                                                    #      ok, translation in master is just like the exported by pootle.
-							char="·"                                            #           no-op, already translated both in pootle and master
-						fi
-					else                                                        #   master value is NOT translated but auto-translated/auto-copied
-						char="p"                                                #      ok, translated in pootle, but not in master. OK!!
-					fi
+				if exists_ext_value $extPrefix $Tkey; then     # has translation to be overriden?
+					Tval=${T["$extPrefix$Tkey"]}               # |
+					char="o"                                   # |
+				elif [[ "$SvalExp" == "$SvalTpl" ]]; then      # no overriding. Now, is exported value = template value?
+					SvalStore=${T["$storePrefix$Tkey"]}        # |  then let's see if translators wrote the template value by hand in the text box
+					if [[ "$SvalStore" == "$SvalTpl" ]]; then  # |  was it translated that way on purpose?
+						char="e"                               # |  |  use the template value. English is ok in this case.
+						Tval=$SvalTpl                          # |  |
+					elif is_translated_value "$Tval"; then     # |  key is really untranslated in pootle. is the key translated in source code?
+						if [[ "$Tval" != "$SvalTpl" ]]; then   # |  |  key is already translated in source code. is that value different from the template?
+							char="r"                           # |  |  |  so source code is translated but Pootle not, hmmm! we have a reverse-path
+							R[$Tkey]="$Tval";                  # |  |  |  let's keep`the value in source code as a good default, and memorize it so that Pootle can be properly updated later
+						else                                   # |  |  value in source equals value in the template
+							char="a"                           # |  |     then discard it! ant build-lang will do
+							Tval=""                            # |  |
+						fi                                     # |  |
+					else                                       # |  value in master is not translated. This means an auto-copy or auto-translation
+						char="u"                               # |     let's reuse it, we are saving build-lang work. don't do same work twice
+					fi;                                        # |
+				elif is_translated_value "$Tval"; then         # no overriding, and value is not the english one: it's supposed to be a valid translation!! is the source code value translated?
+					if [[ "$SvalExp" != "$Tval" ]]; then       # |   is this translation different than the one pootle exported?
+						char="x"                               # |   |  ok, we have a conflict, pootle wins. Let user know
+						Cp[$Tkey]="$SvalExp"                   # |   |     take note for logging purposes
+						Cl[$Tkey]="$Tval"                      # |   |
+					else                                       # |   translation in source code is just like the exported by pootle.
+						char="·"                               # |     no-op, already translated both in pootle and source
+					fi                                         # |
+				else                                           # master value is NOT translated but auto-translated/auto-copied
+					char="p"                                   #    ok, translated in pootle, but not in master. OK!!
 				fi
-				result="${Tkey}=${Tval}"
-			else                                                               # is it a comment line?
-				char="#"
-				result="$line"                                                 #    get the whole line
+				result="${Tkey}=${Tval}"                       # compute the final value to be written
+			else
+				char="#"                                       # is it a comment line
+				result="$line"                                 # get the whole line
 			fi
 			printf "$format" "$result" >> $workingfile
 			printf "$format"  "[${char}]___${Tkey}" >> $copyingLogfile
@@ -204,7 +195,7 @@ function refill_translations_repo_based() {
 			storeId=$(get_store_id $source_project $locale)
 			local path=$(get_pootle_path $source_project $locale)
 
-			logt 3 "Submitting translations from source to pootle. Next time be sure to run this manager with -p option!"
+			logt 3 "Submitting translations from source to pootle"
 			start_pootle_session
 			for key in "${!R[@]}"; do
 				value="${R[$Tkey]}"
