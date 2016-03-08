@@ -21,6 +21,13 @@ Steps:
  ---------------
 
  1. For each repo, rename the biggest project to make it repo-based counterpart
+   1.1 pootle-manager.sh -M content-targeting-web "report-user-segment-content report-campaign-content report-campaign-tracking-action rule_tmpl tracking_action_tmpl channel_tmpl report_tmpl tracking-action-link tracking-action-page tracking-action-youtube tracking-action-content tracking-action-form extension_tmpl consumer-manager-web consumer-manager-api rule-visited rule-user-logged rule-os rule-facebook rule-score-points rule-time rule-device rule-organization-member rule-role rule-age rule-gender rule-ip-geocode rule-browser rule-user-group-member rule-site-member analytics-hook content-targeting-api simulator-hook"
+   1.2 pootle-manager.sh -m content-targeting-web liferay-apps-content-targeting
+
+
+
+
+
  2. Merge all existing pootle projects into them
  3. Check results
  4. Delete old, per-module projects (use provisioner if possible)
