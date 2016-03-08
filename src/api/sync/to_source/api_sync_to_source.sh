@@ -132,8 +132,9 @@ function refill_translations_repo_based() {
 	# read the target language file. Variables meaning:
 	# Tkey: target file language key
 	# Tval: target file language value. This one will be written to the exported file associated to Tkey
-	# SvalTpl: source file language value to Tkey
-
+	# SvalTpl: source file language value associated to Tkey
+	# SvalExp: pootle DB exported language value associated to Tkey
+	# SvalStore: pootle store dumped language value associated to Tkey
 	until $done; do
 		if ! read -r line; then
 			done=true;
@@ -142,12 +143,12 @@ function refill_translations_repo_based() {
 		if [ ! "$line" == "" ]; then
 			char="!"
 			if is_key_line "$line" ; then
-				[[ "$line" =~ $kv_rexp ]] && Tkey="${BASH_REMATCH[1]}" && Tval="${BASH_REMATCH[2]}"
+				[[ "$line" =~ $kv_rexp ]] && Tkey="${BASH_REMATCH[1]}" && Tval="${BASH_REMATCH[2]}"  # initially, let Tval be the original source code value
 				SvalTpl=${T["$templatePrefix$Tkey"]}           # get template value
 				SvalExp=${T["$exportedPrefix$Tkey"]}           # get translation exported by pootle
 
 				if exists_ext_value $extPrefix $Tkey; then     # has translation to be overriden?
-					Tval=${T["$extPrefix$Tkey"]}               # |
+					Tval=${T["$extPrefix$Tkey"]}               # |  override translation using the ext file content
 					char="o"                                   # |
 				elif [[ "$SvalExp" == "$SvalTpl" ]]; then      # no overriding. Now, is exported value = template value?
 					SvalStore=${T["$storePrefix$Tkey"]}        # |  then let's see if translators wrote the template value by hand in the text box
@@ -157,7 +158,7 @@ function refill_translations_repo_based() {
 					elif is_translated_value "$Tval"; then     # |  key is really untranslated in pootle. is the key translated in source code?
 						if [[ "$Tval" != "$SvalTpl" ]]; then   # |  |  key is already translated in source code. is that value different from the template?
 							char="r"                           # |  |  |  so source code is translated but Pootle not, hmmm! we have a reverse-path
-							R[$Tkey]="$Tval";                  # |  |  |  let's keep`the value in source code as a good default, and memorize it so that Pootle can be properly updated later
+							R[$Tkey]="$Tval";                  # |  |  |  let's keep the value in source code as a good default, and memorize it so that Pootle can be properly updated later
 						else                                   # |  |  value in source equals value in the template
 							char="a"                           # |  |     then discard it! ant build-lang will do
 							Tval=""                            # |  |
