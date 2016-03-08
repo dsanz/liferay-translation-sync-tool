@@ -2,7 +2,7 @@ function update_from_templates() {
 	project="$1"
 	src_dir="$2"
 
-	logt 3 "Updating the set of translatable keys"
+	logt 3 "Updating the set of translatable keys for project $project"
 	logt 4 -n "Copying project files "
 	cp "$src_dir/${FILE}.$PROP_EXT" "$PODIR/$project"
 	check_command
@@ -45,16 +45,20 @@ function update_pootle_db_from_templates() {
 
 function update_pootle_db_from_templates_repo_based() {
 	logt 1 "Updating pootle database from repository-based project set ..."
-	for project in "${GIT_ROOT_POOTLE_PROJECT_NAME[@]}";
-	do
-		logt 2 "$project: "
+
+	for git_root in "${!GIT_ROOTS[@]}"; do
+		project="${GIT_ROOT_POOTLE_PROJECT_NAME[$git_root]}";
+
 		project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 		projects=$(echo "$project_list" | wc -l)
+
+		logt 2 "Pootle $project (git root: $git_root): will update templates from $projects projects"
 		while read source_code_project; do
 			logt 3 "Adding $source_code_project template"
 			cat ${AP_PROJECT_SRC_LANG_BASE[$source_code_project]}/$FILE.$EXT >> $PODIR/$project/$FILE.$EXT
 			check_command
 		done <<< "$project_list"
+
 		update_from_templates $project $PODIR/$project
 	done
 }
