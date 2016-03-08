@@ -30,7 +30,24 @@ function pootle2src() {
 function process_translations_repo_based() {
 	logt 1 "Processing translations for export"
 
-	# TODO: print whatever legend we have
+	logt 2 "Legend:"
+	unset charc
+	unset chart
+	declare -gA charc # colors
+	declare -gA chart # text legend
+	charc["!"]=$RED; chart["!"]="uncovered case"
+	charc["o"]=$WHITE; chart["o"]="overriden from ext file"
+	charc["e"]=$RED; chart["e"]="English value is ok, was translated on purpose using Pootle"
+	charc["r"]=$YELLOW; chart["r"]="reverse-path (sources translated, pootle is untranslated). Will be published to Pootle"
+	charc["a"]=$CYAN; chart["a"]="ant build-lang will do (sources and pootle untranslated)"
+	charc["u"]=$BLUE; chart["u"]="untranslated, pick existing source value (Pootle untranslated, source auto-translated or auto-copied)"
+	charc["x"]=$LILA; chart["x"]="conflict/improvement Pootle wins (pootle and sources translated, different values). Review $copyingLogfile "
+	charc["·"]=$COLOROFF; chart["·"]="no-op (same, valid translation in pootle and sources)"
+	charc["p"]=$GREEN; chart["p"]="valid translation coming from pootle, sources untranslated"
+	charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
+	for char in ${!charc[@]}; do
+		loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
+	done;
 
 	for git_root in "${!GIT_ROOTS[@]}"; do
 		process_project_translations_repo_based $git_root true
