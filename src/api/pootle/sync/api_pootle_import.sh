@@ -9,6 +9,15 @@ function update_from_templates() {
 	# Update database as well as file system to reflect the latest version of translation templates
 	logt 4 "Updating Pootle templates (this may take a while...)"
 
+	# this call seems to update all languages from templates, except the templates itself
+	# this leads to poor exports as exported template is wrong
+	# for this reason, we call this on a per-language basis
+	read_pootle_projects_and_locales
+
+	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
+		call_manage "update_from_templates" "--project=$project" "--language=$locale" "-v 0"
+	done;
+
 	session_opened=$(is_admin_session_opened)
 
 	if ! $session_opened; then
@@ -23,10 +32,6 @@ function update_from_templates() {
 	if ! $session_opened; then
 		close_pootle_session
 	fi
-
-	# this call seems to update all languages from templates, except the templates itself
-	# this leads to poor exports as exported template is wrong
-	call_manage "update_from_templates" "--project=$project" "-v 0"
 }
 
 function update_pootle_db_from_templates() {
