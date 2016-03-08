@@ -150,8 +150,8 @@ function refill_translations_repo_based() {
 					Tval=${T["$extPrefix$Tkey"]}
 					char="o"
 				elif [[ "$SvalExp" == "$SvalTpl" ]]; then                     # ok, no overriding. Now, is exported value = template value?
-					valueStore=${T["$storePrefix$Tkey"]}                         #   then let's see if translators wrote the template value by hand in the text box
-					if [[ "$valueStore" == "$SvalTpl" ]]; then                 #   was it translated that way on purpose?
+					SvalStore=${T["$storePrefix$Tkey"]}                         #   then let's see if translators wrote the template value by hand in the text box
+					if [[ "$SvalStore" == "$SvalTpl" ]]; then                 #   was it translated that way on purpose?
 						char="e"                                                #       use the template value. English is ok in this case.
 						Tval=$SvalTpl
 					else                                                        #   otherwise, key is really untranslated in pootle
