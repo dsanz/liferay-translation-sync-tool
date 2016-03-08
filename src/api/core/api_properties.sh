@@ -210,7 +210,7 @@ function count_keys() {
 			fi
 		done < $lang_file
 	fi
-	${#KA[@]}
+	echo ${#KA[@]}
 }
 
 function restore_file_ownership() {
