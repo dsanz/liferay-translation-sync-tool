@@ -28,5 +28,12 @@ function display_source_projects_action() {
 		logt 3 "Git root: $git_root"
 		logt 3 "Projects: ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]}"
 	done
+
+	read_pootle_projects_and_locales
+	logt 3 "Current projects in Pootle:"
+	for project in "${POOTLE_PROJECT_CODES[@]}"; do
+		log -n $project
+	done
+	log
 }
 
