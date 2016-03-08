@@ -138,25 +138,25 @@ function refill_translations_repo_based() {
 		if [ ! "$line" == "" ]; then
 			char="!"
 			if is_key_line "$line" ; then
-				[[ "$line" =~ $kv_rexp ]] && key="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
-				valueTpl=${T["$templatePrefix$key"]}
-				valueExp=${T["$exportedPrefix$key"]}                            # get translation exported by pootle
+				[[ "$line" =~ $kv_rexp ]] && Tkey="${BASH_REMATCH[1]}" && value="${BASH_REMATCH[2]}"
+				valueTpl=${T["$templatePrefix$Tkey"]}
+				valueExp=${T["$exportedPrefix$Tkey"]}                            # get translation exported by pootle
 
-				if exists_ext_value $extPrefix $key; then                       # has translation to be overriden?
-					value=${T["$extPrefix$key"]}
+				if exists_ext_value $extPrefix $Tkey; then                       # has translation to be overriden?
+					value=${T["$extPrefix$Tkey"]}
 					char="o"
 				elif [[ "$valueExp" == "$valueTpl" ]]; then                     # ok, no overriding. Now, is exported value = template value?
-					valueStore=${T["$storePrefix$key"]}                         #   then let's see if translators wrote the template value by hand in the text box
+					valueStore=${T["$storePrefix$Tkey"]}                         #   then let's see if translators wrote the template value by hand in the text box
 					if [[ "$valueStore" == "$valueTpl" ]]; then                 #   was it translated that way on purpose?
 						char="e"                                                #       use the template value. English is ok in this case.
 						value=$valueTpl
 					else                                                        #   otherwise, key is really untranslated in pootle
-						valuePrev=${T["$sourceCodePrefix$key"]}                   #       let's look for the current key translation in master
+						valuePrev=${T["$sourceCodePrefix$Tkey"]}                   #       let's look for the current key translation in master
 						if is_translated_value "$valuePrev"; then               #       is the key translated in master? [shouldn't happen unless we run -r before a -p]
 							if [[ "$valuePrev" != "$valueTpl" ]]; then          #           ok, key is already translated in master. is that value different from the template?
 								char="r"                                        #               ok, then master is translated but Pootle not, hmmm! we have a reverse-path
 								value="$valuePrev"                              #               let's keep`the value in master as a good default.
-								R[$key]="$value";                               #               and memorize it so that Pootle can be properly updated later
+								R[$Tkey]="$value";                               #               and memorize it so that Pootle can be properly updated later
 							else                                                #           ok, value in master is just like the template
 								char="a"                                        #               discard it! ant build-lang will do
 								value=""
@@ -167,13 +167,13 @@ function refill_translations_repo_based() {
 						fi;
 					fi
 				else                                                            # ok, no overriding, and value is not the english one: it's supposed to be a valid translation!!
-					value=${T["$exportedPrefix$key"]}                           #   get translation exported by pootle
-					valuePrev=${T["$sourceCodePrefix$key"]}                       #   get the translation from master
+					value=${T["$exportedPrefix$Tkey"]}                           #   get translation exported by pootle
+					valuePrev=${T["$sourceCodePrefix$Tkey"]}                       #   get the translation from master
 					if is_translated_value "$valuePrev"; then                   #   is the master value translated?
 						if [[ "$valuePrev" != "$value" ]]; then                 #      is this translation different than the one pootle exported?
 							char="x"                                            #           ok, we have a conflict, pootle wins. Let user know
-							Cp[$key]="$value"                                   #           take note for logging purposes
-							Cl[$key]="$valuePrev"
+							Cp[$Tkey]="$value"                                   #           take note for logging purposes
+							Cl[$Tkey]="$valuePrev"
 						else                                                    #      ok, translation in master is just like the exported by pootle.
 							char="·"                                            #           no-op, already translated both in pootle and master
 						fi
@@ -203,8 +203,8 @@ function refill_translations_repo_based() {
 			logt 3 "Submitting translations from source to pootle. Next time be sure to run this manager with -p option!"
 			start_pootle_session
 			for key in "${!R[@]}"; do
-				value="${R[$key]}"
-				upload_submission "$key" "$value" "$storeId" "$path"
+				value="${R[$Tkey]}"
+				upload_submission "$Tkey" "$value" "$storeId" "$path"
 			done;
 			close_pootle_session
 		fi
@@ -219,8 +219,8 @@ function refill_translations_repo_based() {
 		logt 5 "$conflictsLogLiferay"
 		logt 4 -n "Generating conflict files"
 		for key in "${!Cp[@]}"; do
-			printf "%s=%s" "$key" "${Cp[$key]}" >> $conflictsLogPootle
-			printf "%s=%s" "$key" "${Cl[$key]}" >> $conflictsLogLiferay
+			printf "%s=%s" "$Tkey" "${Cp[$Tkey]}" >> $conflictsLogPootle
+			printf "%s=%s" "$Tkey" "${Cl[$Tkey]}" >> $conflictsLogLiferay
 		done;
 		check_command
 	fi
