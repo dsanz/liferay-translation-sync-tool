@@ -70,7 +70,7 @@ function process_project_translations_repo_based() {
 					refill_translations_repo_based $source_project $target_project $language $publish_translations
 
 					logt 3 -n "Garbage collection (target: $target_project, $locale)... "
-					clear_keys "$(get_previous_language_prefix $target_project $locale)"
+					clear_keys "$(get_source_code_language_prefix $target_project $locale)"
 					clear_keys "$(get_store_language_prefix $target_project $locale)"
 					clear_keys "$(get_ext_language_prefix $target_project $locale)"
 					check_command
@@ -101,18 +101,17 @@ function refill_translations_repo_based() {
 	locale=$(get_locale_from_file_name $language)
 
 	# involved file paths
-	srcfile="${AP_PROJECT_SRC_LANG_BASE["$project"]}/$language"
-	workingfile="${srcfile}.final"
+	target_file="${AP_PROJECT_SRC_LANG_BASE["$target_project"]}/$language"
+	workingfile="${target_file}.final"
 	copyingLogfile="$logbase/$project/$language"
 	conflictsLogPootle="$logbase/$project/$language.conflicts.pootle"
 	conflictsLogLiferay="$logbase/$project/$language.conflicts.liferay"
 
 	[[ -f $workingfile ]] && rm $workingfile # when debugging we don't run all sync stages so we can have this file from a previous run
-	target_lang_file_path="$TMP_PROP_OUT_DIR/$project/$language"
 
 	# prefixes for array accessing
 	exportedPrefix=$(get_exported_language_prefix $project $locale)
-	previousPrefix=$(get_previous_language_prefix $project $locale)
+	previousPrefix=$(get_source_code_language_prefix $project $locale)
 	templatePrefix=$(get_template_prefix $project $locale)
 	storePrefix=$(get_store_language_prefix $project $locale)
 	extPrefix=$(get_ext_language_prefix $project $locale)
@@ -187,7 +186,7 @@ function refill_translations_repo_based() {
 			printf "$format"  "[${char}]___${key}" >> $copyingLogfile
 			loglc 0 "${charc[$char]}" -n "$char"
 		fi;
-	done < $target_lang_file_path
+	done < $target_file
 	IFS=$OLDIFS
 
 	logt 0
@@ -227,8 +226,8 @@ function refill_translations_repo_based() {
 	unset Cp
 	unset Cl
 	logt 3 "Moving processed file to source dir"
-	logt 4 -n "Moving to $srcfile"
-	mv $workingfile $srcfile
+	logt 4 -n "Moving to $target_file"
+	mv $workingfile $target_file
 	check_command
 }
 
@@ -260,7 +259,7 @@ function process_project_translations() {
 			refill_translations $project $language $publish_translations
 			logt 3 -n "Garbage collection... "
 			clear_keys "$(get_exported_language_prefix $project $locale)"
-			clear_keys "$(get_previous_language_prefix $project $locale)"
+			clear_keys "$(get_source_code_language_prefix $project $locale)"
 			clear_keys "$(get_store_language_prefix $project $locale)"
 			clear_keys "$(get_ext_language_prefix $project $locale)"
 			check_command
@@ -331,7 +330,7 @@ function refill_translations() {
 
 	# prefixes for array accessing
 	exportedPrefix=$(get_exported_language_prefix $project $locale)
-	previousPrefix=$(get_previous_language_prefix $project $locale)
+	previousPrefix=$(get_source_code_language_prefix $project $locale)
 	templatePrefix=$(get_template_prefix $project $locale)
 	storePrefix=$(get_store_language_prefix $project $locale)
 	extPrefix=$(get_ext_language_prefix $project $locale)

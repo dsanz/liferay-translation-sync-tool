@@ -55,11 +55,11 @@ function read_source_code_language_file() {
 	locale=$(get_locale_from_file_name $language)
 	sources="${AP_PROJECT_SRC_LANG_BASE["$project"]}"
 	langFile="$sources/$language"
-	prefix=$(get_previous_language_prefix $project $locale)
+	prefix=$(get_source_code_language_prefix $project $locale)
 	read_locale_file $langFile $prefix
 }
 
-function get_previous_language_prefix() {
+function get_source_code_language_prefix() {
 	echo "p$1$2"
 }
 
