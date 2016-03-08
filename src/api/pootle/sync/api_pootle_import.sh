@@ -26,7 +26,7 @@ function update_from_templates() {
 			call_manage "update_from_templates" "--project=$project" "--language=$locale" "-v 0"
 			store_unit_count=$(count_targets $storeId)
 			logt 4 "Language file has $template_length keys. Store $storeId has $store_unit_count keys"
-		 	[[ $template_length > $store_unit_count ]] || break
+		 	[[ $template_length > $store_unit_count ]] || [[ "$locale" != "sr_RS_latin" ]] || break
 		done
 	done;
 
