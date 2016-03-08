@@ -98,7 +98,7 @@ function merge_pootle_projects_publishing() {
 		logt 2 "Setting pootle project template for $target_project_code"
 		update_from_templates $target_project_code "$TMP_PROP_OUT_DIR/$target_project_code"
 
-		provision_project_translations $target_project_code $target_project_code $TMP_PROP_OUT_DIR/$target_project_code
+#		provision_project_translations $target_project_code $target_project_code $TMP_PROP_OUT_DIR/$target_project_code
 	else
 		# provision new project (not from sources!)
 		start_pootle_session
