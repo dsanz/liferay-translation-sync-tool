@@ -200,7 +200,7 @@ function count_keys() {
 	done=false;
 
 	unset KA
-	declare -ga KA;
+	declare -gA KA;
 	if [[ $lines -gt 0 ]]; then
 		until $done; do
 			read line || done=true
