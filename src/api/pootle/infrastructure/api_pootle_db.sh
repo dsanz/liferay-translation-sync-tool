@@ -38,6 +38,11 @@ function get_targetf() {
 	echo $i;
 }
 
+function count_targets() {
+	local i=$(MYSQL_COMMAND $DB_NAME -s -e "set names utf8; select count(*) from pootle_store_unit where store_id=\"$1\";" | cut -d : -f2)
+	echo $i
+}
+
 function export_targets() {
 	$MYSQL_COMMAND $DB_NAME -s -e "set names utf8; select concat(unitid,\"=\",target_f) from pootle_store_unit where store_id=\"$1\" order by pootle_store_unit.index;" > $2
 }

@@ -194,6 +194,25 @@ function read_locale_file() {
 	loglc 0 $GREEN "[$lines lines read in $(echo "scale=3;($after - $before)/(1*10^09)" | $BC_BIN) s.] "
 }
 
+function count_keys() {
+	lang_file="$1"
+	lines=$(wc -l "$lang_file" | cut -d' ' -f1)  ## this reads n-1 in a n-lines file if last line is not terminated
+	done=false;
+
+	unset KA
+	declare -ga KA;
+	if [[ $lines -gt 0 ]]; then
+		until $done; do
+			read line || done=true
+			if is_key_line "$line" ; then
+				[[ "$line" =~ $k_rexp ]] && key="${BASH_REMATCH[1]}"
+				KA[$key]=1
+			fi
+		done < $lang_file
+	fi
+	${#KA[@]}
+}
+
 function restore_file_ownership() {
 	logt 3 "Restoring PO/ file ownership"
 	logt 4 -n "chown ${FS_UID}:${FS_GID} -R $PODIR"

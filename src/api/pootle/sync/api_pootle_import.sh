@@ -20,7 +20,14 @@ function update_from_templates() {
 	read_pootle_projects_and_locales
 
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
-		call_manage "update_from_templates" "--project=$project" "--language=$locale" "-v 0"
+		storeId=$(get_store_id $project $locale)
+		template_length=$(count_keys "$PODIR/$project/${FILE}.$PROP_EXT")
+		while : ; do
+			call_manage "update_from_templates" "--project=$project" "--language=$locale" "-v 0"
+			store_unit_count=$(count_targets $storeId)
+			logt 4 "Language file has $template_length keys. Store $storeId has $store_unit_count keys"
+		 	[[ $template_length > $store_unit_count ]] || break
+		done
 	done;
 
 	session_opened=$(is_admin_session_opened)
