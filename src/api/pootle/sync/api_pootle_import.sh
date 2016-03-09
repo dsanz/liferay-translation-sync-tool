@@ -9,7 +9,7 @@ function update_from_templates() {
 		cp "$src_dir/${FILE}.$PROP_EXT" "$PODIR/$project"
 		check_command
 	else
-		logt 4 -n "I've been instructed to sync directly from PODIR"
+		logt 4 "I've been instructed to sync directly from PODIR"
 	fi
 	# Update database as well as file system to reflect the latest version of translation templates
 	logt 4 "Updating Pootle templates (this may take a while...)"
