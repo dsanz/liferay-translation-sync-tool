@@ -26,11 +26,6 @@ function src2pootle() {
 	loglc 1 $RED "End Sync[Liferay source code -> Pootle]"
 }
 
-function post_language_translations() {
-	generate_additions
-	post_new_translations
-}
-
 function post_language_translations_repo_based() {
 	generate_additions
 	post_new_translations_repo_based
@@ -85,6 +80,18 @@ function generate_addition() {
 	loglc 5 "$color" -n "$commit $(get_locale_from_file_name $file) ($number_of_additions)"
 }
 
+function post_new_translations_repo_based() {
+	logt 1 "Posting commited translations from last update"
+	logt 2 "Creating session in Pootle"
+	start_pootle_session
+
+	for project in "${GIT_ROOT_POOTLE_PROJECT_NAME[@]}"; do
+		post_new_project_translations "$project"
+	done;
+	logt 2 "Closing session in Pootle"
+	close_pootle_session
+}
+
 function post_new_project_translations() {
 	project="$1"
 
@@ -99,29 +106,6 @@ function post_new_project_translations() {
 			post_file_batch "$project" "$locale"
 		done;
 	fi;
-}
-
-function post_new_translations_repo_based() {
-	logt 1 "Posting commited translations from last update"
-	logt 2 "Creating session in Pootle"
-	start_pootle_session
-
-	for project in "${GIT_ROOT_POOTLE_PROJECT_NAME[@]}"; do
-		post_new_project_translations "$project"
-	done;
-	logt 2 "Closing session in Pootle"
-	close_pootle_session
-}
-
-function post_new_translations() {
-	logt 1 "Posting commited translations from last update"
-	logt 2 "Creating session in Pootle"
-	start_pootle_session
-	for project in "${!AP_PROJECT_NAMES[@]}"; do
-		post_new_project_translations "$project"
-	done;
-	logt 2 "Closing session in Pootle"
-	close_pootle_session
 }
 
 function get_last_export_commit() {
@@ -193,4 +177,24 @@ function refresh_project_stats() {
 	logt 2 "$project: refreshing stats"
 	call_manage "refresh_stats" "--project=$project" "-v 0"
 	check_command
+}
+
+#
+# deprecated
+#
+
+function post_new_translations() {
+	logt 1 "Posting commited translations from last update"
+	logt 2 "Creating session in Pootle"
+	start_pootle_session
+	for project in "${!AP_PROJECT_NAMES[@]}"; do
+		post_new_project_translations "$project"
+	done;
+	logt 2 "Closing session in Pootle"
+	close_pootle_session
+}
+
+function post_language_translations() {
+	generate_additions
+	post_new_translations
 }
