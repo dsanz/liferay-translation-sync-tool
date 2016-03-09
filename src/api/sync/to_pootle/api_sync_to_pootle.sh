@@ -18,7 +18,6 @@ function src2pootle() {
 	loglc 1 $RED "Begin Sync[Liferay source code -> Pootle]"
 	display_source_projects_action
 	create_backup_action
-	# TODO: avoid reading source projects twice
 	update_pootle_db_from_templates_repo_based
 	clean_temp_input_dirs
 	post_language_translations_repo_based # bug #1949
