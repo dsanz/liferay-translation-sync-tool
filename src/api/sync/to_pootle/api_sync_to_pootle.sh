@@ -44,10 +44,11 @@ function generate_additions() {
 		clean_dir "$TMP_PROP_IN_DIR/$target_project"
 
 		while read source_project; do
-			logt 3 "Translations commited to source project: $source_project"
 			local path="${AP_PROJECT_SRC_LANG_BASE["$source_project"]}"
 			cd $path > /dev/null 2>&1
-			for file in $(ls ${FILE}${LANG_SEP}*.$PROP_EXT 2>/dev/null); do
+			translation_files=$(ls ${FILE}${LANG_SEP}*.$PROP_EXT 2>/dev/null)
+			logt 3 "Translations commited to source project: $source_project $(echo "$translation_files" | wc -w) language files"
+			for file in $translation_files; do
 				if [[ "$file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
 					commit=$(get_last_export_commit "$path" "$file")
 					generate_addition "$source_project" "$path" "$file" "$commit" "$target_project"
@@ -68,7 +69,7 @@ function generate_addition() {
 
 	cd $path > /dev/null 2>&1
 	#logt 5 -n "Generating additions from: git diff $commit $file "
-	git diff $commit $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/source_project/$file
+	git diff $commit $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$source_project/$file
 	number_of_additions=$(cat "$TMP_PROP_IN_DIR/$source_project/$file" | wc -l)
 	color="$GREEN"
 	if [[ $number_of_additions -eq 0 ]]; then
