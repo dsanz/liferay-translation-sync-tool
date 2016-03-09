@@ -40,11 +40,11 @@ function generate_additions() {
 		projects=$(echo "$project_list" | wc -l)
 
 		cd $git_root
-		logt 2 "$target_project ($git_root)"
+		logt 2 "Computing commits going to target $target_project ($git_root)"
 		clean_dir "$TMP_PROP_IN_DIR/$target_project"
 
 		for source_project in $projects; do
-			logt 3 "Source code project: $source_project"
+			logt 3 "Translations commited to source project: $source_project"
 			local path="${AP_PROJECT_SRC_LANG_BASE["$source_project"]}"
 			cd $path > /dev/null 2>&1
 			for file in $(ls ${FILE}${LANG_SEP}*.$PROP_EXT 2>/dev/null); do
@@ -77,7 +77,7 @@ function generate_addition() {
 	else
 		cat "$TMP_PROP_IN_DIR/$source_project/$file" >> "$TMP_PROP_IN_DIR/$target_project/$file"
 	fi;
-	loglc 5 "$color" -n "$commit $(get_locale_from_file_name $file) ($number_of_additions)"
+	loglc 5 "$color" -n "[$(get_locale_from_file_name $file) $commit ($number_of_additions)]"
 }
 
 function post_new_translations_repo_based() {
