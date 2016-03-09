@@ -78,7 +78,7 @@ function generate_addition() {
 	else
 		cat "$TMP_PROP_IN_DIR/$source_project/$file" >> "$TMP_PROP_IN_DIR/$target_project/$file"
 	fi;
-	loglc 5 "$color" -n "[$(get_locale_from_file_name $file) $commit ($number_of_additions)]"
+	logc "$color" -n "[$(get_locale_from_file_name $file) $commit ($number_of_additions)] "
 }
 
 function post_new_translations_repo_based() {
