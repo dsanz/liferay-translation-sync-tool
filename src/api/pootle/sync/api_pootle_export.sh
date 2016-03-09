@@ -19,20 +19,25 @@ function export_project_template() {
 	logt 2 "Exporting template from pootle DB ($project) "
 	check_dir "$PODIR/$project"
 	storeId=$(get_store_id $project "es")
-	logt 4 "Dumping store id $storeId into $exported_es_template_file"
-	export_template "$storeId" "$exported_es_template_file"
-	sync_stores_template_line_count=$(cat "$sync_stores_template_file" | wc -l )
-	exported_es_template_line_count=$(cat "$exported_es_template_file" | wc -l )
 
-	logt 3 "$project: Exported template ($exported_es_template_line_count lines). sync_stores output ($sync_stores_template_line_count lines)"
+	# better trust some language instead of templates!
+	logt 4 "Dumping store id $storeId into $sync_stores_template_file"
+	export_template "$storeId" "$sync_stores_template_file"
 
-	if [[ "$exported_es_template_line_count" -gt "$sync_stores_template_line_count" ]]; then
-		logt 3 "$project: Exported template from es language has more keys than sync_stores output. Using the exported template"
-		cp "$exported_es_template_file" "$sync_stores_template_file"
-	else
-		logt 3 "$project: Exported template from es language is ok with sync_stores output. Using the latter"
-		#rm "$exported_es_template_file"
-	fi
+#	logt 4 "Dumping store id $storeId into $exported_es_template_file"
+#	export_template "$storeId" "$exported_es_template_file"
+#	sync_stores_template_line_count=$(cat "$sync_stores_template_file" | wc -l )
+#	exported_es_template_line_count=$(cat "$exported_es_template_file" | wc -l )
+
+#	logt 3 "$project: Exported template ($exported_es_template_line_count lines). sync_stores output ($sync_stores_template_line_count lines)"
+
+#	if [[ "$exported_es_template_line_count" -gt "$sync_stores_template_line_count" ]]; then
+#		logt 3 "$project: Exported template from es language has more keys than sync_stores output. Using the exported template"
+#		cp "$exported_es_template_file" "$sync_stores_template_file"
+#	else
+#		logt 3 "$project: Exported template from es language is ok with sync_stores output. Using the latter"
+#		#rm "$exported_es_template_file"
+#	fi
 }
 
 function sync_stores() {
