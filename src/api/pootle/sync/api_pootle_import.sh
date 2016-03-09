@@ -68,7 +68,7 @@ function update_pootle_db_from_templates_repo_based() {
 
 		logt 2 "Pootle $project (git root: $git_root): will update templates from $projects projects"
 		while read source_code_project; do
-			logt 3 "Adding $source_code_project template"
+			logt 3 -n "Adding $source_code_project template"
 			cat ${AP_PROJECT_SRC_LANG_BASE[$source_code_project]}/$FILE.$PROP_EXT >> $PODIR/$project/$FILE.$PROP_EXT
 			check_command
 		done <<< "$project_list"
