@@ -51,9 +51,8 @@ function export_template() {
 	$MYSQL_COMMAND $DB_NAME -s -e "set names utf8; select concat(unitid,\"=\",source_f) from pootle_store_unit where store_id=\"$1\" order by pootle_store_unit.index;" > $2
 }
 
-## todo: http://cloud-10-50-0-102:443/pootle/ar/nuevo2/Language_ar.properties/translate/?unit=1014367
-## todo: export only templates in regenerate-stores
-## todo: check some translations for which publication failed
+
+# this is experimental. Not used for now
 function transfer_store() {
 	#transfer_store "$project" "$target_project_code" "$locale"
 	source_project="$1"
