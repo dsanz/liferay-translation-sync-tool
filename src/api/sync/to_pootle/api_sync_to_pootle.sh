@@ -40,10 +40,10 @@ function generate_additions() {
 		projects=$(echo "$project_list" | wc -l)
 
 		cd $git_root
-		logt 2 "Computing commits going to target $target_project ($git_root)"
+		logt 2 "Computing commits going to target project $target_project ($git_root)"
 		clean_dir "$TMP_PROP_IN_DIR/$target_project"
 
-		for source_project in $projects; do
+		while read source_project; do
 			logt 3 "Translations commited to source project: $source_project"
 			local path="${AP_PROJECT_SRC_LANG_BASE["$source_project"]}"
 			cd $path > /dev/null 2>&1
@@ -54,7 +54,7 @@ function generate_additions() {
 				fi;
 			done
 			log
-		done;
+		done <<< "$project_list"
 	done;
 }
 
