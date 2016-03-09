@@ -38,44 +38,51 @@ function post_language_translations_repo_based() {
 
 function generate_additions() {
 	logt 1 "Calculating committed translations from latest export commit, for each project/language"
-	for base_src_dir in "${!GIT_ROOTS[@]}"; do
-		projects="${AP_PROJECTS_BY_GIT_ROOT["$base_src_dir"]}"
-		cd $base_src_dir
-		logt 2 "$base_src_dir"
-		for project in $projects; do
-			logt 3 "$project"
-			local path="${AP_PROJECT_SRC_LANG_BASE["$project"]}"
+
+	for git_root in "${!GIT_ROOTS[@]}"; do
+		target_project="${GIT_ROOT_POOTLE_PROJECT_NAME[$git_root]}"
+		project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
+		projects=$(echo "$project_list" | wc -l)
+
+		cd $git_root
+		logt 2 "$target_project ($git_root)"
+		clean_dir "$TMP_PROP_IN_DIR/$target_project"
+
+		for source_project in $projects; do
+			logt 3 "Source code project: $source_project"
+			local path="${AP_PROJECT_SRC_LANG_BASE["$source_project"]}"
 			cd $path > /dev/null 2>&1
 			for file in $(ls ${FILE}${LANG_SEP}*.$PROP_EXT 2>/dev/null); do
 				if [[ "$file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
 					commit=$(get_last_export_commit "$path" "$file")
-					generate_addition "$project" "$path" "$file" "$commit" "$base_src_dir"
+					generate_addition "$source_project" "$path" "$file" "$commit" "$target_project"
 				fi;
 			done
+			log
 		done;
 	done;
 }
 
 # this function works either for module-based or repo-based layout
 function generate_addition() {
-	project="$1"
+	source_project="$1"
 	local path="$2"
 	file="$3"
 	commit="$4"
-	base_src_dir="$5"
+	target_project="$5"
 
 	cd $path > /dev/null 2>&1
 	#logt 5 -n "Generating additions from: git diff $commit $file "
-	git diff $commit $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$project/$file
-	number_of_additions=$(cat "$TMP_PROP_IN_DIR/$project/$file" | wc -l)
+	git diff $commit $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/source_project/$file
+	number_of_additions=$(cat "$TMP_PROP_IN_DIR/$source_project/$file" | wc -l)
 	color="$GREEN"
 	if [[ $number_of_additions -eq 0 ]]; then
-		rm "$TMP_PROP_IN_DIR/$project/$file"
+		rm "$TMP_PROP_IN_DIR/$source_project/$file"
 		color="$LIGHT_GRAY"
 	else
-		cat "$TMP_PROP_IN_DIR/$project/$file" >> "$TMP_PROP_IN_DIR/${GIT_ROOT_POOTLE_PROJECT_NAME[$base_src_dir]}/$file"
+		cat "$TMP_PROP_IN_DIR/$source_project/$file" >> "$TMP_PROP_IN_DIR/$target_project/$file"
 	fi;
-	loglc 5 "$color" "$commit $(get_locale_from_file_name $file) ($number_of_additions)"
+	loglc 5 "$color" -n "$commit $(get_locale_from_file_name $file) ($number_of_additions)"
 }
 
 function post_new_project_translations() {
