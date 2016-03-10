@@ -30,21 +30,19 @@ function sync_translations() {
 	declare -gA charc # colors
 	declare -gA chart # text legend
 
-	# to pootle
-	charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
-	charc["P"]=$YELLOW; chart["P"]="Sources translated, pootle untranslated. Will be published to Pootle"
-	charc["-"]=$WHITE; chart["-"]="source code has a translation which key no longer exists. Won't update pootle"
-	charc["·"]=$GREEN; chart["·"]="no-op (same, valid translation in pootle and sources)"
-
 	# common
-	charc["!"]=$RED; chart["!"]="uncovered case"
-	charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
-	charc["u"]=$BLUE; chart["u"]="source code and pootle untranslated"
+	charc["!"]=$RED; chart["!"]="Uncovered case (should never show up)"
+	charc["#"]=$COLOROFF; chart["#"]="Comment/blank line"
+	charc["u"]=$BLUE; chart["u"]="Sources and pootle untranslated"
+
+	# to pootle
+	charc["P"]=$YELLOW; chart["P"]="Sources translated, pootle untranslated. Will be published to Pootle"
+	charc["-"]=$WHITE; chart["-"]="Source code has a translation which key no longer exists. Won't update pootle. build-lang should remove it"
+	charc["·"]=$GREEN; chart["·"]="Same, valid translation in pootle and sources (no-op)"
 
 	# to sources
-	charc["o"]=$WHITE; chart["o"]="overriden from ext file"
-	charc["e"]=$RED; chart["e"]="English value is ok, was translated on purpose using Pootle"
-	charc["x"]=$LILA; chart["x"]="conflict/improvement Pootle wins (pootle and sources translated, different values). Review $copyingLogfile "
+	charc["o"]=$WHITE; chart["o"]="Overriden from ext file"
+	charc["x"]=$LILA; chart["x"]="Pootle and sources translated, different values (conflict/improvement, pootle wins)"
 	charc["S"]=$GREEN; chart["S"]="Source untranslated, pootle translated. Will update sources"
 
 	for char in ${!charc[@]}; do
@@ -163,7 +161,7 @@ function sync_project_locale_translations() {
 					is_sources_translated=$([[ "$Sval" != "$PValTpl" ]] && is_translated_value "$Sval")  # sources are translated if the value is not empty, is not an auto-translatuion and its value is different from the template
 
 					if $is_sources_translated; then                    # source code value is translated. Is pootle one translated too?
-						if $is_pootle_translated; then                 # store value is translated.
+						if $is_pootle_translated; then                 # store value is translated. This includes anything translator write, even english texts
 							if [[ "$PvalStore" == "$Sval" ]]; then     #   are pootle and source translation the same?
 								char="·"
 							else                                       #   we have a conflict. Pootle wins as we assume pootle gets improvements all the time
