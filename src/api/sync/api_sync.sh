@@ -61,30 +61,30 @@ function sync_translations() {
 function sync_project_translations() {
 	git_root="$1"
 
-	destination_pootle_project="${GIT_ROOT_POOTLE_PROJECT_NAME[$git_root]}"
+	pootle_project="${GIT_ROOT_POOTLE_PROJECT_NAME[$git_root]}"
 	source_project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 
-	logt 2 "$destination_pootle_project"
+	logt 2 "$pootle_project"
 
 	# this has to be read once per destination project
-	read_pootle_exported_template $destination_pootle_project
+	read_pootle_exported_template $pootle_project
 
 	start_pootle_session
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		language=$(get_file_name_from_locale $locale)
 		if [[ "$locale" != "en" && "$language" =~ $trans_file_rexp ]]; then
-			logt 2 "$destination_pootle_project: $locale"
+			logt 2 "$pootle_project: $locale"
 
 			# these have to be read once per source project and language
-			read_pootle_store $destination_pootle_project $language
+			read_pootle_store $pootle_project $language
 
 			# iterate all projects in the destination project list and 'backport' to them
 			while read source_project; do
-				if [[ $source_project != $destination_pootle_project ]]; then
+				if [[ $source_project != $pootle_project ]]; then
 					# this has to be read once per target project and locale
 					read_source_code_language_file $source_project $language
 
-					refill_incoming_translations_repo_based $destination_pootle_project $source_project $language
+					refill_incoming_translations_repo_based $pootle_project $source_project $language
 
 					logt 4 -n "Garbage collection (source: $source_project, $locale)... "
 					clear_keys "$(get_source_code_language_prefix $source_project $locale)"
@@ -92,14 +92,14 @@ function sync_project_translations() {
 				fi
 			done <<< "$source_project_list"
 
-			logt 3 -n "Garbage collection (target: $destination_pootle_project, $locale)... "
-			clear_keys "$(get_store_language_prefix $destination_pootle_project $locale)"
+			logt 3 -n "Garbage collection (target: $pootle_project, $locale)... "
+			clear_keys "$(get_store_language_prefix $pootle_project $locale)"
 			check_command
 		fi
 	done
 	close_pootle_session
 
-	logt 2 -n "Garbage collection (source project: $destination_pootle_project)... "
+	logt 2 -n "Garbage collection (source project: $pootle_project)... "
 	unset K
 	unset T
 	declare -gA T;
