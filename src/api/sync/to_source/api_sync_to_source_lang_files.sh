@@ -41,6 +41,7 @@ function read_pootle_exported_language_file() {
 	locale=$(get_locale_from_file_name $language)
 	langFile="$TMP_PROP_OUT_DIR/$project/$language"
 	prefix=$(get_exported_language_prefix $project $locale)
+	export_project_template $project
 	read_locale_file $langFile $prefix
 }
 
