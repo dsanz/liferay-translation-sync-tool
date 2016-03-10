@@ -167,7 +167,7 @@ function refill_incoming_translations_repo_based() {
 		logt 3 "Submitting translations from $source_project to $destination_pootle_project"
 		start_pootle_session
 		for key in "${!R[@]}"; do
-			value="${R[$Tkey]}"
+			value="${R[$Skey]}"
 			upload_submission "$key" "$value" "$storeId" "$path"
 		done;
 		close_pootle_session
