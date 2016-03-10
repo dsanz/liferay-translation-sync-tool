@@ -167,8 +167,9 @@ function sync_project_locale_translations() {
 						if $is_pootle_translated; then                 # store value is translated.
 							if [[ "$PvalStore" == "$Sval" ]]; then     #   are pootle and source translation the same?
 								char="·"
-							else                                       #   we have a conflict
+							else                                       #   we have a conflict. Pootle wins as we assume pootle gets improvements all the time
 								char="x"
+								S[$Skey]="$PvalStore"
 							fi
 						else                                           # store value is untranslated. Either no one wrote there or contains an old "auto" translation
 							char="P"                                   # use the source value for pootle
