@@ -142,7 +142,6 @@ function refill_incoming_translations_repo_based() {
 				if ! exists_key "$templatePrefix" "$Skey"; then
 					char="-"
 				else
-					# if Sval is untranslated, nothing to do
 					char="u"
 					if [[ "$Sval" != "$TvalTpl" ]]; then           # source code value has to be translated
 						if is_translated_value "$Sval"; then       # source code value is translated. Is pootle one translated too?
