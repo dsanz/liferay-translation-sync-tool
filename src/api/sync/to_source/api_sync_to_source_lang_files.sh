@@ -70,6 +70,7 @@ function read_pootle_store() {
 	logt 3 "Reading $project $language pootle store"
 	locale=$(get_locale_from_file_name $language)
 	langFile="$TMP_PROP_OUT_DIR/$project/$language.store"
+	check_dir "$TMP_PROP_OUT_DIR/$project/"
 	dump_store "$project" "$locale" "$langFile"
 	prefix=$(get_store_language_prefix $project $locale)
 	read_locale_file $langFile $prefix $3
