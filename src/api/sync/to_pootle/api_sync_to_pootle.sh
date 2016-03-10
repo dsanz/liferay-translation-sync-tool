@@ -20,11 +20,172 @@ function src2pootle() {
 	create_backup_action
 	update_pootle_db_from_templates_repo_based
 	clean_temp_input_dirs
-	post_language_translations_repo_based # bug #1949
+	#post_language_translations_repo_based # bug #1949
+	process_incoming_translations_repo_based
 	restore_file_ownership
 	refresh_stats_repo_based
 	loglc 1 $RED "End Sync[Liferay source code -> Pootle]"
 }
+
+function process_incoming_translations_repo_based() {
+	logt 1 "Processing translations to import"
+	logt 2 "Legend:"
+	unset charc
+	unset chart
+	declare -gA charc # colors
+	declare -gA chart # text legend
+	charc["!"]=$RED; chart["!"]="uncovered case"
+	charc["r"]=$YELLOW; chart["r"]="reverse-path (sources translated, pootle untranslated). Will be published to Pootle"
+	charc["u"]=$BLUE; chart["u"]="source code untranslated. Can not update pootle"
+	charc["·"]=$COLOROFF; chart["·"]="no-op (same, valid translation in pootle and sources)"
+	for char in ${!charc[@]}; do
+		loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
+	done;
+
+	for git_root in "${!GIT_ROOTS[@]}"; do
+		process_incoming_project_translations_repo_based $git_root
+	done;
+}
+
+# process translations from a repo-based projet layout
+function process_incoming_project_translations_repo_based() {
+	git_root="$1"
+
+	destination_pootle_project="${GIT_ROOT_POOTLE_PROJECT_NAME[$git_root]}"
+	source_project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
+
+	logt 2 "$destination_pootle_project"
+	logt 3 "Setting up per-project log file"
+	check_dir "$logbase/$destination_pootle_project/"
+
+	# this has to be read once per destination project
+	read_pootle_exported_template $destination_pootle_project
+
+	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
+		language=$(get_file_name_from_locale $locale)
+		if [[ "$locale" != "en" && "$language" =~ $trans_file_rexp ]]; then
+			logt 2 "$destination_pootle_project: $locale"
+
+			# these have to be read once per source project and language
+			read_pootle_store $destination_pootle_project $language
+
+			# iterate all projects in the destination project list and 'backport' to them
+			while read source_project; do
+				if [[ $source_project != $destination_pootle_project ]]; then
+					# this has to be read once per target project and locale
+					read_source_code_language_file $source_project $language
+
+					refill_incoming_translations_repo_based $destination_pootle_project $source_project $language
+
+					logt 3 -n "Garbage collection (source: $source_project, $locale)... "
+					clear_keys "$(get_source_code_language_prefix $source_project $locale)"
+					check_command
+				fi
+			done <<< "$source_project_list"
+
+			logt 3 -n "Garbage collection (target: $destination_pootle_project, $locale)... "
+			clear_keys "$(get_store_language_prefix $destination_pootle_project $locale)"
+		fi
+	done
+
+	logt 3 -n "Garbage collection (source project: $destination_pootle_project)... "
+	unset K
+	unset T
+	declare -gA T;
+	declare -ga K;
+	check_command
+}
+
+
+function refill_incoming_translations_repo_based() {
+	set -f
+	destination_pootle_project="$1";
+	source_project="$2";
+	language="$3";
+
+	locale=$(get_locale_from_file_name $language)
+
+	# involved file paths
+	source_lang_file="${AP_PROJECT_SRC_LANG_BASE["$source_project"]}/$language"
+
+	# destination project prefixes for array accessing
+	templatePrefix=$(get_template_prefix $destination_pootle_project $locale)
+	storePrefix=$(get_store_language_prefix $destination_pootle_project $locale)
+
+	# source code project prefixes for array accessing
+	sourceCodePrefix=$(get_source_code_language_prefix $source_project $locale)
+
+	declare -A R  # reverse translations
+
+	logt 3 "Importing committed translations from $source_project to $destination_pootle_project"
+	logt 0
+	done=false;
+	OLDIFS=$IFS
+	IFS=
+	# read the target language file. Variables meaning:
+	# Skey: source file language key
+	# Sval: source file language value. This one will be imported in pootle if needed
+	# TvalStore: target pootle language value associated to Skey (comes from dumped store)
+	# TvalTpl: target pootle template value associated to Skey
+
+	until $done; do
+		if ! read -r line; then
+			done=true;
+		fi;
+		if [ ! "$line" == "" ]; then
+			char="!"
+			if is_key_line "$line" ; then
+				[[ "$line" =~ $kv_rexp ]] && Skey="${BASH_REMATCH[1]}" && Sval="${BASH_REMATCH[2]}"
+				TvalStore=${T["$storePrefix$Skey"]}            # get store value
+				TvalTpl=${T["$templatePrefix$Skey"]}           # get template value
+				# if Sval is untranslated, nothing to do
+				char="u"
+				if [[ "$Sval" != "$TvalTpl" ]]; then           # source code value has to be translated
+					if is_translated_value "$Sval"; then       # source code value is translated. Is pootle one translated too?
+						if [[ "$TvalStore" == "" ]]; then               # store value is empty. No one wrote there
+							char="r"
+							R[$Skey]="$Sval";
+						elif ! is_translated_value "$TvalStore"; then   # store value contains an old "auto" translation
+							char="r"
+							R[$Skey]="$Sval";
+						else                                            # store value is translated.
+							char="·"
+						fi
+					fi
+				fi
+			fi
+			loglc 0 "${charc[$char]}" -n "$char"
+		fi;
+	done < $source_lang_file
+	IFS=$OLDIFS
+
+	log
+
+	if [[ ${#R[@]} -gt 0 ]];  then
+		storeId=$(get_store_id $destination_pootle_project $locale)
+		local path=$(get_pootle_path $destination_pootle_project $locale)
+		logt 3 "Submitting translations from $source_project to $destination_pootle_project"
+		start_pootle_session
+		for key in "${!R[@]}"; do
+			value="${R[$Tkey]}"
+			upload_submission "$key" "$value" "$storeId" "$path"
+		done;
+		close_pootle_session
+	else
+		logt 3 "No translations to import from $source_project to $destination_pootle_project"
+	fi
+
+	log
+	set +f
+	unset R
+	check_command
+}
+
+
+
+
+
+
 
 function post_language_translations_repo_based() {
 	generate_additions
@@ -43,15 +204,15 @@ function generate_additions() {
 		logt 2 "Computing commits going to target project $target_project ($git_root)"
 		clean_dir "$TMP_PROP_IN_DIR/$target_project"
 
-		while read source_project; do
-			local path="${AP_PROJECT_SRC_LANG_BASE["$source_project"]}"
+		while read destination_pootle_project; do
+			local path="${AP_PROJECT_SRC_LANG_BASE["$destination_pootle_project"]}"
 			cd $path > /dev/null 2>&1
 			translation_files=$(ls ${FILE}${LANG_SEP}*.$PROP_EXT 2>/dev/null)
-			logt 3 "Translations commited to source project: $source_project $(echo "$translation_files" | wc -w) language files"
+			logt 3 "Translations commited to source project: $destination_pootle_project $(echo "$translation_files" | wc -w) language files"
 			for file in $translation_files; do
 				if [[ "$file" != "${FILE}${LANG_SEP}en.${PROP_EXT}" ]]; then
 					commit=$(get_last_export_commit "$path" "$file")
-					generate_addition "$source_project" "$path" "$file" "$commit" "$target_project"
+					generate_addition "$destination_pootle_project" "$path" "$file" "$commit" "$target_project"
 				fi;
 			done
 			log
@@ -61,7 +222,7 @@ function generate_additions() {
 
 # this function works either for module-based or repo-based layout
 function generate_addition() {
-	source_project="$1"
+	destination_pootle_project="$1"
 	local path="$2"
 	file="$3"
 	commit="$4"
@@ -69,14 +230,14 @@ function generate_addition() {
 
 	cd $path > /dev/null 2>&1
 	#logt 5 -n "Generating additions from: git diff $commit $file "
-	git diff $commit $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$source_project/$file
-	number_of_additions=$(cat "$TMP_PROP_IN_DIR/$source_project/$file" | wc -l)
+	git diff $commit $file | sed -r 's/^[^\(]+\(Automatic [^\)]+\)$//' | grep -E "^\+[^=+][^=]*" | sed 's/^+//g' > $TMP_PROP_IN_DIR/$destination_pootle_project/$file
+	number_of_additions=$(cat "$TMP_PROP_IN_DIR/$destination_pootle_project/$file" | wc -l)
 	color="$GREEN"
 	if [[ $number_of_additions -eq 0 ]]; then
-		rm "$TMP_PROP_IN_DIR/$source_project/$file"
+		rm "$TMP_PROP_IN_DIR/$destination_pootle_project/$file"
 		color="$LIGHT_GRAY"
 	else
-		cat "$TMP_PROP_IN_DIR/$source_project/$file" >> "$TMP_PROP_IN_DIR/$target_project/$file"
+		cat "$TMP_PROP_IN_DIR/$destination_pootle_project/$file" >> "$TMP_PROP_IN_DIR/$target_project/$file"
 	fi;
 	logc "$color" -n "[$(get_locale_from_file_name $file) $commit ($number_of_additions)] "
 }
