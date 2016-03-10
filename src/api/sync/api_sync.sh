@@ -140,8 +140,8 @@ function sync_project_locale_translations() {
 	# read the source code language file. Variables meaning:
 	# Skey: source file language key
 	# Sval: source file language value. This one will be imported in pootle if needed
-	# TvalStore: target pootle language value associated to Skey (comes from dumped store)
-	# TvalTpl: target pootle template value associated to Skey
+	# PvalStore: Pootle language value associated to Skey (comes from dumped store)
+	# PValTpl: target pootle template value associated to Skey
 
 	until $done; do
 		if ! read -r line; then
@@ -151,19 +151,19 @@ function sync_project_locale_translations() {
 			char="#"
 			if is_key_line "$line" ; then
 				[[ "$line" =~ $kv_rexp ]] && Skey="${BASH_REMATCH[1]}" && Sval="${BASH_REMATCH[2]}"
-				TvalStore=${T["$storePrefix$Skey"]}            # get store value
-				TvalTpl=${T["$templatePrefix$Skey"]}           # get template value
+				PvalStore=${T["$storePrefix$Skey"]}            # get store value
+				PValTpl=${T["$templatePrefix$Skey"]}           # get template value
 
 				if ! exists_key "$templatePrefix" "$Skey"; then
 					char="-"
 				else
 					char="u"
-					if [[ "$Sval" != "$TvalTpl" ]]; then           # source code value has to be translated
+					if [[ "$Sval" != "$PValTpl" ]]; then           # source code value has to be translated
 						if is_translated_value "$Sval"; then       # source code value is translated. Is pootle one translated too?
-							if [[ "$TvalStore" == "" ]]; then               # store value is empty. No one wrote there
+							if [[ "$PvalStore" == "" ]]; then               # store value is empty. No one wrote there
 								char="R"
 								R[$Skey]="$Sval";
-							elif ! is_translated_value "$TvalStore"; then   # store value contains an old "auto" translation
+							elif ! is_translated_value "$PvalStore"; then   # store value contains an old "auto" translation
 								char="R"
 								R[$Skey]="$Sval";
 							else                                            # store value is translated.
