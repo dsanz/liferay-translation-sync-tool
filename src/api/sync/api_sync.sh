@@ -114,7 +114,7 @@ function sync_project_translations() {
 
 function sync_project_locale_translations() {
 	set -f
-	destination_pootle_project="$1";
+	pootle_project="$1";
 	source_project="$2";
 	language="$3";
 
@@ -124,15 +124,15 @@ function sync_project_locale_translations() {
 	source_lang_file="${AP_PROJECT_SRC_LANG_BASE["$source_project"]}/$language"
 
 	# destination project prefixes for array accessing
-	templatePrefix=$(get_template_prefix $destination_pootle_project $locale)
-	storePrefix=$(get_store_language_prefix $destination_pootle_project $locale)
+	templatePrefix=$(get_template_prefix $pootle_project $locale)
+	storePrefix=$(get_store_language_prefix $pootle_project $locale)
 
 	# source code project prefixes for array accessing
 	sourceCodePrefix=$(get_source_code_language_prefix $source_project $locale)
 
 	declare -A R  # reverse translations
 
-	logt 4 -n "Importing $source_project -> $destination_pootle_project ($locale): "
+	logt 4 -n "Importing $source_project -> $pootle_project ($locale): "
 	done=false;
 	OLDIFS=$IFS
 	IFS=
@@ -180,14 +180,14 @@ function sync_project_locale_translations() {
 	log
 
 	if [[ ${#R[@]} -gt 0 ]];  then
-		storeId=$(get_store_id $destination_pootle_project $locale)
-		local path=$(get_pootle_path $destination_pootle_project $locale)
+		storeId=$(get_store_id $pootle_project $locale)
+		local path=$(get_pootle_path $pootle_project $locale)
 		logt 4 "Submitting ${#R[@]} translations..."
 		for key in "${!R[@]}"; do
 			upload_submission "$key" "${R[$key]}" "$storeId" "$path"
 		done;
 	else
-		logt 4 "No translations to import $source_project -> $destination_pootle_project ($locale)"
+		logt 4 "No translations to import $source_project -> $pootle_project ($locale)"
 	fi
 
 	set +f
