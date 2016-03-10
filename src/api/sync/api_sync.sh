@@ -62,7 +62,7 @@ function sync_project_translations() {
 	git_root="$1"
 
 	pootle_project="${GIT_ROOT_POOTLE_PROJECT_NAME[$git_root]}"
-	source_project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
+	sources_project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 
 	logt 2 "$pootle_project"
 
@@ -79,18 +79,18 @@ function sync_project_translations() {
 			read_pootle_store $pootle_project $language
 
 			# iterate all projects in the destination project list and 'backport' to them
-			while read source_project; do
-				if [[ $source_project != $pootle_project ]]; then
+			while read sources_project; do
+				if [[ $sources_project != $pootle_project ]]; then
 					# this has to be read once per target project and locale
-					read_source_code_language_file $source_project $language
+					read_source_code_language_file $sources_project $language
 
-					refill_incoming_translations_repo_based $pootle_project $source_project $language
+					refill_incoming_translations_repo_based $pootle_project $sources_project $language
 
-					logt 4 -n "Garbage collection (source: $source_project, $locale)... "
-					clear_keys "$(get_source_code_language_prefix $source_project $locale)"
+					logt 4 -n "Garbage collection (source: $sources_project, $locale)... "
+					clear_keys "$(get_source_code_language_prefix $sources_project $locale)"
 					check_command
 				fi
-			done <<< "$source_project_list"
+			done <<< "$sources_project_list"
 
 			logt 3 -n "Garbage collection (target: $pootle_project, $locale)... "
 			clear_keys "$(get_store_language_prefix $pootle_project $locale)"
