@@ -178,6 +178,7 @@ function read_locale_file() {
 		until $done; do
 			read line || done=true
 			if is_key_line "$line" ; then
+				value="" # make sure we don't reuse previous values
 				# can't use [[ "$line" =~ $kv_rexp ]] because when reading a dumped store we can have empty keys
 				[[ "$line" =~ $k_rexp ]] && key="${BASH_REMATCH[1]}"
 				[[ "$line" =~ $v_rexp ]] && value="${BASH_REMATCH[1]}"
