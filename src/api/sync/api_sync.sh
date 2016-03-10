@@ -202,7 +202,14 @@ function sync_project_locale_translations() {
 		logt 4 "No translations to publish to pootle $pootle_project from $sources_project ($locale)"
 	fi
 
-	# TODO: process S array
+	if [[ ${#S[@]} -gt 0 ]];  then
+		logt 4 "Updating ${#S[@]} translations in sources:"
+		for key in "${!S[@]}"; do
+			upload_submission "$key" "${P[$key]}" "$storeId" "$path"
+		done;
+	else
+		logt 4 "No translations to publish to pootle $pootle_project from $sources_project ($locale)"
+	fi
 
 	set +f
 	unset R
