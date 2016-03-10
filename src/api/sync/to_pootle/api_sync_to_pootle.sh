@@ -169,10 +169,9 @@ function refill_incoming_translations_repo_based() {
 	if [[ ${#R[@]} -gt 0 ]];  then
 		storeId=$(get_store_id $destination_pootle_project $locale)
 		local path=$(get_pootle_path $destination_pootle_project $locale)
-		logt 4 "Submitting ..."
+		logt 4 "Submitting ${#R[@]} translations..."
 		for key in "${!R[@]}"; do
-			value="${R[$Skey]}"
-			upload_submission "$key" "$value" "$storeId" "$path"
+			upload_submission "$key" "${R[$key]}" "$storeId" "$path"
 		done;
 	else
 		logt 4 "No translations to import $source_project -> $destination_pootle_project ($locale)"
