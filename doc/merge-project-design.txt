@@ -49,14 +49,21 @@ some checks
  	4.2 backupId: 2016-03-09_10-05-46 (backed on laptop)
 
  5. sync to pootle
+ 	5.0 OK fix wrong logic generating additions!!!!!!!
  	5.1 enable just at repo. pootle-manager.sh -p
- 	5.2 backupId = ????????????????
+ 	5.2 backupId = 2016-03-10_06-05-09           (old backupId = 2016-03-09_15-29-04)
  	5.3 enable just plugins repo. pootle-manager.sh -p
- 	5.4 backupId = ????????????????
+ 	5.4 			(old backupId = 2016-03-09_15-59-46)
  	5.5 enable just portal repo. pootle-manager.sh -p
  	5.6 backupId = ????????????????
 
  6. sync to sources
+ 	6.1 enable just at repo. pootle-manager.sh -r
+  	6.2 backupId =
+  	6.3 enable just plugins repo. pootle-manager.sh -r
+  	6.4 backupId =
+  	6.5 enable just portal repo. pootle-manager.sh -r
+  	6.6 backupId =
 
  7. check results
 
