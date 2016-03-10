@@ -158,21 +158,16 @@ function sync_project_locale_translations() {
 				if exists_ext_value $extPrefix $Skey; then     # has translation to be overriden?
 					S[$Skey]=${T["$extPrefix$Skey"]}           # |  override translation using the ext file content
 					char="o"                                   # |
-                elif ! exists_key "$templatePrefix" "$Skey"; then
+				elif ! exists_key "$templatePrefix" "$Skey"; then
 					char="-"
 				else
 					char="u"
-					if [[ "$Sval" != "$PValTpl" ]]; then           # source code value has to be translated
-						if is_translated_value "$Sval"; then       # source code value is translated. Is pootle one translated too?
-							if [[ "$PvalStore" == "" ]]; then               # store value is empty. No one wrote there
-								char="P"
-								P[$Skey]="$Sval";
-							elif ! is_translated_value "$PvalStore"; then   # store value contains an old "auto" translation
-								char="P"
-								P[$Skey]="$Sval";
-							else                                            # store value is translated.
-								char="·"
-							fi
+					if [[ "$Sval" != "$PValTpl" ]] && is_translated_value "$Sval" ; then      # source code value is translated. Is pootle one translated too?
+						if ! is_translated_value "$PvalStore"; then                           # store value is untranslated. Either no one wrote there or contains an old "auto" translation
+							char="P"
+							P[$Skey]="$Sval";
+						else                                                                  # store value is translated.
+							char="·"
 						fi
 					fi
 				fi
