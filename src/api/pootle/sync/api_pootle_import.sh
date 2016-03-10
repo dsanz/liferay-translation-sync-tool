@@ -62,7 +62,7 @@ function update_pootle_db_from_templates_repo_based() {
 
 	for git_root in "${!GIT_ROOTS[@]}"; do
 		project="${GIT_ROOT_POOTLE_PROJECT_NAME[$git_root]}";
-
+		check_dir "$PODIR/$project/"
 		project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 		projects=$(echo "$project_list" | wc -l)
 
