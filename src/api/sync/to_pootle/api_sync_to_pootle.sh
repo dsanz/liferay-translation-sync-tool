@@ -64,7 +64,7 @@ function process_incoming_project_translations_repo_based() {
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		language=$(get_file_name_from_locale $locale)
 		if [[ "$locale" != "en" && "$language" =~ $trans_file_rexp ]]; then
-			logt 3 "$destination_pootle_project: $locale"
+			logt 2 "$destination_pootle_project: $locale"
 
 			# these have to be read once per source project and language
 			read_pootle_store $destination_pootle_project $language
