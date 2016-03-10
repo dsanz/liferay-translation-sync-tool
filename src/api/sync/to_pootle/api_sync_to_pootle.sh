@@ -142,7 +142,6 @@ function refill_incoming_translations_repo_based() {
 				if ! exists_key "$templatePrefix" "$Skey"; then
 					char="-"
 				else
-					# if Sval is untranslated, nothing to do
 					char="u"
 					if [[ "$Sval" != "$TvalTpl" ]]; then           # source code value has to be translated
 						if is_translated_value "$Sval"; then       # source code value is translated. Is pootle one translated too?
@@ -169,10 +168,9 @@ function refill_incoming_translations_repo_based() {
 	if [[ ${#R[@]} -gt 0 ]];  then
 		storeId=$(get_store_id $destination_pootle_project $locale)
 		local path=$(get_pootle_path $destination_pootle_project $locale)
-		logt 4 "Submitting ..."
+		logt 4 "Submitting ${#R[@]} translations..."
 		for key in "${!R[@]}"; do
-			value="${R[$Skey]}"
-			upload_submission "$key" "$value" "$storeId" "$path"
+			upload_submission "$key" "${R[$key]}" "$storeId" "$path"
 		done;
 	else
 		logt 4 "No translations to import $source_project -> $destination_pootle_project ($locale)"
@@ -209,13 +207,6 @@ function post_derived_translations() {
 		fi;
 	done;
 	close_pootle_session
-}
-
-function refresh_stats() {
-	logt 1 "Refreshing Pootle stats..."
-	for project in "${!AP_PROJECT_NAMES[@]}"; do
-		refresh_project_stats $project
-	done
 }
 
 function refresh_stats_repo_based() {

@@ -51,13 +51,15 @@ some checks
  5. sync to pootle
  	5.0 OK fix wrong logic generating additions!!!!!!!
  	5.1 enable just at repo. pootle-manager.sh -p
- 	5.2 backupId = 2016-03-10_06-05-09           (old backupId = 2016-03-09_15-29-04)
+ 	5.2 backupId = 2016-03-10_06-05-09   (old backupId = 2016-03-09_15-29-04)
  	5.3 enable just plugins repo. pootle-manager.sh -p
- 	5.4 			(old backupId = 2016-03-09_15-59-46)
+ 	5.4 backupId = 2016-03-10_06-16-35   (old backupId = 2016-03-09_15-59-46)
  	5.5 enable just portal repo. pootle-manager.sh -p
  	5.6 backupId = ????????????????
 
- 6. sync to sources
+ 6. Reimplement sync to be bidirectional all times
+
+ 7. sync
  	6.1 enable just at repo. pootle-manager.sh -r
   	6.2 backupId =
   	6.3 enable just plugins repo. pootle-manager.sh -r
@@ -65,12 +67,15 @@ some checks
   	6.5 enable just portal repo. pootle-manager.sh -r
   	6.6 backupId =
 
- 7. check results
+ 8. check results.
+ 	8.1 Check pootle has newest translations from master (see german)
+ 	8.2 Check branch in PR so that newest translations from pootle are there and no other stuff was committed
 
- 8. Send PR
+ 9. Send PR
 
- 9. Send DB to production
-   9.1 Review manager.prod.conf to change PORTAL_PROJECT_ID="liferay-portal"
+ 10. Send DB to production ? or reprovision everything from scracth?
+   10.1 Review manager.prod.conf to change PORTAL_PROJECT_ID="liferay-portal"
+   10.2 Change text in server
 
 
  Remaining projects:
