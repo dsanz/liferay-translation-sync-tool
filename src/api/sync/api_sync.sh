@@ -155,7 +155,10 @@ function sync_project_locale_translations() {
 				PvalStore=${T["$storePrefix$Skey"]}            # get store value
 				PValTpl=${T["$templatePrefix$Skey"]}           # get template value
 
-				if ! exists_key "$templatePrefix" "$Skey"; then
+				if exists_ext_value $extPrefix $Skey; then     # has translation to be overriden?
+					S[$Skey]=${T["$extPrefix$Skey"]}           # |  override translation using the ext file content
+					char="o"                                   # |
+                elif ! exists_key "$templatePrefix" "$Skey"; then
 					char="-"
 				else
 					char="u"
@@ -193,6 +196,8 @@ function sync_project_locale_translations() {
 	else
 		logt 4 "No translations to publish to pootle $pootle_project from $sources_project ($locale)"
 	fi
+
+	# TODO: process S array
 
 	set +f
 	unset R
