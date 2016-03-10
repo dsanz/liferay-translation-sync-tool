@@ -142,6 +142,9 @@ function sync_project_locale_translations() {
 	# PvalStore: Pootle language value associated to Skey (comes from dumped store)
 	# PValTpl: target pootle template value associated to Skey
 
+	# TODO: deal with the case where source file does not exist. should it be generated from pootle store? or be committed as part of build -lang, then resynced later?
+	# at least provide a message
+
 	until $done; do
 		if ! read -r line; then
 			done=true;
