@@ -23,9 +23,9 @@ function get_ext_language_prefix() {
 function read_pootle_exported_template() {
 	project="$1";
 	logt 3 "Reading $project template file"
-	template="$TMP_PROP_OUT_DIR/$project/$FILE.$PROP_EXT"
+	template="$PODIR/$project/$FILE.$PROP_EXT"
 	prefix=$(get_template_prefix $project $locale)
-	check_dir "$TMP_PROP_OUT_DIR/$project/"
+	check_dir "$PODIR/$project/"
 	export_project_template $project
 	read_locale_file $template $prefix true
 }
