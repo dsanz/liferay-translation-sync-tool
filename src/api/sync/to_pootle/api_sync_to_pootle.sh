@@ -209,13 +209,6 @@ function post_derived_translations() {
 	close_pootle_session
 }
 
-function refresh_stats() {
-	logt 1 "Refreshing Pootle stats..."
-	for project in "${!AP_PROJECT_NAMES[@]}"; do
-		refresh_project_stats $project
-	done
-}
-
 function refresh_stats_repo_based() {
 	logt 1 "Refreshing Pootle stats..."
 	for project in "${GIT_ROOT_POOTLE_PROJECT_NAME[@]}"; do
