@@ -21,10 +21,10 @@ function get_ext_language_prefix() {
 # given a project, reads the Language.properties file exported from pootle
 # and puts it into array T using the project as prefix
 function read_pootle_exported_template() {
-	project="$1";
+	local project="$1";
 	logt 3 "Reading $project template file"
-	template="$PODIR/$project/$FILE.$PROP_EXT"
-	prefix=$(get_template_prefix $project $locale)
+	local template="$PODIR/$project/$FILE.$PROP_EXT"
+	local prefix=$(get_template_prefix $project $locale)
 	check_dir "$PODIR/$project/"
 	export_project_template $project
 	read_locale_file $template $prefix true
@@ -37,12 +37,12 @@ function get_template_prefix() {
 # given a project and a language, reads the Language_xx.properties file
 # exported from pootle and puts it into array T using the locale as prefix
 function read_pootle_exported_language_file() {
-	project="$1";
-	language="$2";
+	local project="$1";
+	local language="$2";
 	logt 3 "Reading $project $language file as exported by Pootle"
-	locale=$(get_locale_from_file_name $language)
-	langFile="$TMP_PROP_OUT_DIR/$project/$language"
-	prefix=$(get_exported_language_prefix $project $locale)
+	local locale=$(get_locale_from_file_name $language)
+	local langFile="$TMP_PROP_OUT_DIR/$project/$language"
+	local prefix=$(get_exported_language_prefix $project $locale)
 	read_locale_file $langFile $prefix
 }
 
@@ -51,13 +51,13 @@ function get_exported_language_prefix() {
 }
 
 function read_source_code_language_file() {
-	project="$1";
-	language="$2";
+	local project="$1";
+	local language="$2";
 	logt 3 "Reading $project $language file from source code branch (just pulled)"
-	locale=$(get_locale_from_file_name $language)
-	sources="${AP_PROJECT_SRC_LANG_BASE["$project"]}"
-	langFile="$sources/$language"
-	prefix=$(get_source_code_language_prefix $project $locale)
+	local locale=$(get_locale_from_file_name $language)
+	local sources="${AP_PROJECT_SRC_LANG_BASE["$project"]}"
+	local langFile="$sources/$language"
+	local prefix=$(get_source_code_language_prefix $project $locale)
 	read_locale_file $langFile $prefix
 }
 
@@ -66,14 +66,14 @@ function get_source_code_language_prefix() {
 }
 
 function read_pootle_store() {
-	project="$1";
-	language="$2";
+	local project="$1";
+	local language="$2";
 	logt 3 "Reading $project $language pootle store"
-	locale=$(get_locale_from_file_name $language)
-	langFile="$TMP_PROP_OUT_DIR/$project/$language.store"
+	local locale=$(get_locale_from_file_name $language)
+	local langFile="$TMP_PROP_OUT_DIR/$project/$language.store"
 	check_dir "$TMP_PROP_OUT_DIR/$project/"
 	dump_store "$project" "$locale" "$langFile"
-	prefix=$(get_store_language_prefix $project $locale)
+	local prefix=$(get_store_language_prefix $project $locale)
 	read_locale_file $langFile $prefix $3
 }
 
