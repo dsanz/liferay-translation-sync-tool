@@ -56,8 +56,6 @@ function process_incoming_project_translations_repo_based() {
 	source_project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 
 	logt 2 "$destination_pootle_project"
-	logt 3 "Setting up per-project log file"
-	check_dir "$logbase/$destination_pootle_project/"
 
 	# this has to be read once per destination project
 	read_pootle_exported_template $destination_pootle_project
@@ -66,7 +64,7 @@ function process_incoming_project_translations_repo_based() {
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		language=$(get_file_name_from_locale $locale)
 		if [[ "$locale" != "en" && "$language" =~ $trans_file_rexp ]]; then
-			logt 2 "$destination_pootle_project: $locale"
+			logt 3 "$destination_pootle_project: $locale"
 
 			# these have to be read once per source project and language
 			read_pootle_store $destination_pootle_project $language
@@ -79,7 +77,7 @@ function process_incoming_project_translations_repo_based() {
 
 					refill_incoming_translations_repo_based $destination_pootle_project $source_project $language
 
-					logt 3 -n "Garbage collection (source: $source_project, $locale)... "
+					logt 4 -n "Garbage collection (source: $source_project, $locale)... "
 					clear_keys "$(get_source_code_language_prefix $source_project $locale)"
 					check_command
 				fi
@@ -92,7 +90,7 @@ function process_incoming_project_translations_repo_based() {
 	done
 	close_pootle_session
 
-	logt 3 -n "Garbage collection (source project: $destination_pootle_project)... "
+	logt 2 -n "Garbage collection (source project: $destination_pootle_project)... "
 	unset K
 	unset T
 	declare -gA T;
@@ -121,8 +119,7 @@ function refill_incoming_translations_repo_based() {
 
 	declare -A R  # reverse translations
 
-	logt 4 "Importing committed translations from $source_project to $destination_pootle_project"
-	logt 0
+	logt 4 -n "Importing $source_project -> $destination_pootle_project ($locale): "
 	done=false;
 	OLDIFS=$IFS
 	IFS=
@@ -173,17 +170,15 @@ function refill_incoming_translations_repo_based() {
 	if [[ ${#R[@]} -gt 0 ]];  then
 		storeId=$(get_store_id $destination_pootle_project $locale)
 		local path=$(get_pootle_path $destination_pootle_project $locale)
-		logt 3 "Submitting translations from $source_project to $destination_pootle_project"
-
+		logt 4 "Submitting ..."
 		for key in "${!R[@]}"; do
 			value="${R[$Skey]}"
 			upload_submission "$key" "$value" "$storeId" "$path"
 		done;
 	else
-		logt 3 "No translations to import from $source_project to $destination_pootle_project"
+		logt 4 "No translations to import $source_project -> $destination_pootle_project ($locale)"
 	fi
 
-	log
 	set +f
 	unset R
 	check_command
