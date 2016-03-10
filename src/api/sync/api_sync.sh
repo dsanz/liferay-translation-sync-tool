@@ -32,7 +32,7 @@ function sync_translations() {
 
 	# to pootle
 	charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
-	charc["R"]=$YELLOW; chart["R"]="reverse-path (sources translated, pootle untranslated). Will be published to Pootle"
+	charc["P"]=$YELLOW; chart["P"]="Sources translated, pootle untranslated. Will be published to Pootle"
 	charc["u"]=$BLUE; chart["u"]="source code untranslated. Can not update pootle"
 	charc["-"]=$WHITE; chart["-"]="source code has a translation which key no longer exists. Won't update pootle"
 	charc["·"]=$GREEN; chart["·"]="no-op (same, valid translation in pootle and sources)"
@@ -130,7 +130,7 @@ function sync_project_locale_translations() {
 	# sources code project prefixes for array accessing
 	sourceCodePrefix=$(get_source_code_language_prefix $sources_project $locale)
 
-	declare -A R  # reverse translations
+	declare -A P  # reverse translations
 
 	logt 4 -n "Synchronizing $sources_project <-> $pootle_project ($locale): "
 	done=false;
@@ -161,11 +161,11 @@ function sync_project_locale_translations() {
 					if [[ "$Sval" != "$PValTpl" ]]; then           # source code value has to be translated
 						if is_translated_value "$Sval"; then       # source code value is translated. Is pootle one translated too?
 							if [[ "$PvalStore" == "" ]]; then               # store value is empty. No one wrote there
-								char="R"
-								R[$Skey]="$Sval";
+								char="P"
+								P[$Skey]="$Sval";
 							elif ! is_translated_value "$PvalStore"; then   # store value contains an old "auto" translation
-								char="R"
-								R[$Skey]="$Sval";
+								char="P"
+								P[$Skey]="$Sval";
 							else                                            # store value is translated.
 								char="·"
 							fi
@@ -180,12 +180,12 @@ function sync_project_locale_translations() {
 
 	log
 
-	if [[ ${#R[@]} -gt 0 ]];  then
+	if [[ ${#P[@]} -gt 0 ]];  then
 		storeId=$(get_store_id $pootle_project $locale)
 		local path=$(get_pootle_path $pootle_project $locale)
-		logt 4 "Submitting ${#R[@]} translations to Pootle:"
-		for key in "${!R[@]}"; do
-			upload_submission "$key" "${R[$key]}" "$storeId" "$path"
+		logt 4 "Submitting ${#P[@]} translations to Pootle:"
+		for key in "${!P[@]}"; do
+			upload_submission "$key" "${P[$key]}" "$storeId" "$path"
 		done;
 	else
 		logt 4 "No translations to publish to pootle $pootle_project from $sources_project ($locale)"
