@@ -164,11 +164,11 @@ function sync_project_locale_translations() {
 
 					char="u"
 					if $is_sources_translated; then                    # source code value is translated. Is pootle one translated too?
-						if ! $is_pootle_translated; then                  # store value is untranslated. Either no one wrote there or contains an old "auto" translation
-							char="P"
-							P[$Skey]="$Sval";
-						else                                                                  # store value is translated.
+						if $is_pootle_translated; then                 # store value is translated.
 							char="·"
+						else                                           # store value is untranslated. Either no one wrote there or contains an old "auto" translation
+							char="P"                                   # use the source value for pootle
+							P[$Skey]="$Sval";
 						fi
 					else                                                                      # source code value is not translated. We have a chance to give it a value
 						if $is_pootle_translated; then
