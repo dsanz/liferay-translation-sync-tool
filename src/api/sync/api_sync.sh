@@ -115,24 +115,24 @@ function sync_project_translations() {
 function sync_project_locale_translations() {
 	set -f
 	pootle_project="$1";
-	source_project="$2";
+	sources_project="$2";
 	language="$3";
 
 	locale=$(get_locale_from_file_name $language)
 
 	# involved file paths
-	source_lang_file="${AP_PROJECT_SRC_LANG_BASE["$source_project"]}/$language"
+	source_lang_file="${AP_PROJECT_SRC_LANG_BASE["$sources_project"]}/$language"
 
 	# destination project prefixes for array accessing
 	templatePrefix=$(get_template_prefix $pootle_project $locale)
 	storePrefix=$(get_store_language_prefix $pootle_project $locale)
 
 	# source code project prefixes for array accessing
-	sourceCodePrefix=$(get_source_code_language_prefix $source_project $locale)
+	sourceCodePrefix=$(get_source_code_language_prefix $sources_project $locale)
 
 	declare -A R  # reverse translations
 
-	logt 4 -n "Importing $source_project -> $pootle_project ($locale): "
+	logt 4 -n "Importing $sources_project -> $pootle_project ($locale): "
 	done=false;
 	OLDIFS=$IFS
 	IFS=
@@ -187,7 +187,7 @@ function sync_project_locale_translations() {
 			upload_submission "$key" "${R[$key]}" "$storeId" "$path"
 		done;
 	else
-		logt 4 "No translations to import $source_project -> $pootle_project ($locale)"
+		logt 4 "No translations to import $sources_project -> $pootle_project ($locale)"
 	fi
 
 	set +f
