@@ -162,7 +162,6 @@ function sync_project_locale_translations() {
 					is_pootle_translated=$(is_translated_value "$PvalStore")                             # dump_store does not export empty values with the template value as native pootle sync_stores do
 					is_sources_translated=$([[ "$Sval" != "$PValTpl" ]] && is_translated_value "$Sval")  # sources are translated if the value is not empty, is not an auto-translatuion and its value is different from the template
 
-					char="u"
 					if $is_sources_translated; then                    # source code value is translated. Is pootle one translated too?
 						if $is_pootle_translated; then                 # store value is translated.
 							if [[ "$PvalStore" == "$Sval" ]]; then     #   are pootle and source translation the same?
