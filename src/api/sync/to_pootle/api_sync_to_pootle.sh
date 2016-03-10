@@ -230,5 +230,4 @@ function refresh_project_stats() {
 
 	logt 2 "$project: refreshing stats"
 	call_manage "refresh_stats" "--project=$project" "-v 0"
-	check_command
 }
