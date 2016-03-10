@@ -33,16 +33,16 @@ function sync_translations() {
 	# to pootle
 	charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
 	charc["P"]=$YELLOW; chart["P"]="Sources translated, pootle untranslated. Will be published to Pootle"
-	charc["u"]=$BLUE; chart["u"]="source code untranslated. Can not update pootle"
 	charc["-"]=$WHITE; chart["-"]="source code has a translation which key no longer exists. Won't update pootle"
 	charc["·"]=$GREEN; chart["·"]="no-op (same, valid translation in pootle and sources)"
 
-	# to sources
+	# common
+	charc["u"]=$BLUE; chart["u"]="source code and pootle untranslated"
 	charc["!"]=$RED; chart["!"]="uncovered case"
+
+	# to sources
 	charc["o"]=$WHITE; chart["o"]="overriden from ext file"
 	charc["e"]=$RED; chart["e"]="English value is ok, was translated on purpose using Pootle"
-	charc["a"]=$CYAN; chart["a"]="ant build-lang will do (sources and pootle untranslated)"
-	charc["u"]=$BLUE; chart["u"]="untranslated, pick existing source value (Pootle untranslated, source auto-translated or auto-copied)"
 	charc["x"]=$LILA; chart["x"]="conflict/improvement Pootle wins (pootle and sources translated, different values). Review $copyingLogfile "
 	charc["p"]=$GREEN; chart["p"]="valid translation coming from pootle, sources untranslated"
 	charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
@@ -179,6 +179,8 @@ function sync_project_locale_translations() {
 						if $is_pootle_translated; then
 							S[$Skey]="$PvalStore"
 							char="p"
+						else
+							char="u"
 						fi
 					fi
 				fi
