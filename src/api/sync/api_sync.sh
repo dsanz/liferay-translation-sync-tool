@@ -84,7 +84,7 @@ function sync_project_translations() {
 					# this has to be read once per sources project and locale
 					read_source_code_language_file $sources_project $language
 
-					refill_incoming_translations_repo_based $pootle_project $sources_project $language
+					sync_project_locale_translations $pootle_project $sources_project $language
 
 					logt 4 -n "Garbage collection (sources: $sources_project, $locale)... "
 					clear_keys "$(get_source_code_language_prefix $sources_project $locale)"
