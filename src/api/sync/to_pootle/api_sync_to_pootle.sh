@@ -61,6 +61,7 @@ function process_incoming_project_translations_repo_based() {
 	# this has to be read once per destination project
 	read_pootle_exported_template $destination_pootle_project
 
+	start_pootle_session
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		language=$(get_file_name_from_locale $locale)
 		if [[ "$locale" != "en" && "$language" =~ $trans_file_rexp ]]; then
@@ -85,8 +86,10 @@ function process_incoming_project_translations_repo_based() {
 
 			logt 3 -n "Garbage collection (target: $destination_pootle_project, $locale)... "
 			clear_keys "$(get_store_language_prefix $destination_pootle_project $locale)"
+			check_command
 		fi
 	done
+	close_pootle_session
 
 	logt 3 -n "Garbage collection (source project: $destination_pootle_project)... "
 	unset K
@@ -165,12 +168,11 @@ function refill_incoming_translations_repo_based() {
 		storeId=$(get_store_id $destination_pootle_project $locale)
 		local path=$(get_pootle_path $destination_pootle_project $locale)
 		logt 3 "Submitting translations from $source_project to $destination_pootle_project"
-		start_pootle_session
+
 		for key in "${!R[@]}"; do
 			value="${R[$Skey]}"
 			upload_submission "$key" "$value" "$storeId" "$path"
 		done;
-		close_pootle_session
 	else
 		logt 3 "No translations to import from $source_project to $destination_pootle_project"
 	fi
