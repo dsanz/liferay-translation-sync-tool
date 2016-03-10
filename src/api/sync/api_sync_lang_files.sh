@@ -80,3 +80,15 @@ function read_pootle_store() {
 function get_store_language_prefix() {
 	echo "s$1$2"
 }
+
+function read_derived_language_file() {
+	local project="$1";
+	local locale="$2";
+	local langFile=$(get_file_name_from_locale $locale)
+	local prefix=$(get_derived_language_prefix $project $locale)
+	read_locale_file $langFile $prefix "$3"
+}
+
+function get_derived_language_prefix() {
+	echo d$1$2
+}

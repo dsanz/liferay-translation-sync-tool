@@ -30,12 +30,11 @@ function load_api() {
 
 	. api/sync/backport/api_sync_backport.sh
 	. api/sync/backport/api_sync_backport_git.sh
-	. api/sync/to_source/api_sync_to_source.sh
+	. api/sync/api_sync.sh
+	. api/sync/api_sync_lang_files.sh
 	. api/sync/to_source/api_sync_to_source_build_sources.sh
-	. api/sync/to_source/api_sync_to_source_lang_files.sh
 	. api/sync/to_source/api_sync_to_source_git.sh
 	. api/sync/to_pootle/api_sync_to_pootle.sh
-	. api/sync/to_pootle/api_sync_to_pootle_lang_files.sh
 
 	# Load Actions
 	. actions/backup/create_backup_action.sh
@@ -55,8 +54,7 @@ function load_api() {
 	. actions/provisioning/provision_projects_actions.sh
 	. actions/provisioning/regenerate_file_stores_action.sh
 	. actions/provisioning/rescan_files_action.sh
-	. actions/sync/sync_sources_from_pootle_action.sh
-	. actions/sync/sync_pootle_from_sources_action.sh
+	. actions/sync/sync_action.sh
 	. actions/sync/spread_translations_action.sh
 
 	declare -xgr HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
@@ -70,8 +68,7 @@ main() {
 	resolve_params $@
 
 	# sync source/pootle actions
-	if   [ $SYNC_SOURCES ]; then sync_sources_from_pootle_action
-	elif [ $SYNC_POOTLE ];  then sync_pootle_from_sources_action
+	if   [ $SYNC ]; then sync_action
 	elif [ $SPREAD_TRANSLATIONS ]; then spread_translations_action $2 "$3"
 
 	# export translation actions

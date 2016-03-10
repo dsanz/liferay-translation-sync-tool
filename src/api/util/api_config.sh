@@ -13,14 +13,9 @@ function resolve_params() {
 	params="$@"
 	[ "$params" = "" ] && export HELP=1
 	for param in $1 ; do
-		if [ "$param" = "--pootle2repo" ] || [ "$param" = "-r" ]; then
-			export SYNC_SOURCES=1
-		elif [ "$param" = "--repo2pootle2repo" ] || [ "$param" = "-R" ]; then
-			export SYNC_POOTLE=1
-			export SYNC_SOURCES=1
-		elif [ "$param" = "--repo2pootle" ] || [ "$param" = "-p" ]; then
-			export SYNC_POOTLE=1
-		elif [ "$param" = "--rescanfile" ] || [ "$param" = "-s" ]; then
+		if [ "$param" = "--sync" ] || [ "$param" = "-s" ]; then
+			export SYNC=1
+		elif [ "$param" = "--rescanfile" ] || [ "$param" = "-r" ]; then
 			export RESCAN_FILES=1
 		elif [ "$param" = "--moveproject" ] || [ "$param" = "-m" ]; then
 			export MOVE_PROJECT=1
@@ -101,18 +96,11 @@ function print_help() {
 
 	echo -e "${YELLOW}Actions$COLOROFF"
 
-	print_action "-r, --pootle2repo"\
-		"Exports translations from Pootle to Liferay source code. First, saves pootle data into Language*.properties files, makes some processing to the files, then commits them into a branch named $EXPORT_BRANCH (created from a fresh copy of working branch) and pushes it to the configured remote repository.
-		Then sends a pull request to the branch maintainer. Repositiry, Working branch and maintainer github nick name are configurable (see conf directory)"
-
-	print_action "-p, --repo2pootle"\
+	print_action "-s, --sync"\
 		"Updates in Pootle the set of translatable available in the Language.properties files from a fresh copy of master (or specified branch). After that, updates all translations that have been \
-committed to master (or specified branch) since last commit done by the tool as a result of -r action. This allows developers to commit translations directly on master (or specified branch) w/o using Pootle."
+committed to master which are untranslated in pootle. In addition, exports all translations in pootle to the source code and generates one pull reuqest per configured repository."
 
-	print_action "-R, --repo2pootle2repo"\
-		"Runs a complete roundrtip from with -p, then with -r"
-
-	print_action "-s, --rescanfile"\
+	print_action "-r, --rescanfile"\
 		"Instructs Pootle to rescan filesystem to update the filenames in the DB. This basically avoids doing the same using the UI (saving a lot of time).\
 In addition, corrects any filename not matching Language_<locale>.properties naming convention"
 
@@ -202,8 +190,7 @@ No projects are created/deleted in pootle."
 
 	print_action "-h, --help" "Prints this help and exits"
 
-	SYNC_SOURCES=
-	SYNC_POOTLE=
+	SYNC=
 }
 
 function print_action() {
