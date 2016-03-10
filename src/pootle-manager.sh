@@ -68,8 +68,7 @@ main() {
 	resolve_params $@
 
 	# sync source/pootle actions
-	if   [ $SYNC_SOURCES ]; then sync_sources_from_pootle_action
-	elif [ $SYNC_POOTLE ];  then sync_pootle_from_sources_action
+	if   [ $SYNC ]; then sync_action
 	elif [ $SPREAD_TRANSLATIONS ]; then spread_translations_action $2 "$3"
 
 	# export translation actions

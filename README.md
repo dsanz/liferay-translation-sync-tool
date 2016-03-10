@@ -9,7 +9,7 @@ The installer is not part of this distribution so far.
 Tool is invoked with one action at a time. Each action might have additional arguments.
 
 ### Environment variables
- - ` LR_TRANS_MGR_PROFILE`    configuration profile to load (see Configuration section).
+ - `LR_TRANS_MGR_PROFILE`    configuration profile to load (see Configuration section).
  - `LR_TRANS_MGR_TAIL_LOG`   if value is 1, tool invocation will do tail on log file. This allows to track the execution in real time
  - `LR_TRANS_MGR_COLOR_LOG`  if value is 1, tool logs will be coloured
 
@@ -21,20 +21,12 @@ Tool output is written into log file. Filename is shown in the console
 
 ### Actions
 ##### Synchronizing Liferay source code and pootle
-`-r, --pootle2repo`
+`-s, --sync`
 
-Exports translations from Pootle to Liferay source code. First, saves pootle data into Language*.properties files, makes some processing to the files, then commits them into a branch named $EXPORT_BRANCH (created from a fresh copy of working branch) and pushes it to the configured remote repository. 
-Then sends a pull request to the branch maintainer. Repositiry, Working branch and maintainer github nick name are configurable (see conf directory)
+Updates in Pootle the set of translatable available in the Language.properties files from a fresh copy of master (or specified branch). After that, updates all translations that have been \
+committed to master which are untranslated in pootle. In addition, exports all translations in pootle to the source code and generates one pull reuqest per configured repository.
 
-`-p, --repo2pootle`
-
-Updates in Pootle the set of translatable available in the Language.properties files from a fresh copy of master (or specified branch). After that, updates all translations that have been committed to master (or specified branch) since last commit done by the tool as a result of -r action. This allows developers to commit translations directly on master (or specified branch) w/o using Pootle.
-
-`-R, --repo2pootle2repo`
-
-Runs a complete roundrtip from with -p, then with -r
-
-`-s, --rescanfile`
+`-r, --rescanfile`
 
 Instructs Pootle to rescan filesystem to update the filenames in the DB. This basically avoids doing the same using the UI (saving a lot of time).In addition, corrects any filename not matching Language_<locale>.properties naming convention
 
