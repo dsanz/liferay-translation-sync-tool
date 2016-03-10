@@ -130,7 +130,8 @@ function sync_project_locale_translations() {
 	# sources code project prefixes for array accessing
 	sourceCodePrefix=$(get_source_code_language_prefix $sources_project $locale)
 
-	declare -A P  # reverse translations
+	declare -A P  # Translations to be published to pootle
+	declare -A S  # Translations to update in sources
 
 	logt 4 -n "Synchronizing $sources_project <-> $pootle_project ($locale): "
 	done=false;
@@ -193,4 +194,5 @@ function sync_project_locale_translations() {
 
 	set +f
 	unset R
+	unset S
 }
