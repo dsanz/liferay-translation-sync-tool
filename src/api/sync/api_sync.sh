@@ -161,13 +161,21 @@ function sync_project_locale_translations() {
 				elif ! exists_key "$templatePrefix" "$Skey"; then
 					char="-"                                           # key does not exist in pootle template. We've just updated from templates so do nothing
 				else                                                   # key exists in pootle template, so we can update pootle AND sources now
+					is_pootle_translated=$(is_translated_value "$PvalStore")                             # dump_store does not export empty values with the template value as native pootle sync_stores do
+					is_sources_translated=$([[ "$Sval" != "$PValTpl" ]] && is_translated_value "$Sval")
+
 					char="u"
-					if [[ "$Sval" != "$PValTpl" ]] && is_translated_value "$Sval" ; then      # source code value is translated. Is pootle one translated too?
-						if ! is_translated_value "$PvalStore"; then                           # store value is untranslated. Either no one wrote there or contains an old "auto" translation
+					if $is_sources_translated; then                    # source code value is translated. Is pootle one translated too?
+						if ! $is_pootle_translated; then                  # store value is untranslated. Either no one wrote there or contains an old "auto" translation
 							char="P"
 							P[$Skey]="$Sval";
 						else                                                                  # store value is translated.
 							char="·"
+						fi
+					else                                                                      # source code value is not translated. We have a chance to give it a value
+						if $is_pootle_translated; then
+							S[$Skey]="$PvalStore"
+							char=char="p"
 						fi
 					fi
 				fi
