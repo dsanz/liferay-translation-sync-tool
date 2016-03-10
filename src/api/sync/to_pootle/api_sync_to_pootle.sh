@@ -37,6 +37,7 @@ function process_incoming_translations_repo_based() {
 	charc["!"]=$RED; chart["!"]="uncovered case"
 	charc["r"]=$YELLOW; chart["r"]="reverse-path (sources translated, pootle untranslated). Will be published to Pootle"
 	charc["u"]=$BLUE; chart["u"]="source code untranslated. Can not update pootle"
+	charc["-"]=$WHITE; chart["-"]="source code has a translation which key no longer exists. Won't update pootle"
 	charc["·"]=$COLOROFF; chart["·"]="no-op (same, valid translation in pootle and sources)"
 	for char in ${!charc[@]}; do
 		loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
@@ -120,7 +121,7 @@ function refill_incoming_translations_repo_based() {
 
 	declare -A R  # reverse translations
 
-	logt 3 "Importing committed translations from $source_project to $destination_pootle_project"
+	logt 4 "Importing committed translations from $source_project to $destination_pootle_project"
 	logt 0
 	done=false;
 	OLDIFS=$IFS
@@ -141,18 +142,23 @@ function refill_incoming_translations_repo_based() {
 				[[ "$line" =~ $kv_rexp ]] && Skey="${BASH_REMATCH[1]}" && Sval="${BASH_REMATCH[2]}"
 				TvalStore=${T["$storePrefix$Skey"]}            # get store value
 				TvalTpl=${T["$templatePrefix$Skey"]}           # get template value
-				# if Sval is untranslated, nothing to do
-				char="u"
-				if [[ "$Sval" != "$TvalTpl" ]]; then           # source code value has to be translated
-					if is_translated_value "$Sval"; then       # source code value is translated. Is pootle one translated too?
-						if [[ "$TvalStore" == "" ]]; then               # store value is empty. No one wrote there
-							char="r"
-							R[$Skey]="$Sval";
-						elif ! is_translated_value "$TvalStore"; then   # store value contains an old "auto" translation
-							char="r"
-							R[$Skey]="$Sval";
-						else                                            # store value is translated.
-							char="·"
+
+				if ! exists_key "$templatePrefix$Skey"; then
+					char="-"
+				else
+					# if Sval is untranslated, nothing to do
+					char="u"
+					if [[ "$Sval" != "$TvalTpl" ]]; then           # source code value has to be translated
+						if is_translated_value "$Sval"; then       # source code value is translated. Is pootle one translated too?
+							if [[ "$TvalStore" == "" ]]; then               # store value is empty. No one wrote there
+								char="r"
+								R[$Skey]="$Sval";
+							elif ! is_translated_value "$TvalStore"; then   # store value contains an old "auto" translation
+								char="r"
+								R[$Skey]="$Sval";
+							else                                            # store value is translated.
+								char="·"
+							fi
 						fi
 					fi
 				fi
