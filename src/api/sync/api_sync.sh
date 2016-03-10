@@ -159,8 +159,8 @@ function sync_project_locale_translations() {
 					S[$Skey]=${T["$extPrefix$Skey"]}           # |  override translation using the ext file content
 					char="o"                                   # |
 				elif ! exists_key "$templatePrefix" "$Skey"; then
-					char="-"
-				else
+					char="-"                                           # key does not exist in pootle template. We've just updated from templates so do nothing
+				else                                                   # key exists in pootle template, so we can update pootle AND sources now
 					char="u"
 					if [[ "$Sval" != "$PValTpl" ]] && is_translated_value "$Sval" ; then      # source code value is translated. Is pootle one translated too?
 						if ! is_translated_value "$PvalStore"; then                           # store value is untranslated. Either no one wrote there or contains an old "auto" translation
