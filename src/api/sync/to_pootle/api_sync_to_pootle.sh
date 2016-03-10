@@ -34,11 +34,11 @@ function process_incoming_translations_repo_based() {
 	unset chart
 	declare -gA charc # colors
 	declare -gA chart # text legend
-	charc["!"]=$RED; chart["!"]="uncovered case"
-	charc["r"]=$YELLOW; chart["r"]="reverse-path (sources translated, pootle untranslated). Will be published to Pootle"
+	charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
+	charc["R"]=$YELLOW; chart["R"]="reverse-path (sources translated, pootle untranslated). Will be published to Pootle"
 	charc["u"]=$BLUE; chart["u"]="source code untranslated. Can not update pootle"
 	charc["-"]=$WHITE; chart["-"]="source code has a translation which key no longer exists. Won't update pootle"
-	charc["·"]=$COLOROFF; chart["·"]="no-op (same, valid translation in pootle and sources)"
+	charc["·"]=$GREEN; chart["·"]="no-op (same, valid translation in pootle and sources)"
 	for char in ${!charc[@]}; do
 		loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
 	done;
@@ -134,7 +134,7 @@ function refill_incoming_translations_repo_based() {
 			done=true;
 		fi;
 		if [ ! "$line" == "" ]; then
-			char="!"
+			char="#"
 			if is_key_line "$line" ; then
 				[[ "$line" =~ $kv_rexp ]] && Skey="${BASH_REMATCH[1]}" && Sval="${BASH_REMATCH[2]}"
 				TvalStore=${T["$storePrefix$Skey"]}            # get store value
@@ -148,10 +148,10 @@ function refill_incoming_translations_repo_based() {
 					if [[ "$Sval" != "$TvalTpl" ]]; then           # source code value has to be translated
 						if is_translated_value "$Sval"; then       # source code value is translated. Is pootle one translated too?
 							if [[ "$TvalStore" == "" ]]; then               # store value is empty. No one wrote there
-								char="r"
+								char="R"
 								R[$Skey]="$Sval";
 							elif ! is_translated_value "$TvalStore"; then   # store value contains an old "auto" translation
-								char="r"
+								char="R"
 								R[$Skey]="$Sval";
 							else                                            # store value is translated.
 								char="·"
@@ -181,7 +181,6 @@ function refill_incoming_translations_repo_based() {
 
 	set +f
 	unset R
-	check_command
 }
 
 
