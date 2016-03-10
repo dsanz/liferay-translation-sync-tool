@@ -116,15 +116,15 @@ function get_last_export_commit() {
 	msg="$(get_locale_from_file_name $file):"
 	cd $path
 	child_of_last_export="HEAD"
-	last_export_commit=$(git log -n 1 --grep "$product_name" --after 2012 --format=format:"%H" $file)
+	last_export_commit=$(git log -n 1 --grep "$product_name" --after="2016-01-01" --format=format:"%H" $file)
 	if [[ $last_export_commit == "" ]]; then
 		#msg="$msg (no export commit containing $product_name) "
-		last_export_commit=$(git log -n 1 --grep "$old_product_name" --after 2012 --format=format:"%H" $file)
+		last_export_commit=$(git log -n 1 --grep "$old_product_name" --after="2016-01-01" --format=format:"%H" $file)
 	fi;
 	if [[ $last_export_commit == "" ]]; then
 		: #msg="$msg (no export commit containing $product_name) "
 	else
-		child_of_last_export=$(git rev-list --children --after 2012 HEAD | grep "^$last_export_commit" | cut -f 2 -d ' ')
+		child_of_last_export=$(git rev-list --children --after="2016-01-01" HEAD | grep "^$last_export_commit" | cut -f 2 -d ' ')
 	fi;
 	echo "$child_of_last_export";
 }
