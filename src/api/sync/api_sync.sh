@@ -132,7 +132,7 @@ function sync_project_locale_translations() {
 
 	declare -A R  # reverse translations
 
-	logt 4 -n "Importing $sources_project -> $pootle_project ($locale): "
+	logt 4 -n "Synchronizing $sources_project <-> $pootle_project ($locale): "
 	done=false;
 	OLDIFS=$IFS
 	IFS=
@@ -183,12 +183,12 @@ function sync_project_locale_translations() {
 	if [[ ${#R[@]} -gt 0 ]];  then
 		storeId=$(get_store_id $pootle_project $locale)
 		local path=$(get_pootle_path $pootle_project $locale)
-		logt 4 "Submitting ${#R[@]} translations..."
+		logt 4 "Submitting ${#R[@]} translations to Pootle:"
 		for key in "${!R[@]}"; do
 			upload_submission "$key" "${R[$key]}" "$storeId" "$path"
 		done;
 	else
-		logt 4 "No translations to import $sources_project -> $pootle_project ($locale)"
+		logt 4 "No translations to publish to pootle $pootle_project from $sources_project ($locale)"
 	fi
 
 	set +f
