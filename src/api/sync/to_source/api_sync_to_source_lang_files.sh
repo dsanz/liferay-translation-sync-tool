@@ -24,9 +24,9 @@ function read_pootle_exported_template() {
 	local project="$1";
 	logt 3 "Reading $project template file"
 	local template="$PODIR/$project/$FILE.$PROP_EXT"
-	local prefix=$(get_template_prefix $project $locale)
 	check_dir "$PODIR/$project/"
 	export_project_template $project
+	local prefix=$(get_template_prefix $project $locale)
 	read_locale_file $template $prefix true
 }
 
