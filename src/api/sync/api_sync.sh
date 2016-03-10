@@ -41,11 +41,9 @@ function sync_translations() {
 	charc["!"]=$RED; chart["!"]="uncovered case"
 	charc["o"]=$WHITE; chart["o"]="overriden from ext file"
 	charc["e"]=$RED; chart["e"]="English value is ok, was translated on purpose using Pootle"
-	charc["r"]=$YELLOW; chart["r"]="reverse-path (sources translated, pootle is untranslated). Will be published to Pootle"
 	charc["a"]=$CYAN; chart["a"]="ant build-lang will do (sources and pootle untranslated)"
 	charc["u"]=$BLUE; chart["u"]="untranslated, pick existing source value (Pootle untranslated, source auto-translated or auto-copied)"
 	charc["x"]=$LILA; chart["x"]="conflict/improvement Pootle wins (pootle and sources translated, different values). Review $copyingLogfile "
-	charc["·"]=$COLOROFF; chart["·"]="no-op (same, valid translation in pootle and sources)"
 	charc["p"]=$GREEN; chart["p"]="valid translation coming from pootle, sources untranslated"
 	charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
 
@@ -175,7 +173,7 @@ function sync_project_locale_translations() {
 					else                                                                      # source code value is not translated. We have a chance to give it a value
 						if $is_pootle_translated; then
 							S[$Skey]="$PvalStore"
-							char=char="p"
+							char="p"
 						fi
 					fi
 				fi
