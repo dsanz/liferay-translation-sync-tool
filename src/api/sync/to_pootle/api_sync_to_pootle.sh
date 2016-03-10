@@ -143,7 +143,7 @@ function refill_incoming_translations_repo_based() {
 				TvalStore=${T["$storePrefix$Skey"]}            # get store value
 				TvalTpl=${T["$templatePrefix$Skey"]}           # get template value
 
-				if ! exists_key "$templatePrefix$Skey"; then
+				if ! exists_key "$templatePrefix" "$Skey"; then
 					char="-"
 				else
 					# if Sval is untranslated, nothing to do
