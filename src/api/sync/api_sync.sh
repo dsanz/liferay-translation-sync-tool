@@ -162,7 +162,7 @@ function sync_project_locale_translations() {
 					char="-"                                           # key does not exist in pootle template. We've just updated from templates so do nothing
 				else                                                   # key exists in pootle template, so we can update pootle AND sources now
 					is_pootle_translated=$(is_translated_value "$PvalStore")                             # dump_store does not export empty values with the template value as native pootle sync_stores do
-					is_sources_translated=$([[ "$Sval" != "$PValTpl" ]] && is_translated_value "$Sval")
+					is_sources_translated=$([[ "$Sval" != "$PValTpl" ]] && is_translated_value "$Sval")  # sources are translated if the value is not empty, is not an auto-translatuion and its value is different from the template
 
 					char="u"
 					if $is_sources_translated; then                    # source code value is translated. Is pootle one translated too?
