@@ -123,11 +123,11 @@ function sync_project_locale_translations() {
 	# involved file paths
 	source_lang_file="${AP_PROJECT_SRC_LANG_BASE["$sources_project"]}/$language"
 
-	# destination project prefixes for array accessing
+	# pootle project prefixes for array accessing
 	templatePrefix=$(get_template_prefix $pootle_project $locale)
 	storePrefix=$(get_store_language_prefix $pootle_project $locale)
 
-	# source code project prefixes for array accessing
+	# sources code project prefixes for array accessing
 	sourceCodePrefix=$(get_source_code_language_prefix $sources_project $locale)
 
 	declare -A R  # reverse translations
@@ -136,7 +136,8 @@ function sync_project_locale_translations() {
 	done=false;
 	OLDIFS=$IFS
 	IFS=
-	# read the target language file. Variables meaning:
+
+	# read the source code language file. Variables meaning:
 	# Skey: source file language key
 	# Sval: source file language value. This one will be imported in pootle if needed
 	# TvalStore: target pootle language value associated to Skey (comes from dumped store)
