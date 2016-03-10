@@ -64,42 +64,43 @@ function sync_project_translations() {
 	pootle_project="${GIT_ROOT_POOTLE_PROJECT_NAME[$git_root]}"
 	sources_project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 
-	logt 2 "$pootle_project"
+	logt 2 "Synchronizing translations from/to pootle project $pootle_project"
 
 	# this has to be read once per destination project
 	read_pootle_exported_template $pootle_project
 
 	start_pootle_session
+
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		language=$(get_file_name_from_locale $locale)
 		if [[ "$locale" != "en" && "$language" =~ $trans_file_rexp ]]; then
 			logt 2 "$pootle_project: $locale"
 
-			# these have to be read once per source project and language
+			# these have to be read once per pootle project and language
 			read_pootle_store $pootle_project $language
 
-			# iterate all projects in the destination project list and 'backport' to them
 			while read sources_project; do
 				if [[ $sources_project != $pootle_project ]]; then
-					# this has to be read once per target project and locale
+					# this has to be read once per sources project and locale
 					read_source_code_language_file $sources_project $language
 
 					refill_incoming_translations_repo_based $pootle_project $sources_project $language
 
-					logt 4 -n "Garbage collection (source: $sources_project, $locale)... "
+					logt 4 -n "Garbage collection (sources: $sources_project, $locale)... "
 					clear_keys "$(get_source_code_language_prefix $sources_project $locale)"
 					check_command
 				fi
 			done <<< "$sources_project_list"
 
-			logt 3 -n "Garbage collection (target: $pootle_project, $locale)... "
+			logt 3 -n "Garbage collection (pootle: $pootle_project, $locale)... "
 			clear_keys "$(get_store_language_prefix $pootle_project $locale)"
 			check_command
 		fi
 	done
+
 	close_pootle_session
 
-	logt 2 -n "Garbage collection (source project: $pootle_project)... "
+	logt 2 -n "Garbage collection (sources: $pootle_project)... "
 	unset K
 	unset T
 	declare -gA T;
