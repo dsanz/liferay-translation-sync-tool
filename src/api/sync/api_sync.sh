@@ -149,7 +149,7 @@ function sync_project_locale_translations() {
 			done=true;
 		fi;
 		if [ ! "$line" == "" ]; then
-			char="#"
+			char="!"
 			if is_key_line "$line" ; then
 				[[ "$line" =~ $kv_rexp ]] && Skey="${BASH_REMATCH[1]}" && Sval="${BASH_REMATCH[2]}"
 				PvalStore=${T["$storePrefix$Skey"]}            # get store value
@@ -175,6 +175,8 @@ function sync_project_locale_translations() {
 				fi
 			fi
 			loglc 0 "${charc[$char]}" -n "$char"
+		else
+			char="#"                                                        # is it a comment line
 		fi;
 	done < $source_lang_file
 	IFS=$OLDIFS
