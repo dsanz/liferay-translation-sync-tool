@@ -37,15 +37,15 @@ function sync_translations() {
 	charc["·"]=$GREEN; chart["·"]="no-op (same, valid translation in pootle and sources)"
 
 	# common
-	charc["u"]=$BLUE; chart["u"]="source code and pootle untranslated"
 	charc["!"]=$RED; chart["!"]="uncovered case"
+	charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
+	charc["u"]=$BLUE; chart["u"]="source code and pootle untranslated"
 
 	# to sources
 	charc["o"]=$WHITE; chart["o"]="overriden from ext file"
 	charc["e"]=$RED; chart["e"]="English value is ok, was translated on purpose using Pootle"
 	charc["x"]=$LILA; chart["x"]="conflict/improvement Pootle wins (pootle and sources translated, different values). Review $copyingLogfile "
-	charc["p"]=$GREEN; chart["p"]="valid translation coming from pootle, sources untranslated"
-	charc["#"]=$COLOROFF; chart["#"]="comment/blank line"
+	charc["S"]=$GREEN; chart["S"]="Source untranslated, pootle translated. Will update sources"
 
 	for char in ${!charc[@]}; do
 		loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
@@ -174,10 +174,10 @@ function sync_project_locale_translations() {
 							char="P"                                   # use the source value for pootle
 							P[$Skey]="$Sval";
 						fi
-					else                                                                      # source code value is not translated. We have a chance to give it a value
+					else                                               # source code value is not translated. We have a chance to give it a value
 						if $is_pootle_translated; then
 							S[$Skey]="$PvalStore"
-							char="p"
+							char="S"
 						else
 							char="u"
 						fi
