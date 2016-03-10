@@ -111,3 +111,85 @@ function sync_project_translations() {
 	declare -ga K;
 	check_command
 }
+
+function sync_project_locale_translations() {
+	set -f
+	destination_pootle_project="$1";
+	source_project="$2";
+	language="$3";
+
+	locale=$(get_locale_from_file_name $language)
+
+	# involved file paths
+	source_lang_file="${AP_PROJECT_SRC_LANG_BASE["$source_project"]}/$language"
+
+	# destination project prefixes for array accessing
+	templatePrefix=$(get_template_prefix $destination_pootle_project $locale)
+	storePrefix=$(get_store_language_prefix $destination_pootle_project $locale)
+
+	# source code project prefixes for array accessing
+	sourceCodePrefix=$(get_source_code_language_prefix $source_project $locale)
+
+	declare -A R  # reverse translations
+
+	logt 4 -n "Importing $source_project -> $destination_pootle_project ($locale): "
+	done=false;
+	OLDIFS=$IFS
+	IFS=
+	# read the target language file. Variables meaning:
+	# Skey: source file language key
+	# Sval: source file language value. This one will be imported in pootle if needed
+	# TvalStore: target pootle language value associated to Skey (comes from dumped store)
+	# TvalTpl: target pootle template value associated to Skey
+
+	until $done; do
+		if ! read -r line; then
+			done=true;
+		fi;
+		if [ ! "$line" == "" ]; then
+			char="#"
+			if is_key_line "$line" ; then
+				[[ "$line" =~ $kv_rexp ]] && Skey="${BASH_REMATCH[1]}" && Sval="${BASH_REMATCH[2]}"
+				TvalStore=${T["$storePrefix$Skey"]}            # get store value
+				TvalTpl=${T["$templatePrefix$Skey"]}           # get template value
+
+				if ! exists_key "$templatePrefix" "$Skey"; then
+					char="-"
+				else
+					char="u"
+					if [[ "$Sval" != "$TvalTpl" ]]; then           # source code value has to be translated
+						if is_translated_value "$Sval"; then       # source code value is translated. Is pootle one translated too?
+							if [[ "$TvalStore" == "" ]]; then               # store value is empty. No one wrote there
+								char="R"
+								R[$Skey]="$Sval";
+							elif ! is_translated_value "$TvalStore"; then   # store value contains an old "auto" translation
+								char="R"
+								R[$Skey]="$Sval";
+							else                                            # store value is translated.
+								char="·"
+							fi
+						fi
+					fi
+				fi
+			fi
+			loglc 0 "${charc[$char]}" -n "$char"
+		fi;
+	done < $source_lang_file
+	IFS=$OLDIFS
+
+	log
+
+	if [[ ${#R[@]} -gt 0 ]];  then
+		storeId=$(get_store_id $destination_pootle_project $locale)
+		local path=$(get_pootle_path $destination_pootle_project $locale)
+		logt 4 "Submitting ${#R[@]} translations..."
+		for key in "${!R[@]}"; do
+			upload_submission "$key" "${R[$key]}" "$storeId" "$path"
+		done;
+	else
+		logt 4 "No translations to import $source_project -> $destination_pootle_project ($locale)"
+	fi
+
+	set +f
+	unset R
+}
