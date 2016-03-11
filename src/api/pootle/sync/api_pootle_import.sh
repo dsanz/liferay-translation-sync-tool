@@ -27,7 +27,8 @@ function update_from_templates() {
 			store_unit_count=$(count_targets $storeId)
 			logt 4 "Language file has $template_length keys. Store $storeId has $store_unit_count keys"
 		 	#[[ $template_length > $store_unit_count ]] || break
-		 	(( template_length > store_unit_count + 1 )) || break
+		 	# allow the store to have one key more or less than the incoming template
+			(( store_unit_count <= template_length + 1 )) && (( store_unit_count >= template_length - 1 )) && break;
 		 	[[ "$locale" == "sr_RS_latin" ]] && break
 		done
 	done;
