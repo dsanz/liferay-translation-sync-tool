@@ -60,7 +60,7 @@ function sync_translations() {
 
 function sync_project_translations() {
 	git_root="$1"
-
+      # TODO: make it sync from the single pootle project
 	pootle_project="${GIT_ROOT_POOTLE_PROJECT_NAME[$git_root]}"
 	sources_project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 
