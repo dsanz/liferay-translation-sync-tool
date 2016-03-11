@@ -80,7 +80,7 @@ function sort_indexes() {
 				log -n "[$existing_index>$initial_index] "
 				(( initial_index++ ))
 			else
-				loh -n "[$existing_index] "
+				log -n "[$existing_index] "
 			fi
 		else
 			log -n "[$existing_index > none] "
