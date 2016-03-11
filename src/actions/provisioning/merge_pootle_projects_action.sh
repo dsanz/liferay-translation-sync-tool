@@ -69,7 +69,7 @@ function merge_units() {
 
 function sort_indexes() {
 	storeId="$1"
-	initial_index=0
+	new_index=0
 	max_index=$(get_max_index $storeId)
 	unit_count=$(count_targets $storeId)
 
@@ -79,22 +79,22 @@ function sort_indexes() {
 		to=$unit_count
 	fi;
 	logt 3 "Sorting indexes in target store $storeId. Max index=$max_index, Unit count=$unit_count. Will iterate to $to"
-	for existing_index in $(seq 0 $to); do
-		get_unitids_by_store_and_index $storeId $existing_index
+	for current_index in $(seq 0 $to); do
+		get_unitids_by_store_and_index $storeId $current_index
  		for unitId in ${unitids_by_store_and_index[@]}; do # there can be more than one unit with the same index and storeId !!!
 			if [[ "$unitId" != "" ]]; then
-				if [[ "$existing_index" != "$initial_index" ]]; then
-					update_unit_index_by_store_and_unit_id $storeId $unitId $initial_index
-					log -n "[${unitId}_$existing_index>$initial_index] "
+				if [[ "$current_index" != "$new_index" ]]; then
+					update_unit_index_by_store_and_unit_id $storeId $unitId $new_index
+					log -n "[${unitId}_$current_index>$new_index] "
 				else
-					log -n "[${unitId}_$existing_index] "
+					log -n "[${unitId}_$current_index] "
 				fi
-				(( initial_index++ ))
+				(( new_index++ ))
 			else
-				log -n "[$existing_index>none] "
-				if [[ $existing_index == 0 ]]; then  # if first unit is not under index 0, let allow index 1 to be the first one
-					(( initial_index++ ))
-				fi;
+				log -n "[$current_index>____] "
+#				if [[ $current_index == 0 ]]; then  # if first unit is not under index 0, let allow index 1 to be the first one
+#					(( new_index++ ))
+#				fi;
 			fi;
 		done
 	done
