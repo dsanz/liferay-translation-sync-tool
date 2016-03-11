@@ -17,7 +17,7 @@ function merge_pootle_projects_DB() {
 		max_index=$(get_max_index $targetStoreId)
 		for source_project_code in "${POOTLE_PROJECT_CODES[@]}"; do
 			if [[ "$source_project_code" != "$target_project_code" ]]; then
-				merge_units $targetStoreId $source_project_code $locale
+				merge_units $targetStoreId $source_project_code $locale $max_index
 			fi;
 		done
 	done
@@ -27,9 +27,10 @@ function merge_units() {
 	targetStoreId="$1"
 	source_project_code="$2"
 	locale="$3"
+	max_index="$4"
 	sourceStoreId=$(get_store_id $source_project_code $locale)
 
-	logt 3 "Merging units from project $source_project_code ($locale), store $sourceStoreId into $targetStoreId"
+	logt 3 "Merging units from project $source_project_code ($locale), store $sourceStoreId into $targetStoreId. Starting at index $max_index"
 	get_units_by_storeId $sourceStoreId "$TMP_PROP_OUT_DIR/$sourceStoreId"
 	done=false;
 	until $done; do
@@ -45,13 +46,14 @@ function merge_units() {
 			(( max_index++))
 			update_unit_index_by_store_and_unit_id $source_storeId $unit_identifier $max_index
 			update_unit_store_id_by_unit_id $unit_identifier $targetStoreId
-			log -n "[$unit_identifier($max_index)]"
+			log -n "[$unit_identifier($max_index)] "
 		else
 			log -n "[$unit_identifier(*)]"
 		fi;
 	done < "$TMP_PROP_OUT_DIR/$sourceStoreId";
 	#rm "$TMP_PROP_OUT_DIR/$sourceStoreId"
 	log
+	# TODO: harmonize source_f across the same unitid
 }
 
 function sort_indexes() {
@@ -66,8 +68,8 @@ function sort_indexes() {
 		if [[ "$unitId" != "" ]]; then
 			if [[ "$existing_index" != "$initial_index" ]]; then
 				update_unit_index_by_store_and_unit_id $storeId $unitId $initial_index
+				log -n "[$existing_index>$initial_index] "
 				(( initial_index++ ))
-				log -n "[$existing_index > $initial_index]"
 			else
 				loh -n "[$existing_index]"
 			fi
