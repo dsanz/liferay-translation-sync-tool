@@ -13,7 +13,7 @@ function merge_pootle_projects_DB() {
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		targetStoreId=$(get_store_id $target_project_code $locale)
 		logt 2 "Processing locale $locale, target store $targetStoreId"
-		sort_indexes $target_project_code
+		sort_indexes $targetStoreId
 		max_index=$(get_max_index $targetStoreId)
 		for source_project_code in "${POOTLE_PROJECT_CODES[@]}"; do
 			if [[ "$source_project_code" != "$target_project_code" ]]; then
@@ -47,7 +47,7 @@ function merge_units() {
 			update_unit_store_id_by_unit_id $unit_identifier $targetStoreId
 			log -n "[$unit_id > $max_index]"
 		else
-			lok -n "[$unit_id *]"
+			log -n "[$unit_id *]"
 		fi;
 	done < "$TMP_PROP_OUT_DIR/$sourceStoreId";
 	#rm "$TMP_PROP_OUT_DIR/$sourceStoreId"
