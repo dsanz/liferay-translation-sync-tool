@@ -17,6 +17,7 @@ function merge_pootle_projects_DB() {
 		max_index=$(get_max_index $targetStoreId)
 		for source_project_code in "${POOTLE_PROJECT_CODES[@]}"; do
 			if [[ "$source_project_code" != "$target_project_code" ]]; then
+				max_index=$(get_max_index $targetStoreId)
 				merge_units $targetStoreId $source_project_code $locale $max_index
 			fi;
 		done
@@ -34,21 +35,24 @@ function merge_units() {
 	get_units_by_storeId $sourceStoreId "$TMP_PROP_OUT_DIR/$sourceStoreId"
 	done=false;
 	until $done; do
-	read unit || done=true
-		# cad="12345@6789"; i=$(expr index "$cad" "@"); echo ${cad:0:i-1}; echo ${cad:i}
-		i=$(expr index "$unit" "@")
-		unit_identifier=${unit:0:i-1}
-		unitid=${unit:i}
+		read unit || done=true
+		if [[ "$unit" != "" ]]; then
+			# cad="12345@6789"; i=$(expr index "$cad" "@"); echo ${cad:0:i-1}; echo ${cad:i}
+			i=$(expr index "$unit" "@")
+			unit_identifier=${unit:0:i-1}
+			unitid=${unit:i}
 
-		existing_unitid=$(get_unitid_storeId_and_unitid $targetStoreId $unitid)
-		if [[ $existing_unitid == "" ]]; then
-			# do this only if target store does not contain the same unitid
-			(( max_index++))
-			update_unit_index_by_store_and_unit_id $source_storeId $unit_identifier $max_index
-			update_unit_store_id_by_unit_id $unit_identifier $targetStoreId
-			log -n "[$unit_identifier($max_index)] "
-		else
-			log -n "[$unit_identifier(*)]"
+			existing_unitid=$(get_unitid_storeId_and_unitid $targetStoreId $unitid)
+			if [[ $existing_unitid == "" ]]; then # do this only if target store does not contain the same unitid
+				(( max_index++ ))
+				# change the unit index while it still is in the source store
+				update_unit_index_by_store_and_unit_id $sourceStoreId $unit_identifier $max_index
+				# change the unit store
+				update_unit_store_id_by_unit_id $unit_identifier $targetStoreId
+				log -n "[$unit_identifier($max_index)] "
+			else
+				log -n "[$unit_identifier(*)] "
+			fi;
 		fi;
 	done < "$TMP_PROP_OUT_DIR/$sourceStoreId";
 	#rm "$TMP_PROP_OUT_DIR/$sourceStoreId"
@@ -71,10 +75,10 @@ function sort_indexes() {
 				log -n "[$existing_index>$initial_index] "
 				(( initial_index++ ))
 			else
-				loh -n "[$existing_index]"
+				loh -n "[$existing_index] "
 			fi
 		else
-			log -n "[$existing_index > none]"
+			log -n "[$existing_index > none] "
 		fi;
 	done
 	log
