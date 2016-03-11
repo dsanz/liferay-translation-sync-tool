@@ -1,5 +1,6 @@
 function merge_pootle_projects_action() {
 	#merge_pootle_projects_publishing "$1" "$2"
+	read_pootle_projects_and_locales
 	merge_pootle_projects_DB "$1"
 }
 
@@ -8,6 +9,7 @@ function merge_pootle_projects_DB() {
 	target_project_code="$1";
 	logt 2 "Merging all projects in $target_project_code"
 	check_dir "$TMP_PROP_OUT_DIR"
+
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		targetStoreId=$(get_store_id $target_project_code $locale)
 		logt 2 "Processing locale $locale, target store $targetStoreId"
