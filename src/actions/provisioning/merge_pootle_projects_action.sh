@@ -72,7 +72,7 @@ function sort_indexes() {
 		to=$unit_count
 	fi;
 	logt 3 "Sorting indexes in target store $storeId. Max index=$max_index, Unit count=$unit_count. Will iterate to $to"
-	for existing_index in $(seq 1 $to); do
+	for existing_index in $(seq 0 $to); do
 		unitId=$(get_unitid_by_store_and_index $storeId $existing_index)
 		if [[ "$unitId" != "" ]]; then
 			if [[ "$existing_index" != "$initial_index" ]]; then
@@ -84,6 +84,9 @@ function sort_indexes() {
 			fi
 		else
 			log -n "[$existing_index > none] "
+			if [[ $existing_index == 0 ]]; then  # if first unit is not under index 0, let allow index 1 to be the first one
+				(( initial_index++ ))
+			fi;
 		fi;
 	done
 	log
