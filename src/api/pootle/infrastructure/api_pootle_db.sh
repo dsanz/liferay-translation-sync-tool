@@ -111,8 +111,12 @@ function transfer_store() {
 
 # given a locale name such as "pt_BR" returns the file name "Language_pt_BR.properties"
 function get_filename(){
-	local i="Language_$1.properties"
-	echo $i;
+	locale="$1"
+	if [[ "$locale" == "templates" ]]; then
+		echo "$FILE.$PROP_EXT"
+	else
+		echo "${FILE}${LANG_SEP}$locale.${PROP_EXT}"
+	fi;
 }
 
 # given a project name and a locale, returns the path of the store for translations of that project in that language
