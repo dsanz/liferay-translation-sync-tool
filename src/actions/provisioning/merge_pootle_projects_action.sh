@@ -7,6 +7,7 @@ function merge_pootle_projects_action() {
 function merge_pootle_projects_DB() {
 	target_project_code="$1";
 	logt 2 "Merging all projects in $target_project_code"
+	check_dir "$TMP_PROP_OUT_DIR"
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		targetStoreId=$(get_store_id $target_project_code $locale)
 		logt 2 "Processing locale $locale, target store $targetStoreId"
