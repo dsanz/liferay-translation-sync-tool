@@ -87,7 +87,7 @@ function sort_indexes() {
 					update_unit_index_by_store_and_unit_id $storeId $unitId $initial_index
 					log -n "[${unitId}_$existing_index>$initial_index] "
 				else
-					log -n "[$existing_index] "
+					log -n "[${unitId}_$existing_index] "
 				fi
 				(( initial_index++ ))
 			else
