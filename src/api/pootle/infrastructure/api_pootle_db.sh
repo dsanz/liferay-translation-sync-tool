@@ -26,6 +26,28 @@ function get_unitid() {
 	echo $i;
 }
 
+function get_unitids_by_storeId() {
+	$MYSQL_COMMAND $DB_NAME -s -N -e "select pootle_store_unit.id from pootle_store_unit where store_id=\"$1\" order by pootle_store_unit.index;" > $2
+}
+
+function get_max_index() {
+	local i=$($MYSQL_COMMAND $DB_NAME -s -N -e "select max(pootle_store_unit.index) from pootle_store_unit where store_id=\"$1\";")
+	echo $i
+}
+
+function get_unitid_by_store_and_index() {
+	local i=$($MYSQL_COMMAND $DB_NAME -s -N -e "select pootle_store_unit.id from pootle_store_unit where store_id=\"$1\" and pootle_store_unit.index=\"$2\";")
+	echo $i;
+}
+
+function update_unit_index_by_store_and_unit_id() {
+	$MYSQL_COMMAND $DB_NAME -s -N -e "update pootle_store_unit set pootle_store_unit.index=\"$3\" where store_id=\"$1\" and pootle_store_unit.id=\"$2\";"
+}
+
+function update_unit_store_id_by_unit_id() {
+	$MYSQL_COMMAND $DB_NAME -s -N -e "update pootle_store_unit set pootle_store_unit.store_id=\"$2\" where pootle_store_unit.id=\"$1\";"
+}
+
 # given the storeId and the language key (unitId) returns the source_f field of that translation unit in the DB, which stores the default (English) translation of the key
 function get_sourcef() {
 	local i=$($MYSQL_COMMAND $DB_NAME -s -N  -e "select pootle_store_unit.source_f from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";")

@@ -1,49 +1,56 @@
 function merge_pootle_projects_action() {
 	merge_pootle_projects_publishing "$1" "$2"
-
+	merge_pootle_projects_DB "$1"
 }
 
-#
-# First merge projects impl: based on transferring translation units in the db. We thus keep things like word count
-function merge_pootle_projects_unit_transfer() {
-	target_project_code="$1"
-	source_project_codes="$2"
-	source_project_list="$(echo $source_project_codes | sed 's: :\n:g' | sort)"
-	logt 1 "Merging projects: $source_project_codes"
-	logt 1 "into project: $target_project_code"
 
-	read_pootle_projects_and_locales
+function merge_pootle_projects_DB() {
+	target_project_code="$1";
+	logt 2 "Merging all projects in $target_project_code"
+	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
+		targetStoreId=$(get_store_id $target_project_code $locale)
+		logt 2 "Processing locale $locale, target store $targetStoreId"
+		sort_indexes $target_project_code 0
+		max_index=$(get_max_index $storeId)
+		for source_project_code in "${POOTLE_PROJECT_CODES[@]}"; do
+			if [[ "$source_project_code" != "$target_project_code" ]]; then
+				sourceStoreId=$(get_store_id $source_project_code $locale)
+				logt 3 "Merging units from project $source_project_code ($locale), store $sourceStoreId into $targetStoreId"
+				get_unitids_by_storeId $sourceStoreId "$TMP_PROP_OUT_DIR/$sourceStoreId"
+				done=false;
+				until $done; do
+				read unit_id || done=true
+					(( max_index++))
+					update_unit_index_by_store_and_unit_id $source_storeId $unit_id $max_index
+					update_unit_store_id_by_unit_id $unit_id $targetStoreId
+					log -n "[$unit_id > $max_index]"
+				done < "$TMP_PROP_OUT_DIR/$sourceStoreId";
+				#rm "$TMP_PROP_OUT_DIR/$sourceStoreId"
+				log
+			fi;
+		done
+	done
+}
 
-	prepare_output_dir "$target_project_code"
+function sort_indexes() {
+	storeId="$1"
+	initial_index="$2"
+	max_index=$(get_max_index $storeId)
 
-	while read project; do
-		if exists_project_in_pootle_DB $project; then
-			logt 2 "Joining source pootle project template: $project"
-			cat $PODIR/$project/$FILE.$PROP_EXT >> $TMP_PROP_OUT_DIR/$target_project_code/$FILE.$PROP_EXT
+	logt 3 "Sorting indexes in target store $storeId"
+	for existing_index in $(seq 0 $max_index); do
+		unitId=$(get_unitid_by_store_and_index $storeId $existing_index)
+		if [[ "$unitId" != "" ]]; then
+			update_unit_index_by_store_and_unit_id $storeId $unitId $initial_index
+			if [[ "$existing_index" != "$initial_index" ]]; then
+				log -n "[$existing_index > $initial_index]"
+			fi
 		else
-		 	logt 2 "Skippig $project as it does not exist in pootle"
-		fi
-	done <<< "$source_project_list"
-
-	# just create the new project and update the templates
-	add_pootle_project_action $target_project_code "$target_project_code" 0
-	provision_project_template $target_project_code $target_project_code $TMP_PROP_OUT_DIR/$target_project_code
-
-	# now, transfer stores
-	while read project; do
-		if exists_project_in_pootle_DB $project; then
-			logt 2 "Transferring source pootle project stores: $project"
-
-			for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
-				language_file=$(get_file_name_from_locale $locale);
-				storeFile="$TMP_PROP_OUT_DIR/$project/$language_file.store"
-				transfer_store "$project" "$target_project_code" "$locale"
-			done;
-		else
-		 	logt 2 "Skippig $project as it does not exist in pootle"
-		fi
-	done <<< "$source_project_list"
-
+			log -n "[$existing_index > none]"
+		fi;
+		(( initial_index++ ))
+	done
+	log
 }
 
 #
