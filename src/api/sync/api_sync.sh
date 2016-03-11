@@ -39,8 +39,8 @@ function sync_translations() {
 
 	# to pootle
 	charc["P"]=$YELLOW; chart["P"]="Sources translated, pootle untranslated. Will be published to Pootle"
-	charc["-"]=$WHITE; chart["-"]="Source code has a translation which key no longer exists. Won't update pootle. build-lang should remove it"
-	charc["·"]=$GREEN; chart["·"]="Same, valid translation in pootle and sources (no-op)"
+	charc["-"]=$COLOROFF; chart["-"]="Source code has a translation which key no longer exists. Won't update pootle. build-lang should remove it"
+	charc["·"]=$CYAN; chart["·"]="Same, valid translation in pootle and sources (no-op)"
 
 	# to sources
 	charc["o"]=$WHITE; chart["o"]="Overriden from ext file"
