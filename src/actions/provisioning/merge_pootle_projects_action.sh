@@ -38,9 +38,9 @@ function merge_units() {
 		read unit || done=true
 		if [[ "$unit" != "" ]]; then
 			# cad="12345@6789"; i=$(expr index "$cad" "@"); echo ${cad:0:i-1}; echo ${cad:i}
-			i=$(expr index "$unit" "@")
-			unit_identifier=${unit:0:i-1}
-			unitid=${unit:i}
+			pos=$(expr index "$unit" "@")
+			unit_identifier=${unit:0:pos-1}
+			unitid=${unit:pos}
 
 			existing_unitid=$(get_unitid_storeId_and_unitid $targetStoreId $unitid)
 			if [[ $existing_unitid == "" ]]; then # do this only if target store does not contain the same unitid
