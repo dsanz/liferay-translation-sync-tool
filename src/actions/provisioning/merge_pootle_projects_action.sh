@@ -78,10 +78,10 @@ function sort_indexes() {
 			if [[ "$existing_index" != "$initial_index" ]]; then
 				update_unit_index_by_store_and_unit_id $storeId $unitId $initial_index
 				log -n "[$existing_index>$initial_index] "
-				(( initial_index++ ))
 			else
 				log -n "[$existing_index] "
 			fi
+			(( initial_index++ ))
 		else
 			log -n "[$existing_index > none] "
 			if [[ $existing_index == 0 ]]; then  # if first unit is not under index 0, let allow index 1 to be the first one
