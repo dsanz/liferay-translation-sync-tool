@@ -230,8 +230,9 @@ function sync_project_locale_translations() {
 	if [[ ${#S[@]} -gt 0 ]];  then
 		logt 4 "Updating ${#S[@]} translations in sources:"
 		for key in "${!S[@]}"; do
-			logt 4 "$key=${S[$key]}"
-			write_translation $source_lang_file $key "${S[$key]}"
+			val="${S[$key]}"
+			logt 4 "$key=$val"
+			sed -i "s/^$key=.*/$key=${val//\//\\/}/" $source_lang_file
 		done;
 	else
 		logt 4 "No translations to update in $sources_project from $pootle_project ($locale)"
@@ -240,12 +241,4 @@ function sync_project_locale_translations() {
 	set +f
 	unset P
 	unset S
-}
-
-function write_translation() {
-	source_lang_file="$1"
-	key="$2"
-	value="$3"
-
-	sed -i "s/^$key=.*/$key=${value//\//\\/}/" $source_lang_file
 }
