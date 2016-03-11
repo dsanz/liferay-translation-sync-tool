@@ -16,30 +16,30 @@ function clean_tables() {
 
 # given the storeId and the language key (unitId) returns the index of that translation unit in the DB
 function get_index() {
-	local i=$($MYSQL_COMMAND $DB_NAME -s  -e "select pootle_store_unit.index from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";"  | cut -d : -f2)
+	local i=$($MYSQL_COMMAND $DB_NAME -s -N -e "select pootle_store_unit.index from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";")
 	echo $i;
 }
 
 # given the storeId and the language key (unitId) returns the id (pk)  of the translation unit in the DB
 function get_unitid() {
-	local i=$($MYSQL_COMMAND $DB_NAME -s  -e "select pootle_store_unit.id from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";"  | cut -d : -f2)
+	local i=$($MYSQL_COMMAND $DB_NAME -s -N -e "select pootle_store_unit.id from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";")
 	echo $i;
 }
 
 # given the storeId and the language key (unitId) returns the source_f field of that translation unit in the DB, which stores the default (English) translation of the key
 function get_sourcef() {
-	local i=$($MYSQL_COMMAND $DB_NAME -s  -e "select pootle_store_unit.source_f from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";"  | cut -d : -f2)
+	local i=$($MYSQL_COMMAND $DB_NAME -s -N  -e "select pootle_store_unit.source_f from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";")
 	echo $i;
 }
 
 # given the storeId and the language key (unitId) returns the target_f field of that translation unit in the DB, which stores the translation of the key
 function get_targetf() {
-	local i=$($MYSQL_COMMAND $DB_NAME -s  -e "select pootle_store_unit.target_f from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";"  | cut -d : -f2)
+	local i=$($MYSQL_COMMAND $DB_NAME -s -N  -e "select pootle_store_unit.target_f from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";")
 	echo $i;
 }
 
 function count_targets() {
-	local i=$($MYSQL_COMMAND $DB_NAME -s -e "set names utf8; select count(*) from pootle_store_unit where store_id=\"$1\";" | cut -d : -f2)
+	local i=$($MYSQL_COMMAND $DB_NAME -s -N -e "set names utf8; select count(*) from pootle_store_unit where store_id=\"$1\";")
 	echo $i
 }
 
@@ -112,7 +112,7 @@ function get_path() {
 function get_store_id() {
 	project="$1"
 	locale="$2"
-	local i=$($MYSQL_COMMAND $DB_NAME -s -e "select pootle_store_store.id from pootle_store_store where pootle_path=\"$(get_pootle_path $project $locale)\";"  | cut -d : -f2)
+	local i=$($MYSQL_COMMAND $DB_NAME -s -N -e "select pootle_store_store.id from pootle_store_store where pootle_path=\"$(get_pootle_path $project $locale)\";")
 	echo $i;
 }
 
