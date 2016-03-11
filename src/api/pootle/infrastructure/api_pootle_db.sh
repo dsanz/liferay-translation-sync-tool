@@ -37,7 +37,7 @@ function get_max_index() {
 
 function get_unitids_by_store_and_index() {
 	unset unitids_by_store_and_index;
-	read -r -a unitids_by_store_and_index <<< $(mysql pootle -s -N -e "select id from pootle_store_unit where store_id=586 and pootle_store_unit.index=10;")
+	read -r -a unitids_by_store_and_index <<< $($MYSQL_COMMAND $DB_NAME  -s -N -e "select id from pootle_store_unit where store_id=586 and pootle_store_unit.index=10;")
 }
 
 function update_unit_index_by_store_and_unit_id() {
@@ -186,7 +186,9 @@ function get_pootle_project_codes() {
 }
 
 function get_default_project_locales() {
-	local i=$($MYSQL_COMMAND $DB_NAME -s -N -e "select code from pootle_app_language where id in (select language_id from pootle_app_translationproject where real_path='${PORTAL_PROJECT_ID}');")
-	echo -e "$i" | grep -v "templates";
+	unset POOTLE_PROJECT_LOCALES
+	declare -xga POOTLE_PROJECT_LOCALES;
+	read -ra  <<<  $(get_default_project_locales)
+	read -r -a POOTLE_PROJECT_LOCALES <<< $($MYSQL_COMMAND $DB_NAME -s -N -e "select code from pootle_app_language where id in (select language_id from pootle_app_translationproject where real_path='${PORTAL_PROJECT_ID}') and code!='templates';")
 }
 

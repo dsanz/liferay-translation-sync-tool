@@ -50,9 +50,7 @@ function read_pootle_projects_and_locales() {
 	check_command
 
 	logt 2 -n "Reading used locales from pootle DB"
-	unset POOTLE_PROJECT_LOCALES
-	declare -xga POOTLE_PROJECT_LOCALES;
-	read -ra POOTLE_PROJECT_LOCALES <<<  $(get_default_project_locales)
+	get_default_project_locales
 	check_command
 }
 
