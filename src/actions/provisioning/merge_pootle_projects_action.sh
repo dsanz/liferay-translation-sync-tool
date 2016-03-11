@@ -12,7 +12,7 @@ function merge_pootle_projects_DB() {
 		targetStoreId=$(get_store_id $target_project_code $locale)
 		logt 2 "Processing locale $locale, target store $targetStoreId"
 		sort_indexes $target_project_code 0
-		max_index=$(get_max_index $storeId)
+		max_index=$(get_max_index $targetStoreId)
 		for source_project_code in "${POOTLE_PROJECT_CODES[@]}"; do
 			if [[ "$source_project_code" != "$target_project_code" ]]; then
 				sourceStoreId=$(get_store_id $source_project_code $locale)
