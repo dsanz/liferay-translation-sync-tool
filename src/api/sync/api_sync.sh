@@ -162,8 +162,17 @@ function sync_project_locale_translations() {
 				elif ! exists_key "$templatePrefix" "$Skey"; then
 					char="-"                                           # key does not exist in pootle template. We've just updated from templates so do nothing
 				else                                                   # key exists in pootle template, so we can update pootle AND sources now
-					is_pootle_translated=$(is_translated_value "$PvalStore")                             # dump_store does not export empty values with the template value as native pootle sync_stores do
-					is_sources_translated=$([[ "$Sval" != "$PValTpl" ]] && is_translated_value "$Sval")  # sources are translated if the value is not empty, is not an auto-translatuion and its value is different from the template
+					if is_translated_value "$PvalStore"; then          # dump_store does not export empty values with the template value as native pootle sync_stores does
+						is_pootle_translated=true;
+					else
+						is_pootle_translated=false;
+					fi;
+
+					if [[ "$Sval" != "$PValTpl" ]] && is_translated_value "$Sval"; then # sources are translated if the value is not empty, is not an auto-translation and its value is different from the template
+						is_sources_translated=true;
+					else
+		  				is_sources_translated=false;
+					fi;
 
 					if $is_sources_translated; then                    # source code value is translated. Is pootle one translated too?
 						if $is_pootle_translated; then                 # store value is translated. This includes anything translator write, even english texts
@@ -172,6 +181,7 @@ function sync_project_locale_translations() {
 							else                                       #   we have a conflict. Pootle wins as we assume pootle gets improvements all the time
 								char="x"
 								S[$Skey]="$PvalStore"
+								# TODO: improve this by examining if some value equals to template. In that case use the other
 							fi
 						else                                           # store value is untranslated. Either no one wrote there or contains an old "auto" translation
 							char="P"                                   # use the source value for pootle
@@ -210,15 +220,15 @@ function sync_project_locale_translations() {
 	if [[ ${#S[@]} -gt 0 ]];  then
 		logt 4 "Updating ${#S[@]} translations in sources:"
 		for key in "${!S[@]}"; do
-			logt 4 "$key=${P[$key]}"
-			write_translation $source_lang_file $key "${P[$key]}"
+			logt 4 "$key=${S[$key]}"
+			write_translation $source_lang_file $key "${S[$key]}"
 		done;
 	else
-		logt 4 "No translations to publish to pootle $pootle_project from $sources_project ($locale)"
+		logt 4 "No translations to update in $sources_project from $pootle_project ($locale)"
 	fi
 
 	set +f
-	unset R
+	unset P
 	unset S
 }
 
