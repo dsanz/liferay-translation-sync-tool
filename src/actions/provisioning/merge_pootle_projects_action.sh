@@ -17,8 +17,7 @@ function merge_pootle_projects_DB() {
 		max_index=$(get_max_index $targetStoreId)
 		for source_project_code in "${POOTLE_PROJECT_CODES[@]}"; do
 			if [[ "$source_project_code" != "$target_project_code" ]]; then
-				max_index=$(get_max_index $targetStoreId)
-				merge_units $targetStoreId $source_project_code $locale $max_index
+				merge_units $targetStoreId $source_project_code $locale
 			fi;
 		done
 	done
@@ -28,7 +27,7 @@ function merge_units() {
 	targetStoreId="$1"
 	source_project_code="$2"
 	locale="$3"
-	max_index=$4
+	max_index=$(get_max_index $targetStoreId)
 	sourceStoreId=$(get_store_id $source_project_code $locale)
 
 	logt 3 "Merging units from project $source_project_code ($locale), store $sourceStoreId into $targetStoreId. Starting at index $max_index"
