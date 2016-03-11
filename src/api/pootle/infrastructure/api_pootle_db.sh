@@ -55,7 +55,7 @@ function get_sourcef() {
 }
 
 function get_unitid_storeId_and_unitid() {
-	local i=$($MYSQL_COMMAND $DB_NAME -s -N  -e "select pootle_store_unit.source_f from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";")
+	local i=$($MYSQL_COMMAND $DB_NAME -s -N  -e "select pootle_store_unit.unitid from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";")
 	echo $i;
 }
 
