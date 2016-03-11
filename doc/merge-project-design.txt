@@ -25,6 +25,7 @@ some checks
  Go-live plan
  ---------------
  0. Initial production backup id :  2016-03-08_06-12-32
+ 	0.1 change manager password
 
  1. For each repo, rename the biggest project to make it repo-based counterpart
 
@@ -38,11 +39,17 @@ some checks
     2.6 backupId: 2016-03-09_01-32-00
 
 	2.7 pootle-manager.sh -M portal-impl "amazon-rankings-web announcements-web asset-categories-admin-web asset-categories-navigation-web asset-entry-query-processor-custom-user-attributes asset-publisher-web asset-tags-admin-web asset-tags-navigation-web blogs-api blogs-item-selector-web blogs-layout-prototype blogs-recent-bloggers-web blogs-web bookmarks-api bookmarks-web calendar-web comment-page-comments comment-web configuration-admin-web  control-menu-web currency-converter-web dictionary-web directory-web document-library-api document-library-google-docs document-library-layout-set-prototype document-library-repository-cmis-api document-library-repository-cmis-impl document-library-web dynamic-data-lists-api dynamic-data-lists-form-web dynamic-data-lists-web dynamic-data-mapping-data-provider-rest dynamic-data-mapping-data-provider-web dynamic-data-mapping-form-field-type dynamic-data-mapping-form-renderer dynamic-data-mapping-io dynamic-data-mapping-service dynamic-data-mapping-type-checkbox dynamic-data-mapping-type-options dynamic-data-mapping-type-paragraph dynamic-data-mapping-type-radio dynamic-data-mapping-type-select dynamic-data-mapping-type-text dynamic-data-mapping-type-validation dynamic-data-mapping-web expando-web flags-web frontend-editor-lang hello-velocity-web iframe-web image-uploader-web invitation-web ip-geocoder ip-geocoder-sample-web item-selector-taglib item-selector-url-web item-selector-web journal-content-asset-addon-entry-conversions journal-content-search-web journal-content-web journal-service journal-terms-of-use journal-web layout-admin-web layout-prototype-web layout-set-prototype-web layout-taglib layout-type-controller-full-page-application layout-type-controller-node loan-calculator-web login-web map-google-maps map-openstreetmap map-taglib marketplace-app-manager-web marketplace-store-web mentions-api mentions-web message-boards-api message-boards-layout-set-prototype message-boards-web microblogs-web mobile-device-rules-web monitoring-web nested-portlets-web network-utilities-web notifications-web password-generator-web password-policies-admin-web plugins-admin-web polls-web portal-cxf-common portal-http-tunnel-extender portal-instances-web portal-js-loader-modules-extender portal-ldap portal-monitoring portal-rest-extender portal-scripting-javascript portal-scripting-ruby portal-search portal-search-elasticsearch portal-search-solr portal-security-antisamy portal-security-auth-verifier portal-security-auto-login portal-security-sso-cas portal-security-sso-facebook-connect portal-security-sso-google portal-security-sso-ntlm portal-security-sso-openid portal-security-sso-opensso portal-security-sso-token portal-settings-web portal-soap-extender portal-store-cmis portal-store-file-system portal-store-jcr portal-store-s3 portal-template-freemarker portal-template-velocity portal-template-xsl portal-upgrade portal-verify-extender portal-wab-extender portlet-configuration-web portlet-css-web portlet-tck-bridge product-navigation-simulation-device product-navigation-site-administration product-navigation-user-personal-bar-web quick-note-web ratings-page-ratings-web recent-documents-web roles-admin-web roles-selector-web rss-web samples search-web server-admin-web service-access-policy-api service-access-policy-web shopping-api shopping-web site-admin-web site-memberships-web site-my-sites-web site-navigation-breadcrumb-web site-navigation-directory-web site-navigation-language-web site-navigation-menu-web site-navigation-site-map-web site-teams-web social-activities-web social-activity-api social-activity-web social-group-statistics-web social-networking-web social-requests-web social-user-statistics-web staging-lang translator-web trash-web unit-converter-web user-groups-admin-web users-admin-web web-proxy-web wiki-api wiki-engine-mediawiki wiki-engine-text wiki-layout-prototype wiki-navigation-web wiki-service wiki-web workflow-lang xsl-content-web"
-	2.8 backupId: 2016-03-09_09-30-09 (backed on laptop)
+	2.8 backupId: 2016-03-11_01-20-56 (backed on laptop)
 	2.9 /etc/init.d/httpd stop; pootle-manager.sh -m portal-impl liferay-portal
-	2.10 backupId: 2016-03-09_09-42-34 (backed on laptop)
+	2.10 backupId: 2016-03-11_01-32-06 (backed on laptop)
 
  3. Check results
+
+
+ MERGE FAILS UPDATING KEYS HAVING ":" Issue is in getSourceF in api_pootle_db: cant use cut -d :
+                        compare unit ids  1062823 and  1019655
+
+
 
  4. Delete old, per-module projects (use provisioner if possible)
  	4.1 manual process

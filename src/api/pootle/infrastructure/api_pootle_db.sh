@@ -35,9 +35,9 @@ function get_max_index() {
 	echo $i
 }
 
-function get_unitid_by_store_and_index() {
-	local i=$($MYSQL_COMMAND $DB_NAME -s -N -e "select pootle_store_unit.id from pootle_store_unit where store_id=\"$1\" and pootle_store_unit.index=$2;")
-	echo $i;
+function get_unitids_by_store_and_index() {
+	unset unitids_by_store_and_index;
+	read -r -a unitids_by_store_and_index <<< $(mysql pootle -s -N -e "select id from pootle_store_unit where store_id=586 and pootle_store_unit.index=10;")
 }
 
 function update_unit_index_by_store_and_unit_id() {
