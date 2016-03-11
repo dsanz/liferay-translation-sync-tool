@@ -38,14 +38,16 @@ function sync_translations() {
 	charc["u"]=$BLUE; chart["u"]="Sources and pootle untranslated"
 
 	# to pootle
-	charc["P"]=$YELLOW; chart["P"]="Sources translated, pootle untranslated. Will be published to Pootle"
-	charc["-"]=$COLOROFF; chart["-"]="Source code has a translation which key no longer exists. Won't update pootle. build-lang should remove it"
+	charc["P"]=$YELLOW; chart["P"]="Sources translated, pootle untranslated. Source value goes to Pootl"
+	charc["p"]=$LILA; chart["p"]="Pootle and sources translated, source value != template value, pootle value = template value. Source value goes to Pootle"
+	charc["-"]=$COLOROFF; chart["-"]="Source code has a translation which key no longer exists. Won't update pootle. build-lang should remove it from sources"
 	charc["·"]=$CYAN; chart["·"]="Same, valid translation in pootle and sources (no-op)"
 
 	# to sources
 	charc["o"]=$WHITE; chart["o"]="Overriden from ext file"
-	charc["x"]=$LILA; chart["x"]="Pootle and sources translated, different values (conflict/improvement, pootle wins)"
-	charc["S"]=$GREEN; chart["S"]="Source untranslated, pootle translated. Will update sources"
+	charc["x"]=$LILA; chart["x"]="Pootle and sources translated, different translations (conflict/improvement, Pootle value goes to sources)"
+	charc["s"]=$LILA; chart["s"]="Pootle and sources translated, source value = template value, pootle value != template value. Pootle value goes to sources"
+	charc["S"]=$GREEN; chart["S"]="Source untranslated, pootle translated. Pootle value goes to sources"
 
 	for char in ${!charc[@]}; do
 		loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
@@ -178,10 +180,18 @@ function sync_project_locale_translations() {
 						if $is_pootle_translated; then                 # store value is translated. This includes anything translator write, even english texts
 							if [[ "$PvalStore" == "$Sval" ]]; then     #   are pootle and source translation the same?
 								char="·"
-							else                                       #   we have a conflict. Pootle wins as we assume pootle gets improvements all the time
-								char="x"
-								S[$Skey]="$PvalStore"
-								# TODO: improve this by examining if some value equals to template. In that case use the other
+							else                                       #   translations are different. we have a conflict...
+								if [[ "$Sval" == "PValTpl" ]]; then    #      source value is like the template, whereas store value not. Pootle wins
+									char="p"
+									S[$Skey]="$PvalStore"
+								elif [[ "$PvalStore" == "PValTpl" ]]; then # store value is like the template, whereas source not. Source wins
+									char="p"                                   # use the source value for pootle
+									P[$Skey]="$Sval";
+								else                                           # none of the translated values is equal to the template. Pootle wins as we assume pootle gets improvements all the time
+									char="x"
+									S[$Skey]="$PvalStore"
+									# TODO: improve this by examining unit mtime and commit line last time (git blame) and use the latest
+								fi
 							fi
 						else                                           # store value is untranslated. Either no one wrote there or contains an old "auto" translation
 							char="P"                                   # use the source value for pootle
