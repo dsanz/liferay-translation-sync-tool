@@ -10,16 +10,24 @@ function merge_pootle_projects_DB() {
 	logt 2 "Merging all projects in $target_project_code"
 	check_dir "$TMP_PROP_OUT_DIR"
 
+	merge_pootle_project_locale $target_project_code "templates"
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
-		targetStoreId=$(get_store_id $target_project_code $locale)
-		logt 2 "Processing locale $locale, target store $targetStoreId"
-		sort_indexes $targetStoreId
-		max_index=$(get_max_index $targetStoreId)
-		for source_project_code in "${POOTLE_PROJECT_CODES[@]}"; do
-			if [[ "$source_project_code" != "$target_project_code" ]]; then
-				merge_units $targetStoreId $source_project_code $locale
-			fi;
-		done
+		merge_pootle_project_locale $target_project_code $locale
+	done
+}
+
+function merge_pootle_project_locale() {
+	target_project_code="$1"
+	locale="$2"
+
+	targetStoreId=$(get_store_id $target_project_code $locale)
+	logt 2 "Processing locale $locale, target store $targetStoreId"
+	sort_indexes $targetStoreId
+	max_index=$(get_max_index $targetStoreId)
+	for source_project_code in "${POOTLE_PROJECT_CODES[@]}"; do
+		if [[ "$source_project_code" != "$target_project_code" ]]; then
+			merge_units $targetStoreId $source_project_code $locale
+		fi;
 	done
 }
 
