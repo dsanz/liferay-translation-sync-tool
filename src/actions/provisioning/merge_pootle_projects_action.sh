@@ -28,7 +28,7 @@ function merge_units() {
 	targetStoreId="$1"
 	source_project_code="$2"
 	locale="$3"
-	max_index="$4"
+	max_index=$4
 	sourceStoreId=$(get_store_id $source_project_code $locale)
 
 	logt 3 "Merging units from project $source_project_code ($locale), store $sourceStoreId into $targetStoreId. Starting at index $max_index"
@@ -66,8 +66,13 @@ function sort_indexes() {
 	max_index=$(get_max_index $storeId)
 	unit_count=$(count_targets $storeId)
 
-	logt 3 "Sorting indexes in target store $storeId. Max index=$max_index, Unit count=$unit_count"
-	for existing_index in $(seq 0 $max_index); do
+	if [[ $max_index > $unit_count ]]; then
+		to=$max_index
+	else
+		to=$unit_count
+	fi;
+	logt 3 "Sorting indexes in target store $storeId. Max index=$max_index, Unit count=$unit_count. Will iterate to $to"
+	for existing_index in $(seq 1 $to); do
 		unitId=$(get_unitid_by_store_and_index $storeId $existing_index)
 		if [[ "$unitId" != "" ]]; then
 			if [[ "$existing_index" != "$initial_index" ]]; then
