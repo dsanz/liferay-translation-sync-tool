@@ -67,8 +67,7 @@ function create_missing_projects_in_pootle() {
 
 	logt 2 "Creating missing projects in pootle (do create: $do_create)"
 	declare -a projects_to_create;
-	for ap_project_code in "${!AP_PROJECT_NAMES[@]}";
-	do
+	for ap_project_code in "${GIT_ROOT_POOTLE_PROJECT_NAME[@]}"; do
 		if ! exists_project_in_pootle_DB $ap_project_code; then
 			projects_to_create[${#projects_to_create[@]}]=$ap_project_code
 		fi;
@@ -119,7 +118,7 @@ function delete_old_projects_in_pootle() {
 	declare -a projects_whitelisted;
 	for pootle_project_code in "${POOTLE_PROJECT_CODES[@]}";
 	do
-		if ! exists_project_in_AP_list $pootle_project_code; then
+		if ! exists_project_in_AP_GIT_ROOT_list $pootle_project_code; then
 			if is_whitelisted $pootle_project_code; then
 				projects_whitelisted[${#projects_whitelisted[@]}]=$pootle_project_code
 			else
@@ -168,6 +167,15 @@ function provision_full_project_from_source_code() {
 	# call base function using auto-provisioning source code project data
 	provision_full_project_base $project_code "${AP_PROJECT_NAMES[$project_code]})" "${AP_PROJECT_SRC_LANG_BASE[$project_code]}"
 }
+
+function provision_full_project_from_source_code_repo_based() {
+	git_root="$1"
+    # get all AP src projects, join them all under temp dirs named GIT_ROOT_POOTLE-POJECT NAME and provision from there
+
+	# call base function using auto-provisioning source code project data
+	provision_full_project_base $project_code "${AP_PROJECT_NAMES[$project_code]})" "${AP_PROJECT_SRC_LANG_BASE[$project_code]}"
+}
+
 
 # base function to provision a project in pootle from a minimal set of data
 # preconditions: pootle session has been created in advance
