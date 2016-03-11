@@ -45,9 +45,9 @@ function merge_units() {
 			(( max_index++))
 			update_unit_index_by_store_and_unit_id $source_storeId $unit_identifier $max_index
 			update_unit_store_id_by_unit_id $unit_identifier $targetStoreId
-			log -n "[$unit_id > $max_index]"
+			log -n "[$unit_identifier($max_index)]"
 		else
-			log -n "[$unit_id *]"
+			log -n "[$unit_identifier(*)]"
 		fi;
 	done < "$TMP_PROP_OUT_DIR/$sourceStoreId";
 	#rm "$TMP_PROP_OUT_DIR/$sourceStoreId"
@@ -64,14 +64,16 @@ function sort_indexes() {
 	for existing_index in $(seq 0 $max_index); do
 		unitId=$(get_unitid_by_store_and_index $storeId $existing_index)
 		if [[ "$unitId" != "" ]]; then
-			update_unit_index_by_store_and_unit_id $storeId $unitId $initial_index
 			if [[ "$existing_index" != "$initial_index" ]]; then
+				update_unit_index_by_store_and_unit_id $storeId $unitId $initial_index
+				(( initial_index++ ))
 				log -n "[$existing_index > $initial_index]"
+			else
+				loh -n "[$existing_index]"
 			fi
 		else
 			log -n "[$existing_index > none]"
 		fi;
-		(( initial_index++ ))
 	done
 	log
 }
