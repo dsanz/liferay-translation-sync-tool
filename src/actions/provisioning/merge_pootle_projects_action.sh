@@ -80,7 +80,7 @@ function sort_indexes() {
 	fi;
 	logt 3 "Sorting indexes in target store $storeId. Max index=$max_index, Unit count=$unit_count. Will iterate to $to"
 	for existing_index in $(seq 0 $to); do
-		get_unitid_by_store_and_index $storeId $existing_index
+		get_unitids_by_store_and_index $storeId $existing_index
  		for unitd in ${unitids_by_store_and_index[@]}; do # there can be more than one unit with the same index and storeId !!!
 			if [[ "$unitId" != "" ]]; then
 				if [[ "$existing_index" != "$initial_index" ]]; then
