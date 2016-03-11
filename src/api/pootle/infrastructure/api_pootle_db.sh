@@ -36,12 +36,12 @@ function get_max_index() {
 }
 
 function get_unitid_by_store_and_index() {
-	local i=$($MYSQL_COMMAND $DB_NAME -s -N -e "select pootle_store_unit.id from pootle_store_unit where store_id=\"$1\" and pootle_store_unit.index=\"$2\";")
+	local i=$($MYSQL_COMMAND $DB_NAME -s -N -e "select pootle_store_unit.id from pootle_store_unit where store_id=\"$1\" and pootle_store_unit.index=$2;")
 	echo $i;
 }
 
 function update_unit_index_by_store_and_unit_id() {
-	$MYSQL_COMMAND $DB_NAME -s -N -e "update pootle_store_unit set pootle_store_unit.index=\"$3\" where store_id=\"$1\" and pootle_store_unit.id=\"$2\";"
+	$MYSQL_COMMAND $DB_NAME -s -N -e "update pootle_store_unit set pootle_store_unit.index=$3 where store_id=\"$1\" and pootle_store_unit.id=\"$2\";"
 }
 
 function update_unit_store_id_by_unit_id() {
