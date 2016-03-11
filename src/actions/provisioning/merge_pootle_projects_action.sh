@@ -1,5 +1,5 @@
 function merge_pootle_projects_action() {
-	merge_pootle_projects_publishing "$1" "$2"
+	#merge_pootle_projects_publishing "$1" "$2"
 	merge_pootle_projects_DB "$1"
 }
 
@@ -11,17 +11,22 @@ function merge_pootle_projects_DB() {
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		targetStoreId=$(get_store_id $target_project_code $locale)
 		logt 2 "Processing locale $locale, target store $targetStoreId"
-		sort_indexes $target_project_code 0
+		sort_indexes $target_project_code
 		max_index=$(get_max_index $targetStoreId)
 		for source_project_code in "${POOTLE_PROJECT_CODES[@]}"; do
 			if [[ "$source_project_code" != "$target_project_code" ]]; then
+				merge_units $targetStoreId $source_project_code $locale
 			fi;
 		done
 	done
 }
 
 function merge_units() {
+	targetStoreId="$1"
+	source_project_code="$2"
+	locale="$3"
 	sourceStoreId=$(get_store_id $source_project_code $locale)
+
 	logt 3 "Merging units from project $source_project_code ($locale), store $sourceStoreId into $targetStoreId"
 	get_units_by_storeId $sourceStoreId "$TMP_PROP_OUT_DIR/$sourceStoreId"
 	done=false;
@@ -49,10 +54,11 @@ function merge_units() {
 
 function sort_indexes() {
 	storeId="$1"
-	initial_index="$2"
+	initial_index=0
 	max_index=$(get_max_index $storeId)
+	unit_count=$(count_targets $storeId)
 
-	logt 3 "Sorting indexes in target store $storeId"
+	logt 3 "Sorting indexes in target store $storeId. Max index=$max_index, Unit count=$unit_count"
 	for existing_index in $(seq 0 $max_index); do
 		unitId=$(get_unitid_by_store_and_index $storeId $existing_index)
 		if [[ "$unitId" != "" ]]; then
