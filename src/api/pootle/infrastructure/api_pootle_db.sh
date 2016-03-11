@@ -26,8 +26,8 @@ function get_unitid() {
 	echo $i;
 }
 
-function get_unitids_by_storeId() {
-	$MYSQL_COMMAND $DB_NAME -s -N -e "select pootle_store_unit.id from pootle_store_unit where store_id=\"$1\" order by pootle_store_unit.index;" > $2
+function get_units_by_storeId() {
+	$MYSQL_COMMAND $DB_NAME -s -N -e "select concat(pootle_store_unit.id,\"@\",pootle_store_unit.unitid) from pootle_store_unit where store_id=\"$1\" order by pootle_store_unit.index;" > $2
 }
 
 function get_max_index() {
@@ -53,6 +53,12 @@ function get_sourcef() {
 	local i=$($MYSQL_COMMAND $DB_NAME -s -N  -e "select pootle_store_unit.source_f from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";")
 	echo $i;
 }
+
+function get_unitid_storeId_and_unitid() {
+	local i=$($MYSQL_COMMAND $DB_NAME -s -N  -e "select pootle_store_unit.source_f from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";")
+	echo $i;
+}
+
 
 # given the storeId and the language key (unitId) returns the target_f field of that translation unit in the DB, which stores the translation of the key
 function get_targetf() {
