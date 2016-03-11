@@ -44,9 +44,7 @@ function exists_project_in_AP_GIT_ROOT_list() {
 
 function read_pootle_projects_and_locales() {
 	logt 2 -n "Reading projects from pootle DB"
-	unset POOTLE_PROJECT_CODES
-	declare -xga POOTLE_PROJECT_CODES;
-	read -ra POOTLE_PROJECT_CODES <<< $(get_pootle_project_codes)
+	get_pootle_project_codes
 	check_command
 
 	logt 2 -n "Reading used locales from pootle DB"

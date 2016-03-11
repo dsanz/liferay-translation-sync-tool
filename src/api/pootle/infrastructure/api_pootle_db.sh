@@ -181,8 +181,9 @@ function get_pootle_project_fullname_from_code() {
 }
 
 function get_pootle_project_codes() {
-	local i=$($MYSQL_COMMAND $DB_NAME -s -N -e "select code from pootle_app_project;")
-	echo -e "$i";
+	unset POOTLE_PROJECT_CODES
+	declare -xga POOTLE_PROJECT_CODES;
+	read -ra POOTLE_PROJECT_CODES <<< $($MYSQL_COMMAND $DB_NAME -s -N -e "select code from pootle_app_project;")
 }
 
 function get_default_project_locales() {
