@@ -137,7 +137,7 @@ declare -xgA GIT_ROOT_POOTLE_PROJECT_NAME
 ##
 # projects code that won't be deleted from pootle even if there is no source
 # code associated
-declare -xga POOTLE_PROJECT_DELETION_WHITELIST_REGEXS=(sync terminology lcs-portlet)
+declare -xga POOTLE_PROJECT_DELETION_WHITELIST_REGEXS=(liferay-sync terminology)
 
 # if Language.properties file path matches any of these regexs, the project won't be
 # considered for auto-provisioing, therefore it will not be created
