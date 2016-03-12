@@ -14,13 +14,9 @@ Steps:
  2.4 [ok] improve template import in pootle, making sure it gets updated from the templates
  2.5 [ok] check error in merge for some keys like activity-details. Maybe update from templates is wrong.
  2.5 [ok] new pootle2src based on the spread within the same repo (use a new spread action based on the first one)
- 2.6      new provisioner.add operation, this time taking a new repo
- 2.7      (optional) make a sql-based translation publisher
+ 2.6 [ok] nuew one-directional sync op
+ 2.7 [ok] (optional) make a sql-based translation publisher
 
-some checks
-   - ok check keys existing ONLY in template but not in language files (this-user-segment-can-not-be-deleted-because-it-is-used-by-the-following-campaigns)
-   - OK check keys existing ONLY in the langs but not in the template (metric-x-in-youtube-x). This is due to a change in a key name and wrong update_from_templates
-   - check empty values in template
 
  Go-live plan
  ---------------
@@ -30,66 +26,30 @@ some checks
  1. For each repo, rename the biggest project to make it repo-based counterpart
 
  2. Merge all existing pootle projects into them
- 	2.1 pootle-manager.sh -M content-targeting-web "report-user-segment-content report-campaign-content report-campaign-tracking-action rule_tmpl tracking_action_tmpl channel_tmpl report_tmpl tracking-action-link tracking-action-page tracking-action-youtube tracking-action-content tracking-action-form extension_tmpl consumer-manager-web consumer-manager-api rule-visited rule-user-logged rule-os rule-facebook rule-score-points rule-time rule-device rule-organization-member rule-role rule-age rule-gender rule-ip-geocode rule-browser rule-user-group-member rule-site-member analytics-hook content-targeting-api simulator-hook"
-    2.2 /etc/init.d/httpd stop; pootle-manager.sh -m content-targeting-web liferay-apps-content-targeting
-    2.3 backupId: 2016-03-08_17-41-33
-
-	2.4 pootle-manager.sh -M so-portlet "akismet-portlet ams-portlet analog-clock-portlet bible-gateway-portlet chat-portlet chat-video-portlet contacts-portlet events-display-portlet flash-portlet google-adsense-portlet google-drive-hook google-login-hook google-maps-portlet ip-geocoder-portlet journal-police-portlet knowledge-base-portlet lcs-portlet logos-reftagger-portlet mail-portlet mb-subscription-manager-portlet microblogs-portlet modules-admin-portlet my-subscriptions-portlet netvibes-widget-portlet opensocial-portlet private-messaging-portlet push-notifications-portlet random-bible-verse-portlet release-tools-portlet ruby-console-portlet sample-lar-portlet sample-permissions-portlet sample-service-builder-portlet so-activities-hook so-announcements-portlet so-configurations-portlet so-hook social-bookmarks-hook social-coding-portlet stocks-portlet sync-admin-portlet tasks-portlet tich-portlet twitter-portlet vimeo-portlet weather-portlet web-form-portlet westminster-catechism-portlet wsrp-portlet youtube-portlet zoe-healthcare-theme zoe-political-theme zoe-tech-theme gospel-for-asia-portlet"
-    2.5 /etc/init.d/httpd stop; pootle-manager.sh -m so-portlet liferay-plugins
-    2.6 backupId: 2016-03-09_01-32-00
-
-	2.7 pootle-manager.sh -M portal-impl "amazon-rankings-web announcements-web asset-categories-admin-web asset-categories-navigation-web asset-entry-query-processor-custom-user-attributes asset-publisher-web asset-tags-admin-web asset-tags-navigation-web blogs-api blogs-item-selector-web blogs-layout-prototype blogs-recent-bloggers-web blogs-web bookmarks-api bookmarks-web calendar-web comment-page-comments comment-web configuration-admin-web  control-menu-web currency-converter-web dictionary-web directory-web document-library-api document-library-google-docs document-library-layout-set-prototype document-library-repository-cmis-api document-library-repository-cmis-impl document-library-web dynamic-data-lists-api dynamic-data-lists-form-web dynamic-data-lists-web dynamic-data-mapping-data-provider-rest dynamic-data-mapping-data-provider-web dynamic-data-mapping-form-field-type dynamic-data-mapping-form-renderer dynamic-data-mapping-io dynamic-data-mapping-service dynamic-data-mapping-type-checkbox dynamic-data-mapping-type-options dynamic-data-mapping-type-paragraph dynamic-data-mapping-type-radio dynamic-data-mapping-type-select dynamic-data-mapping-type-text dynamic-data-mapping-type-validation dynamic-data-mapping-web expando-web flags-web frontend-editor-lang hello-velocity-web iframe-web image-uploader-web invitation-web ip-geocoder ip-geocoder-sample-web item-selector-taglib item-selector-url-web item-selector-web journal-content-asset-addon-entry-conversions journal-content-search-web journal-content-web journal-service journal-terms-of-use journal-web layout-admin-web layout-prototype-web layout-set-prototype-web layout-taglib layout-type-controller-full-page-application layout-type-controller-node loan-calculator-web login-web map-google-maps map-openstreetmap map-taglib marketplace-app-manager-web marketplace-store-web mentions-api mentions-web message-boards-api message-boards-layout-set-prototype message-boards-web microblogs-web mobile-device-rules-web monitoring-web nested-portlets-web network-utilities-web notifications-web password-generator-web password-policies-admin-web plugins-admin-web polls-web portal-cxf-common portal-http-tunnel-extender portal-instances-web portal-js-loader-modules-extender portal-ldap portal-monitoring portal-rest-extender portal-scripting-javascript portal-scripting-ruby portal-search portal-search-elasticsearch portal-search-solr portal-security-antisamy portal-security-auth-verifier portal-security-auto-login portal-security-sso-cas portal-security-sso-facebook-connect portal-security-sso-google portal-security-sso-ntlm portal-security-sso-openid portal-security-sso-opensso portal-security-sso-token portal-settings-web portal-soap-extender portal-store-cmis portal-store-file-system portal-store-jcr portal-store-s3 portal-template-freemarker portal-template-velocity portal-template-xsl portal-upgrade portal-verify-extender portal-wab-extender portlet-configuration-web portlet-css-web portlet-tck-bridge product-navigation-simulation-device product-navigation-site-administration product-navigation-user-personal-bar-web quick-note-web ratings-page-ratings-web recent-documents-web roles-admin-web roles-selector-web rss-web samples search-web server-admin-web service-access-policy-api service-access-policy-web shopping-api shopping-web site-admin-web site-memberships-web site-my-sites-web site-navigation-breadcrumb-web site-navigation-directory-web site-navigation-language-web site-navigation-menu-web site-navigation-site-map-web site-teams-web social-activities-web social-activity-api social-activity-web social-group-statistics-web social-networking-web social-requests-web social-user-statistics-web staging-lang translator-web trash-web unit-converter-web user-groups-admin-web users-admin-web web-proxy-web wiki-api wiki-engine-mediawiki wiki-engine-text wiki-layout-prototype wiki-navigation-web wiki-service wiki-web workflow-lang xsl-content-web"
-	2.8 backupId: 2016-03-11_01-20-56 (backed on laptop)
-	2.9 /etc/init.d/httpd stop; pootle-manager.sh -m portal-impl liferay-portal
-	2.10 backupId: 2016-03-11_01-32-06 (backed on laptop)
+	2.1 pootle-manager.sh -M portal-impl
+	2.2 backupId: 2016-03-12_07-42-13
 
  3. Check results
 
-
- MERGE FAILS UPDATING KEYS HAVING ":" Issue is in getSourceF in api_pootle_db: cant use cut -d :
-                        compare unit ids  1062823 and  1019655
-
-
-
  4. Delete old, per-module projects (use provisioner if possible)
  	4.1 manual process
- 	4.2 backupId: 2016-03-09_10-05-46 (backed on laptop)
+ 	4.2 rename project portal-impl to "liferay" and update POOTLE_PROJECT_ID
+ 	4.2 backupId: ?????????????????? (backed on laptop)
 
- 5. sync to pootle
- 	5.0 OK fix wrong logic generating additions!!!!!!!
- 	5.1 enable just at repo. pootle-manager.sh -p
- 	5.2 backupId = 2016-03-10_06-05-09   (old backupId = 2016-03-09_15-29-04)
- 	5.3 enable just plugins repo. pootle-manager.sh -p
- 	5.4 backupId = 2016-03-10_06-16-35   (old backupId = 2016-03-09_15-59-46)
- 	5.5 enable just portal repo. pootle-manager.sh -p
- 	5.6 backupId = ????????????????
+ 5. sync
+ 	5.0 pootle-manager.sh -s
+	5.1 backupId = ???????????????
 
- 6. Reimplement sync to be bidirectional all times
-
- 7. sync
- 	6.1 enable just at repo. pootle-manager.sh -r
-  	6.2 backupId =
-  	6.3 enable just plugins repo. pootle-manager.sh -r
-  	6.4 backupId =
-  	6.5 enable just portal repo. pootle-manager.sh -r
-  	6.6 backupId =
-
- 8. check results.
- 	8.1 Check pootle has newest translations from master (see german)
- 	8.2 Check branch in PR so that newest translations from pootle are there and no other stuff was committed
+ 6. check results.
+	6.1 Check pootle has newest translations from master (see german)
+	6.2 Check branch in PR so that newest translations from pootle are there and no other stuff was committed
+	6.3 additional checks
+		- ok check keys existing ONLY in template but not in language files (this-user-segment-can-not-be-deleted-because-it-is-used-by-the-following-campaigns)
+		- OK check keys existing ONLY in the langs but not in the template (metric-x-in-youtube-x). This is due to a change in a key name and wrong update_from_templates
+		- check empty values in template
 
  9. Send PR
 
- 10. Send DB to production ? or reprovision everything from scracth?
-   10.1 Review manager.prod.conf to change POOTLE_PROJECT_ID="liferay-portal"
+ 10. Send DB to production
+   10.1 Review manager.prod.conf to change POOTLE_PROJECT_ID
    10.2 Change text in server
-
-
- Remaining projects:
-
-akismet-portlet ams-portlet analog-clock-portlet bible-gateway-portlet chat-portlet chat-video-portlet contacts-portlet events-display-portlet flash-portlet google-adsense-portlet  google-drive-hook google-login-hook google-maps-portlet ip-geocoder-portlet journal-police-portlet knowledge-base-portlet lcs-portlet logos-reftagger-portlet mail-portlet  mb-subscription-manager-portlet microblogs-portlet modules-admin-portlet my-subscriptions-portlet netvibes-widget-portlet opensocial-portlet private-messaging-portlet  push-notifications-portlet random-bible-verse-portlet release-tools-portlet ruby-console-portlet sample-lar-portlet sample-permissions-portlet sample-service-builder-portlet so-activities-hook so-announcements-portlet so-configurations-portlet so-hook so-portlet social-bookmarks-hook social-coding-portlet stocks-portlet sync-admin-portlet tasks-portlet tich-portlet twitter-portlet vimeo-portlet weather-portlet web-form-portlet westminster-catechism-portlet wsrp-portlet youtube-portlet zoe-healthcare-theme zoe-political-theme zoe-tech-theme gospel-for-asia-portlet
-
-portal-impl amazon-rankings-web announcements-web asset-categories-admin-web asset-categories-navigation-web asset-entry-query-processor-custom-user-attributes asset-publisher-web asset-tags-admin-web asset-tags-navigation-web blogs-api blogs-item-selector-web blogs-layout-prototype blogs-recent-bloggers-web blogs-web bookmarks-api bookmarks-web calendar-web comment-page-comments comment-web configuration-admin-web  control-menu-web currency-converter-web dictionary-web directory-web document-library-api document-library-google-docs document-library-layout-set-prototype document-library-repository-cmis-api document-library-repository-cmis-impl document-library-web dynamic-data-lists-api dynamic-data-lists-form-web dynamic-data-lists-web dynamic-data-mapping-data-provider-rest dynamic-data-mapping-data-provider-web dynamic-data-mapping-form-field-type dynamic-data-mapping-form-renderer dynamic-data-mapping-io dynamic-data-mapping-service dynamic-data-mapping-type-checkbox dynamic-data-mapping-type-options dynamic-data-mapping-type-paragraph dynamic-data-mapping-type-radio dynamic-data-mapping-type-select dynamic-data-mapping-type-text dynamic-data-mapping-type-validation dynamic-data-mapping-web expando-web flags-web frontend-editor-lang hello-velocity-web iframe-web image-uploader-web invitation-web ip-geocoder ip-geocoder-sample-web item-selector-taglib item-selector-url-web item-selector-web journal-content-asset-addon-entry-conversions journal-content-search-web journal-content-web journal-service journal-terms-of-use journal-web layout-admin-web layout-prototype-web layout-set-prototype-web layout-taglib layout-type-controller-full-page-application layout-type-controller-node loan-calculator-web login-webmap-google-maps map-openstreetmap map-taglib marketplace-app-manager-web marketplace-store-web mentions-api mentions-web message-boards-api message-boards-layout-set-prototype message-boards-web microblogs-web mobile-device-rules-web monitoring-web nested-portlets-web  network-utilities-web notifications-web password-generator-web password-policies-admin-web plugins-admin-web polls-web portal-cxf-common portal-http-tunnel-extender portal-instances-web portal-js-loader-modules-extender portal-ldap portal-monitoring portal-rest-extender portal-scripting-javascript portal-scripting-ruby portal-search portal-search-elasticsearch portal-search-solr portal-security-antisamy portal-security-auth-verifier portal-security-auto-login portal-security-sso-cas portal-security-sso-facebook-connect portal-security-sso-google portal-security-sso-ntlm portal-security-sso-openid portal-security-sso-opensso portal-security-sso-token portal-settings-web portal-soap-extender portal-store-cmis portal-store-file-system portal-store-jcr portal-store-s3 portal-template-freemarker portal-template-velocity portal-template-xsl portal-upgrade portal-verify-extender portal-wab-extender portlet-configuration-web portlet-css-web portlet-tck-bridgeproduct-navigation-simulation-device product-navigation-site-administration product-navigation-user-personal-bar-web quick-note-web ratings-page-ratings-web recent-documents-web roles-admin-web roles-selector-web rss-web samples search-web server-admin-web service-access-policy-api service-access-policy-web shopping-api shopping-web site-admin-web site-memberships-web site-my-sites-web site-navigation-breadcrumb-web site-navigation-directory-web site-navigation-language-web site-navigation-menu-web site-navigation-site-map-web site-teams-web social-activities-web social-activity-api social-activity-web social-group-statistics-web social-networking-web social-requests-web social-user-statistics-web staging-lang translator-web trash-web unit-converter-web user-groups-admin-web users-admin-web web-proxy-web wiki-api wiki-engine-mediawiki wiki-engine-text wiki-layout-prototype wiki-navigation-web wiki-service wiki-web workflow-lang xsl-content-web
-
-
-liferay-sync liferay-sync-2 liferay-sync-mobile
