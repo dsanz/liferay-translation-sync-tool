@@ -81,7 +81,7 @@ some checks
  9. Send PR
 
  10. Send DB to production ? or reprovision everything from scracth?
-   10.1 Review manager.prod.conf to change PORTAL_PROJECT_ID="liferay-portal"
+   10.1 Review manager.prod.conf to change POOTLE_PROJECT_ID="liferay-portal"
    10.2 Change text in server
 
 

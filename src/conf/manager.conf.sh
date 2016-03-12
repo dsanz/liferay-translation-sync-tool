@@ -149,7 +149,7 @@ declare -xga POOTLE_PROJECT_PATH_BLACKLIST_REGEXS=(build/ classes/ /localization
 ## 3.3 project lists initialization
 ##
 # first project is the Liferay portal itself
-PORTAL_PROJECT_ID=liferay-portal
+POOTLE_PROJECT_ID=liferay-portal
 add_git_root "$SRC_PORTAL_BASE"
 add_git_root "$SRC_PLUGINS_BASE"
 add_git_root "$SRC_APPS_CT_BASE" juliocamarero develop
