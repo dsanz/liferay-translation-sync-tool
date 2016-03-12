@@ -51,5 +51,5 @@ Steps:
  9. Send PR
 
  10. Send DB to production
-   10.1 Review manager.prod.conf to change POOTLE_PROJECT_ID
+   10.1 Review manager.prod.conf to change POOTLE_PROJECT_ID and UPLOAD_SUBMISSION_FUNCTION
    10.2 Change text in server
