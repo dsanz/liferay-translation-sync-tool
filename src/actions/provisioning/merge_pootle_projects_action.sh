@@ -12,11 +12,10 @@ function merge_pootle_projects_DB() {
 
 	locale_count=0
     (( total_locales=${#POOTLE_PROJECT_LOCALES[@]} + 1 ))
-	merge_pootle_project_locale $target_project_code "templates"
+	merge_pootle_project_locale $target_project_code "templates" $locale_count $total_locales
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		(( locale_count++ ))
 		merge_pootle_project_locale $target_project_code $locale $locale_count $total_locales
-
 	done
 }
 
