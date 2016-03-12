@@ -46,6 +46,7 @@ function merge_pootle_project_locale() {
 	seconds="$((now/1000000000))"
 	milliseconds="$((now/1000000))"
 	printf -v stats "Merge projects into locale $locale took %02d.%03d seconds" "$((seconds))" "${milliseconds}"
+	logt 3 "$stats"
 }
 
 function merge_units() {
