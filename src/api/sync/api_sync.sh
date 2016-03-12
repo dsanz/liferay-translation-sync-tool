@@ -76,7 +76,7 @@ function sync_project_translations() {
 			read_ext_language_file $pootle_project $language
 
 			for sources_project in "${!AP_PROJECT_NAMES[@]}"; do
-				# TODO: check if we need a sort of project blacklist here
+				# TODO: check if we need a sort of source code project blacklist here
 				if [[ $sources_project != $pootle_project ]]; then
 					# this has to be read once per sources project and locale
 					read_source_code_language_file $sources_project $language
