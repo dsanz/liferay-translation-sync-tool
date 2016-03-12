@@ -26,7 +26,13 @@ function merge_pootle_project_locale() {
 	max_index=$(get_max_index $targetStoreId)
 	for source_project_code in "${POOTLE_PROJECT_CODES[@]}"; do
 		if [[ "$source_project_code" != "$target_project_code" ]]; then
-			merge_units $targetStoreId $source_project_code $locale
+			if ! is_whitelisted $source_project_code; then
+				merge_units $targetStoreId $source_project_code $locale
+			else
+				logt 3 "Skipping whitelisted $source_project_code"
+			fi
+		else
+			logt 3 "Skipping $source_project_code as can't be merged with itself"
 		fi;
 	done
 }
