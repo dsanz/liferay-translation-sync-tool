@@ -27,14 +27,15 @@ Steps:
 
  2. Merge all existing pootle projects into them
 	2.1 pootle-manager.sh -M portal-impl
-	2.2 backupId: 2016-03-12_07-42-13
+	2.2 backupId: 2016-03-12_14-48-15 (backed on laptop)
 
  3. Check results
 
  4. Delete old, per-module projects (use provisioner if possible)
  	4.1 manual process
- 	4.2 rename project portal-impl to "liferay" and update POOTLE_PROJECT_ID
- 	4.2 backupId: ?????????????????? (backed on laptop)
+ 	4.2 rename project portal-impl to "liferay" and update POOTLE_PROJECT_ID: pootle-manager.sh -m portal-impl liferay
+ 	4.3 change manager passwd
+ 	4.2 backupId: 2016-03-12_15-57-29 (backed on laptop)
 
  5. sync
  	5.0 pootle-manager.sh -s
