@@ -19,6 +19,7 @@ function update_from_templates() {
 	# for this reason, we call this on a per-language basis
 	read_pootle_projects_and_locales
 
+	# TODO: see what happens when units have OBSOLETE status (-100)
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		storeId=$(get_store_id $project $locale)
 		template_length=$(count_keys "$PODIR/$project/${FILE}.$PROP_EXT")
@@ -87,6 +88,29 @@ function update_pootle_db_from_templates_repo_based() {
 # It just checks if value is not auto-translated / auto-copied before publishing
 # used from pootle manager as well as from the stand-alone version
 
+function upload_submission_http() {
+	key="$1"
+	value="$2"
+	storeId="$3"
+	local path="$4"
+
+	index=$(get_index $storeId $key)
+	id=$(get_unitid $storeId $key)
+	sourcef=$(get_sourcef $storeId $key)
+
+	status_code=$(curl $CURL_OPTS -m 120 -w "%{http_code}" -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "id=$id" -d "path=$path" -d  "pootle_path=$path" -d "source_f_0=$sourcef" -d  "store=$path" -d "submit=Submit" -d  "target_f_0=$value" -d "index=$index" "$PO_SRV$path/translate/?" 2> /dev/null)
+	log -n "($status_code)"
+	[[ $status_code == "200" ]]
+}
+
+function upload_submission_db() {
+	key="$1"
+	value="$2"
+	storeId="$3"
+
+	update_targetf "$storeId" "$key" "$value"
+}
+
 # uploads a translation for a key in an specific project/language pair.
 # storeId and path are pootle internal variables used to locate the project and language
 # value is the actual translation for the given key.
@@ -98,13 +122,7 @@ function upload_submission() {
 
 	if is_translated_value "$value"; then
 		logt 4 -n "publishing translation '$key': $value"
-		index=$(get_index $storeId $key)
-		id=$(get_unitid $storeId $key)
-		sourcef=$(get_sourcef $storeId $key)
-
-		status_code=$(curl $CURL_OPTS -m 120 -w "%{http_code}" -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "id=$id" -d "path=$path" -d  "pootle_path=$path" -d "source_f_0=$sourcef" -d  "store=$path" -d "submit=Submit" -d  "target_f_0=$value" -d "index=$index" "$PO_SRV$path/translate/?" 2> /dev/null)
-		log -n "($status_code)"
-		[[ $status_code == "200" ]]
+		$UPLOAD_SUBMISSION_FUNCTION $key $value $storeId $path
 		check_command
 	else
 		logt 4 "Skipping untranslated key '$key': $value"
