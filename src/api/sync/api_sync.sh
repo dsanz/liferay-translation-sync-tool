@@ -150,63 +150,63 @@ function sync_project_locale_translations() {
 			char="!"
 			if is_key_line "$line" ; then
 				[[ "$line" =~ $kv_rexp ]] && Skey="${BASH_REMATCH[1]}" && Sval="${BASH_REMATCH[2]}"
-				PvalStore=${T["$storePrefix$Skey"]}            # get store value
-				PValTpl=${T["$templatePrefix$Skey"]}           # get template value
+				PvalStore=${T["$storePrefix$Skey"]}                                      # get store value
+				PValTpl=${T["$templatePrefix$Skey"]}                                     # get template value
 
-				if exists_ext_value $extPrefix $Skey; then     # has translation to be overriden?
-					S[$Skey]=${T["$extPrefix$Skey"]}           # |  override translation using the ext file content
-					char="o"                                   # |
-				elif ! exists_key "$templatePrefix" "$Skey"; then
-					char="-"                                           # key does not exist in pootle template. We've just updated from templates so do nothing
-				else                                                   # key exists in pootle template, so we can update pootle AND sources now
-					if is_translated_value "$PvalStore"; then          # dump_store does not export empty values with the template value as native pootle sync_stores does
-						is_pootle_translated=true;
-					else
-						is_pootle_translated=false;
-					fi;
-
-					if [[ "$Sval" != "$PValTpl" ]] && is_translated_value "$Sval"; then # sources are translated if the value is not empty, is not an auto-translation and its value is different from the template
-						is_sources_translated=true;
-					else
-		  				is_sources_translated=false;
-					fi;
-
-					if $is_sources_translated; then                    # source code value is translated. Is pootle one translated too?
-						if $is_pootle_translated; then                 # store value is translated. This includes anything translator write, even english texts
-							if [[ "$PvalStore" == "$Sval" ]]; then     #   are pootle and source translation the same?
-								char="·"
-							else                                       #   translations are different. we have a conflict...
-								if [[ "$Sval" == "PValTpl" ]]; then    #      source value is like the template, whereas store value not. Pootle wins
-									char="p"
-									S[$Skey]="$PvalStore"
-								elif [[ "$PvalStore" == "PValTpl" ]]; then # store value is like the template, whereas source not. Source wins
-									char="p"                                   # use the source value for pootle
-									P[$Skey]="$Sval";
-								else                                           # none of the translated values is equal to the template. Pootle wins as we assume pootle gets improvements all the time
-									char="x"
-									S[$Skey]="$PvalStore"
-									# TODO: improve this by examining unit mtime and commit line last time (git blame) and use the latest
-								fi
-							fi
-						else                                           # store value is untranslated. Either no one wrote there or contains an old "auto" translation
-							char="P"                                   # use the source value for pootle
-							P[$Skey]="$Sval";
-						fi
-					else                                               # source code value is not translated. We have a chance to give it a value
-						if $is_pootle_translated; then
-							S[$Skey]="$PvalStore"
-							char="S"
-						else
-							char="u"
-						fi
-					fi
-				fi
-			fi
-			loglc 0 "${charc[$char]}" -n "$char"
-		else
-			char="#"                                                        # is it a comment line
-		fi;
-	done < $source_lang_file
+				if exists_ext_value $extPrefix $Skey; then                               # has translation to be overriden?
+					S[$Skey]=${T["$extPrefix$Skey"]}                                     #   override translation using the ext file content
+					char="o"                                                             #
+				elif ! exists_key "$templatePrefix" "$Skey"; then                        # otherwise, does key exist in template file?
+					char="-"                                                             #   key does not exist in pootle template. We've just updated from templates so do nothing
+				else                                                                     # otherwise, key exists in pootle template, so we can update pootle AND sources now
+					if is_translated_value "$PvalStore"; then                            #   is the pootle value translated?
+						is_pootle_translated=true;                                       #     dump_store does not export empty values with the template value as native pootle sync_stores does
+					else                                                                 #
+						is_pootle_translated=false;                                      #
+					fi;                                                                  #
+                                                                                         #
+					if [[ "$Sval" != "$PValTpl" ]] && is_translated_value "$Sval"; then  #   is the sources value translated?
+						is_sources_translated=true;                                      #     sources are translated if the value is not empty, is not an auto-translation and its value is different from the template
+					else                                                                 #
+		  				is_sources_translated=false;                                     #
+					fi;                                                                  #
+                                                                                         #
+					if $is_sources_translated; then                                      # source code value is translated. Is pootle one translated too?
+						if $is_pootle_translated; then                                   # pootle value is translated. This includes anything translator write, even english texts
+							if [[ "$PvalStore" == "$Sval" ]]; then                       #   are pootle and source translation the same?
+								char="·"                                                 #     the ndo nothing
+							else                                                         #   translations are different. we have a conflict...
+								if [[ "$Sval" == "PValTpl" ]]; then                      #     source value is like the template, whereas store value not.
+									char="p"                                             #
+									S[$Skey]="$PvalStore"                                #        Pootle wins. Store pootle translation in sources array
+								elif [[ "$PvalStore" == "PValTpl" ]]; then               #     store value is like the template, whereas source not.
+									char="p"                                             #
+									P[$Skey]="$Sval";                                    #        Source wins. Store source value in pootle array
+								else                                                     #    none of the translated values is equal to the template.
+									char="x"                                             #
+									S[$Skey]="$PvalStore"                                #        Pootle wins. We assume pootle gets improvements all the time
+									                                                     #        TODO: improve this by examining unit mtime and commit line last time (git blame) and use the latest
+								fi                                                       #
+							fi                                                           #
+						else                                                             # store value is untranslated. Either no one wrote there or contains an old "auto" translation
+							char="P"                                                     #
+							P[$Skey]="$Sval";                                            #    Store source value in pootle array
+						fi                                                               #
+					else                                                                 # Source code value is not translated. We have a chance to give it a value
+						if $is_pootle_translated; then                                   #    is pootle value translated?
+							S[$Skey]="$PvalStore"                                        #       Pootle wins. Store pootle translation in sources array
+							char="S"                                                     #
+						else                                                             #
+							char="u"                                                     #
+						fi                                                               #
+					fi                                                                   #
+				fi                                                                       #
+			fi                                                                           #
+			loglc 0 "${charc[$char]}" -n "$char"                                         #
+		else                                                                             #
+			char="#"                                                                     # is it a comment line
+		fi;                                                                              #
+	done < $source_lang_file                                                             # feed from source code language file
 	IFS=$OLDIFS
 
 	log
