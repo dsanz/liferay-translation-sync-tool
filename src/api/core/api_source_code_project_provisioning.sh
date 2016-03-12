@@ -157,7 +157,6 @@ function add_git_root() {
 	[[ "$pr_reviewer" == "" ]] && pr_reviewer=$DEFAULT_PR_REVIEWER;
 	[[ "$sync_branch" == "" ]] && sync_branch=$DEFAULT_SYNC_BRANCH;
 
-
 	pootle_project_name="$(get_repository_name $git_root_dir)"
 
 	GIT_ROOT_POOTLE_PROJECT_NAME["$git_root_dir"]=$pootle_project_name

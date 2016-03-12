@@ -53,20 +53,14 @@ function sync_translations() {
 		loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
 	done;
 
-	for git_root in "${!GIT_ROOTS[@]}"; do
-		sync_project_translations $git_root
-	done;
+    sync_project_translations $POOTLE_PROJECT_ID
 }
 
 function sync_project_translations() {
-	git_root="$1"
-      # TODO: make it sync from the single pootle project
-	pootle_project="${GIT_ROOT_POOTLE_PROJECT_NAME[$git_root]}"
-	sources_project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
+	pootle_project="$1"
 
 	logt 2 "Synchronizing translations from/to pootle project $pootle_project"
 
-	# this has to be read once per destination project
 	read_pootle_exported_template $pootle_project
 
 	start_pootle_session
@@ -81,7 +75,8 @@ function sync_project_translations() {
 			# TODO: really needed? read_pootle_exported_language_file $pootle_project $language
 			read_ext_language_file $pootle_project $language
 
-			while read sources_project; do
+			for sources_project in "${!AP_PROJECT_NAMES[@]}"; do
+				# TODO: check if we need a sort of source code project blacklist here
 				if [[ $sources_project != $pootle_project ]]; then
 					# this has to be read once per sources project and locale
 					read_source_code_language_file $sources_project $language
@@ -92,7 +87,7 @@ function sync_project_translations() {
 					clear_keys "$(get_source_code_language_prefix $sources_project $locale)"
 					check_command
 				fi
-			done <<< "$sources_project_list"
+			done
 
 			logt 3 -n "Garbage collection (pootle: $pootle_project, $locale)... "
 			clear_keys "$(get_store_language_prefix $pootle_project $locale)"
