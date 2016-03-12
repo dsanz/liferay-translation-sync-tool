@@ -90,7 +90,7 @@ function sort_indexes() {
 			fi
 			(( new_index++ ))
 		fi;
-	done < "$TMP_PROP_OUT_DIR/$sourceStoreId";
+	done < "$TMP_PROP_OUT_DIR/$storeId";
 	log
 }
 
