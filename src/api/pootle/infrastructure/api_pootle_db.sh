@@ -167,6 +167,6 @@ function get_pootle_project_codes() {
 function get_default_project_locales() {
 	unset POOTLE_PROJECT_LOCALES
 	declare -xga POOTLE_PROJECT_LOCALES;
-	read -r -a POOTLE_PROJECT_LOCALES <<< $($MYSQL_COMMAND $DB_NAME -s -N -e "select code from pootle_app_language where id in (select language_id from pootle_app_translationproject where real_path='${POOTLE_PROJECT_ID}') and code!='templates';")
+	read -r -a POOTLE_PROJECT_LOCALES <<< $($MYSQL_COMMAND $DB_NAME -s -N -e "select code from pootle_app_language where id in (select language_id from pootle_app_translationproject where real_path='${POOTLE_PROJECT_ID}') and code!='templates' order by code;")
 }
 
