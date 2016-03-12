@@ -74,7 +74,7 @@ function sort_indexes() {
 	unit_count=$(count_targets $storeId)
 
 	logt 3 "Sorting indexes in target store $storeId. Max index=$max_index, Unit count=$unit_count."
-	get_units_index_by_storeId $storeId "$TMP_PROP_OUT_DIR/$sourceStoreId"
+	get_units_index_by_storeId $storeId "$TMP_PROP_OUT_DIR/$storeId"
 	done=false;
 	until $done; do
 		read unit || done=true
