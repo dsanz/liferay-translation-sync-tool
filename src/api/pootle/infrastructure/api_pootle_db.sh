@@ -26,8 +26,12 @@ function get_unitid() {
 	echo $i;
 }
 
-function get_units_by_storeId() {
+function get_units_unitid_by_storeId() {
 	$MYSQL_COMMAND $DB_NAME -s -N -e "select concat(pootle_store_unit.id,\"@\",pootle_store_unit.unitid) from pootle_store_unit where store_id=\"$1\" order by pootle_store_unit.index;" > $2
+}
+
+function get_units_index_by_storeId() {
+	$MYSQL_COMMAND $DB_NAME -s -N -e "select concat(pootle_store_unit.id,\"@\",pootle_store_unit.index) from pootle_store_unit where store_id=\"$1\" order by pootle_store_unit.index;" > $2
 }
 
 function get_max_index() {

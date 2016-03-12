@@ -39,7 +39,7 @@ function merge_units() {
 	sourceStoreId=$(get_store_id $source_project_code $locale)
 
 	logt 3 "Merging units from project $source_project_code ($locale), store $sourceStoreId into $targetStoreId. Starting at index $max_index"
-	get_units_by_storeId $sourceStoreId "$TMP_PROP_OUT_DIR/$sourceStoreId"
+	get_units_unitid_by_storeId $sourceStoreId "$TMP_PROP_OUT_DIR/$sourceStoreId"
 	done=false;
 	until $done; do
 		read unit || done=true
@@ -73,31 +73,24 @@ function sort_indexes() {
 	max_index=$(get_max_index $storeId)
 	unit_count=$(count_targets $storeId)
 
-	if [[ $max_index > $unit_count ]]; then
-		to=$max_index
-	else
-		to=$unit_count
-	fi;
-	logt 3 "Sorting indexes in target store $storeId. Max index=$max_index, Unit count=$unit_count. Will iterate to $to"
-	for current_index in $(seq 0 $to); do
-		get_unitids_by_store_and_index $storeId $current_index
- 		for unitId in ${unitids_by_store_and_index[@]}; do # there can be more than one unit with the same index and storeId !!!
-			if [[ "$unitId" != "" ]]; then
-				if [[ "$current_index" != "$new_index" ]]; then
-					update_unit_index_by_store_and_unit_id $storeId $unitId $new_index
-					log -n "[${unitId}_$current_index>$new_index] "
-				else
-					log -n "[${unitId}_$current_index] "
-				fi
-				(( new_index++ ))
+	logt 3 "Sorting indexes in target store $storeId. Max index=$max_index, Unit count=$unit_count."
+	get_units_index_by_storeId $storeId "$TMP_PROP_OUT_DIR/$sourceStoreId"
+	done=false;
+	until $done; do
+		read unit || done=true
+		if [[ "$unit" != "" ]]; then
+			pos=$(expr index "$unit" "@")
+			unitId=${unit:0:pos-1}
+			unitIndex=${unit:pos}
+			if [[ "$unitIndex" != "$new_index" ]]; then
+				update_unit_index_by_store_and_unit_id $storeId $unitId $new_index
+				log -n "[${unitId}_$unitIndex>$new_index] "
 			else
-				log -n "[$current_index>____] "
-#				if [[ $current_index == 0 ]]; then  # if first unit is not under index 0, let allow index 1 to be the first one
-#					(( new_index++ ))
-#				fi;
-			fi;
-		done
-	done
+				log -n "[${unitId}_$unitIndex_index] "
+			fi
+			(( new_index++ ))
+		fi;
+	done < "$TMP_PROP_OUT_DIR/$sourceStoreId";
 	log
 }
 
