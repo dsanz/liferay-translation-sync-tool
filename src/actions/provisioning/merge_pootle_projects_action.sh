@@ -10,24 +10,30 @@ function merge_pootle_projects_DB() {
 	logt 2 "Merging all projects in $target_project_code"
 	check_dir "$TMP_PROP_OUT_DIR"
 
+	locale_count=0
+    (( total_locales=${#POOTLE_PROJECT_LOCALES[@]} + 1 ))
 	merge_pootle_project_locale $target_project_code "templates"
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
-		merge_pootle_project_locale $target_project_code $locale
+		(( locale_count++ ))
+		merge_pootle_project_locale $target_project_code $locale $locale_count $total_locales
+
 	done
 }
 
 function merge_pootle_project_locale() {
 	target_project_code="$1"
 	locale="$2"
+	locale_count=$3
+	total_locales=$4
 
 	targetStoreId=$(get_store_id $target_project_code $locale)
-	logt 2 "Processing locale $locale, target store $targetStoreId"
+	logt 2 "Processing locale $locale [$locale_count / $total_locales], target store $targetStoreId"
 	sort_indexes $targetStoreId
 	max_index=$(get_max_index $targetStoreId)
 	for source_project_code in "${POOTLE_PROJECT_CODES[@]}"; do
 		if [[ "$source_project_code" != "$target_project_code" ]]; then
 			if ! is_whitelisted $source_project_code; then
-				merge_units $targetStoreId $source_project_code $locale
+				merge_units $targetStoreId $source_project_code $locale $locale_count $total_locales
 			else
 				logt 3 "Skipping whitelisted $source_project_code"
 			fi
@@ -41,10 +47,13 @@ function merge_units() {
 	targetStoreId="$1"
 	source_project_code="$2"
 	locale="$3"
+	locale_count=$4
+	total_locales=$5
+
 	max_index=$(get_max_index $targetStoreId)
 	sourceStoreId=$(get_store_id $source_project_code $locale)
 
-	logt 3 "Merging units from project $source_project_code ($locale), store $sourceStoreId into $targetStoreId. Starting at index $max_index"
+	logt 3 "Merging units from project $source_project_code ($locale) [$locale_count / $total_locales], store $sourceStoreId into $targetStoreId. Starting at index $max_index"
 	get_units_unitid_by_storeId $sourceStoreId "$TMP_PROP_OUT_DIR/$sourceStoreId"
 	done=false;
 	until $done; do
