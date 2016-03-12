@@ -10,12 +10,12 @@ function merge_pootle_projects_DB() {
 	logt 2 "Merging all projects in $target_project_code"
 	check_dir "$TMP_PROP_OUT_DIR"
 
-	locale_count=0
+	locale_count=1
     (( total_locales=${#POOTLE_PROJECT_LOCALES[@]} + 1 ))
 	merge_pootle_project_locale $target_project_code "templates" $locale_count $total_locales
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
-		(( locale_count++ ))
 		merge_pootle_project_locale $target_project_code $locale $locale_count $total_locales
+		(( locale_count++ ))
 	done
 }
 
