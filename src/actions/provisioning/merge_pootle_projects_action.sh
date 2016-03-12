@@ -20,6 +20,8 @@ function merge_pootle_projects_DB() {
 }
 
 function merge_pootle_project_locale() {
+	now="$(date +%s%N)"
+
 	target_project_code="$1"
 	locale="$2"
 	locale_count=$3
@@ -40,6 +42,10 @@ function merge_pootle_project_locale() {
 			logt 3 "Skipping $source_project_code as can't be merged with itself"
 		fi;
 	done
+	now="$(($(date +%s%N)-now))"
+	seconds="$((now/1000000000))"
+	milliseconds="$((now/1000000))"
+	printf -v stats "Merge projects into locale $locale took %02d.%03d seconds" "$((seconds))" "${milliseconds}"
 }
 
 function merge_units() {
