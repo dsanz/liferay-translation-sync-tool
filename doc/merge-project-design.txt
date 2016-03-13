@@ -48,6 +48,11 @@ Steps:
 		- ok check keys existing ONLY in template but not in language files (this-user-segment-can-not-be-deleted-because-it-is-used-by-the-following-campaigns)
 		- OK check keys existing ONLY in the langs but not in the template (metric-x-in-youtube-x). This is due to a change in a key name and wrong update_from_templates
 		- check empty values in template
+		- Reading bookmarks-web Language_de.properties file from source code branch (just pulled)
+          [16:46:40.129]        Reading file /opt//master/liferay-portal/modules/apps/collaboration/bookmarks/bookmarks-web/src/main/resources/content/Language_de.properties        [32 lines read in .006 s.]
+          [16:46:40.150]        Synchronizing bookmarks-web <-> liferay (de): -············PPxP·xx······xPPPPPP
+          x should turn into p or s
+
 
  9. Send PR
 
