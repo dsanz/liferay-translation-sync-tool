@@ -110,7 +110,7 @@ function upload_submission() {
 
 	if is_translated_value "$value"; then
 		logt 4 -n "publishing translation '$key': $value"
-		$UPLOAD_SUBMISSION_FUNCTION $key $value $storeId $path
+		$UPLOAD_SUBMISSION_FUNCTION "$key" "$value" "$storeId" "$path"
 		check_command
 	else
 		logt 4 "Skipping untranslated key '$key': $value"
