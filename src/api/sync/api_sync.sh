@@ -125,11 +125,15 @@ function sync_project_locale_translations() {
 	# sources code project prefixes for array accessing
 	sourceCodePrefix=$(get_source_code_language_prefix $sources_project $locale)
 
+
+	logt 4 -n "Synchronizing $sources_project <-> $pootle_project ($locale): "
+
+	# TODO: deal with the case where source file does not exist. should it be generated from pootle store? or be committed as part of build -lang, then resynced later?
+	# at least provide a message
+
 	declare -A P  # Translations to be published to pootle
 	declare -A S  # Translations to update in sources
 
-	logt 4 -n "Synchronizing $sources_project <-> $pootle_project ($locale): "
-	done=false;
 	OLDIFS=$IFS
 	IFS=
 
@@ -139,9 +143,7 @@ function sync_project_locale_translations() {
 	# PvalStore: Pootle language value associated to Skey (comes from dumped store)
 	# PValTpl: target pootle template value associated to Skey
 
-	# TODO: deal with the case where source file does not exist. should it be generated from pootle store? or be committed as part of build -lang, then resynced later?
-	# at least provide a message
-
+	done=false;
 	until $done; do
 		if ! read -r line; then
 			done=true;
@@ -218,7 +220,7 @@ function sync_project_locale_translations() {
 	if [[ ${#P[@]} -gt 0 ]];  then
 		storeId=$(get_store_id $pootle_project $locale)
 		local path=$(get_pootle_path $pootle_project $locale)
-		logt 4 "Submitting ${#P[@]} translations to Pootle:"
+		loglc 4 "$CYAN" "Submitting ${#P[@]} translations to Pootle:"
 		for key in "${!P[@]}"; do
 			upload_submission "$key" "${P[$key]}" "$storeId" "$path"
 		done;
@@ -227,7 +229,7 @@ function sync_project_locale_translations() {
 	fi
 
 	if [[ ${#S[@]} -gt 0 ]];  then
-		logt 4 "Updating ${#S[@]} translations in sources:"
+		loglc 4 "$CYAN" "Updating ${#S[@]} translations in sources:"
 		for key in "${!S[@]}"; do
 			val="${S[$key]}"
 			logt 4 "$key=$val"
