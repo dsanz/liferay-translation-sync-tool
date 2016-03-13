@@ -58,7 +58,7 @@ declare -xgr MYSQL_DUMP_COMMAND="mysqldump"
 # how to upload submissions. Value must be either
 #  - 'upload_submission_http', slower but extensively tested
 #  - 'upload_submission_db', faster but newer
-UPLOAD_SUBMISSION_FUNCTION="upload_submission_db"
+UPLOAD_SUBMISSION_FUNCTION="upload_submission_http"
 
 ################################################################################
 ### Section 2: Dirs and files required to work
