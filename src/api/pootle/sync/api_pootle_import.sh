@@ -62,22 +62,18 @@ function update_pootle_db_from_templates() {
 function update_pootle_db_from_templates_repo_based() {
 	logt 1 "Updating pootle database from repository-based project set ..."
 
-	for git_root in "${!GIT_ROOTS[@]}"; do
-		project="${GIT_ROOT_POOTLE_PROJECT_NAME[$git_root]}";
-		check_dir "$PODIR/$project/"
-		rm -f $PODIR/$project/$FILE.$PROP_EXT 2>&1
-		project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
-		projects=$(echo "$project_list" | wc -l)
+	check_dir "$PODIR/$POOTLE_PROJECT_ID/"
+	rm -f $PODIR/$POOTLE_PROJECT_ID/$FILE.$PROP_EXT 2>&1
 
-		logt 2 "Pootle $project (git root: $git_root): will update templates from $projects projects"
-		while read source_code_project; do
-			logt 3 -n "Adding $source_code_project template"
-			cat ${AP_PROJECT_SRC_LANG_BASE[$source_code_project]}/$FILE.$PROP_EXT >> $PODIR/$project/$FILE.$PROP_EXT
-			check_command
-		done <<< "$project_list"
+	logt 2 "Pootle $project (git root: $git_root): will update templates from ${#AP_PROJECT_NAMES[@]} projects"
 
-		update_from_templates $project $PODIR/$project
+	for source_code_project in "${!AP_PROJECT_NAMES[@]}"; do
+		logt 3 -n "Adding $source_code_project template"
+		cat ${AP_PROJECT_SRC_LANG_BASE[$source_code_project]}/$FILE.$PROP_EXT >> $PODIR/$POOTLE_PROJECT_ID/$FILE.$PROP_EXT
+		check_command
 	done
+
+	update_from_templates $POOTLE_PROJECT_ID $PODIR/$POOTLE_PROJECT_ID
 }
 
 # this API allows to workaround a pootle bug so that new translations coming from a Language_*.properties file
