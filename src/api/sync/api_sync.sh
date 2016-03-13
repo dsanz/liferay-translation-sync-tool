@@ -2,7 +2,7 @@ function sync() {
 	loglc 1 $RED "Begin Synchronization"
 	display_source_projects_action
 	create_backup_action
-	update_pootle_db_from_templates_repo_based
+	update_pootle_db_from_templates
 	clean_temp_input_dirs
 	clean_temp_output_dirs
 	restore_file_ownership

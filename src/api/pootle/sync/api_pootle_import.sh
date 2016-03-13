@@ -51,15 +51,6 @@ function update_from_templates() {
 }
 
 function update_pootle_db_from_templates() {
-	logt 1 "Updating pootle database..."
-	for project in "${!AP_PROJECT_NAMES[@]}"; do
-		src_dir=${AP_PROJECT_SRC_LANG_BASE["$project"]}
-		logt 2 "$project: "
-		update_from_templates $project $src_dir
-	done
-}
-
-function update_pootle_db_from_templates_repo_based() {
 	logt 1 "Updating pootle database from repository-based project set ..."
 
 	check_dir "$PODIR/$POOTLE_PROJECT_ID/"
