@@ -39,8 +39,11 @@ Steps:
 
  5. sync
  	5.0 (optional) /opt/bash/bash pootle-manager.sh -rB 2016-03-12_15-57-29
- 	5.1 pootle-manager.sh -s
-	5.2 backupId = ???????????????
+	5.1 PATCH Pootle project_tree.py:258
+           - store.update(update_structure=True, update_translation=True, conservative=False, store=output_file, fuzzy=True)
+           + store.update(update_structure=True, update_translation=False, conservative=False, store=output_file, fuzzy=False)
+ 	5.2 pootle-manager.sh -s
+	5.3 backupId = ???????????????
 
  6. check results.
 	6.1 Check pootle has newest translations from master (see german)
@@ -55,11 +58,6 @@ Steps:
           [16:46:40.129]        Reading file /opt//master/liferay-portal/modules/apps/collaboration/bookmarks/bookmarks-web/src/main/resources/content/Language_de.properties        [32 lines read in .006 s.]
           [16:46:40.150]        Synchronizing bookmarks-web <-> liferay (de): -············PPxP·xx······xPPPPPP
           x should turn into p or s
-
-PATCH Pootle project_tree.py:268
-   - store.update(update_structure=True, update_translation=True, conservative=False, store=output_file, fuzzy=True)
-   + store.update(update_structure=True, update_translation=False, conservative=False, store=output_file, fuzzy=True)
-
 
  9. Send PR
 
