@@ -149,7 +149,11 @@ function sync_project_locale_translations() {
 		if [ ! "$line" == "" ]; then
 			char="!"
 			if is_key_line "$line" ; then
-				[[ "$line" =~ $kv_rexp ]] && Skey="${BASH_REMATCH[1]}" && Sval="${BASH_REMATCH[2]}"
+				Sval="" # make sure we don't reuse previous values
+				Skey="" # make sure we don't reuse previous values
+				# dont't use [[ "$line" =~ $kv_rexp ]] just in case we have empty values in source files
+				[[ "$line" =~ $k_rexp ]] && Skey="${BASH_REMATCH[1]}"                    # get key from source code
+				[[ "$line" =~ $v_rexp ]] && Sval="${BASH_REMATCH[1]}"                    # get value from source code
 				PvalStore=${T["$storePrefix$Skey"]}                                      # get store value
 				PValTpl=${T["$templatePrefix$Skey"]}                                     # get template value
 
