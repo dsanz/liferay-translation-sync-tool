@@ -17,7 +17,7 @@ function sync() {
 	restore_file_ownership
 	refresh_stats_repo_based
 	for pootle_project_code in "${POOTLE_PROJECT_CODES[@]}"; do
-		export_project_template $pootle_project_code
+		regenerate_file_stores $pootle_project_code
 	done;
 	loglc 1 $RED "End Synchronization"
 }
