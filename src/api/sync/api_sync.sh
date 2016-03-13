@@ -53,7 +53,7 @@ function sync_translations() {
 		loglc 8 ${charc[$char]} "'$char' ${chart[$char]}.  "
 	done;
 
-    sync_project_translations $POOTLE_PROJECT_ID
+	sync_project_translations $POOTLE_PROJECT_ID
 }
 
 function sync_project_translations() {
