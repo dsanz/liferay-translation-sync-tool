@@ -176,10 +176,10 @@ function sync_project_locale_translations() {
 							if [[ "$PvalStore" == "$Sval" ]]; then                       #   are pootle and source translation the same?
 								char="·"                                                 #     the ndo nothing
 							else                                                         #   translations are different. we have a conflict...
-								if [[ "$Sval" == "PValTpl" ]]; then                      #     source value is like the template, whereas store value not.
+								if [[ "$Sval" == "$PValTpl" ]]; then                     #     source value is like the template, whereas store value not.
 									char="p"                                             #
 									S[$Skey]="$PvalStore"                                #        Pootle wins. Store pootle translation in sources array
-								elif [[ "$PvalStore" == "PValTpl" ]]; then               #     store value is like the template, whereas source not.
+								elif [[ "$PvalStore" == "$PValTpl" ]]; then              #     store value is like the template, whereas source not.
 									char="p"                                             #
 									P[$Skey]="$Sval";                                    #        Source wins. Store source value in pootle array
 								else                                                     #    none of the translated values is equal to the template.
@@ -201,10 +201,10 @@ function sync_project_locale_translations() {
 						fi                                                               #
 					fi                                                                   #
 				fi                                                                       #
-			fi                                                                           #
+			else                                                                         #
+				char="#"                                                                 # is it a comment line
+			fi;                                                                          #
 			loglc 0 "${charc[$char]}" -n "$char"                                         #
-		else                                                                             #
-			char="#"                                                                     # is it a comment line
 		fi;                                                                              #
 	done < $source_lang_file                                                             # feed from source code language file
 	IFS=$OLDIFS
