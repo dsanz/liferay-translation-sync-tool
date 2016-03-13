@@ -71,7 +71,7 @@ function get_targetf() {
 }
 
 function update_targetf() {
-	$MYSQL_COMMAND $DB_NAME -s -N  -e "update pootle_store_unit set target_f=\"$3\" from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";"
+	$MYSQL_COMMAND $DB_NAME -s -N  -e "update pootle_store_unit set target_f=\"$3\" where store_id=\"$1\" and unitid=\"$2\";"
 }
 
 function count_targets() {
