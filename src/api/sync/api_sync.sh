@@ -322,8 +322,11 @@ function sync_project_locale_translations_existing_lang_file() {
 		loglc 7 "$CYAN" "Updating ${#S[@]} translations > source code $source_lang_file"
 		for key in "${!S[@]}"; do
 			val="${S[$key]}"
-			logt 4 "$key=$val"
-			sed -i "s/^$key=.*/$key=${val//\//\\/}/" $source_lang_file
+			# keys can have some special chars which need to be escaped not to be considered part of a regex
+			escapedKey=$(echo $key | sed -e 's/[]\/$*.^|[]/\\&/g')
+			logt 4 -n "$key=$val       [$escapedKey]"
+			sed -i "s/^$escapedKey=.*/$key=${val//\//\\/}/" $source_lang_file
+			check_command # this will tell us if substitution was made.
 		done;
 	fi
 	logt 4 "$locale: ${#P[@]} translations to $pootle_project pootle project, ${#S[@]} to $sources_project source code"
