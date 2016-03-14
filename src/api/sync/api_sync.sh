@@ -106,8 +106,8 @@ function sync_project_translations() {
 		fi
 	done
 
-	logt 3 "$pootle_project: $total_translations_to_pootle translations updated in pootle ($locale)"
-	logt 3 "$pootle_project: $total_translations_to_sources translations updated in source code ($locale)"
+	logt 3 "$pootle_project: $total_translations_to_pootle translations updated in pootle"
+	logt 3 "$pootle_project: $total_translations_to_sources translations updated in source code"
 
 	logt 2 -n "Garbage collection ($pootle_project) "
 	unset K; declare -ga K;
