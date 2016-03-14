@@ -38,7 +38,7 @@ Steps:
  	4.2 backupId: 2016-03-12_15-57-29 (backed on laptop)
 
  5. sync
- 	5.0 (optional) /opt/bash/bash pootle-manager.sh -rB 2016-03-12_15-57-29
+ 	5.0 (optional) /etc/init.d/httpd/stop; /opt/bash/bash pootle-manager.sh -rB 2016-03-12_15-57-29; /etc/init.d/httpd/start
 	5.1 PATCH Pootle project_tree.py:258
            - store.update(update_structure=True, update_translation=True, conservative=False, store=output_file, fuzzy=True)
            + store.update(update_structure=True, update_translation=False, conservative=False, store=output_file, fuzzy=False)
