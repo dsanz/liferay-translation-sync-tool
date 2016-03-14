@@ -130,7 +130,7 @@ function sync_project_locale_translations_non_existing_lang_file() {
 	storePrefix="$6"
 	extPrefix="$7"
 
-	logt 4 -n "Synchronizing $sources_project < $pootle_project ($locale) [source does not exist]: "
+	logt 3 -n "Synchronizing $sources_project < $pootle_project ($locale) [source does not exist]: "
 
 	# involved file paths
 	source_template_file="${AP_PROJECT_SRC_LANG_BASE["$sources_project"]}/$FILE.$PROP_EXT"
@@ -206,7 +206,7 @@ function sync_project_locale_translations_existing_lang_file() {
 	storePrefix="$6"
 	extPrefix="$7"
 
- 	logt 4 -n "Synchronizing $sources_project <-> $pootle_project ($locale): "
+ 	logt 3 -n "Synchronizing $sources_project <-> $pootle_project ($locale): "
 
 	declare -A P  # Translations to be published to pootle
 	declare -A S  # Translations to update in sources
