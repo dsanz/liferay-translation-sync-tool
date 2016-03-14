@@ -74,12 +74,18 @@ function sync_project_translations() {
 			read_pootle_store $pootle_project $language
 			read_ext_language_file $pootle_project $language
 
+			total_translations_to_pootle=0
+			total_translations_to_sources=0
+
 			for sources_project in "${!AP_PROJECT_NAMES[@]}"; do
 				# TODO: check if we need a sort of source code project blacklist here
 				if [[ $sources_project != $pootle_project ]]; then
 					sync_project_locale_translations $pootle_project $sources_project $language
 				fi
 			done
+
+			logt 3 "$total_translations_to_pootle have been updated in pootle ($locale)"
+			logt 3 "$total_translations_to_sources have been updated in source code ($locale)"
 
 			logt 3 -n "Garbage collection (pootle: $pootle_project, $locale)... "
 			clear_keys "$(get_store_language_prefix $pootle_project $locale)"
@@ -183,6 +189,7 @@ function sync_project_locale_translations_non_existing_lang_file() {
 	log
 
 	if [[ ${#S[@]} -gt 0 ]];  then
+		(( total_translations_to_source+=${#S[@]} ))
 		loglc 4 "$CYAN" "Updating ${#S[@]} translations in sources:"
 		for key in "${!S[@]}"; do
 			val="${S[$key]}"
@@ -295,6 +302,7 @@ function sync_project_locale_translations_existing_lang_file() {
 	log
 
 	if [[ ${#P[@]} -gt 0 ]];  then
+		(( total_translations_to_pootle+=${#P[@]} ))
 		storeId=$(get_store_id $pootle_project $locale)
 		local path=$(get_pootle_path $pootle_project $locale)
 		loglc 4 "$CYAN" "Submitting ${#P[@]} translations to Pootle:"
@@ -306,6 +314,7 @@ function sync_project_locale_translations_existing_lang_file() {
 	fi
 
 	if [[ ${#S[@]} -gt 0 ]];  then
+		(( total_translations_to_source+=${#S[@]} ))
 		loglc 4 "$CYAN" "Updating ${#S[@]} translations in sources:"
 		for key in "${!S[@]}"; do
 			val="${S[$key]}"
