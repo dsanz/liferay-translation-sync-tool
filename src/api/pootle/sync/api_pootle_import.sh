@@ -56,7 +56,7 @@ function update_pootle_db_from_templates() {
 	check_dir "$PODIR/$POOTLE_PROJECT_ID/"
 	rm -f $PODIR/$POOTLE_PROJECT_ID/$FILE.$PROP_EXT 2>&1
 
-	logt 2 "Pootle $project (git root: $git_root): will update templates from ${#AP_PROJECT_NAMES[@]} projects"
+	logt 2 "Pootle $POOTLE_PROJECT_ID (git root: $git_root): will update templates from ${#AP_PROJECT_NAMES[@]} projects"
 
 	for source_code_project in "${!AP_PROJECT_NAMES[@]}"; do
 		logt 3 -n "Adding $source_code_project template"
