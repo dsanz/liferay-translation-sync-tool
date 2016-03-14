@@ -65,6 +65,9 @@ function sync_project_translations() {
 
 	start_pootle_session
 
+	total_translations_to_pootle=0
+	total_translations_to_sources=0
+
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		language=$(get_file_name_from_locale $locale)
 		if [[ "$locale" != "en" && "$language" =~ $trans_file_rexp ]]; then
@@ -84,24 +87,28 @@ function sync_project_translations() {
 				fi
 			done
 
-			logt 3 "$total_translations_to_pootle_by_locale have been updated in pootle ($locale)"
-			logt 3 "$total_translations_to_sources_by_locale have been updated in source code ($locale)"
+			(( total_translations_to_pootle+=total_translations_to_pootle_by_locale ))
+			(( total_translations_to_sources+=total_translations_to_sources_by_locale ))
 
-			logt 3 -n "Garbage collection (pootle: $pootle_project, $locale)... "
+			logt 3 "$total_translations_to_pootle_by_locale translations updated in pootle ($locale)"
+			logt 3 "$total_translations_to_sources_by_locale translations updated in source code ($locale)"
+
+			logt 3 -n "Garbage collection ($pootle_project, $locale) "
 			clear_keys "$(get_store_language_prefix $pootle_project $locale)"
 			clear_keys "$(get_ext_language_prefix $pootle_project $locale)"
 			check_command
 		fi
 	done
 
-	close_pootle_session
+	logt 3 "$pootle_project: $total_translations_to_pootle translations updated in pootle ($locale)"
+	logt 3 "$pootle_project: $total_translations_to_sources translations updated in source code ($locale)"
 
-	logt 2 -n "Garbage collection (sources: $pootle_project)... "
-	unset K
-	unset T
-	declare -gA T;
-	declare -ga K;
+	logt 2 -n "Garbage collection ($pootle_project) "
+	unset K; declare -ga K;
+	unset T; declare -gA T;
 	check_command
+
+	close_pootle_session
 }
 
 function sync_project_locale_translations() {
