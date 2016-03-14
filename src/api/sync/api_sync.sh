@@ -197,7 +197,7 @@ function sync_project_locale_translations_non_existing_lang_file() {
 
 	if [[ ${#S[@]} -gt 0 ]];  then
 		(( total_translations_to_sources_by_locale+=${#S[@]} ))
-		loglc 7 "$CYAN" "Updating ${#S[@]} translations > $sources_project source code"
+		loglc 7 "$CYAN" "Updating ${#S[@]} translations > source code $source_lang_file"
 		for key in "${!S[@]}"; do
 			val="${S[$key]}"
 			logt 4 "$key=$val"
@@ -319,7 +319,7 @@ function sync_project_locale_translations_existing_lang_file() {
 
 	if [[ ${#S[@]} -gt 0 ]];  then
 		(( total_translations_to_sources_by_locale+=${#S[@]} ))
-		loglc 7 "$CYAN" "Updating ${#S[@]} translations > $sources_project source code"
+		loglc 7 "$CYAN" "Updating ${#S[@]} translations > source code $source_lang_file"
 		for key in "${!S[@]}"; do
 			val="${S[$key]}"
 			logt 4 "$key=$val"
