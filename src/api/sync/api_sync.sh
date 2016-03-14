@@ -38,18 +38,21 @@ function sync_translations() {
 	# common
 	charc["!"]=$RED; chart["!"]="Uncovered case (should never show up)"
 	charc["#"]=$COLOROFF; chart["#"]="Comment/blank line"
-	charc["u"]=$BLUE; chart["u"]="Sources and pootle untranslated"
+	charc["u"]=$BLUE; chart["u"]="Sources and pootle untranslated (either auto-translated or just empty)"
+	charc["·"]=$CYAN; chart["·"]="Same, valid translation in pootle and sources (no-op)"
+	charc["."]=$CYAN; chart["."]="Same, valid English value in pootle and sources (no-op)"
+
 
 	# to pootle
 	charc["P"]=$YELLOW; chart["P"]="Sources translated, pootle untranslated. Source value goes to Pootl"
-	charc["p"]=$LILA; chart["p"]="Pootle and sources translated, source value != current template value, pootle value = current template value. Source value goes to Pootle"
+	charc["p"]=$LILA; chart["p"]="Pootle and sources not translated but source has a valid English value. Source value goes to Pootle"
 	charc["-"]=$COLOROFF; chart["-"]="Source code has a translation which key no longer exists. Won't update pootle. build-lang should remove it from sources"
-	charc["·"]=$CYAN; chart["·"]="Same, valid translation in pootle and sources (no-op)"
 
 	# to sources
 	charc["o"]=$WHITE; chart["o"]="Overriden from ext file"
-	charc["x"]=$LILA; chart["x"]="Pootle and sources translated, different translations (conflict/improvement, Pootle value goes to sources)"
-	charc["s"]=$LILA; chart["s"]="Pootle and sources translated, source value = old template value, pootle value != old template value. Pootle value goes to sources"
+	charc["X"]=$RED; chart["X"]="Pootle and sources translated, different translations (conflict/improvement, Pootle value goes to sources)"
+	charc["x"]=$RED; chart["x"]="Pootle and sources not translated but both have a different valid English value. Pootle value goes to sources)"
+	charc["s"]=$LILA; chart["s"]="Pootle and sources not translated but pootle has a valid English value. Pootle value goes to sources"
 	charc["S"]=$GREEN; chart["S"]="Source untranslated, pootle translated. Pootle value goes to sources"
 
 	for char in ${!charc[@]}; do
@@ -266,42 +269,61 @@ function sync_project_locale_translations_existing_lang_file() {
 				elif ! exists_key "$templatePrefix" "$Skey"; then             # otherwise, does key exist in template file?
 					char="-"                                                  #   key does not exist in pootle template. We've just updated from templates so do nothing
 				else                                                          # otherwise, key exists in pootle template, so we can update pootle AND sources now
+					is_translated_pootle=$(is_translated_value "$PvalStore")
 					if  [[ "$PvalStore" != "$POldValTpl" ]] && \
 						[[ "$PvalStore" != "$PValTpl" ]] && \
-						is_translated_value "$PvalStore";
+						$is_translated_pootle;
 					then                                                      #   is the pootle value translated?
-						is_pootle_translated=true;                            #     dump_store does not export empty values with the template value as native pootle sync_stores does
+						is_pootle_fully_translated=true;                      #     dump_store does not export empty values with the template value as native pootle sync_stores does
 					else                                                      #
-						is_pootle_translated=false;                           #
+						is_pootle_fully_translated=false;                     #
 					fi;                                                       #
 
+					is_translated_source=$(is_translated_value "$Sval")
 					if  [[ "$Sval" != "$POldValTpl" ]] && \
 						[[ "$Sval" != "$PValTpl" ]] && \
-						is_translated_value "$Sval";
+						$is_translated_source;
 					then                                                      #   is the sources value translated?
-						is_sources_translated=true;                           #     sources are translated if the value is not empty, is not an auto-translation and its value is different from the template
+						is_sources_fully_translated=true;                     #     sources are translated if the value is not empty, is not an auto-translation and its value is different from the template
 					else                                                      #
-		  				is_sources_translated=false;                          #
+		  				is_sources_fully_translated=false;                    #
 					fi;                                                       #
                                                                               #
-					if $is_sources_translated; then                           # source code value is translated. Is pootle one translated too?
-						if $is_pootle_translated; then                        #  pootle value is translated. This includes anything translator write, even english texts
+					if $is_sources_fully_translated; then                           # source code value is translated. Is pootle one translated too?
+						if $is_pootle_fully_translated; then                  #  pootle value is translated. This includes anything translator write, even english texts
 							if [[ "$PvalStore" == "$Sval" ]]; then            #   are pootle and source translation the same?
 								char="·"                                      #     then do nothing
 							else                                              #   translations are different. we have a conflict...
-								char="x"                                      #     Pootle wins. We assume pootle gets improvements all the time
-								S[$Skey]="$PvalStore"                         #     TODO: improve this by examining unit mtime and commit line last time (git blame) and use the latest
+								char="X"                                      #     Pootle wins. We assume pootle gets improvements all the time
+								S[$Skey]="$PvalStore"                         #
 							fi                                                #
 						else                                                  # store value is untranslated. Either no one wrote there or contains an old "auto" translation
 							char="P"                                          #
 							P[$Skey]="$Sval";                                 #    Store source value in pootle array
 						fi                                                    #
 					else                                                      # Source code value is not translated. We have a chance to give it a value
-						if $is_pootle_translated; then                        #    is pootle value translated?
+						if $is_pootle_fully_translated; then                  #    is pootle value translated?
 							S[$Skey]="$PvalStore"                             #       Pootle wins. Store pootle translation in sources array
 							char="S"                                          #
-						else                                                  #
-							char="u"                                          #
+						else                                                  # nothing is translated. Time to see if english value works
+							if $is_translated_source; then
+								if $is_translated_pootle; then
+									if [[ "$PvalStore" == "$Sval" ]]; then    #   are pootle and source english value the same?
+										char="."                              #     then do nothing
+									else                                      #   translations are different. we have a conflict...
+										char="x"                              #     Pootle wins. We assume pootle gets improvements all the time
+										S[$Skey]="$PvalStore"
+									fi
+						 		else
+						 			char="p"                                  # sources have some english value, but pootle not
+									P[$Skey]="$Sval";                         #  let' use that value in pootle
+								fi;
+						 	elif $is_translated_pootle; then                 # sources are auto-copied or empty. Is pootle too?
+						 		char="s"                                      #  let's use the pootle english value
+						 		S[$Skey]="$PvalStore"
+						 	else
+								char="u"                                      # both values are really empty... do nothing
+							fi
 						fi                                                    #
 					fi                                                        #
 				fi                                                            #
