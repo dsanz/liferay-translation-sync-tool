@@ -273,7 +273,7 @@ function sync_project_locale_translations_existing_lang_file() {
 								char="·"                                                 #     the ndo nothing
 							else                                                         #   translations are different. we have a conflict...
 								if [[ "$Sval" == "$PValTpl" ]]; then                     #     source value is like the template, whereas store value not.
-									char="p"                                             #
+									char="s"                                             #
 									S[$Skey]="$PvalStore"                                #        Pootle wins. Store pootle translation in sources array
 								elif [[ "$PvalStore" == "$PValTpl" ]]; then              #     store value is like the template, whereas source not.
 									char="p"                                             #
