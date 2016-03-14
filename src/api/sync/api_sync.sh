@@ -72,7 +72,6 @@ function sync_project_translations() {
 
 			# these have to be read once per pootle project and language
 			read_pootle_store $pootle_project $language
-			# TODO: really needed? read_pootle_exported_language_file $pootle_project $language
 			read_ext_language_file $pootle_project $language
 
 			for sources_project in "${!AP_PROJECT_NAMES[@]}"; do
@@ -91,7 +90,6 @@ function sync_project_translations() {
 
 			logt 3 -n "Garbage collection (pootle: $pootle_project, $locale)... "
 			clear_keys "$(get_store_language_prefix $pootle_project $locale)"
-			# TODO: really needed? clear_keys "$(get_exported_language_prefix $pootle_project $locale)"
 			clear_keys "$(get_ext_language_prefix $pootle_project $locale)"
 			check_command
 		fi
