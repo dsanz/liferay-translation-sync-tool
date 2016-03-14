@@ -323,6 +323,7 @@ function sync_project_locale_translations_existing_lang_file() {
 		for key in "${!S[@]}"; do
 			val="${S[$key]}"
 			# keys can have some special chars which need to be escaped not to be considered part of a regex
+			# escapedKey will exist in $source_lang_file for sure as we've read it from there
 			escapedKey=$(echo $key | sed -e 's/[]\/$*.^|[]/\\&/g')
 			logt 4 -n "$key=$val       [$escapedKey]"
 			sed -i "s/^$escapedKey=.*/$key=${val//\//\\/}/" $source_lang_file
