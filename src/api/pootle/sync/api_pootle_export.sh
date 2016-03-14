@@ -18,9 +18,8 @@ function export_project_template() {
 
 	logt 2 "Exporting template from pootle DB ($project) "
 	check_dir "$PODIR/$project"
-	storeId=$(get_store_id $project "es")
+	storeId=$(get_store_id $project "templates")
 
-	# better trust some language instead of templates!
 	logt 4 "Dumping store id $storeId into $sync_stores_template_file"
 	export_template "$storeId" "$sync_stores_template_file"
 
