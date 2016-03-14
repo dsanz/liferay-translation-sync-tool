@@ -190,7 +190,7 @@ function sync_project_locale_translations_non_existing_lang_file() {
 
 	if [[ ${#S[@]} -gt 0 ]];  then
 		(( total_translations_to_sources+=${#S[@]} ))
-		loglc 7 "$CYAN" "Updating ${#S[@]} translations in sources:"
+		loglc 7 "$CYAN" "Updating ${#S[@]} translations > $sources_project source code"
 		for key in "${!S[@]}"; do
 			val="${S[$key]}"
 			logt 4 "$key=$val"
@@ -304,7 +304,7 @@ function sync_project_locale_translations_existing_lang_file() {
 		(( total_translations_to_pootle+=${#P[@]} ))
 		storeId=$(get_store_id $pootle_project $locale)
 		local path=$(get_pootle_path $pootle_project $locale)
-		loglc 7 "$CYAN" "Submitting ${#P[@]} translations to Pootle:"
+		loglc 7 "$CYAN" "Updating ${#P[@]} translations > $pootle_project pootle project"
 		for key in "${!P[@]}"; do
 			upload_submission "$key" "${P[$key]}" "$storeId" "$path"
 		done;
@@ -312,7 +312,7 @@ function sync_project_locale_translations_existing_lang_file() {
 
 	if [[ ${#S[@]} -gt 0 ]];  then
 		(( total_translations_to_sources+=${#S[@]} ))
-		loglc 7 "$CYAN" "Updating ${#S[@]} translations in sources:"
+		loglc 7 "$CYAN" "Updating ${#S[@]} translations > $sources_project source code"
 		for key in "${!S[@]}"; do
 			val="${S[$key]}"
 			logt 4 "$key=$val"
