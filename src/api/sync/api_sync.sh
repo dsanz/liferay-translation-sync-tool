@@ -195,7 +195,7 @@ function sync_project_locale_translations_non_existing_lang_file() {
 					fi                                                   #
 				fi                                                       #
 			else                                                         #
-				char="#"                                                 # is it a comment line
+				char="#"                                                 # it is a comment line
 			fi;                                                          #
 			loglc 0 "${charc[$char]}" -n "$char"                         #
 		fi;                                                              #
@@ -274,7 +274,7 @@ function sync_project_locale_translations_existing_lang_file() {
 					else                                                      #
 						is_pootle_translated=false;                           #
 					fi;                                                       #
-                                                                              #
+
 					if  [[ "$Sval" != "$POldValTpl" ]] && \
 						[[ "$Sval" != "$PValTpl" ]] && \
 						is_translated_value "$Sval";
@@ -287,19 +287,10 @@ function sync_project_locale_translations_existing_lang_file() {
 					if $is_sources_translated; then                           # source code value is translated. Is pootle one translated too?
 						if $is_pootle_translated; then                        #  pootle value is translated. This includes anything translator write, even english texts
 							if [[ "$PvalStore" == "$Sval" ]]; then            #   are pootle and source translation the same?
-								char="·"                                      #     the ndo nothing
+								char="·"                                      #     then do nothing
 							else                                              #   translations are different. we have a conflict...
-								if [[ "$Sval" == "$POldValTpl" ]]; then       #     source value is like the (old) template, whereas store value not. this is a rare case as we've already checked for template value
-									char="s"                                  #
-									S[$Skey]="$PvalStore"                     #        Pootle wins. Store pootle translation in sources array
-								elif [[ "$PvalStore" == "$PValTpl" ]]; then   #     store value is like the (current) template, whereas source not. this is a rare case as we've already checked for old template value
-									char="p"                                  #
-									P[$Skey]="$Sval";                         #        Source wins. Store source value in pootle array
-								else                                          #    none of the translated values is equal to the template.
-									char="x"                                  #
-									S[$Skey]="$PvalStore"                     #        Pootle wins. We assume pootle gets improvements all the time
-									                                          #        TODO: improve this by examining unit mtime and commit line last time (git blame) and use the latest
-								fi                                            #
+								char="x"                                      #     Pootle wins. We assume pootle gets improvements all the time
+								S[$Skey]="$PvalStore"                         #     TODO: improve this by examining unit mtime and commit line last time (git blame) and use the latest
 							fi                                                #
 						else                                                  # store value is untranslated. Either no one wrote there or contains an old "auto" translation
 							char="P"                                          #
