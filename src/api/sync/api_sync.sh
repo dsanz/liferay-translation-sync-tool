@@ -121,15 +121,104 @@ function sync_project_locale_translations() {
 	# pootle project prefixes for array accessing
 	templatePrefix=$(get_template_prefix $pootle_project $locale)
 	storePrefix=$(get_store_language_prefix $pootle_project $locale)
+	extPrefix=$(get_ext_language_prefix $$pootle_project $locale)
 
 	# sources code project prefixes for array accessing
 	sourceCodePrefix=$(get_source_code_language_prefix $sources_project $locale)
 
+	if [[ -f $source_lang_file ]]; then
+		sync_project_locale_translations_existing_lang_file $pootle_project $sources_project $locale $source_lang_file $templatePrefix $storePrefix $extPrefix
+	else
+		sync_project_locale_translations_non_existing_lang_file $pootle_project $sources_project $locale $source_lang_file $templatePrefix $storePrefix $extPrefix
+	fi;
+}
 
-	logt 4 -n "Synchronizing $sources_project <-> $pootle_project ($locale): "
+function sync_project_locale_translations_non_existing_lang_file() {
+	pootle_project="$1";
+	sources_project="$2";
+	locale="$3";
+	source_lang_file="$4";
+	templatePrefix="$5";
+	storePrefix="$6"
+	extPrefix="$7"
 
-	# TODO: deal with the case where source file does not exist. should it be generated from pootle store? or be committed as part of build -lang, then resynced later?
-	# at least provide a message
+	logt 4 -n "Synchronizing $sources_project < $pootle_project ($locale) [source does not exist]: "
+
+	# involved file paths
+	source_template_file="${AP_PROJECT_SRC_LANG_BASE["$sources_project"]}/$FILE.$PROP_EXT"
+
+	declare -A S  # Translations to update in sources
+
+	OLDIFS=$IFS
+	IFS=
+
+	# As Language_$locale.properties does not exist, we can only export translated stuff from the store to the file
+	# We can just read the template language file. Variables meaning:
+	# Skey: source file language key
+	# PvalStore: Pootle language value associated to Skey (comes from dumped store)
+
+	done=false;
+	until $done; do
+		if ! read -r line; then
+			done=true;
+		fi;
+		if [ ! "$line" == "" ]; then
+			char="!"
+			if is_key_line "$line" ; then
+				Skey="" # make sure we don't reuse previous values
+				# dont't use [[ "$line" =~ $kv_rexp ]] just in case we have empty values in source files
+				[[ "$line" =~ $k_rexp ]] && Skey="${BASH_REMATCH[1]}"     # get key from source code
+				PvalStore=${T["$storePrefix$Skey"]}                       # get store value
+				PValTpl=${T["$templatePrefix$Skey"]}                      # get template value
+
+				if exists_ext_value $extPrefix $Skey; then                # has translation to be overriden?
+					S[$Skey]=${T["$extPrefix$Skey"]}                      #   override translation using the ext file content
+					char="o"                                              #
+				elif ! exists_key "$templatePrefix" "$Skey"; then         # otherwise, does key exist in template file?
+					char="-"                                              #   key does not exist in pootle template. We've just updated from templates so do nothing
+				else                                                      # otherwise, key exists in pootle template, so we can update sources now
+					if is_translated_value "$PvalStore"; then             #   is the pootle value translated?
+						S[$Skey]="$PvalStore"                             #       Pootle wins. Store pootle translation in sources array
+						char="S"                                          #
+					else                                                  #
+						char="u"                                          #   otherwise, nothing to do, let's build-lang do the job
+					fi                                                    #
+				fi                                                        #
+			else                                                          #
+				char="#"                                                  # is it a comment line
+			fi;                                                           #
+			loglc 0 "${charc[$char]}" -n "$char"                          #
+		fi;                                                               #
+	done < $source_template_file                                          # feed from source code template file
+	IFS=$OLDIFS
+
+	log
+
+	if [[ ${#S[@]} -gt 0 ]];  then
+		loglc 4 "$CYAN" "Updating ${#S[@]} translations in sources:"
+		for key in "${!S[@]}"; do
+			val="${S[$key]}"
+			logt 4 "$key=$val"
+			echo "$key=$val" >> $source_lang_file
+		done;
+	else
+		logt 4 "No translations to update in $sources_project from $pootle_project ($locale)"
+	fi
+
+	set +f
+	unset S
+}
+
+function sync_project_locale_translations_existing_lang_file() {
+	pootle_project="$1";
+	sources_project="$2";
+	locale="$3";
+	source_lang_file="$4";
+	templatePrefix="$5";
+	storePrefix="$6"
+	extPrefix="$7"
+
+ 	logt 4 -n "Synchronizing $sources_project <-> $pootle_project ($locale): "
 
 	declare -A P  # Translations to be published to pootle
 	declare -A S  # Translations to update in sources
