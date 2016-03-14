@@ -96,6 +96,7 @@ function upload_submission_db() {
 	value="$2"
 	storeId="$3"
 
+	# TODO: update target word count and length. Update unit state to 200. Add submission for the user??
 	update_targetf "$storeId" "$key" "$value"
 }
 
