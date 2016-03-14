@@ -26,12 +26,27 @@ function read_pootle_exported_template() {
 	local template="$PODIR/$project/$FILE.$PROP_EXT"
 	check_dir "$PODIR/$project/"
 	export_project_template $project
-	local prefix=$(get_template_prefix $project $locale)
+	local prefix=$(get_template_prefix $project)
 	read_locale_file $template $prefix true
 }
 
 function get_template_prefix() {
 	echo $1
+}
+
+function read_pootle_exported_template_before_update_from_templates() {
+	local project="$1";
+	logt 3 "Reading $project template file (before updating from templates)"
+	local template="$PODIR/$project/$FILE.$PROP_EXT"
+	check_dir "$PODIR/$project/"
+	export_project_template $project
+	local prefix=$(get_template_prefix_before_update_from_templates $project)
+	# let's consider this another store, not a template one
+	read_locale_file $template $prefix false
+}
+
+function get_template_prefix_before_update_from_templates() {
+	echo "t$1"
 }
 
 # given a project and a language, reads the Language_xx.properties file
@@ -79,6 +94,10 @@ function read_pootle_store() {
 
 function get_store_language_prefix() {
 	echo "s$1$2"
+}
+
+function get_store_language_prefix_before_update_from_templates() {
+	echo "b$1$2"
 }
 
 function read_derived_language_file() {

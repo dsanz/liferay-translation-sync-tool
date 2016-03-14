@@ -2,6 +2,9 @@ function sync() {
 	loglc 1 $RED "Begin Synchronization"
 	display_source_projects_action
 	create_backup_action
+
+	read_pootle_exported_template_before_update_from_templates $POOTLE_PROJECT_ID
+
 	update_pootle_db_from_templates
 	clean_temp_input_dirs
 	clean_temp_output_dirs
@@ -39,14 +42,14 @@ function sync_translations() {
 
 	# to pootle
 	charc["P"]=$YELLOW; chart["P"]="Sources translated, pootle untranslated. Source value goes to Pootl"
-	charc["p"]=$LILA; chart["p"]="Pootle and sources translated, source value != template value, pootle value = template value. Source value goes to Pootle"
+	charc["p"]=$LILA; chart["p"]="Pootle and sources translated, source value != current template value, pootle value = current template value. Source value goes to Pootle"
 	charc["-"]=$COLOROFF; chart["-"]="Source code has a translation which key no longer exists. Won't update pootle. build-lang should remove it from sources"
 	charc["·"]=$CYAN; chart["·"]="Same, valid translation in pootle and sources (no-op)"
 
 	# to sources
 	charc["o"]=$WHITE; chart["o"]="Overriden from ext file"
 	charc["x"]=$LILA; chart["x"]="Pootle and sources translated, different translations (conflict/improvement, Pootle value goes to sources)"
-	charc["s"]=$LILA; chart["s"]="Pootle and sources translated, source value = template value, pootle value != template value. Pootle value goes to sources"
+	charc["s"]=$LILA; chart["s"]="Pootle and sources translated, source value = old template value, pootle value != old template value. Pootle value goes to sources"
 	charc["S"]=$GREEN; chart["S"]="Source untranslated, pootle translated. Pootle value goes to sources"
 
 	for char in ${!charc[@]}; do
@@ -105,7 +108,7 @@ function sync_project_translations() {
 
 	logt 2 -n "Garbage collection ($pootle_project) "
 	unset K; declare -ga K;
-	unset T; declare -gA T;
+	unset T; declare -gA T; # TODO: this will erase templates read before update_from_templates from all pootle projects. As there is only one, nothing happens!
 	check_command
 
 	close_pootle_session
@@ -124,13 +127,14 @@ function sync_project_locale_translations() {
 
 	# pootle project prefixes for array accessing
 	templatePrefix=$(get_template_prefix $pootle_project $locale)
+	oldTemplatePrefix=$(get_template_prefix_before_update_from_templates $pootle_project)
 	storePrefix=$(get_store_language_prefix $pootle_project $locale)
 	extPrefix=$(get_ext_language_prefix $pootle_project $locale)
 
 	if [[ -f $source_lang_file ]]; then
-		sync_project_locale_translations_existing_lang_file $pootle_project $sources_project $locale $source_lang_file $templatePrefix $storePrefix $extPrefix
+		sync_project_locale_translations_existing_lang_file $pootle_project $sources_project $locale $source_lang_file $templatePrefix $oldTemplatePrefix $storePrefix $extPrefix
 	else
-		sync_project_locale_translations_non_existing_lang_file $pootle_project $sources_project $locale $source_lang_file $templatePrefix $storePrefix $extPrefix
+		sync_project_locale_translations_non_existing_lang_file $pootle_project $sources_project $locale $source_lang_file $templatePrefix $oldTemplatePrefix $storePrefix $extPrefix
 	fi;
 }
 
@@ -140,8 +144,9 @@ function sync_project_locale_translations_non_existing_lang_file() {
 	locale="$3";
 	source_lang_file="$4";
 	templatePrefix="$5";
-	storePrefix="$6"
-	extPrefix="$7"
+	oldTemplatePrefix="$6"
+	storePrefix="$7"
+	extPrefix="$8"
 
 	logt 3 -n "Synchronizing $sources_project < $pootle_project ($locale) [source does not exist]: "
 
@@ -171,6 +176,7 @@ function sync_project_locale_translations_non_existing_lang_file() {
 				[[ "$line" =~ $k_rexp ]] && Skey="${BASH_REMATCH[1]}"     # get key from source code
 				PvalStore=${T["$storePrefix$Skey"]}                       # get store value
 				PValTpl=${T["$templatePrefix$Skey"]}                      # get template value
+				POldValTpl=${T["$oldTemplatePrefix$Skey"]}                               # get old template value (before updating from templates)
 
 				if exists_ext_value $extPrefix $Skey; then                # has translation to be overriden?
 					S[$Skey]=${T["$extPrefix$Skey"]}                      #   override translation using the ext file content
@@ -178,7 +184,7 @@ function sync_project_locale_translations_non_existing_lang_file() {
 				elif ! exists_key "$templatePrefix" "$Skey"; then         # otherwise, does key exist in template file?
 					char="-"                                              #   key does not exist in pootle template. We've just updated from templates so do nothing
 				else                                                      # otherwise, key exists in pootle template, so we can update sources now
-					if is_translated_value "$PvalStore"; then             #   is the pootle value translated?
+					if [[ "$PvalStore" != "$POldValTpl" ]] && is_translated_value "$PvalStore"; then  #   is the pootle value translated?
 						S[$Skey]="$PvalStore"                             #       Pootle wins. Store pootle translation in sources array
 						char="S"                                          #
 					else                                                  #
@@ -216,8 +222,9 @@ function sync_project_locale_translations_existing_lang_file() {
 	locale="$3";
 	source_lang_file="$4";
 	templatePrefix="$5";
-	storePrefix="$6"
-	extPrefix="$7"
+	oldTemplatePrefix="$6"
+	storePrefix="$7"
+	extPrefix="$8"
 
  	logt 3 -n "Synchronizing $sources_project <-> $pootle_project ($locale): "
 
@@ -248,6 +255,7 @@ function sync_project_locale_translations_existing_lang_file() {
 				[[ "$line" =~ $v_rexp ]] && Sval="${BASH_REMATCH[1]}"                    # get value from source code
 				PvalStore=${T["$storePrefix$Skey"]}                                      # get store value
 				PValTpl=${T["$templatePrefix$Skey"]}                                     # get template value
+				POldValTpl=${T["$oldTemplatePrefix$Skey"]}                               # get old template value (before updating from templates)
 
 				if exists_ext_value $extPrefix $Skey; then                               # has translation to be overriden?
 					S[$Skey]=${T["$extPrefix$Skey"]}                                     #   override translation using the ext file content
@@ -255,7 +263,7 @@ function sync_project_locale_translations_existing_lang_file() {
 				elif ! exists_key "$templatePrefix" "$Skey"; then                        # otherwise, does key exist in template file?
 					char="-"                                                             #   key does not exist in pootle template. We've just updated from templates so do nothing
 				else                                                                     # otherwise, key exists in pootle template, so we can update pootle AND sources now
-					if is_translated_value "$PvalStore"; then                            #   is the pootle value translated?
+					if [[ "$PvalStore" != "$POldValTpl" ]] && is_translated_value "$PvalStore"; then   #   is the pootle value translated?
 						is_pootle_translated=true;                                       #     dump_store does not export empty values with the template value as native pootle sync_stores does
 					else                                                                 #
 						is_pootle_translated=false;                                      #
@@ -272,10 +280,10 @@ function sync_project_locale_translations_existing_lang_file() {
 							if [[ "$PvalStore" == "$Sval" ]]; then                       #   are pootle and source translation the same?
 								char="·"                                                 #     the ndo nothing
 							else                                                         #   translations are different. we have a conflict...
-								if [[ "$Sval" == "$PValTpl" ]]; then                     #     source value is like the template, whereas store value not.
+								if [[ "$Sval" == "$POldValTpl" ]]; then                  #     source value is like the (old) template, whereas store value not. this is a rare case as we've already checked for template value
 									char="s"                                             #
 									S[$Skey]="$PvalStore"                                #        Pootle wins. Store pootle translation in sources array
-								elif [[ "$PvalStore" == "$PValTpl" ]]; then              #     store value is like the template, whereas source not.
+								elif [[ "$PvalStore" == "$PValTpl" ]]; then              #     store value is like the (current) template, whereas source not. this is a rare case as we've already checked for old template value
 									char="p"                                             #
 									P[$Skey]="$Sval";                                    #        Source wins. Store source value in pootle array
 								else                                                     #    none of the translated values is equal to the template.
