@@ -269,7 +269,11 @@ function sync_project_locale_translations_existing_lang_file() {
 				elif ! exists_key "$templatePrefix" "$Skey"; then             # otherwise, does key exist in template file?
 					char="-"                                                  #   key does not exist in pootle template. We've just updated from templates so do nothing
 				else                                                          # otherwise, key exists in pootle template, so we can update pootle AND sources now
-					is_translated_pootle=$(is_translated_value "$PvalStore")
+					if is_translated_value "$PvalStore"; then
+						is_translated_pootle=true;
+					else
+						is_translated_pootle=false;
+					fi;
 					if  [[ "$PvalStore" != "$POldValTpl" ]] && \
 						[[ "$PvalStore" != "$PValTpl" ]] && \
 						$is_translated_pootle;
@@ -279,7 +283,11 @@ function sync_project_locale_translations_existing_lang_file() {
 						is_pootle_fully_translated=false;                     #
 					fi;                                                       #
 
-					is_translated_source=$(is_translated_value "$Sval")
+					if is_translated_value "$Sval"; then
+						is_translated_source=true;
+					else
+						is_translated_source=false;
+					fi;
 					if  [[ "$Sval" != "$POldValTpl" ]] && \
 						[[ "$Sval" != "$PValTpl" ]] && \
 						$is_translated_source;
@@ -288,7 +296,7 @@ function sync_project_locale_translations_existing_lang_file() {
 					else                                                      #
 		  				is_sources_fully_translated=false;                    #
 					fi;                                                       #
-                                                                              #
+
 					if $is_sources_fully_translated; then                           # source code value is translated. Is pootle one translated too?
 						if $is_pootle_fully_translated; then                  #  pootle value is translated. This includes anything translator write, even english texts
 							if [[ "$PvalStore" == "$Sval" ]]; then            #   are pootle and source translation the same?
@@ -305,7 +313,7 @@ function sync_project_locale_translations_existing_lang_file() {
 						if $is_pootle_fully_translated; then                  #    is pootle value translated?
 							S[$Skey]="$PvalStore"                             #       Pootle wins. Store pootle translation in sources array
 							char="S"                                          #
-						else                                                  # nothing is translated. Time to see if english value works
+						else                                                  # nothing is fully translated. Time to see if english value works
 							if $is_translated_source; then
 								if $is_translated_pootle; then
 									if [[ "$PvalStore" == "$Sval" ]]; then    #   are pootle and source english value the same?
