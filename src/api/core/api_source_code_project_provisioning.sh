@@ -88,7 +88,7 @@ function read_project_from_path() {
 
 	project_name="$(prettify_name $project_family)/$(prettify_name $project_code)"
 
-	logt 3 "Detected $type project $project_code '$project_name' (family: $project_family)"
+	logt 4 "Found $type project $project_code '$project_name' (family: $project_family)"
 	# for the auto-provisioner, ant build-lang dir will be invoked from the base src dir-
 	add_AP_project "$project_code" "$project_name" "$base_src_dir" "$lang_rel_path" "$build_lang_rel_path"
 }

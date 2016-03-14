@@ -5,7 +5,7 @@ function display_source_projects_action() {
 		project_list="$(echo ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]} | sed 's: :\n:g' | sort)"
 		projects=$(echo "$project_list" | wc -l)
 		logt 2 "Git root: $git_root ($projects projects). Sync branch: ${GIT_ROOTS[$git_root]}. Reviewer: ${PR_REVIEWER[$git_root]}. Repo project name: ${GIT_ROOT_POOTLE_PROJECT_NAME[$git_root]}"
-		logc $RED "$(printf "%-51s%s" "Project Code")$(printf "%-100s%s" "Build-lang path (relative to git_root)")$(printf "%-35s%s" "Lang file base (rel to build lang)")$(printf "%-60s%s" "Project name")$(printf "%-5s%s" "Check") "
+		logc $RED "$(printf "%-51s%s" "Project Code")$(printf "%-100s%s" "Build-lang path (relative to git_root)")$(printf "%-35s%s" "Lang file base (rel to build lang)")$(printf "%-5s%s" "Check") "
 		while read project; do
 			log -n "$(printf "%-51s%s" "$project")"
 			build_lang_path="${AP_PROJECT_BUILD_LANG_DIR[$project]}"
@@ -15,8 +15,6 @@ function display_source_projects_action() {
 			src_lang_base="${src_lang_base#$git_root}"
 			src_lang_base="${src_lang_base#$build_lang_path}"
 			log -n "$(printf "%-35s%s" "$src_lang_base")"
-			project_name="${AP_PROJECT_NAMES[$project]}"
-			log -n "$(printf "%-60s%s" "$project_name")"
 			[ -d ${AP_PROJECT_SRC_LANG_BASE[$project]} ]
 			check_command
 		done <<< "$project_list"
@@ -26,7 +24,8 @@ function display_source_projects_action() {
 	logt 2 "Projects by git root summary"
 	for git_root in "${!GIT_ROOTS[@]}"; do
 		logt 3 "Git root: $git_root"
-		logt 3 "Projects: ${AP_PROJECTS_BY_GIT_ROOT["$git_root"]}"
+		logt 3 "Projects:"
+		logt 4 "${AP_PROJECTS_BY_GIT_ROOT["$git_root"]}"
 	done
 
 	read_pootle_projects_and_locales
