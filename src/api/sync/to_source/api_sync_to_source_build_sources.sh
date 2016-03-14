@@ -1,8 +1,8 @@
 function ant_all() {
-	if [[ "${LR_TRANS_MGR_PROFILE}" == "dev" ]]; then
-		logt 1 "Skipping ant all as we are in dev environment."
-		return;
-	fi;
+#	if [[ "${LR_TRANS_MGR_PROFILE}" == "dev" ]]; then
+#		logt 1 "Skipping ant all as we are in dev environment."
+#		return;
+#	fi;
 
 	logt 1 "Running ant all for portal"
 	logt 3 -n "cd $SRC_PORTAL_BASE"
@@ -26,6 +26,7 @@ function build_lang() {
 		cd $ant_dir
 		check_command
 		ant_log="$logbase/$project/ant-build-lang.log"
+		check_dir "$logbase/$project"
 		logt 3 -n "$ANT_BIN build-lang (all output redirected to $ant_log)"
 		$ANT_BIN build-lang > "$ant_log" 2>&1
 		check_command
