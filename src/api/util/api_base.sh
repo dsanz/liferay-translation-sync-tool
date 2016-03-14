@@ -49,19 +49,23 @@ function clean_dir() {
 # given a length for indentation, a color, an optional "-n" and a message, logs coloured
 # message to stdout and an uncolored one to the log file.
 function loglc() {
-	length=$1
-	shift 1;
-	color=$1;
-	shift 1;
-	character="%s"
-	if [[ "$1" == "-n" ]]; then
+	 length=$1
+	 shift 1;
+	 color=$1;
+	 shift 1;
+	 character="\n"
+	 if [[ "$1" == "-n" ]]; then
 		shift 1
-		character="%s\n"
-	fi;
-	prefix="";
-	[[ $length -gt 0 ]] && prefix="["$(date +%T.%3N)"]"$(printf "%${length}s")
-	printf $character "$LILA$prefix$color$@$COLOROFF" >> $logfile
+		character=""
+	 fi;
+	 prefix="";
+	 [[ $length -gt 0 ]] && prefix="["$(date +%T.%3N)"]"$(printf "%${length}s")
+	 printf "$LILA$prefix$color" >> $logfile
+	 printf "%s" "$@" >> $logfile
+	 printf "$COLOROFF$character" >> $logfile
+
 }
+
 
 # logs a message using length 0 and the specified color
 function logc() {
