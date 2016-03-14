@@ -326,7 +326,7 @@ function sync_project_locale_translations_existing_lang_file() {
 			# escapedKey will exist in $source_lang_file for sure as we've read it from there
 			escapedKey=$(echo $key | sed -e 's/[]\/$*.^|[]/\\&/g')
 			logt 4 -n "$key=$val       [$escapedKey]"
-			sed -i "s/^$escapedKey=.*/$key=${val//\//\\/}/" $source_lang_file
+			sed -i "s/^$escapedKey=.*/${key//\//\\/}=${val//\//\\/}/" $source_lang_file
 			check_command # this will tell us if substitution was made.
 		done;
 	fi
