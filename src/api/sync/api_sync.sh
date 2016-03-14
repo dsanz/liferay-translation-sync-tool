@@ -123,9 +123,6 @@ function sync_project_locale_translations() {
 	storePrefix=$(get_store_language_prefix $pootle_project $locale)
 	extPrefix=$(get_ext_language_prefix $$pootle_project $locale)
 
-	# sources code project prefixes for array accessing
-	sourceCodePrefix=$(get_source_code_language_prefix $sources_project $locale)
-
 	if [[ -f $source_lang_file ]]; then
 		sync_project_locale_translations_existing_lang_file $pootle_project $sources_project $locale $source_lang_file $templatePrefix $storePrefix $extPrefix
 	else
