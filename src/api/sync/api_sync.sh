@@ -77,14 +77,7 @@ function sync_project_translations() {
 			for sources_project in "${!AP_PROJECT_NAMES[@]}"; do
 				# TODO: check if we need a sort of source code project blacklist here
 				if [[ $sources_project != $pootle_project ]]; then
-					# this has to be read once per sources project and locale
-					read_source_code_language_file $sources_project $language
-
 					sync_project_locale_translations $pootle_project $sources_project $language
-
-					logt 4 -n "Garbage collection (sources: $sources_project, $locale)... "
-					clear_keys "$(get_source_code_language_prefix $sources_project $locale)"
-					check_command
 				fi
 			done
 
