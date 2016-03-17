@@ -43,9 +43,9 @@ Steps:
            - store.update(update_structure=True, update_translation=True, conservative=False, store=output_file, fuzzy=True)
            + store.update(update_structure=True, update_translation=False, conservative=False, store=output_file, fuzzy=False)
  	5.2 pootle-manager.sh -s
-	5.3 backupId = ???????????????
+	5.3 backupId = 2016-03-14_16-26-47 (backed on laptop)
 
- 6. check results.
+ 6. [ok] check results.
 	6.1 Check pootle has newest translations from master (see german)
 	6.2 Check branch in PR so that newest translations from pootle are there and no other stuff was committed
 	6.3 additional checks
@@ -59,8 +59,14 @@ Steps:
           [16:46:40.150]        Synchronizing bookmarks-web <-> liferay (de): -············PPxP·xx······xPPPPPP
           x should turn into p or s
 
- 9. Send PR
+ 9. [ok] Send PR
 
  10. Send DB to production
    10.1 Review manager.prod.conf to change POOTLE_PROJECT_ID and UPLOAD_SUBMISSION_FUNCTION
    10.2 Change text in server
+
+11. Additional items:
+  11.1 Resurrect keys with state = -100 and make them available. check they are in language.properties first
+  11.2 Propagagte source_F from template unit to source_f for all units sharing the same unitid. I think this must be due to the pootle patch (change flag update_translation=False)
+  	11.2.1 Make this part of update-from-templates
+  	11.2.2 Check memcached (restart?) to make sure users perceive this
