@@ -12,7 +12,7 @@ function update_from_templates() {
 		logt 4 "I've been instructed to sync directly from PODIR"
 	fi
 	# Update database as well as file system to reflect the latest version of translation templates
-	logt 4 "Updating Pootle templates (this may take a while...)"
+	logt 4 "Updating Pootle templates from $PODIR/$project (this may take a while...)"
 
 	# this call seems to update all languages from templates, except the templates itself
 	# this leads to poor exports as exported template is wrong
@@ -48,6 +48,18 @@ function update_from_templates() {
 	if ! $session_opened; then
 		close_pootle_session
 	fi
+
+	# due to we disabled the update translations flag in update_from_templates, at this point we have the right english texts only in the templates store.
+	# it's time to distribute it across all stores
+	storeId=$(get_store_id $project "templates")
+	get_keys_by_store "$storeId"
+
+	logt 4 "Updating source texts from ${#unitids_by_store[@]} keys in store $storeId"
+	for key in "${unitids_by_store[@]}"; do
+		log -n " $key"
+		update_source_data_from_template "$storeId" "$key"
+	done
+	log
 }
 
 function update_pootle_db_from_templates() {

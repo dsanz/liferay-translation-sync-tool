@@ -44,6 +44,11 @@ function get_unitids_by_store_and_index() {
 	read -r -a unitids_by_store_and_index <<< $($MYSQL_COMMAND $DB_NAME  -s -N -e "select id from pootle_store_unit where store_id=\"$1\" and pootle_store_unit.index=$2;")
 }
 
+function get_keys_by_store() {
+	unset unitids_by_store;
+	read -r -a unitids_by_store <<< $($MYSQL_COMMAND $DB_NAME -s -N -e "select unitid from pootle_store_unit where store_id=\"$1\";")
+}
+
 function update_unit_index_by_store_and_unit_id() {
 	$MYSQL_COMMAND $DB_NAME -s -N -e "update pootle_store_unit set pootle_store_unit.index=$3 where store_id=\"$1\" and pootle_store_unit.id=\"$2\";"
 }
@@ -56,6 +61,10 @@ function update_unit_store_id_by_unit_id() {
 function get_sourcef() {
 	local i=$($MYSQL_COMMAND $DB_NAME -s -N  -e "select pootle_store_unit.source_f from pootle_store_unit where store_id=\"$1\" and unitid=\"$2\";")
 	echo $i;
+}
+
+function update_source_data_from_template() {
+	$MYSQL_COMMAND $DB_NAME -s -N  -e "update pootle_store_unit as tpsu, (select source_f as sf, source_wordcount as swc, source_length as sl from pootle_store_unit where unitid=\"$2\" and store_id=\"$1\") as spsu set tpsu.source_f=sf, source_length=sl, source_wordcount=swc where unitid=\"$2\" and store_id!=\"$1\";"
 }
 
 function get_unitid_storeId_and_unitid() {
