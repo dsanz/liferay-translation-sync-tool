@@ -12,7 +12,7 @@ function update_from_templates() {
 		logt 4 "I've been instructed to sync directly from PODIR"
 	fi
 	# Update database as well as file system to reflect the latest version of translation templates
-	logt 4 "Updating Pootle templates from $PODIR/$project (this may take a while...)"
+	logt 3 "Updating Pootle templates from $PODIR/$project (this may take a while...)"
 
 	# this call seems to update all languages from templates, except the templates itself
 	# this leads to poor exports as exported template is wrong
@@ -36,7 +36,7 @@ function update_from_templates() {
 
 	start_pootle_session
 
-	logt 4 -n "Telling pootle to rescan template file"
+	logt 3 -n "Telling pootle to rescan template file"
 	status_code=$(curl $CURL_OPTS -m 120 -w "%{http_code}" -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "scan_files=Rescan project files" "$PO_SRV/templates/$project/admin_files.html" 2> /dev/null)
 	[[ $status_code == "200" ]]
 	check_command
@@ -46,13 +46,14 @@ function update_from_templates() {
 	storeId=$(get_store_id $project "templates")
 	get_keys_by_store "$storeId"
 
-	logt 4 "Updating source texts from ${#unitids_by_store[@]} keys in store $storeId"
+	logt 3 "Updating source texts from ${#unitids_by_store[@]} keys in store $storeId"
 	for key in "${unitids_by_store[@]}"; do
 		log -n " $key"
 		update_source_data_from_template "$storeId" "$key"
 	done
 	log
 
+	logt 3 "Rebuilding indexes"
 	sort_indexes $storeId
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		storeId=$(get_store_id $project $locale)
