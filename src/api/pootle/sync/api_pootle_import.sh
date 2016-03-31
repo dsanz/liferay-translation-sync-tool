@@ -61,8 +61,8 @@ function update_pootle_db_from_templates() {
 	logt 3 "Combining templates of  ${#AP_PROJECT_NAMES[@]} into a single file"
 	for source_code_project in "${!AP_PROJECT_NAMES[@]}"; do
 		logt 4 -n "Adding $source_code_project template"
-		# TODO: make sure we have a new line after each cat even id source file does not
 		cat ${AP_PROJECT_SRC_LANG_BASE[$source_code_project]}/$FILE.$PROP_EXT >> $PODIR/$POOTLE_PROJECT_ID/$FILE.$PROP_EXT
+		echo >> $PODIR/$POOTLE_PROJECT_ID/$FILE.$PROP_EXT
 		check_command
 	done
 
