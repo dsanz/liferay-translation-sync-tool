@@ -64,7 +64,7 @@ function get_sourcef() {
 }
 
 function update_source_data_from_template() {
-	$MYSQL_COMMAND $DB_NAME -s -N  -e "update pootle_store_unit as tpsu, (select source_f as sf, source_wordcount as swc, source_length as sl from pootle_store_unit where unitid=\"$2\" and store_id=\"$1\") as spsu set tpsu.source_f=sf, source_length=sl, source_wordcount=swc where unitid=\"$2\" and store_id!=\"$1\";"
+	$MYSQL_COMMAND $DB_NAME -s -N  -e "update pootle_store_unit as tpsu, (select source_f as sf, source_hash as sh, source_wordcount as swc, source_length as sl from pootle_store_unit where unitid=\"$2\" and store_id=\"$1\") as spsu set tpsu.source_f=sf, tpsu.source_hash=sh, tpsu.source_length=sl, tpsu.source_wordcount=swc where unitid=\"$2\" and store_id!=\"$1\";"
 }
 
 function get_unitid_storeId_and_unitid() {
