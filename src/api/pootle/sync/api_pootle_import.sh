@@ -34,20 +34,12 @@ function update_from_templates() {
 		done
 	done;
 
-	session_opened=$(is_admin_session_opened)
-
-	if ! $session_opened; then
-		start_pootle_session
-	fi
+	start_pootle_session
 
 	logt 4 -n "Telling pootle to rescan template file"
 	status_code=$(curl $CURL_OPTS -m 120 -w "%{http_code}" -d "csrfmiddlewaretoken=`cat ${PO_COOKIES} | grep csrftoken | cut -f7`" -d "scan_files=Rescan project files" "$PO_SRV/templates/$project/admin_files.html" 2> /dev/null)
 	[[ $status_code == "200" ]]
 	check_command
-
-	if ! $session_opened; then
-		close_pootle_session
-	fi
 
 	# due to we disabled the update translations flag in update_from_templates, at this point we have the right english texts only in the templates store.
 	# it's time to distribute it across all stores
