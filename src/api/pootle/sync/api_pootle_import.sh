@@ -61,6 +61,7 @@ function update_from_templates() {
 	done
 	log
 
+	sort_indexes $storeId
 	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
 		storeId=$(get_store_id $project $locale)
 		sort_indexes $storeId
