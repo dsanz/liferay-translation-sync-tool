@@ -60,6 +60,11 @@ function update_from_templates() {
 		update_source_data_from_template "$storeId" "$key"
 	done
 	log
+
+	for locale in "${POOTLE_PROJECT_LOCALES[@]}"; do
+		storeId=$(get_store_id $project $locale)
+		sort_indexes $storeId
+	done
 }
 
 function update_pootle_db_from_templates() {
