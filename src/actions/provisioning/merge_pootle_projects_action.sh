@@ -107,7 +107,7 @@ function sort_indexes() {
 				update_unit_index_by_store_and_unit_id $storeId $unitId $new_index
 				log -n "[${unitId}_$unitIndex>$new_index] "
 			else
-				log -n "[${unitId}_$unitIndex_index] "
+				log -n "[${unitId}_$unitIndex] "
 			fi
 			(( new_index++ ))
 		fi;
