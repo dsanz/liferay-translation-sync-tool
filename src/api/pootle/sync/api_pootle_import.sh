@@ -59,6 +59,15 @@ function update_from_templates() {
 		storeId=$(get_store_id $project $locale)
 		sort_indexes $storeId
 	done
+	log
+
+	logt 3 "Resurrecting obsolete units"
+	logt 4 -n "Setting empty units as untranslated"
+	update_obsolete_empty_units
+	check_command
+	logt 4 -n "Setting non empty units as fuzzy"
+	update_obsolete_nonempty_units
+	check_command
 }
 
 function update_pootle_db_from_templates() {

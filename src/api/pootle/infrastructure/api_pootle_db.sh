@@ -1,4 +1,8 @@
-#!/bin/bash
+# translation unit state constants (taken from pootle source code: local_apps/pootle_store/util.py)
+declare -xr OBSOLETE=-100
+declare -xr UNTRANSLATED=0
+declare -xr FUZZY=50
+declare -xr TRANSLATED=200
 
 function clean_tables() {
 	logt 3 "Cleaning DB tables";
@@ -72,6 +76,13 @@ function get_unitid_storeId_and_unitid() {
 	echo $i;
 }
 
+function update_obsolete_empty_units() {
+	$MYSQL_COMMAND $DB_NAME -s -N  -e "update pootle_store_unit set state=$UNTRANSLATED where state=$OBSOLETE and target_f=\"\";"
+}
+
+function update_obsolete_nonempty_units() {
+	$MYSQL_COMMAND $DB_NAME -s -N  -e "update pootle_store_unit set state=$FUZZY where state=$OBSOLETE and target_f!=\"\";"
+}
 
 # given the storeId and the language key (unitId) returns the target_f field of that translation unit in the DB, which stores the translation of the key
 function get_targetf() {
