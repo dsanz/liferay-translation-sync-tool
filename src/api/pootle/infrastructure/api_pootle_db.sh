@@ -80,7 +80,7 @@ function get_sourcef() {
 }
 
 function batch_update_source_data_from_template() {
-	local i=$($MYSQL_COMMAND $DB_NAME -s -N  -e "select count(distinct BINARY (source_f)) from pootle_store_unit where unitid=\"$2\";");
+	local i=$($MYSQL_COMMAND $DB_NAME -s -N  -e "select count(distinct source_hash) from pootle_store_unit where unitid=\"$2\";");
 	if [[ $i -gt 1 ]]; then
 		log -n "(*)"
 		echo "update pootle_store_unit as tpsu, (select source_f as sf, source_hash as sh, source_wordcount as swc, source_length as sl from pootle_store_unit where unitid=\"$2\" and store_id=\"$1\") as spsu set tpsu.source_f=sf, tpsu.source_hash=sh, tpsu.source_length=sl, tpsu.source_wordcount=swc where unitid=\"$2\" and store_id!=\"$1\";" >> $3
