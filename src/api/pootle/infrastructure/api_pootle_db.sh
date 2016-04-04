@@ -5,8 +5,15 @@ declare -xgr FUZZY=50
 declare -xgr TRANSLATED=200
 
 function runSQL() {
-	logt 4 "Running SQL script from $1"
+	now="$(date +%s%N)"
+	logt 4 -n "Running SQL script from $1"
 	$MYSQL_COMMAND $DB_NAME -v < $1
+	check_command
+	now="$(($(date +%s%N)-now))"
+	seconds="$((now/1000000000))"
+	milliseconds="$((now/1000000))"
+	printf -v stats "$(cat $1 | wc -l) sql lines run in %02d.%03d seconds" "$((seconds))" "${milliseconds}"
+	logt 4 "$stats"
 }
 
 function clean_tables() {
@@ -73,7 +80,11 @@ function get_sourcef() {
 }
 
 function batch_update_source_data_from_template() {
-	echo "update pootle_store_unit as tpsu, (select source_f as sf, source_hash as sh, source_wordcount as swc, source_length as sl from pootle_store_unit where unitid=\"$2\" and store_id=\"$1\") as spsu set tpsu.source_f=sf, tpsu.source_hash=sh, tpsu.source_length=sl, tpsu.source_wordcount=swc where unitid=\"$2\" and store_id!=\"$1\";" >> $3
+	local i=$($MYSQL_COMMAND $DB_NAME -s -N  -e "select count(distinct BINARY (source_f)) from pootle_store_unit where unitid=\"$2\";");
+	if [[ $i -gt 1 ]]; then
+		log -n "(*)"
+		echo "update pootle_store_unit as tpsu, (select source_f as sf, source_hash as sh, source_wordcount as swc, source_length as sl from pootle_store_unit where unitid=\"$2\" and store_id=\"$1\") as spsu set tpsu.source_f=sf, tpsu.source_hash=sh, tpsu.source_length=sl, tpsu.source_wordcount=swc where unitid=\"$2\" and store_id!=\"$1\";" >> $3
+	fi;
 }
 
 function get_unitid_storeId_and_unitid() {
