@@ -19,9 +19,6 @@ function load_api() {
 	. api/pootle/project/api_pootle_project_provisioning.sh
 	. api/pootle/project/api_pootle_project_rename.sh
 
-	. api/pootle/sync/api_pootle_export.sh
-	. api/pootle/sync/api_pootle_import.sh
-
 	. api/util/api_base.sh
 	. api/util/api_config.sh
 	. api/util/api_git.sh
@@ -34,7 +31,9 @@ function load_api() {
 	. api/sync/api_sync_lang_files.sh
 	. api/sync/to_source/api_sync_to_source_build_sources.sh
 	. api/sync/to_source/api_sync_to_source_git.sh
+	. api/sync/to_source/api_pootle_export.sh
 	. api/sync/to_pootle/api_sync_to_pootle.sh
+	. api/sync/to_pootle/api_pootle_import.sh
 
 	# Load Actions
 	. actions/backup/create_backup_action.sh
