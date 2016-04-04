@@ -1,8 +1,8 @@
 # translation unit state constants (taken from pootle source code: local_apps/pootle_store/util.py)
-declare -xr OBSOLETE=-100
-declare -xr UNTRANSLATED=0
-declare -xr FUZZY=50
-declare -xr TRANSLATED=200
+declare -xgr OBSOLETE=-100
+declare -xgr UNTRANSLATED=0
+declare -xgr FUZZY=50
+declare -xgr TRANSLATED=200
 
 function clean_tables() {
 	logt 3 "Cleaning DB tables";
