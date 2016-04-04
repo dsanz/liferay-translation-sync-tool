@@ -7,7 +7,7 @@ declare -xgr TRANSLATED=200
 function runSQL() {
 	now="$(date +%s%N)"
 	logt 4 -n "Running SQL script from $1"
-	$MYSQL_COMMAND $DB_NAME -v < $1
+	$MYSQL_COMMAND $DB_NAME < $1
 	check_command
 	now="$(($(date +%s%N)-now))"
 	seconds="$((now/1000000000))"
