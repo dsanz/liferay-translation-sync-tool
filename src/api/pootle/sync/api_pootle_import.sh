@@ -47,11 +47,14 @@ function update_from_templates() {
 	get_keys_by_store "$storeId"
 
 	logt 3 "Updating source texts from ${#unitids_by_store[@]} keys in store $storeId"
+	update_source_sql="$TMP_PROP_IN_DIR/update_source_data_from_template.sql"
+	rm -Rf $update_source_sql >/dev/null 2>&1
 	for key in "${unitids_by_store[@]}"; do
 		log -n " $key"
-		update_source_data_from_template "$storeId" "$key"
+		batch_update_source_data_from_template "$storeId" "$key" "$update_source_sql"
 	done
 	log
+	runSQL "$update_source_sql"
 
 	logt 3 "Rebuilding indexes"
 	sort_indexes $storeId
