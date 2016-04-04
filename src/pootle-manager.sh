@@ -32,7 +32,7 @@ function load_api() {
 	. api/sync/to_source/api_sync_to_source_build_sources.sh
 	. api/sync/to_source/api_sync_to_source_git.sh
 	. api/sync/to_source/api_sync_to_source_misc.sh
-	. api/sync/to_source/api_pootle_export.sh
+	. api/sync/to_source/api_sync_to_source_export.sh
 	. api/sync/to_pootle/api_sync_to_pootle_upload.sh
 	. api/sync/to_pootle/api_sync_to_pootle_misc.sh
 	. api/sync/to_pootle/api_sync_to_pootle_update_from_templates.sh
