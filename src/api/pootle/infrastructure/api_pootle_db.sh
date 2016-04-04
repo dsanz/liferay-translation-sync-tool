@@ -4,6 +4,11 @@ declare -xgr UNTRANSLATED=0
 declare -xgr FUZZY=50
 declare -xgr TRANSLATED=200
 
+function runSQL() {
+	logt 4 "Running SQL script from $1"
+	$MYSQL_COMMAND $DB_NAME -v < $1
+}
+
 function clean_tables() {
 	logt 3 "Cleaning DB tables";
 	drop_table_sentences=$($MYSQL_DUMP_COMMAND $DB_NAME --add-drop-table --no-data | grep "^DROP")
