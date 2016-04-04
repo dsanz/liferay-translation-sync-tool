@@ -58,8 +58,8 @@ function get_keys_by_store() {
 	read -r -a unitids_by_store <<< $($MYSQL_COMMAND $DB_NAME -s -N -e "select unitid from pootle_store_unit where store_id=\"$1\";")
 }
 
-function update_unit_index_by_store_and_unit_id() {
-	$MYSQL_COMMAND $DB_NAME -s -N -e "update pootle_store_unit set pootle_store_unit.index=$3 where store_id=\"$1\" and pootle_store_unit.id=\"$2\";"
+function batch_update_unit_index_by_store_and_unit_id() {
+	echo "update pootle_store_unit set pootle_store_unit.index=$3 where store_id=\"$1\" and pootle_store_unit.id=\"$2\";" >> $4
 }
 
 function update_unit_store_id_by_unit_id() {

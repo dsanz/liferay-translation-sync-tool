@@ -96,6 +96,10 @@ function sort_indexes() {
 
 	logt 3 "Sorting indexes in target store $storeId. Max index=$max_index, Unit count=$unit_count."
 	get_units_index_by_storeId $storeId "$TMP_PROP_OUT_DIR/$storeId"
+
+	update_unit_index_sql="$TMP_PROP_IN_DIR/update_unit_index_by_store_and_unit_id_$storeId.sql"
+	rm -Rf $update_unit_index_sql >/dev/null 2>&1
+
 	done=false;
 	until $done; do
 		read unit || done=true
@@ -104,7 +108,7 @@ function sort_indexes() {
 			unitId=${unit:0:pos-1}
 			unitIndex=${unit:pos}
 			if [[ "$unitIndex" != "$new_index" ]]; then
-				update_unit_index_by_store_and_unit_id $storeId $unitId $new_index
+				batch_update_unit_index_by_store_and_unit_id $storeId $unitId $new_index "$update_unit_index_sql"
 				log -n "[${unitId}_$unitIndex>$new_index] "
 			else
 				log -n "[${unitId}_$unitIndex] "
@@ -113,6 +117,7 @@ function sort_indexes() {
 		fi;
 	done < "$TMP_PROP_OUT_DIR/$storeId";
 	log
+	runSQL "$update_unit_index_sql"
 }
 
 #
