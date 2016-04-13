@@ -2,4 +2,4 @@ export HOME_DIR="$(dirname $(readlink -f $BASH_SOURCE))"
 
 . $HOME_DIR/../base_env.sh
 
-run_sync_tool "-p"
+run_sync_tool "-s"
