@@ -47,9 +47,9 @@ function sync_translations() {
 	charc["P"]=$YELLOW; chart["P"]="Sources translated, pootle untranslated. Source value goes to Pootl"
 	charc["p"]=$LILA; chart["p"]="Pootle and sources not translated but source has a valid English value. Source value goes to Pootle"
 	charc["-"]=$COLOROFF; chart["-"]="Source code has a translation which key no longer exists. Won't update pootle. build-lang should remove it from sources"
+	charc["o"]=$WHITE; chart["o"]="Overriden from ext file. Source value will be kept. Pootle will be updated"
 
 	# to sources
-	charc["o"]=$WHITE; chart["o"]="Overriden from ext file"
 	charc["X"]=$RED; chart["X"]="Pootle and sources translated, different translations (conflict/improvement, Pootle value goes to sources)"
 	charc["x"]=$RED; chart["x"]="Pootle and sources not translated but both have a different valid English value. Pootle value goes to sources)"
 	charc["s"]=$LILA; chart["s"]="Pootle and sources not translated but pootle has a valid English value. Pootle value goes to sources"
@@ -181,9 +181,9 @@ function sync_project_locale_translations_non_existing_lang_file() {
 				PValTpl=${T["$templatePrefix$Skey"]}                     # get template value
 				POldValTpl=${T["$oldTemplatePrefix$Skey"]}               # get old template value (before updating from templates)
 
-				if exists_ext_value $extPrefix $Skey; then               # has translation to be overriden?
-					S[$Skey]=${T["$extPrefix$Skey"]}                     #   override translation using the ext file content
-					char="o"                                             #
+				if exists_ext_value $extPrefix $Skey; then                    # has translation to be overriden?
+					P[$Skey]="$Sval";                                         #   override translation in pootle using the source value. Keep sources
+					char="o"                                                  #
 				elif ! exists_key "$templatePrefix" "$Skey"; then        # otherwise, does key exist in template file?
 					char="-"                                             #   key does not exist in pootle template. We've just updated from templates so do nothing
 				else                                                     # otherwise, key exists in pootle template, so we can update sources now
