@@ -181,9 +181,9 @@ function sync_project_locale_translations_non_existing_lang_file() {
 				PValTpl=${T["$templatePrefix$Skey"]}                     # get template value
 				POldValTpl=${T["$oldTemplatePrefix$Skey"]}               # get old template value (before updating from templates)
 
-				if exists_ext_value $extPrefix $Skey; then                    # has translation to be overriden?
-					P[$Skey]="$Sval";                                         #   override translation in pootle using the source value. Keep sources
-					char="o"                                                  #
+				if exists_ext_value $extPrefix $Skey; then               # has translation to be overriden?
+					# P[$Skey]="$Sval";                                  #   makes no sense to override translation in pootle as there is no source value
+					char="o"                                             #
 				elif ! exists_key "$templatePrefix" "$Skey"; then        # otherwise, does key exist in template file?
 					char="-"                                             #   key does not exist in pootle template. We've just updated from templates so do nothing
 				else                                                     # otherwise, key exists in pootle template, so we can update sources now
