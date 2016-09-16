@@ -294,7 +294,7 @@ function sync_project_locale_translations_existing_lang_file() {
 					then                                                      #   is the sources value translated?
 						is_sources_fully_translated=true;                     #     sources are translated if the value is not empty, is not an auto-translation and its value is different from the template
 					else                                                      #
-		  				is_sources_fully_translated=false;                    #
+		  				is_sources_fully_translted=false;                    #
 					fi;                                                       #
 
 					if $is_sources_fully_translated; then                           # source code value is translated. Is pootle one translated too?
@@ -302,8 +302,13 @@ function sync_project_locale_translations_existing_lang_file() {
 							if [[ "$PvalStore" == "$Sval" ]]; then            #   are pootle and source translation the same?
 								char="·"                                      #     then do nothing
 							else                                              #   translations are different. we have a conflict...
+if [[ $locale != "de" ]]; then
 								char="X"                                      #     Pootle wins. We assume pootle gets improvements all the time
 								S[$Skey]="$PvalStore"                         #
+else
+								char="*"                                      #     Source wins. We assume sourcesS gets improvements all the time
+								P[$Skey]="$Sval"                              #
+fi;
 							fi                                                #
 						else                                                  # store value is untranslated. Either no one wrote there or contains an old "auto" translation
 							char="P"                                          #
