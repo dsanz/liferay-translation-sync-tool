@@ -147,7 +147,7 @@ declare -xgA GIT_ROOT_POOTLE_PROJECT_NAME
 declare -xga POOTLE_PROJECT_DELETION_WHITELIST_REGEXS=(liferay-sync terminology)
 
 # if Language.properties file path matches any of these regexs, the project won't be
-# considered for auto-provisioing, therefore it will not be created
+# considered for auto-provisioning, therefore it will not be considered for syncing
 declare -xga POOTLE_PROJECT_PATH_BLACKLIST_REGEXS=(build/ classes/ /localization)
 
 ## 3.3 project lists initialization
