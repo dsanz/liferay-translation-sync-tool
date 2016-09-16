@@ -90,7 +90,7 @@ declare -xgr SRC_PLUGINS_BASE="${SRC_BASE}/master/liferay-plugins/"
 declare -xgr SRC_PLUGINS_EE_BASE="${SRC_BASE}liferay-plugins-ee/"
 
 # liferay apps for content targeting
-declare -xgr SRC_APPS_CT_BASE="${SRC_BASE}/audience-targeting/liferay-plugins/apps/content-targeting/"
+#declare -xgr SRC_APPS_CT_BASE="${SRC_BASE}/audience-targeting/liferay-plugins/apps/content-targeting/"
 
 ## 2.3 Git & github
 ##
@@ -156,5 +156,5 @@ declare -xga POOTLE_PROJECT_PATH_BLACKLIST_REGEXS=(build/ classes/ /localization
 POOTLE_PROJECT_ID=liferay
 add_git_root "$SRC_PORTAL_BASE"
 add_git_root "$SRC_PLUGINS_BASE"
-add_git_root "$SRC_APPS_CT_BASE" $DEFAULT_PR_REVIEWER "develop"
+#add_git_root "$SRC_APPS_CT_BASE" $DEFAULT_PR_REVIEWER "develop"
 
